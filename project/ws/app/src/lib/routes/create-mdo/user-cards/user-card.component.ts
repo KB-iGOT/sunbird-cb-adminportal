@@ -13,7 +13,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
 // tslint:disable-next-line
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { RolesService } from '../../../routes/home/services/roles.service'
 import { ActivatedRoute } from '@angular/router'
 import { Observable, Subscription } from 'rxjs'
@@ -121,12 +121,12 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
   checked = false
   isSPVAdmin = false
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog,
-              private route: ActivatedRoute,
-              private snackBar: MatSnackBar,
-              private events: EventService,
+    private dialog: MatDialog,
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
+    private events: EventService,
     // private datePipe: DatePipe,
-              private cdr: ChangeDetectorRef) {
+    private cdr: ChangeDetectorRef) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
