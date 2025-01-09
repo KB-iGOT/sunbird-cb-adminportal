@@ -38,7 +38,7 @@ export class DirectoryViewComponent implements OnInit {
   pagination = { limit: 20, offset: 0 }
   totalCount = 0
   userRoles: any
-  allowedCreateRoles = ['DASHBOARD_ADMIN', 'SPV_ADMIN', 'SPV_PUBLISHER']
+  allowedCreateRoles = ['DASHBOARD_ADMIN', 'SPV_ADMIN', 'SPV_PUBLISHER', 'STATE_ADMIN']
   constructor(
     public dialog: MatDialog,
     private route: ActivatedRoute,
