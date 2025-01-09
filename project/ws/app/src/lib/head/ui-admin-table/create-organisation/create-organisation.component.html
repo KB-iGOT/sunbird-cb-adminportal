@@ -65,7 +65,7 @@
 
               </ng-container>
 
-              <ng-container *ngIf="this.openMode !== 'editMode'">
+              <ng-container *ngIf="this.openMode !== 'editMode' && !disableStateBlock">
                 <mat-radio-group aria-labelledby="example-radio-group-label" class="flex gap-12 organisation-form mt-3"
                   formControlName="category">
 
@@ -82,7 +82,7 @@
                 </mat-radio-group>
               </ng-container>
 
-              <ng-container *ngIf="getCategory === 'state'">
+              <ng-container *ngIf="getCategory === 'state' && !disableStateBlock">
                 <div class="grayBox p-4 mt-5 flex flex-column gap-1 organisation-form mat-field-rounded">
                   <div class="flex items-center gap-1 required">
                     <span class="lable">State</span>
