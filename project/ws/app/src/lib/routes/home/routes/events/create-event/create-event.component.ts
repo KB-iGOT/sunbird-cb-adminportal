@@ -67,6 +67,7 @@ export class CreateEventComponent implements OnInit {
   toastSuccess: any
   pictureObj: any
   myreg = /^(https?|http):\/\/[^\s/$.?#].[^\s]*$/
+  eventTitleRegex = /^(?!.*([',:])\1)(?!.*[,:']{3})[a-zA-Z0-9\s',:]*$/
   isInputValid: boolean = true
 
   // myreg = /^(http|https:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/
@@ -164,7 +165,10 @@ export class CreateEventComponent implements OnInit {
     }
     this.createEventForm = new UntypedFormGroup({
       eventPicture: new UntypedFormControl('', [Validators.required]),
-      eventTitle: new UntypedFormControl('', [Validators.required]),
+      eventTitle: new UntypedFormControl('', [
+        Validators.required,
+        Validators.pattern(this.eventTitleRegex) // Add your pattern here
+      ]),
       // summary: new FormControl('', [Validators.required]),
       description: new UntypedFormControl('', [Validators.required, preventHtmlAndJs()]),
       agenda: new UntypedFormControl('', [preventHtmlAndJs()]),
@@ -608,22 +612,6 @@ export class CreateEventComponent implements OnInit {
     })
   }
 
-  validateInput(event: any): void {
-    const inputText = event.target as HTMLInputElement
-    const inputField = this.createEventForm.get('eventTitle')
-    if (!inputField) return
-
-    const regex = /^(?!.*([',:])\1)(?!.*[,:']{3})[a-zA-Z0-9\s',:]*$/ // Allowed characters: letters, numbers, spaces, ', and :
-    const inputValue = inputText.value
-
-    // Update the input validity flag
-    this.isInputValid = regex.test(inputValue)
-
-    // Set custom error if input is invalid
-    if (!this.isInputValid) {
-      inputField.setErrors({ invalidCharacters: true })
-    }
-  }
 
   resetDateField() {
     const control = this.createEventForm.get('eventDate')

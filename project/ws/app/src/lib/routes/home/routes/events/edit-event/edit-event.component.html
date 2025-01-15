@@ -13,7 +13,7 @@
                     <span>Cancel</span>
                 </button>
                 <button mat-button class="create-btn btn-success" type="button" (click)="onSubmit()"
-                    [disabled]="!createEventForm.valid || disableCreateButton || !isInputValid">
+                    [disabled]="!createEventForm.valid || disableCreateButton">
                     <span>Update</span>
                 </button>
             </div>
@@ -106,13 +106,15 @@
                             <mat-form-field appearance="outline" class="margin-top-xs">
                                 <input id="eventTitle" matInput #eventTitle formControlName="eventTitle"
                                     placeholder="Type here" aria-label="Event Title input" class="form-input"
-                                    (input)="validateInput($event)" maxlength="500" />
+                                    maxlength="500" />
                                 <mat-error [hidden]="false"
                                     aria-label="Event title Error|Explains event title is required "
                                     *ngIf="createEventForm?.controls['eventTitle']?.touched && createEventForm?.controls['eventTitle'].errors?.required">
                                     Event title is mandatory
                                 </mat-error>
-                                <mat-error *ngIf="!isInputValid" [hidden]="false">
+                                <mat-error
+                                    *ngIf="createEventForm?.controls['eventTitle']?.touched && createEventForm?.controls['eventTitle'].errors?.['pattern']"
+                                    [hidden]="false">
                                     Invalid input! Please enter only letters, numbers, spaces, apostrophes ('), commas
                                     (,), and colons (:)
                                 </mat-error>
@@ -399,7 +401,7 @@
                     <span>Cancel</span>
                 </button>
                 <button mat-button class="create-btn btn-success" type="button" (click)="onSubmit()"
-                    [disabled]="!createEventForm.valid || disableCreateButton || !isInputValid">
+                    [disabled]="!createEventForm.valid || disableCreateButton">
                     <span>Update</span>
                 </button>
             </div>
