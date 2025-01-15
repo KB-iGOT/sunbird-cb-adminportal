@@ -67,6 +67,7 @@ export class CreateEventComponent implements OnInit {
   toastSuccess: any
   pictureObj: any
   myreg = /^(https?|http):\/\/[^\s/$.?#].[^\s]*$/
+  isInputValid: boolean = true
 
   // myreg = /^(http|https:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/
 
@@ -607,9 +608,21 @@ export class CreateEventComponent implements OnInit {
     })
   }
 
-  omit_special_char(event: any) {
-    const k = event.charCode
-    return ((k > 64 && k < 91) || (k > 96 && k < 123) || k === 8 || k === 32 || (k >= 48 && k <= 57))
+  validateInput(event: any): void {
+    const inputText = event.target as HTMLInputElement
+    const inputField = this.createEventForm.get('eventTitle')
+    if (!inputField) return
+
+    const regex = /^(?!.*([',:])\1)(?!.*[,:']{3})[a-zA-Z0-9\s',:]*$/ // Allowed characters: letters, numbers, spaces, ', and :
+    const inputValue = inputText.value
+
+    // Update the input validity flag
+    this.isInputValid = regex.test(inputValue)
+
+    // Set custom error if input is invalid
+    if (!this.isInputValid) {
+      inputField.setErrors({ invalidCharacters: true })
+    }
   }
 
   resetDateField() {

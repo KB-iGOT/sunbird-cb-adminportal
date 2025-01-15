@@ -13,7 +13,7 @@
                     <span>Cancel</span>
                 </button>
                 <button mat-button class="create-btn btn-success" type="button" (click)="onSubmit()"
-                    [disabled]="!createEventForm.valid || disableCreateButton">
+                    [disabled]="!createEventForm.valid || disableCreateButton || !isInputValid">
                     <span>Submit</span>
                 </button>
             </div>
@@ -101,8 +101,11 @@
                             <mat-form-field appearance="outline" class="margin-top-xs">
                                 <input id="eventTitle" matInput #eventTitle formControlName="eventTitle"
                                     placeholder="Type here" aria-label="Event Title input" class="form-input"
-                                    (paste)="omit_special_char($event)" (keypress)="omit_special_char($event)"
-                                    maxlength="250" />
+                                    (input)="validateInput($event)" maxlength="250" />
+                                <mat-error *ngIf="!isInputValid" [hidden]="false">
+                                    Invalid input! Please enter only letters, numbers, spaces, apostrophes ('), commas
+                                    (,), and colons (:)"
+                                </mat-error>
                                 <mat-error [hidden]="false"
                                     aria-label="Event title Error|Explains event title is required "
                                     *ngIf="createEventForm?.controls['eventTitle']?.touched && createEventForm?.controls['eventTitle'].errors?.required">
@@ -463,7 +466,7 @@
                     <span>Cancel</span>
                 </button>
                 <button mat-button class="create-btn btn-success" type="button" (click)="onSubmit()"
-                    [disabled]="!createEventForm.valid || disableCreateButton">
+                    [disabled]="!createEventForm.valid || disableCreateButton || !isInputValid">
                     <span>Submit</span>
                 </button>
             </div>
