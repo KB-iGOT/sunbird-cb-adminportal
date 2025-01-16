@@ -63,6 +63,7 @@ export class EditEventComponent implements OnInit {
   toastSuccess: any
   pictureObj: any
   myreg = /^(https?|http):\/\/[^\s/$.?#].[^\s]*$/
+  eventTitleRegex = /^(?!.*([',:])\1)(?!.*[,:']{3})[a-zA-Z0-9\s',:]*$/
   // myreg = /(^|\s)((https?:\/\/)?[\w-]+(\.[\w-]+)+\.?(:\d+)?(\/\S*)?)/gi
   // myreg = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/
 
@@ -152,7 +153,10 @@ export class EditEventComponent implements OnInit {
 
     this.createEventForm = new UntypedFormGroup({
       eventPicture: new UntypedFormControl('', [Validators.required]),
-      eventTitle: new UntypedFormControl('', [Validators.required]),
+      eventTitle: new UntypedFormControl('', [
+        Validators.required,
+        Validators.pattern(this.eventTitleRegex) // Add your pattern here
+      ]),
       // summary: new FormControl('', []),
       description: new UntypedFormControl('', [Validators.required, preventHtmlAndJs()]),
       agenda: new UntypedFormControl('', [preventHtmlAndJs()]),
@@ -631,10 +635,5 @@ export class EditEventComponent implements OnInit {
     this.dialogRef.afterClosed().subscribe(() => {
       this.router.navigate([`/app/home/events`])
     })
-  }
-
-  omit_special_char(event: any) {
-    const k = event.charCode
-    return ((k > 64 && k < 91) || (k > 96 && k < 123) || k === 8 || k === 32 || (k >= 48 && k <= 57))
   }
 }

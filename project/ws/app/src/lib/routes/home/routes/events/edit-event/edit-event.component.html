@@ -106,11 +106,17 @@
                             <mat-form-field appearance="outline" class="margin-top-xs">
                                 <input id="eventTitle" matInput #eventTitle formControlName="eventTitle"
                                     placeholder="Type here" aria-label="Event Title input" class="form-input"
-                                    (keypress)="omit_special_char($event)" maxlength="500" />
+                                    maxlength="500" />
                                 <mat-error [hidden]="false"
                                     aria-label="Event title Error|Explains event title is required "
                                     *ngIf="createEventForm?.controls['eventTitle']?.touched && createEventForm?.controls['eventTitle'].errors?.required">
                                     Event title is mandatory
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="createEventForm?.controls['eventTitle']?.touched && createEventForm?.controls['eventTitle']?.errors?.['pattern']"
+                                    [hidden]="false">
+                                    Invalid input! Please enter only letters, numbers, spaces, apostrophes ('), commas
+                                    (,), and colons (:)
                                 </mat-error>
                                 <mat-hint>{{eventTitle.value.length}}/250 characters</mat-hint>
                             </mat-form-field>
