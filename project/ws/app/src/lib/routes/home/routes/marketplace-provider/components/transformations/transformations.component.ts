@@ -249,7 +249,7 @@ export class TransformationsComponent implements OnInit, OnChanges {
       })
 
     } else {
-      const message = 'Please provide all mandatory fields'
+      const message = this.transforamtionType === 'viaForm' ? 'Please provide all mandatory fields' : 'Please provide spec json'
       this.showSnackBar(message)
     }
   }
@@ -286,7 +286,7 @@ export class TransformationsComponent implements OnInit, OnChanges {
         header = 'Upload Course Catalog'
         break
       case 'transformProgressJson':
-        header = 'Upload Course Pregress'
+        header = 'Upload Course Progress'
         break
       case 'certificateTemplateUrl':
         header = 'Upload Course Certificate'
