@@ -125,7 +125,10 @@ export class ViaApiComponent implements OnInit, OnChanges {
       }
     })
     this.viaApiFormGroup.controls.apiUrl.valueChanges.subscribe((event: string) => {
-      if (event !== this.displayUrl) {
+      const trimValue = event.replace(' ', '')
+      if (trimValue !== event) {
+        this.viaApiFormGroup.controls.apiUrl.patchValue(trimValue)
+      } else if (event !== this.displayUrl) {
         this.displayUrl = event
         this.apiUrlEdited = true
         this.constructParamsFormArray()
@@ -268,7 +271,7 @@ export class ViaApiComponent implements OnInit, OnChanges {
       this.authenticationFormGroup.controls.rawData.patchValue(authPayload)
     }
 
-    const transformContent = _.get(configurationDetails, this.transformationType, _.get(this.providerConfiguration, this.transformationType))
+    const transformContent = _.get(this.providerDetails, this.transformationType, _.get(this.providerConfiguration, this.transformationType))
     this.transformationSpecForm.patchValue(transformContent)
 
   }
@@ -323,13 +326,13 @@ export class ViaApiComponent implements OnInit, OnChanges {
   get getUpdateBtnText(): string {
     let btnText = ''
     if (this.transformationType === 'transformContentViaApi') {
-      if (this.providerConfiguration.trasformContentViaApi) {
+      if (this.providerConfiguration && this.providerConfiguration.transformContentViaApi) {
         btnText = 'Update Transform Content'
       } else {
         btnText = 'Save Transform Content'
       }
     } else if (this.transformationType === 'transformProgressViaApi') {
-      if (this.providerConfiguration.transformProgressViaApi) {
+      if (this.providerConfiguration && this.providerConfiguration.transformProgressViaApi) {
         btnText = 'Update Transform Progress'
       } else {
         btnText = 'Save Transform Progress'
@@ -392,6 +395,7 @@ export class ViaApiComponent implements OnInit, OnChanges {
     serviceDetails['serviceCode'] = this.servicesFormGroup.controls.serviceCode.value.toUpperCase()
     const params = this.getParamsAndUrl()
     const isFormData = this.bodyFormGroup.value.tableListFormArray[0].key ? true : false
+    const authPayload = _.get(this.authenticationFormGroup, 'value.rawData', '{}')
     const formBody = {
       isFormData,
       requestMethod: this.viaApiFormGroup.controls.apiType.value,
@@ -411,7 +415,7 @@ export class ViaApiComponent implements OnInit, OnChanges {
         headerMap: this.generateObjectFromForm(this.headersFormGroup.value.tableListFormArray),
         urlMap: this.generateObjectFromForm(this.paramsFormGroup.value.tableListFormArray, true)
       },
-      authPayload: this.authenticationFormGroup.value.rawData,
+      authPayload: authPayload ? authPayload : {},
       strictCache: serviceDetails.strictCache,
       strictCacheTimeInMinutes: serviceDetails.strictCacheTimeInMinutes
     }
@@ -477,7 +481,7 @@ export class ViaApiComponent implements OnInit, OnChanges {
       })
 
     } else {
-      const message = 'Please provide all mandatory fields'
+      const message = this.transforamtionType === 'viaForm' ? 'Please provide all mandatory fields' : 'Please provide spec json'
       this.showSnackBar(message)
     }
   }
