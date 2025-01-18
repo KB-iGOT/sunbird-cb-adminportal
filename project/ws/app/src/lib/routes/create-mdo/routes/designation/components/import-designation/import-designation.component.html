@@ -59,15 +59,17 @@
       <div class="w-full flex flex-4 flex-row designations-card-container flex-wrap gap-5">
         <ng-container *ngFor="let designation of igotDesignationsList let i = index">
           <div class="flex flex-4 custom-user-card items-center justify-center" [ngClass]="{'active-card': (designation?.selected && !designation?.isOrgDesignation),
-              'disableCard': designation?.isOrgDesignation}">
+              'disableCard': designation?.isOrgDesignation}" (click)="selectDesignation(i)">
             <div class="custom-user-desc">
               <p [matTooltip]="designation?.designation" matTooltipPosition="above">{{designation?.designation |
                 titlecase}}</p>
             </div>
 
             <div class="check-action">
-              <mat-checkbox [checked]="designation?.selected" [disabled]="designation?.isOrgDesignation"
-                (change)="selectDesignation($event.checked, designation.id)"></mat-checkbox>
+              <!-- <mat-checkbox [checked]="designation?.selected" [disabled]="designation?.isOrgDesignation"
+                (change)="selectDesignation($event.checked, designation.id)"></mat-checkbox> -->
+                  <mat-checkbox [checked]="designation?.selected" (click)="$event.preventDefault()"
+                    [disabled]="designation?.isOrgDesignation"></mat-checkbox>
             </div>
           </div>
         </ng-container>
