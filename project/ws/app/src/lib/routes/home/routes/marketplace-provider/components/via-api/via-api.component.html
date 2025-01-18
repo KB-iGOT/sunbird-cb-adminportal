@@ -158,7 +158,8 @@
   <ng-container *ngIf="transformationType !== 'certificateTemplateUrl'">
     <div class="flex w-full flex-col gap-1 h-full">
       <div>
-        <span class="header">Transform {{transformationType === 'trasformContentJson' ? 'Content' : 'Progress'}}</span>
+        <span class="header">Transform {{transformationType === 'transformContentViaApi' ? 'Content' :
+          'Progress'}}</span>
       </div>
       <div class="flex flex-col gap-4 transformation-box"
         [ngClass]="{'transformation-required': (!transformationsUpdated && executed)}">
