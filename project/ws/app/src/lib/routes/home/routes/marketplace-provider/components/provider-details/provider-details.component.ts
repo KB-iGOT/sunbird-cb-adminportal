@@ -337,7 +337,10 @@ export class ProviderDetailsComponent implements OnInit, OnChanges {
         },
         error: (error: HttpErrorResponse) => {
           this.loaderService.changeLoad.next(false)
-          const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
+          let errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
+          if (errmsg.includes('Validation error(s): \n$.websiteUrl:')) {
+            errmsg = 'Please provide a valid URL for the website'
+          }
           this.showSnackBar(errmsg)
         },
       })
@@ -376,7 +379,10 @@ export class ProviderDetailsComponent implements OnInit, OnChanges {
         },
         error: (error: HttpErrorResponse) => {
           this.loaderService.changeLoad.next(false)
-          const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
+          let errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
+          if (errmsg.includes('Validation error(s): \n$.websiteUrl:')) {
+            errmsg = 'Please provide a valid URL for the website'
+          }
           this.showSnackBar(errmsg)
         },
       })
