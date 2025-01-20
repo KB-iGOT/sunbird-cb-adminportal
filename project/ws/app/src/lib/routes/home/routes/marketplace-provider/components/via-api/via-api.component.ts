@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core'
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core'
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MarketplaceService } from '../../services/marketplace.service'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import * as _ from 'lodash'
 import { HttpErrorResponse } from '@angular/common/http'
 import { ActivatedRoute } from '@angular/router'
-import { JsonEditorOptions } from 'ang-jsoneditor'
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor'
 
 @Component({
   selector: 'ws-app-via-api',
@@ -14,6 +14,7 @@ import { JsonEditorOptions } from 'ang-jsoneditor'
 })
 export class ViaApiComponent implements OnInit, OnChanges {
   //#region (global varialbles)
+  @ViewChild('jsonEditor') jsonEditor: JsonEditorComponent | undefined
   //#region (view chaild, input and output)
   @Input() providerDetails?: any
   @Input() viaApiTabIndex = 0
@@ -460,28 +461,34 @@ export class ViaApiComponent implements OnInit, OnChanges {
     this.providerDetails['data']['isActive'] = true
     const hasTransformationAlready = this.providerDetails[this.transformationType] ? true : false
     this.transformationSpecForm.markAsTouched()
-    if (this.transformationSpecForm.valid) {
-      this.providerDetails[this.transformationType] = this.transformationSpecForm.value
-      this.marketPlaceSvc.updateProvider(this.providerDetails).subscribe({
-        next: (responce: any) => {
-          if (responce) {
-            setTimeout(() => {
-              let successMsg = 'Saved Successfully'
-              successMsg = hasTransformationAlready ? 'Transform Content updated successfully.' : 'Transform Content saved successfully.'
-              this.showSnackBar(successMsg)
-              this.transformationsUpdated = true
-              this.loadProviderDetails.emit(true)
-            }, 1000)
-          }
-        },
-        error: (error: HttpErrorResponse) => {
-          const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
-          this.showSnackBar(errmsg)
-        },
-      })
+    try {
+      this.jsonEditor!.get()
+      if (this.transformationSpecForm.valid && JSON.stringify(this.transformationSpecForm.value) !== '{}') {
+        this.providerDetails[this.transformationType] = this.transformationSpecForm.value
+        this.marketPlaceSvc.updateProvider(this.providerDetails).subscribe({
+          next: (responce: any) => {
+            if (responce) {
+              setTimeout(() => {
+                let successMsg = 'Saved Successfully'
+                successMsg = hasTransformationAlready ? 'Transform Content updated successfully.' : 'Transform Content saved successfully.'
+                this.showSnackBar(successMsg)
+                this.transformationsUpdated = true
+                this.loadProviderDetails.emit(true)
+              }, 1000)
+            }
+          },
+          error: (error: HttpErrorResponse) => {
+            const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
+            this.showSnackBar(errmsg)
+          },
+        })
 
-    } else {
-      const message = this.transforamtionType === 'viaForm' ? 'Please provide all mandatory fields' : 'Please provide spec json'
+      } else {
+        const message = this.transforamtionType === 'viaForm' ? 'Please provide all mandatory fields' : 'Please provide valid spec json'
+        this.showSnackBar(message)
+      }
+    } catch (err) {
+      const message = 'Please provied valid valid spec json'
       this.showSnackBar(message)
     }
   }

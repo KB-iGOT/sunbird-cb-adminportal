@@ -92,7 +92,8 @@
           </form>
         </ng-container>
         <ng-template #specForm>
-          <json-editor [options]="editorOptions" [formControl]="transformationSpecForm" class="transformationEditor"
+          <json-editor #jsonEditor [options]="editorOptions" [formControl]="transformationSpecForm"
+            class="transformationEditor"
             [ngClass]="{'has-error': transformationSpecForm.invalid && transformationSpecForm.touched}">
           </json-editor>
         </ng-template>
