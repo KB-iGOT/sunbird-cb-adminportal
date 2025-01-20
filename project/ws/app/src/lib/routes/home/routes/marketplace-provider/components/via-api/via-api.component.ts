@@ -488,7 +488,7 @@ export class ViaApiComponent implements OnInit, OnChanges {
         this.showSnackBar(message)
       }
     } catch (err) {
-      const message = 'Please provied valid valid spec json'
+      const message = 'Please provied valid spec json'
       this.showSnackBar(message)
     }
   }
