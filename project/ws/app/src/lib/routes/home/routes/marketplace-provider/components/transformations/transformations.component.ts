@@ -9,7 +9,7 @@ import { ConformationPopupComponent } from '../../dialogs/conformation-popup/con
 import { HttpErrorResponse } from '@angular/common/http'
 import * as XLSX from 'xlsx'
 import { environment } from '../../../../../../../../../../../src/environments/environment'
-import { JsonEditorOptions } from 'ang-jsoneditor'
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor'
 
 @Component({
   selector: 'ws-app-transformations',
@@ -21,6 +21,7 @@ export class TransformationsComponent implements OnInit, OnChanges {
   //#region (global varialbles)
   //#region (view chaild, input and output)
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef<HTMLInputElement>
+  @ViewChild('jsonEditor') jsonEditor: JsonEditorComponent | undefined
 
   @Input() providerDetails?: any
   @Input() transformationType = ''
@@ -203,8 +204,18 @@ export class TransformationsComponent implements OnInit, OnChanges {
     const hasTransformationAlready = this.providerDetalsBeforUpdate[this.transformationType] ? true : false
     this.transforamtionForm.markAllAsTouched()
     this.transformationSpecForm.markAsTouched()
+    let isValidJson = false
+    if (this.transforamtionType === 'viaSpec') {
+      try {
+        const enteredJson = this.jsonEditor!.get()
+        isValidJson = JSON.stringify(enteredJson) !== '{}' ? true : false
+      } catch (err) {
+        isValidJson = false
+      }
+    }
     if ((this.transforamtionType === 'viaForm' && this.transforamtionForm.valid) ||
-      (this.transforamtionType === 'viaSpec' && this.transformationSpecForm.valid && this.transformationSpecForm.value !== '{}')) {
+      (this.transforamtionType === 'viaSpec' && this.transformationSpecForm.valid &&
+        JSON.stringify(this.transformationSpecForm.value) !== '{}' && isValidJson)) {
       if (this.transformationType !== 'certificateTemplateUrl') {
         if (this.transforamtionType === 'viaForm') {
           const trasformContentSpec: any = {} // contains maped transform spec for db
@@ -249,7 +260,7 @@ export class TransformationsComponent implements OnInit, OnChanges {
       })
 
     } else {
-      const message = this.transforamtionType === 'viaForm' ? 'Please provide all mandatory fields' : 'Please provide spec json'
+      const message = this.transforamtionType === 'viaForm' ? 'Please provide all mandatory fields' : 'Please provide valid spec json'
       this.showSnackBar(message)
     }
   }
