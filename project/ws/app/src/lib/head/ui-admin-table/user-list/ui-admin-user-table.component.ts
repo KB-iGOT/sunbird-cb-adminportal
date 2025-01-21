@@ -68,6 +68,8 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
   startIndex = 0
   lastIndex = 20
   searchText: string = ''
+  searchValue: string = ''
+  moreThanTwoChar = false
   constructor(
     private router: Router, public dialog: MatDialog,
     private activatedRoute: ActivatedRoute,
@@ -135,12 +137,13 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
 
   applyFilter(filterValue: any) {
 
-    if (filterValue) {
-      let fValue = filterValue.trim()
-      fValue = filterValue.toLowerCase()
-      this.dataSource.filter = fValue
+    if (filterValue.length === 0) {
+      this.onSearchEnter('')
+    }
+    if (filterValue.length > 2) {
+      this.moreThanTwoChar = true
     } else {
-      this.dataSource.filter = ''
+      this.moreThanTwoChar = false
     }
   }
 
@@ -310,8 +313,8 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
   }
 
   onSearchEnter(event: any) {
-    this.searchText = event.target.value
-    this.searchByEnterKey.emit(event.target.value)
+    this.searchText = event
+    this.searchByEnterKey.emit(event)
   }
 
   downloadUsersReport(value: string) {

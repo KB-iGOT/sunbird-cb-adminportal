@@ -703,3 +703,11 @@ $title-line-count: 2;
   font-weight: 700;
   font-size: 14px;
 }
+.cstm-height-width {
+  height: 38px;
+}
+.disabled-cls {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
+}

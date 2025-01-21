@@ -4,10 +4,19 @@
     <div class="example-table-container">
         <div class=rsearch>
             <div class="w-100">
-                <div class="sinput">
-                    <span class="material-icons"> search </span>
-                    <input type="Standard" label="" (input)="applyFilter($event.target.value)"
-                        (keydown.enter)="onSearchEnter($event)" placeholder="Search">
+                <div class="flex flex-row">
+                    <div class="sinput">
+                        <span class="material-icons"> search </span>
+                        <input type="Standard" label="" (input)="applyFilter($event.target.value)" placeholder="Search"
+                            [(ngModel)]="searchValue" (keydown.enter)="onSearchEnter($event.target.value)">
+                    </div>
+                    <div>
+                        <button mat-raised-button type="button" (click)="onSearchEnter(searchValue)"
+                            [ngClass]="{ 'disabled-cls': !moreThanTwoChar }"
+                            class="text-white ws-mat-primary-background text-white margin-left-s custom-btn cstm-height-width">
+                            <span class="text-white">Search</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
