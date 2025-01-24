@@ -735,3 +735,8 @@ $title-line-count: 2;
   width: 450px;
   flex: none;
 }
+.disabled-cls {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
+}

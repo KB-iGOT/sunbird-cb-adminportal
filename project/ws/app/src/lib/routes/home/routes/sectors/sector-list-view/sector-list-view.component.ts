@@ -23,6 +23,8 @@ export class SectorListViewComponent implements OnInit {
   displayedColumns: any = []
   dataSource!: any
   length!: number
+  searchValue: string = ''
+  moreThanTwoChar = false
   pageSize = sectorConstants.pageSize
   pageSizeOptions = sectorConstants.pageOptions
   cardMenu: any

@@ -6,8 +6,16 @@
                     <div class="search">
                         <div class=rsearch>
                             <mat-icon class="color-60 search-icon">search</mat-icon>
-                            <input class="sinput color-60" type="Standard" label=""
+                            <input class="sinput color-60" type="Standard" label="" [(ngModel)]="searchValue"
+                                (keydown.enter)="onSearchEnter($event.target.value)"
                                 (input)="applyFilter($event.target.value)" placeholder="Search" maxlength="200">
+                        </div>
+                        <div>
+                            <button mat-raised-button type="button" (click)="onSearchEnter(searchValue)"
+                                [ngClass]="{ 'disabled-cls': !moreThanTwoChar }"
+                                class="text-white ws-mat-primary-background text-white margin-left-s custom-btn cstm-height-width">
+                                <span class="text-white">Search</span>
+                            </button>
                         </div>
                     </div>
                 </div>

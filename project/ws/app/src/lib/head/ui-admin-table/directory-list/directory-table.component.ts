@@ -49,6 +49,8 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
   showNewNoContent = false
   openCreateNavBar = false
   openMode = ''
+  searchValue: string = ''
+  moreThanTwoChar = false
   rowData: any
   dropdownList: {
     statesList: any[],
@@ -120,8 +122,20 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
   }
   ngAfterViewInit() { }
 
+  // applyFilter(filterValue: any) {
+  //   this.filterSubject.next(filterValue)
+  // }
   applyFilter(filterValue: any) {
-    this.filterSubject.next(filterValue)
+
+    if (filterValue.length === 0) {
+      this.onSearchEnter('')
+      this.filterSubject.next('')
+    }
+    if (filterValue.length > 2) {
+      this.moreThanTwoChar = true
+    } else {
+      this.moreThanTwoChar = false
+    }
   }
 
   onOrgPageChange(event: any) {
