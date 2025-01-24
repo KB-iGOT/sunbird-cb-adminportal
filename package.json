@@ -116,6 +116,7 @@
     "gzipper": "^2.8.1",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
+    "jest-localstorage-mock": "^2.4.26",
     "jest-sonar-reporter": "^2.0.0",
     "karma": "~6.4.4",
     "karma-chrome-launcher": "~3.1.0",
