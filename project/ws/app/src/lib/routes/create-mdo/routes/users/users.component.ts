@@ -136,7 +136,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
       sortState: 'asc',
     }
 
-    if (this.currentDept === 'mdo') {
+    if (this.currentDept === 'organisation') {
       this.tabledata['actions'] = [{ name: 'Edit', label: 'Edit info', optional: true, icon: 'remove_red_eye', type: 'button' }]
     }
 
