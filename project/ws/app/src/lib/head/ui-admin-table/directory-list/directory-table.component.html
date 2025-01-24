@@ -15,21 +15,22 @@
     <div class="example-table-container">
 
         <div class="search items-center">
-            <div class=rsearch>
+            <div class="rsearch flex-row">
                 <div class="sinput mat-field-rounded">
                     <span class="material-icons"> search </span>
                     <input type="Standard" id="search" label="" #searchInput (input)="applyFilter($event.target.value)"
                         [(ngModel)]="searchValue" (keydown.enter)="onSearchEnter($event.target.value)"
                         placeholder="Search">
                 </div>
+                <div class="margin-left-xs search-btn-div">
+                    <button mat-raised-button type="button" (click)="onSearchEnter(searchValue)"
+                        [ngClass]="{ 'disabled-cls': !moreThanTwoChar }"
+                        class="text-white ws-mat-primary-background text-white margin-left-s custom-btn cstm-height-width">
+                        <span class="text-white">Search</span>
+                    </button>
+                </div>
             </div>
-            <div>
-                <button mat-raised-button type="button" (click)="onSearchEnter(searchValue)"
-                    [ngClass]="{ 'disabled-cls': !moreThanTwoChar }"
-                    class="text-white ws-mat-primary-background text-white margin-left-s custom-btn cstm-height-width">
-                    <span class="text-white">Search</span>
-                </button>
-            </div>
+
             <button mat-flat-button *ngIf="needCreate" class="mat-btn-flat margin-right-m" (click)="gotoCreateNew()">
                 <b class="text-white">Create new</b>
             </button>
