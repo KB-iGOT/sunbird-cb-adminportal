@@ -15,6 +15,7 @@ export class AppFooterComponent {
     private configSvc: ConfigurationsService,
     private valueSvc: ValueService
   ) {
+
     if (this.configSvc.restrictedFeatures) {
       if (this.configSvc.restrictedFeatures.has('termsOfUser')) {
         this.termsOfUser = false
