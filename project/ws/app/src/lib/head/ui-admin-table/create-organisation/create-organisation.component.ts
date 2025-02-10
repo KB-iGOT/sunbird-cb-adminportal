@@ -44,16 +44,20 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
   uploadedLogoResponse!: IUploadedLogoresponse
   organizationNameList: string[] = []
   ORG_NAME_PATTERN = /^[a-zA-Z0-9 ().,@\-\$\/\\:\[\]!\s]*$/
+  rootOrgId: any
 
   untilDestroyed$ = new Subject<void>();
-  isMatcompleteOpened = false;
+  isMatcompleteOpened = false
+  isStateLogin = false
+  disableStateBlock = false
   EXCLUDED_MINISRIES: string[] = []
+  stateName: string = ''
   constructor(
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
     private createMDOService: CreateMDOService,
     private activatedRoute: ActivatedRoute,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
   ) {
 
     this.addOverflowHidden()
@@ -70,7 +74,31 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
     }
 
     this.organizationNameList = this.orgList.map(org => org.organisation.trim().toLowerCase())
+    this.checkState()
   }
+  checkState() {
+    this.statesList = _.get(this.dropdownList, 'statesList', [])
+    const userOrgName = _.get(this.activatedRoute?.snapshot.parent?.data, 'configService.unMappedUser.rootOrg', null)
+
+    if (userOrgName && userOrgName.isState) {
+      this.isStateLogin = userOrgName.isState
+      this.stateName = userOrgName.channel
+      const findOrgDetails = (org: string) => {
+        const result = _.find(this.statesList, { orgName: org })
+        return result ? { orgName: result.orgName, mapId: result.mapId } : null
+      }
+      const orgDetails = findOrgDetails(this.stateName)
+      if (orgDetails && orgDetails?.mapId && orgDetails?.orgName) {
+        // Setting form values for organization
+        this.organisationForm.controls['category'].setValue('state')
+        this.organisationForm.controls['state'].setValue(orgDetails.orgName)
+        // Fetching organization details
+        this.getOrganization(this.stateName, 'state')
+        this.disableStateBlock = true
+      }
+    }
+  }
+
 
   ngOnDestroy(): void {
     this.removeOverflowHidden()
@@ -190,24 +218,37 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
   }
 
   onSubmitCreateOrganization() {
-    const payload = {
-      orgName: this.controls['organisationName'].value,
-      channel: this.controls['organisationName'].value,
+    const userProfile = _.get(this.activatedRoute, 'snapshot.parent.data.configService.userProfile')
+    this.rootOrgId = userProfile.rootOrgId
+    let payload: any = {
+      orgName: this.controls['organisationName']?.value || "",
+      channel: this.controls['organisationName']?.value || "",
       organisationType: "mdo",
       organisationSubType: "board",
       isTenant: true,
       requestedBy: this.loggedInUserId,
-
       logo: this.uploadedLogoResponse?.qrcodepath || "",
-      description: this.controls['description'].value,
+      description: this.controls['description']?.value || "",
       parentMapId: "",
-      sbRootOrgId: this.heirarchyObject?.sbRootOrgId || "",
-    }
-    if (this.controls['category'].value === 'state') {
-      payload.parentMapId = this.controls['state'].value.mapId
-    } else {
-      payload.parentMapId = this.controls['ministry'].value.mapId
+      sbRootOrgId: this.rootOrgId
 
+    }
+    // if (this.heirarchyObject && this.heirarchyObject.sbRootOrgId) {
+    //   payload['sbRootOrgId'] = this.heirarchyObject.sbRootOrgId
+    // }
+    if (this.controls['category']?.value === 'state') {
+      const orgDetails = _.find(this.statesList, { orgName: this.stateName })
+      if (orgDetails) {
+        payload.parentMapId = orgDetails.mapId || "" // Assign mapId from orgDetails
+      } else if (this.controls['state']?.value?.mapId) {
+        payload.parentMapId = this.controls['state'].value.mapId // Fallback to state control mapId
+      } else {
+        return // Exit function in case of error
+      }
+    } else if (this.controls['ministry']?.value?.mapId) {
+      payload.parentMapId = this.controls['ministry'].value.mapId // Assign ministry mapId
+    } else {
+      return // Exit function in case of error
     }
 
     if (this.openMode === 'editMode') {
