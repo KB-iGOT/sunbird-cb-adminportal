@@ -49,7 +49,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   isReportsPath = false
   userRoles: any
-  allowedCreateRoles = ['DASHBOARD_ADMIN', 'SPV_ADMIN', 'SPV_PUBLISHER']
+  allowedCreateRoles = ['DASHBOARD_ADMIN', 'SPV_ADMIN', 'SPV_PUBLISHER', 'STATE_ADMIN']
   constructor(private usersSvc: UsersService, private router: Router,
     private route: ActivatedRoute,
     private profile: ProfileV2Service,
