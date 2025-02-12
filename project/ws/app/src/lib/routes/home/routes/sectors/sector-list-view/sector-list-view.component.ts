@@ -28,6 +28,7 @@ export class SectorListViewComponent implements OnInit {
   pageSize = sectorConstants.pageSize
   pageSizeOptions = sectorConstants.pageOptions
   cardMenu: any
+  searchText: string = ''
   @ViewChild(MatPaginator) paginator: MatPaginator | null = null
   @ViewChild(MatSort) set matSort(sort: MatSort) {
     if (!this.dataSource.sort) {
@@ -90,4 +91,12 @@ export class SectorListViewComponent implements OnInit {
   onClickButton(row: any) {
     this.router.navigateByUrl(`/app/home/sectors/${row.code}/sub-sectors`)
   }
+
+
+  onSearchEnter(event: any) {
+    this.searchText = event
+    // this.searchByEnterKey.emit(event)
+  }
+
+ 
 }

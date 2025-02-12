@@ -22,16 +22,16 @@
                         [(ngModel)]="searchValue" (keydown.enter)="onSearchEnter($event.target.value)"
                         placeholder="Search">
                 </div>
-                <div class="margin-left-xs search-btn-div">
+                <div class="margin-left-s search-btn-div">
                     <button mat-raised-button type="button" (click)="onSearchEnter(searchValue)"
                         [ngClass]="{ 'disabled-cls': !moreThanTwoChar }"
-                        class="text-white ws-mat-primary-background text-white margin-left-s custom-btn cstm-height-width">
+                        class="text-white ws-mat-primary-background text-white custom-btn cstm-height-width mat-btn-flat">
                         <span class="text-white">Search</span>
                     </button>
                 </div>
             </div>
 
-            <button mat-flat-button *ngIf="needCreate" class="mat-btn-flat margin-right-m" (click)="gotoCreateNew()">
+            <button mat-flat-button *ngIf="needCreate" class="mat-btn-flat margin-right-m create-btn" (click)="gotoCreateNew()">
                 <b class="text-white">Create new</b>
             </button>
         </div>

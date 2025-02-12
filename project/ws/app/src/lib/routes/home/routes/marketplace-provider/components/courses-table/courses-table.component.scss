@@ -5,23 +5,25 @@
 }
 
 .sinput {
-  width: 315px;
-  border-radius: 4px;
-  border: 1px solid #d5d0d0;
-  padding: 9px 9px 9px 35px;
-  margin-bottom: 0px;
-  margin-top: 0;
-  /* stylelint-enable */
-  font: normal 14px Lato;
-  /* stylelint-disable */
-  font-weight: 400;
-}
+      width: 450px;
+    border-radius: 9999px;
+    border: 1px solid #d5d0d0;
+    padding: 8px 16px;
+    margin-bottom: 10px;
+    min-height: 20px;
+    box-sizing: border-box;
 
-.search-icon {
-  position: absolute;
-  top: 9px;
-  font-size: 20px;
-  left: 10px;
+  .material-icons {
+    vertical-align: bottom;
+    font-size: 20px;
+    margin-right: 7px;
+  }
+
+  input {
+    border: 0 !important;
+    width: 84%;
+    outline: none !important;
+  }
 }
 
 .delete-all {

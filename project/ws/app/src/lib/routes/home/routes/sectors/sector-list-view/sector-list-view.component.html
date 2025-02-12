@@ -4,23 +4,27 @@
             <div class="flex flex-1 custom">
                 <div class="flex-2">
                     <div class="search">
-                        <div class=rsearch>
-                            <mat-icon class="color-60 search-icon">search</mat-icon>
-                            <input class="sinput color-60" type="Standard" label="" [(ngModel)]="searchValue"
-                                (keydown.enter)="onSearchEnter($event.target.value)"
-                                (input)="applyFilter($event.target.value)" placeholder="Search" maxlength="200">
+                        <div class="rsearch flex-row">
+                            <div class="sinput">
+                                <span class="material-icons"> search </span>
+                                <input class="color-60" type="Standard" label="" [(ngModel)]="searchValue"
+                                    (keydown.enter)="onSearchEnter($event.target.value)"
+                                    (input)="applyFilter($event.target.value)" placeholder="Search" maxlength="200">
+                            </div>
+                            <div class="margin-left-s">
+                                <button mat-raised-button type="button" (click)="onSearchEnter(searchValue)"
+                                    [ngClass]="{ 'disabled-cls': !moreThanTwoChar }"
+                                    class="text-white ws-mat-primary-background text-white custom-btn cstm-height-width mat-btn-flat">
+                                    <span class="text-white">Search</span>
+                                </button>
+                            </div>
                         </div>
-                        <div>
-                            <button mat-raised-button type="button" (click)="onSearchEnter(searchValue)"
-                                [ngClass]="{ 'disabled-cls': !moreThanTwoChar }"
-                                class="text-white ws-mat-primary-background text-white margin-left-s custom-btn cstm-height-width">
-                                <span class="text-white">Search</span>
-                            </button>
-                        </div>
+
                     </div>
                 </div>
-                <div class="flex-2 right-align">
-                    <button type="button" mat-button class="create-btn" *ngIf="isCreate" (click)="onCreateClick()">
+                <div class="flex right-align">
+                    <button type="button" mat-button class="create-btn mat-btn-flat" *ngIf="isCreate"
+                        (click)="onCreateClick()">
                         Create new
                     </button>
                 </div>
@@ -76,7 +80,7 @@
             </div>
         </div>
         <mat-paginator [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
-            *ngIf="dataSource.filteredData.length">
+            *ngIf="dataSource.filteredData.length" (page)="onChangePage($event)">
         </mat-paginator>
     </div>
 
