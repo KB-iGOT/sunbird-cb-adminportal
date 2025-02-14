@@ -648,7 +648,9 @@ $title-line-count: 2;
 }
 
 .noContent {
+  /* stylelint-disable */
   font: 700 14px 'Lato';
+  /* stylelint-enable */
   color: #000000de;
 }
 

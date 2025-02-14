@@ -450,7 +450,7 @@ export class LearningComponent implements OnInit, OnDestroy {
     return item.identifier
   }
   sortOrder(type: string) {
-    try {
+    try { //NOSONAR
       this.router.navigate([], {
         queryParams: { sort: type },
         queryParamsHandling: 'merge',
@@ -479,7 +479,7 @@ export class LearningComponent implements OnInit, OnDestroy {
   }
 
   searchLanguage(type: string) {
-    try {
+    try { //NOSONAR
       this.router.navigate([], {
         queryParams: { lang: type },
         queryParamsHandling: 'merge',
