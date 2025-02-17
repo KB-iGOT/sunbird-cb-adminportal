@@ -17,7 +17,7 @@ export class ItemTileComponent implements OnInit {
     return typeof input === 'string'
   }
   goToView() {
-    try {
+    try { //NOSONAR
       this.route.navigate(
         [``],
         {

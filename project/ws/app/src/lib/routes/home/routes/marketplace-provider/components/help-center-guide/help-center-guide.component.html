@@ -8,11 +8,13 @@
   </div>
   <div class="pt-5" *ngIf="showTopSection">
     <div class="flex gap-20 items-center justify-between">
-      <div class="flex-1 flex-col gap-4">
-        <p class="flex items-center" *ngFor="let note of helpCenterGuide?.guideNotes">
-          <mat-icon class="mat-icon mr-4">error_outline</mat-icon>
-          <span>{{note}}</span>
-        </p>
+      <div class="flex flex-column gap-4">
+        <ng-container *ngFor="let note of helpCenterGuide?.guideNotes">
+          <div class="flex w-full gap-3">
+            <div><mat-icon class="mat-icon mr-4">error_outline</mat-icon></div>
+            <div>{{note}}</div>
+          </div>
+        </ng-container>
       </div>
       <div class="pb-3">
         <div class="helpCenterDemo flex justify-end section-2">

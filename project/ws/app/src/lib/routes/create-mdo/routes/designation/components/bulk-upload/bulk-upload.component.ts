@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core'
+import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, Output } from '@angular/core'
 
 import { HttpErrorResponse } from '@angular/common/http'
 import { ActivatedRoute } from '@angular/router'
@@ -14,6 +14,7 @@ import { UsersService } from '../../../../services/users.service'
 import { VerifyOtpComponent } from '../../../../../home/components/verify-otp/verify-otp.component'
 import { FileService } from '../../services/upload.service'
 import { FileProgressComponent } from '../../../../../home/components/file-progress/file-progress.component'
+import { DesignationsService } from '../../services/designations.service'
 
 @Component({
   selector: 'ws-app-bulk-upload',
@@ -21,6 +22,7 @@ import { FileProgressComponent } from '../../../../../home/components/file-progr
   styleUrls: ['./bulk-upload.component.scss'],
 })
 export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
+  @Output() closeComponent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   lastUploadList: IBulkUploadDesignationList[] = []
   private destroySubject$ = new Subject()
@@ -35,6 +37,10 @@ export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
   public fileType: any
   fileSelected!: any
   userProfile: any
+  userEmailPhone = {
+    email: '',
+    mobile: ''
+  }
   fileUploadDialogInstance: any
   bulkUploadConfig: any
 
@@ -42,6 +48,7 @@ export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
   startIndex = 0
   lastIndex: any
   pageSize = 0
+  orgId = ''
 
   constructor(
     private fileService: FileService,
@@ -49,21 +56,36 @@ export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
     public dialog: MatDialog,
     private usersService: UsersService,
     private activateRoute: ActivatedRoute,
-
+    private designationsService: DesignationsService
   ) {
     this.configSvc = this.activateRoute.snapshot.data['configService']
     this.rootOrgId = _.get(this.configSvc, 'userProfile.rootOrgId')
     this.userProfile = _.get(this.configSvc, 'userProfileV2')
-    this.bulkUploadFrameworkId = _.get(this.configSvc, 'orgReadData.frameworkid')
 
   }
 
   ngOnInit() {
+    this.getUserDetails()
+    this.orgId = _.get(this.activateRoute, 'snapshot.queryParams.roleId', '')
     this.getBulkStatusList()
     this.activateRoute.data.subscribe(data => {
       this.bulkUploadConfig = data.pageData.data.bulkUploadConfig
       this.pageSize = this.bulkUploadConfig.pageSize
       this.sizeOptions = this.bulkUploadConfig.pageSizeOptions
+    })
+    this.bulkUploadFrameworkId = this.designationsService.frameWorkInfo ? this.designationsService.frameWorkInfo.code : this.bulkUploadFrameworkId
+  }
+
+  getUserDetails() {
+    this.usersService.getUserDetails(this.userProfile.userId).subscribe({
+      next: (result) => {
+        if (result) {
+          this.userEmailPhone = {
+            email: _.get(result, 'result.response.profileDetails.personalDetails.primaryEmail', this.userProfile.email),
+            mobile: _.get(result, 'result.response.profileDetails.personalDetails.mobile', this.userProfile.mobile)
+          }
+        }
+      }
     })
   }
 
@@ -79,7 +101,8 @@ export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getBulkStatusList(): void {
-    this.fileService.getBulkDesignationUploadData(this.rootOrgId)
+    const orgId = this.orgId ? this.orgId : this.rootOrgId
+    this.fileService.getBulkDesignationUploadData(orgId)
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((res: any) => {
         this.lastUploadList = res.result.content.sort((a: IBulkUploadDesignationList, b: IBulkUploadDesignationList) =>
@@ -115,11 +138,11 @@ export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   sendOTP(): void {
-    this.generateAndVerifyOTP(this.userProfile.email ? 'email' : 'phone')
+    this.generateAndVerifyOTP(this.userEmailPhone.email ? 'email' : 'phone')
   }
 
   generateAndVerifyOTP(contactType: string, resendFlag?: string): void {
-    const postValue = contactType === 'email' ? this.userProfile.email : this.userProfile.mobile
+    const postValue = contactType === 'email' ? this.userEmailPhone.email : this.userEmailPhone.mobile
     this.usersService.sendOtp(postValue, contactType)
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((_res: any) => {
@@ -144,7 +167,7 @@ export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
       this.fileType = file.type
       this.fileSelected = file
       if (this.fileService.validateExcelFile(this.fileType)) {
-        this.verifyOTP(this.userProfile.email ? 'email' : 'phone')
+        this.verifyOTP(this.userEmailPhone.email ? 'email' : 'phone')
         // this.showFileUploadProgress()
         // this.uploadCSVFile()
       } else {
@@ -155,7 +178,7 @@ export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
 
   verifyOTP(contactType: string): void {
     const dialogRef = this.dialog.open(VerifyOtpComponent, {
-      data: { type: contactType, email: this.userProfile.email, mobile: this.userProfile.mobile },
+      data: { type: contactType, email: this.userEmailPhone.email, mobile: this.userEmailPhone.mobile },
       disableClose: false,
       panelClass: 'common-modal',
     })
@@ -175,7 +198,7 @@ export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.fileSelected) {
         const formData: FormData = new FormData()
         formData.append('file', this.fileSelected)
-        this.fileService.bulkUploadDesignation(this.fileName, formData, this.bulkUploadFrameworkId)
+        this.fileService.bulkUploadDesignation(this.fileName, formData, this.bulkUploadFrameworkId, this.orgId)
           .pipe(takeUntil(this.destroySubject$))
           .subscribe((_res: any) => {
             this.fileUploadDialogInstance.close()
@@ -187,6 +210,7 @@ export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
             // tslint:disable-next-line
           }, (_err: HttpErrorResponse) => {
             if (!_err.ok) {
+              this.fileUploadDialogInstance.close()
               this.matSnackBar.open('Uploading CSV file failed due to some error, please try again later!')
             }
           })
@@ -200,6 +224,10 @@ export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
     this.pageSize = _event.pageSize
     this.startIndex = (_event.pageIndex) * _event.pageSize
     this.lastIndex = this.startIndex + _event.pageSize
+  }
+
+  showMyDesignations() {
+    this.closeComponent.emit(true)
   }
 
   ngOnDestroy(): void {

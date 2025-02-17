@@ -19,6 +19,10 @@ import { BulkUploadComponent } from './components/bulk-upload/bulk-upload.compon
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip'
 import { ConfigResolveService } from '../../../home/resolvers/config-resolver.service'
 import { ImportDesignationComponent } from './components/import-designation/import-designation.component'
+import { FileService } from './services/upload.service'
+import { OtpService } from './services/otp.service'
+import { VerifyOtpComponent } from '../../../home/components/verify-otp/verify-otp.component'
+import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio'
 const routes: Routes = [
   {
     path: '',
@@ -72,6 +76,7 @@ const routes: Routes = [
     DesignationsComponent,
     ImportDesignationComponent,
     BulkUploadComponent,
+    VerifyOtpComponent
   ],
   imports: [
     CommonModule,
@@ -91,6 +96,7 @@ const routes: Routes = [
     MatDialogModule,
     PipeOrderByModule,
     MatTooltipModule,
+    MatRadioModule
   ],
 
   exports: [
@@ -99,5 +105,9 @@ const routes: Routes = [
     ImportDesignationComponent,
     BulkUploadComponent,
   ],
+  providers: [
+    FileService,
+    OtpService
+  ]
 })
 export class DesignationModule { }

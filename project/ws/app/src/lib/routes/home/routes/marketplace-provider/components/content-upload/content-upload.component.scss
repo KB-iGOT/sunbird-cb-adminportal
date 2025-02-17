@@ -73,3 +73,15 @@
   display: none;
 }
 
+.margin-0 {
+  margin: 0px !important;
+}
+
+.accoridan-description {
+  font: 700 20px Lato;
+}
+
+:host ::ng-deep .mat-tab-body-content {
+  padding: 2px;
+  height: auto;
+}

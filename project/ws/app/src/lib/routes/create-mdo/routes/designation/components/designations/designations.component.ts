@@ -39,8 +39,9 @@ export class DesignationsComponent implements OnInit {
     isMdoLeader: boolean
   }[] = []
   orgId = ''
+  orgName = ''
   showTopSection = false
-  isImportDesignation = false
+  designationMaster = 'desigantion master'
   constructor(
     private designationsService: DesignationsService,
     private dialog: MatDialog,
@@ -61,11 +62,14 @@ export class DesignationsComponent implements OnInit {
   }
 
   initializeDefaultValues() {
-    this.configSvc = this.activateRoute.snapshot.data['configService']
-    this.designationsService.setUserProfile(_.get(this.configSvc, 'userProfileV2'))
-    // this.orgId = _.get(this.configSvc, 'userProfile.rootOrgId')
-    this.orgId = this.activateRoute.snapshot.params.department
-    this.designationConfig = this.activateRoute.snapshot.data['pageData'].data
+    if (this.activateRoute.snapshot) {
+      this.configSvc = this.activateRoute.snapshot.data['configService']
+      this.designationsService.setUserProfile(_.get(this.configSvc, 'userProfileV2'))
+      // this.orgId = _.get(this.configSvc, 'userProfile.rootOrgId')
+      this.orgId = this.activateRoute.snapshot.params.department
+      this.designationConfig = this.activateRoute.snapshot.data['pageData'].data
+      this.orgName = _.get(this.activateRoute, 'snapshot.queryParams.orgName')
+    }
 
     this.actionMenuItem = [
       // {
@@ -115,17 +119,16 @@ export class DesignationsComponent implements OnInit {
         this.createFreamwork()
       }
       if (this.goToImportMaster) {
-        this.isImportDesignation = true
+        this.designationMaster = 'import designations'
       }
 
     })
-    // this.getFrameworkInfo('0140788510336040962_odcs')
   }
 
   createFreamwork() {
     this.showCreateLoader = true
     this.loaderMsg = this.designationConfig.frameworkCreationMSg
-    const departmentName = _.get(this.configSvc, 'userProfile.departmentName')
+    const departmentName = this.orgName ? this.orgName : _.get(this.configSvc, 'userProfile.departmentName')
     const masterFrameWorkName = this.environment.ODCSMasterFramework
     this.designationsService.createFrameWork(masterFrameWorkName, this.orgId, departmentName).subscribe((res: any) => {
       if (_.get(res, 'result.framework')) {
@@ -354,8 +357,13 @@ export class DesignationsComponent implements OnInit {
 
   //#endregion
   removeImportDesignationComp(flag: boolean): void {
-    this.isImportDesignation = flag
+    this.designationMaster = flag ? 'import designations' : 'desigantion master'
     this.goToImportMaster = false
+    this.getRoutesData()
+  }
+
+  showDesignationMaster(flag: boolean): void {
+    this.designationMaster = flag ? 'desigantion master' : 'bulk upload'
     this.getRoutesData()
   }
 }

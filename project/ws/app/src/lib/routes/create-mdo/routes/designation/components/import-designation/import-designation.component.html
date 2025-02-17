@@ -5,7 +5,7 @@
       <div class="mat-h2 header-text">Import from iGOT master</div>
     </div>
 
-    <div class="flex gap-5">
+    <div class="flex gap-3">
       <button mat-flat-button (click)="navigateToMyDesignations()" class="mat-btn-outline">
         Cancel</button>
       <button [disabled]="selectedDesignationsList.length === 0"
@@ -38,7 +38,7 @@
                     <span class="color-60">{{item?.designation | titlecase}}</span>
                   </div>
                   <div class="cross-icon" (click)="removeDesignation([item])">
-                    <img class="cursor-pointer" src="assets/icons/close.svg" />
+                    <img class="cursor-pointer" src="assets/icons/close.svg" alt="close" />
                   </div>
                 </div>
               </ng-container>
@@ -51,15 +51,14 @@
             </div>
           </div>
           <div class="flex items-center">
-            <!-- <button></button> -->
             <a mat-button (click)="removeDesignation(selectedDesignationsList)" class="clearAll">Clear all</a>
           </div>
         </div>
       </ng-container>
-      <div class="w-full flex flex-4 flex-row designations-card-container flex-wrap gap-5">
+      <div class="w-full flex flex-4 flex-row designations-card-container flex-wrap gap-2">
         <ng-container *ngFor="let designation of igotDesignationsList let i = index">
-          <div class="flex flex-4 custom-user-card items-center justify-center" [ngClass]="{'active-card': (designation?.selected && !designation?.isOrgDesignation),
-              'disableCard': designation?.isOrgDesignation}">
+          <div class="flex flex-4 custom-user-card items-center" [ngClass]="{'active-card': (designation?.selected && !designation?.isOrgDesignation),
+              'disableCard': designation?.isOrgDesignation}" (click)="selectDesignation(i)">
             <div class="custom-user-desc">
               <p [matTooltip]="designation?.designation" matTooltipPosition="above">{{designation?.designation |
                 titlecase}}</p>
@@ -67,7 +66,7 @@
 
             <div class="check-action">
               <mat-checkbox [checked]="designation?.selected" [disabled]="designation?.isOrgDesignation"
-                (change)="selectDesignation($event.checked, designation.id)"></mat-checkbox>
+                (click)="$event.preventDefault()"></mat-checkbox>
             </div>
           </div>
         </ng-container>
@@ -87,7 +86,7 @@
         </ng-container>
       </div>
       <div class="flex flex-row justify-center">
-        <mat-paginator [length]="deisgnationsCount" [pageSize]="pageSize" [pageSizeOptions]="[20,30,40]"
+        <mat-paginator [length]="deisgnationsCount" [pageSize]="pageSize" [pageSizeOptions]="[30,40,50]"
           (page)="onChangePage($event)"></mat-paginator>
       </div>
     </ng-container>

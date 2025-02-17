@@ -1,6 +1,6 @@
 .header {
     /* stylelint-enable */
-    font: 700 20px / 30px Lato;
+    font: 600 16px / 30px Lato;
     /* stylelint-disable */
     color: #212529;
   }
@@ -106,7 +106,7 @@
       font: 700 14px Lato;
       /* stylelint-disable */
       color: #212529;
-      width:  180px;
+      width:  50%;
     }
 
     .colun {
@@ -182,6 +182,16 @@
       color: #1D8923;
     }
   }
+}
+
+:host ::ng-deep .transformationEditor {
+  .jsoneditor {
+    height: 400px;
+  }
+}
+
+:host ::ng-deep .has-error .jsoneditor {
+  border: 1px solid red;
 }
 
 :host ::ng-deep .transformation-box {

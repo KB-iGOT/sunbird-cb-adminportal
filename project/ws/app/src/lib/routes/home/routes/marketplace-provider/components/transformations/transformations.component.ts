@@ -9,6 +9,7 @@ import { ConformationPopupComponent } from '../../dialogs/conformation-popup/con
 import { HttpErrorResponse } from '@angular/common/http'
 import * as XLSX from 'xlsx'
 import { environment } from '../../../../../../../../../../../src/environments/environment'
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor'
 
 @Component({
   selector: 'ws-app-transformations',
@@ -20,6 +21,7 @@ export class TransformationsComponent implements OnInit, OnChanges {
   //#region (global varialbles)
   //#region (view chaild, input and output)
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef<HTMLInputElement>
+  @ViewChild('jsonEditor') jsonEditor: JsonEditorComponent | undefined
 
   @Input() providerDetails?: any
   @Input() transformationType = ''
@@ -35,7 +37,9 @@ export class TransformationsComponent implements OnInit, OnChanges {
   dialogRef: any
 
   //#region (transformation variables)
+  transforamtionType = 'viaForm'
   transforamtionForm!: FormGroup
+  transformationSpecForm!: FormControl
   providerDetalsBeforUpdate: any
   transFormContentKeysAndControls: {
     lable: string,
@@ -47,6 +51,7 @@ export class TransformationsComponent implements OnInit, OnChanges {
   executed = false
   uploadedFileHeadersList: string[] = []
   availableHeadrsList: string[] = []
+  editorOptions = new JsonEditorOptions()
   //#endregion
   //#endregion
 
@@ -84,7 +89,15 @@ export class TransformationsComponent implements OnInit, OnChanges {
   }
 
   initializTransforamtionControls() {
+    this.transformationSpecForm = new FormControl(
+      _.get(this.providerDetalsBeforUpdate, this.transformationType, {}), Validators.required)
     this.transforamtionForm = this.formBuilder.group({})
+    this.editorOptions.mode = 'text'
+    this.editorOptions.mainMenuBar = false
+    this.editorOptions.navigationBar = false
+    this.editorOptions.statusBar = false
+    this.editorOptions.enableSort = false
+    this.editorOptions.enableTransform = false
     this.providerDetalsBeforUpdate['certificateTemplateUrl'] =
       _.get(this.providerDetalsBeforUpdate, 'certificateTemplateUrl', '').replace(' ', '')
     let trasformationJson: any = {}
@@ -162,7 +175,8 @@ export class TransformationsComponent implements OnInit, OnChanges {
     reader.onload = () => {
       const csvData = reader.result
       const csvRecordsArray = (<string>csvData).split(/\r\n|\n/)
-      this.availableHeadrsList = this.getHeaderArray(csvRecordsArray)
+      this.uploadedFileHeadersList = this.getHeaderArray(csvRecordsArray)
+      this.availableHeadrsList = JSON.parse(JSON.stringify(this.uploadedFileHeadersList))
     }
     const that = this.showSnackBar
     reader.onerror = function () {
@@ -189,20 +203,37 @@ export class TransformationsComponent implements OnInit, OnChanges {
     this.providerDetalsBeforUpdate['data']['isActive'] = true
     const hasTransformationAlready = this.providerDetalsBeforUpdate[this.transformationType] ? true : false
     this.transforamtionForm.markAllAsTouched()
-    if (this.transforamtionForm.valid) {
+    this.transformationSpecForm.markAsTouched()
+    let isValidJson = false
+    if (this.transforamtionType === 'viaSpec') {
+      try {
+        const enteredJson = this.jsonEditor!.get()
+        isValidJson = JSON.stringify(enteredJson) !== '{}' ? true : false
+      } catch (err) {
+        isValidJson = false
+      }
+    }
+    if ((this.transforamtionType === 'viaForm' && this.transforamtionForm.valid) ||
+      (this.transforamtionType === 'viaSpec' && this.transformationSpecForm.valid &&
+        JSON.stringify(this.transformationSpecForm.value) !== '{}' && isValidJson)) {
       if (this.transformationType !== 'certificateTemplateUrl') {
-        const trasformContentSpec: any = {} // contains maped transform spec for db
-        const specValues = this.transforamtionForm.value
-        this.transFormContentKeysAndControls.forEach((transFormContent: any) => {
-          trasformContentSpec[specValues[transFormContent.controlName]] = transFormContent.path
-        })
+        if (this.transforamtionType === 'viaForm') {
+          const trasformContentSpec: any = {} // contains maped transform spec for db
+          const specValues = this.transforamtionForm.value
+          this.transFormContentKeysAndControls.forEach((transFormContent: any) => {
+            trasformContentSpec[specValues[transFormContent.controlName]] = transFormContent.path
+          })
 
-        if (hasTransformationAlready) {
-          this.providerDetalsBeforUpdate[this.transformationType][0]['spec'] = trasformContentSpec
+          if (hasTransformationAlready && _.get(this.providerDetalsBeforUpdate, `${this.transformationType}[0].spec`)) {
+            this.providerDetalsBeforUpdate[this.transformationType]['0']['spec'] = trasformContentSpec
+          } else {
+            const trasformContentJson = this.providerConfiguration.trasformContentJson
+            trasformContentJson[0]['spec'] = trasformContentSpec
+            this.providerDetalsBeforUpdate[this.transformationType] = trasformContentJson
+            this.transformationSpecForm.patchValue(trasformContentJson)
+          }
         } else {
-          const trasformContentJson = this.providerConfiguration.trasformContentJson
-          trasformContentJson[0]['spec'] = trasformContentSpec
-          this.providerDetalsBeforUpdate[this.transformationType] = trasformContentJson
+          this.providerDetalsBeforUpdate[this.transformationType] = this.transformationSpecForm.value
         }
       }
       this.marketPlaceSvc.updateProvider(this.providerDetalsBeforUpdate).subscribe({
@@ -229,7 +260,7 @@ export class TransformationsComponent implements OnInit, OnChanges {
       })
 
     } else {
-      const message = 'Please provide all mandatory fields'
+      const message = this.transforamtionType === 'viaForm' ? 'Please provide all mandatory fields' : 'Please provide valid spec json'
       this.showSnackBar(message)
     }
   }
@@ -266,7 +297,7 @@ export class TransformationsComponent implements OnInit, OnChanges {
         header = 'Upload Course Catalog'
         break
       case 'transformProgressJson':
-        header = 'Upload Course Pregress'
+        header = 'Upload Course Progress'
         break
       case 'certificateTemplateUrl':
         header = 'Upload Course Certificate'

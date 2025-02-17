@@ -20,8 +20,35 @@
     margin-bottom: 16px;
   }
 }
+
+.action-button {
+    color: #FFF;
+    background-color: #1B4CA1;
+    border: 1px solid #1B4CA1;
+}
+
 .action-button:disabled,
 .action-button[disabled] {
   opacity: 0.6;
   cursor: auto;
+}
+
+button {
+  padding: 12px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  line-height: 16px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.outline-button {
+    color: #1B4CA1;
+    border: 1px solid #1B4CA1;
+    background-color: #FFF;
+    border-radius: 4px;
+    cursor: pointer;
+    line-height: 16px;
+    font-size: 14px;
+    font-weight: 700;
 }
