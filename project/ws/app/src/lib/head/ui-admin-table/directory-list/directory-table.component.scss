@@ -631,6 +631,7 @@ $title-line-count: 2;
 .search {
   display: flex;
   flex: 1;
+  margin-bottom:16px;
 }
 
 .lsearch {
@@ -655,12 +656,12 @@ $title-line-count: 2;
 }
 
 .sinput {
-  width: 50%;
+  width: 400px;
   border-radius: 9999px;
   border: 1px solid #d5d0d0;
-  padding: 12px 16px;
-  margin-bottom: 10px;
-  margin-top: 10px;
+  padding: 8px 16px;
+  box-sizing: border-box;
+  // margin-bottom: 10px;
   min-height: 20px;
 
   .material-icons {
@@ -671,7 +672,7 @@ $title-line-count: 2;
 
   input {
     border: 0 !important;
-    width: 75%;
+    // width: 75%;
     outline: none !important;
   }
 }
