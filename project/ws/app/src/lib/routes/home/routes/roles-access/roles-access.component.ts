@@ -27,11 +27,12 @@ export class RolesAccessComponent implements OnInit {
   individualRoleCount = true
   userRoles: any = []
   roleType: any = ''
+  filteredRoles: any = []
 
   constructor(private router: Router,
-              private activeRoute: ActivatedRoute,
-              private usersService: UsersService,
-              private roleservice: RolesService
+    private activeRoute: ActivatedRoute,
+    private usersService: UsersService,
+    private roleservice: RolesService
   ) {
     this.getAllKongUsers()
     this.userRoles = _.get(this.activeRoute, 'snapshot.parent.data.configService.unMappedUser.roles')
@@ -78,7 +79,18 @@ export class RolesAccessComponent implements OnInit {
         uniqueRoles.push({ role: allRoles[i], count: 0 })
       }
       this.data = uniqueRoles
+      this.filteredRoles = [...this.data] // Ensure filteredRoles is initialized
     })
+  }
+
+  onRoleSearch(searchQuery: string) {
+    if (searchQuery?.length) {
+      this.filteredRoles = this.data?.filter((role: any) =>
+        role?.role?.toLowerCase().includes(searchQuery?.toLowerCase())
+      )
+    } else {
+      this.filteredRoles = [...this.data] // Reset to full data when search is empty
+    }
   }
 
   fetchIndidualRoleData(rootOrgId: string, rolename: string) {
