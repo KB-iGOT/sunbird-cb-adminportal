@@ -13,7 +13,7 @@
                     <div *ngIf="needAddAdmin">
                         <button mat-raised-button type="button" (click)="onSearchEnter(searchValue)"
                             [ngClass]="{ 'disabled-cls': !moreThanTwoChar }"
-                            class="text-white ws-mat-primary-background text-white margin-left-s custom-btn cstm-height-width">
+                            class="text-white ws-mat-primary-background text-white margin-left-s custom-btn cstm-height-width mat-btn-flat">
                             <span class="text-white">Search</span>
                         </button>
                     </div>
@@ -21,35 +21,36 @@
             </div>
 
             <div>
-                <button mat-raised-button type="button" *ngIf="isReports" class="download-btn margin-right-m"
-                    (click)="downloadUsersReport(departmentName)">
+                <button mat-raised-button type="button" *ngIf="isReports"
+                    class="download-btn margin-right-m mat-btn-flat" (click)="downloadUsersReport(departmentName)">
                     <mat-icon>vertical_align_bottom</mat-icon> Users Report
                 </button>
             </div>
 
             <div>
-                <button mat-raised-button type="button" *ngIf="isReports" class="download-btn margin-right-m"
+                <button mat-raised-button type="button" *ngIf="isReports"
+                    class="download-btn margin-right-m mat-btn-flat"
                     (click)="downloadConsumptionReport(departmentName)">
                     <mat-icon>vertical_align_bottom</mat-icon> Consumption Report
                 </button>
             </div>
             <div *ngIf="!isReports">
                 <button mat-raised-button type="button" *ngIf="needCreateUser"
-                    class="text-white ws-mat-primary-background text-white margin-right-l custom-btn"
+                    class="text-white ws-mat-primary-background text-white margin-right-l custom-btn mat-btn-flat"
                     (click)="gotoCreateUser()">
                     <b class="text-white">Create user</b>
                 </button>
             </div>
             <div style="margin-right: 7px;" *ngIf="!isReports">
                 <button mat-raised-button type="button" *ngIf="needCreatePosition"
-                    class="text-white ws-mat-primary-background text-white margin-right-l"
+                    class="text-white ws-mat-primary-background text-white margin-right-l mat-btn-flat"
                     (click)="gotoCreatePosition()">
                     <b class="text-white">Add new designation</b>
                 </button>
             </div>
             <div *ngIf="!isReports">
                 <button mat-raised-button type="button" *ngIf="needAddAdmin"
-                    class="text-white ws-mat-primary-background text-white margin-right-m custom-btn"
+                    class="text-white ws-mat-primary-background text-white margin-right-m custom-btn mat-btn-flat"
                     (click)="openPopup()">
                     <b class="text-white">Add admin</b>
                 </button>
