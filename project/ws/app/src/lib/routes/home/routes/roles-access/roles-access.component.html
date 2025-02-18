@@ -13,7 +13,7 @@
       <ng-container *ngIf="data?.length > 0 || individualRoleCount">
         <ws-widget-ui-user-table [tableData]="tabledata" [data]="filteredRoles" (eOnRowClick)="onRoleClick($event)"
           [needAddAdmin]="false" [needCreateUser]="false" (actionsClick)="actionsClick($event)"
-          (searchByEnterKey)="onRoleSearch($event)">
+          (searchByEnterKey)="onRoleSearch($event)" [isSurveySearch]="true">
         </ws-widget-ui-user-table>
       </ng-container>
       <ng-container *ngIf="!(data?.length > 0) || !individualRoleCount">

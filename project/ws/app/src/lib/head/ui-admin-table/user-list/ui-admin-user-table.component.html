@@ -10,7 +10,7 @@
                         <input type="Standard" label="" (input)="applyFilter($event.target.value)" placeholder="Search"
                             [(ngModel)]="searchValue" (keydown.enter)="onSearchEnter($event.target.value)">
                     </div>
-                    <div>
+                    <div *ngIf="isSurveySearch">
                         <button mat-raised-button type="button" (click)="onSearchEnter(searchValue)"
                             [ngClass]="{ 'disabled-cls': !moreThanTwoChar }"
                             class="text-white ws-mat-primary-background text-white margin-left-s cstm-height-width mat-btn-flat">

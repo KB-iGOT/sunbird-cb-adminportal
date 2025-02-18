@@ -37,6 +37,7 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
   @Input() currentTabData!: string
   @Input() inputDepartmentId?: string | undefined
   @Input() showFirstLastButtonsFlag = false
+  @Input() isSurveySearch?: boolean
   @Output() clicked?: EventEmitter<any>
   @Output() actionsClick?: EventEmitter<any>
   @Output() eOnRowClick = new EventEmitter<any>()
