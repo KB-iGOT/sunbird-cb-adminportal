@@ -660,12 +660,12 @@ $title-line-count: 2;
   padding: 8px 16px;
   box-sizing: border-box;
   // margin-bottom: 10px;
-  min-height: 20px;
+  height: 42px;
 
   .material-icons {
-    vertical-align: bottom;
+    vertical-align: middle;
     font-size: 20px;
-    margin-right: 7px;
+    margin-right: 4px;
   }
 
   input {
