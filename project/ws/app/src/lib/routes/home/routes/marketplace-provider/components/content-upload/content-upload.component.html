@@ -17,54 +17,65 @@
           file.</span>
       </div>
 
-      <div class="flex gap-2">
-        <button mat-button (click)="uploadMode = 'viaCsv'"
-          [ngClass]="uploadMode === 'viaCsv' ? 'mode-selected' : 'mode-unselected'">Via CSV</button>
-        <button mat-button (click)="uploadMode = 'viaApi'"
-          [ngClass]="uploadMode === 'viaApi' ? 'mode-selected' : 'mode-unselected'">Via API</button>
-      </div>
       <ng-container *ngIf="!delayTabLoad">
         <mat-tab-group [(selectedIndex)]="viaApiTabIndex">
           <mat-tab label="Transform Content">
             <div class="w-full mt-4">
-              <ng-container *ngIf="uploadMode === 'viaCsv'; else viaApiContent">
-                <ws-app-transformations [providerDetails]="providerDetails" [transformationType]="'trasformContentJson'"
-                  (loadProviderDetails)="sendDetailsUpdateEvent()" (loadTablesData)="getTablesData()">
-                </ws-app-transformations>
-              </ng-container>
-              <ng-template #viaApiContent>
-                <ws-app-via-api [providerDetails]="providerDetails" [viaApiTabIndex]="viaApiTabIndex" [tabIndex]="0"
-                  (loadProviderDetails)="sendDetailsUpdateEvent()"></ws-app-via-api>
-              </ng-template>
+              <mat-accordion class="flex gap-6 flex-col">
+                <mat-expansion-panel class="margin-0" (opened)="openedTab = 'trasformContentJson'"
+                  (closed)="openedTab = ''">
+                  <mat-expansion-panel-header>
+                    <mat-panel-description class="accoridan-description"> Via CSV
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <ws-app-transformations [providerDetails]="providerDetails"
+                    [transformationType]="'trasformContentJson'" (loadProviderDetails)="sendDetailsUpdateEvent()"
+                    (loadTablesData)="getTablesData()">
+                  </ws-app-transformations>
+                </mat-expansion-panel>
+
+                <mat-expansion-panel class="margin-0" (opened)="openedTab = 'transformContentViaApi'">
+                  <mat-expansion-panel-header>
+                    <mat-panel-description class="accoridan-description"> Via API
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <ws-app-via-api [providerDetails]="providerDetails" [viaApiTabIndex]="viaApiTabIndex" [tabIndex]="0"
+                    (loadProviderDetails)="sendDetailsUpdateEvent()"
+                    transformationType="transformContentViaApi"></ws-app-via-api>
+                </mat-expansion-panel>
+              </mat-accordion>
             </div>
           </mat-tab>
           <mat-tab label="Transform Progress">
             <div class="w-full mt-4">
-              <!-- <ng-container *ngIf="uploadMode === 'viaCsv'; else viaApiProgress"> -->
-              <ws-app-transformations [providerDetails]="providerDetails" [transformationType]="'transformProgressJson'"
-                (loadProviderDetails)="sendDetailsUpdateEvent()" (loadTablesData)="getTablesData()">
-              </ws-app-transformations>
-
-              <!-- </ng-container>
-              <ng-template #viaApiProgress>
-                <ws-app-via-api [providerDetails]="providerDetails" [viaApiTabIndex]="viaApiTabIndex" [tabIndex]="1"
-                  (loadProviderDetails)="sendDetailsUpdateEvent()"></ws-app-via-api>
-              </ng-template> -->
+              <mat-accordion class="flex gap-6 flex-col">
+                <mat-expansion-panel class="margin-0" (opened)="openedTab = 'transformProgressJson'">
+                  <mat-expansion-panel-header>
+                    <mat-panel-description class="accoridan-description"> Via CSV
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <ws-app-transformations [providerDetails]="providerDetails"
+                    [transformationType]="'transformProgressJson'" (loadProviderDetails)="sendDetailsUpdateEvent()"
+                    (loadTablesData)="getTablesData()">
+                  </ws-app-transformations>
+                </mat-expansion-panel>
+              </mat-accordion>
             </div>
           </mat-tab>
           <mat-tab label="Transform Certificate">
             <div class="w-full mt-4">
-              <!-- <ng-container *ngIf="uploadMode === 'viaCsv'; else viaApiCertificate"> -->
-              <ws-app-transformations [providerDetails]="providerDetails"
-                [transformationType]="'certificateTemplateUrl'" (loadProviderDetails)="sendDetailsUpdateEvent()"
-                (loadTablesData)="getTablesData()">
-              </ws-app-transformations>
-
-              <!-- </ng-container>
-              <ng-template #viaApiCertificate>
-                <ws-app-via-api [providerDetails]="providerDetails" [viaApiTabIndex]="viaApiTabIndex" [tabIndex]="2"
-                  (loadProviderDetails)="sendDetailsUpdateEvent()"></ws-app-via-api>
-              </ng-template> -->
+              <mat-accordion class="flex gap-6 flex-col">
+                <mat-expansion-panel class="margin-0" (opened)="openedTab = 'certificateTemplateUrl'">
+                  <mat-expansion-panel-header>
+                    <mat-panel-description class="accoridan-description" class="accoridan-description"> Via CSV
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <ws-app-transformations [providerDetails]="providerDetails"
+                    [transformationType]="'certificateTemplateUrl'" (loadProviderDetails)="sendDetailsUpdateEvent()"
+                    (loadTablesData)="getTablesData()">
+                  </ws-app-transformations>
+                </mat-expansion-panel>
+              </mat-accordion>
             </div>
           </mat-tab>
         </mat-tab-group>
@@ -74,7 +85,7 @@
 </mat-card>
 
 <ng-container *ngIf="!delayTabLoad">
-  <mat-tab-group [ngClass]="{'hideTabs': uploadMode === 'viaApi'}">
+  <mat-tab-group [ngClass]="{'hideTabs': openedTab !== 'trasformContentJson'}">
     <mat-tab label="Upload Status">
       <div class="w-full mt-3 flex flex-col">
         <ng-container *ngIf="!showUploadedStatusLoader; else showLoader">

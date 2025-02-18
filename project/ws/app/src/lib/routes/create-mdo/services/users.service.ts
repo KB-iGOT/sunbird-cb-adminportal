@@ -7,6 +7,7 @@ const API_END_POINTS = {
   ALL_USERS_BY_DEPARTMENT: '/apis/protected/v8/portal/spv/department',
   GET_ALL_KONG_USER: '/apis/proxies/v8/user/v1/search',
   SEARCH_USER_TABLE: '/apis/proxies/v8/user/v1/search',
+  USER_READ: '/apis/proxies/v8/api/user/v2/read/',
   SEND_OTP: '/apis/proxies/v8/otp/v1/generate',
   RESEND_OTP: '/apis/proxies/v8/otp/v1/generate',
   VERIFY_OTP: '/apis/proxies/v8/otp/v1/verify',
@@ -45,6 +46,10 @@ export class UsersService {
     }
 
     return this.http.post<any>(`${API_END_POINTS.SEARCH_USER_TABLE}`, reqBody)
+  }
+
+  getUserDetails(userID: string): Observable<any> {
+    return this.http.get<any>(`${API_END_POINTS.USER_READ}${userID}`)
   }
 
 

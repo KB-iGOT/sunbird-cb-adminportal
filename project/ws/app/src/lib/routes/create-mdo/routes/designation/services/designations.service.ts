@@ -52,10 +52,6 @@ export class DesignationsService {
     this.userProfile = profileDetails
   }
 
-  get userProfileDetails() {
-    return this.userProfile
-  }
-
   createFrameWork(frameworkName: string, orgId: string, termName: string) {
     return this.http.get<any>(API_END_POINTS.CREATE_FRAME_WORK(frameworkName, orgId, termName))
   }

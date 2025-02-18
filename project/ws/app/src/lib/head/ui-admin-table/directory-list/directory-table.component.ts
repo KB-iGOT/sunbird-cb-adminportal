@@ -249,7 +249,11 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
   }
 
   onSearchEnter(filterValue: any) {
-    this.searchByEnterKey.emit(filterValue)
+    if (filterValue === '') {
+      this.searchByEnterKey.emit('')
+    } else if (filterValue?.length > 2) {
+      this.searchByEnterKey.emit(filterValue)
+    }
   }
 
   buttonClickAction(event: any) {

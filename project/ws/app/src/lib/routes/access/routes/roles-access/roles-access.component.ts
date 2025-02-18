@@ -22,6 +22,7 @@ export class RolesAccessComponent implements OnInit, AfterViewInit {
   currentDept: any = ''
   rolesContentObject: any = []
   individualRoleCount = true
+  filteredRoles: any = []
   @Output() clickedDepartment = new EventEmitter<string>()
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -93,6 +94,7 @@ export class RolesAccessComponent implements OnInit, AfterViewInit {
         uniqueRoles.push({ role: allRoles[i], count: '0' })
       }
       this.data = uniqueRoles
+      this.filteredRoles = [...this.data]
     })
     // ol code
     // const usersData: any[] = []
@@ -123,6 +125,16 @@ export class RolesAccessComponent implements OnInit, AfterViewInit {
     // }
     // this.data = roleAndAccess
   }
+  onRoleSearch(searchQuery: string) {
+    if (searchQuery?.length) {
+      this.filteredRoles = this.data.filter((role: any) =>
+        role?.role?.toLowerCase().includes(searchQuery?.toLowerCase())
+      )
+    } else {
+      this.filteredRoles = [...this.data] // Reset to full data when search is empty
+    }
+  }
+
   fetchIndidualRoleData(rootOrgId: string, rolename: string) {
     this.usersService.getAllRoleUsers(rootOrgId, rolename).subscribe(data => {
       this.individualRoleCount = true

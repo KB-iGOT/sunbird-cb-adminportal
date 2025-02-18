@@ -56,32 +56,47 @@
       </div>
       <div class="flex flex-col gap-4 transformation-box"
         [ngClass]="{'transformation-required': (!transformationsUpdated && executed)}">
-        <form [formGroup]="transforamtionForm">
-          <div class="flex flex-col gap-2">
-            <ng-container *ngFor="let transFormControl of transFormContentKeysAndControls">
-              <div class="flex gap-4 items-center">
-                <span class="lable">{{transFormControl.lable}}</span>
-                <span class="colun">:</span>
-                <mat-form-field appearance="outline" class="w-full"
-                  [matTooltip]="availableHeadrsList.length ? null : 'Please upload file'">
-                  <mat-select formControlName="{{transFormControl.controlName}}" (selectionChange)="onSelectChange()"
-                    [placeholder]=transFormControl.lable>
-                    <ng-container *ngFor="let header of availableHeadrsList">
-                      <mat-option [value]="header">
-                        {{header}}
+        <mat-radio-group [(ngModel)]="transforamtionType" class="flex gap-4 mb-4">
+          <mat-radio-button value="viaForm">Map Form</mat-radio-button>
+          <mat-radio-button value="viaSpec">Spec</mat-radio-button>
+        </mat-radio-group>
+        <ng-container *ngIf="transforamtionType === 'viaForm'; else specForm">
+          <form [formGroup]="transforamtionForm">
+            <div class="flex flex-col gap-2">
+              <ng-container *ngFor="let transFormControl of transFormContentKeysAndControls">
+                <div class="flex gap-4 items-center">
+                  <mat-form-field appearance="outline" class="w-full"
+                    [matTooltip]="availableHeadrsList.length ? null : 'Please upload file'">
+                    <mat-select formControlName="{{transFormControl.controlName}}" (selectionChange)="onSelectChange()"
+                      [placeholder]=transFormControl.lable>
+                      <ng-container *ngFor="let header of availableHeadrsList">
+                        <mat-option [value]="header">
+                          {{header}}
+                        </mat-option>
+                      </ng-container>
+                      <ng-container *ngIf="transforamtionForm.value[transFormControl.controlName]">
+                        <mat-option [value]="transforamtionForm.value[transFormControl.controlName]">
+                          {{transforamtionForm.value[transFormControl.controlName]}}
+                        </mat-option>
+                      </ng-container>
+                      <mat-option value="">
+                        select
                       </mat-option>
-                    </ng-container>
-                    <ng-container *ngIf="transforamtionForm.value[transFormControl.controlName]">
-                      <mat-option [value]="transforamtionForm.value[transFormControl.controlName]">
-                        {{transforamtionForm.value[transFormControl.controlName]}}
-                      </mat-option>
-                    </ng-container>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-            </ng-container>
-          </div>
-        </form>
+                    </mat-select>
+                  </mat-form-field>
+                  <span class="colun">:</span>
+                  <span class="lable">{{transFormControl.lable}}</span>
+                </div>
+              </ng-container>
+            </div>
+          </form>
+        </ng-container>
+        <ng-template #specForm>
+          <json-editor #jsonEditor [options]="editorOptions" [formControl]="transformationSpecForm"
+            class="transformationEditor"
+            [ngClass]="{'has-error': transformationSpecForm.invalid && transformationSpecForm.touched}">
+          </json-editor>
+        </ng-template>
         <div class="flex w-full justify-end mt-4">
           <button mat-button class="save-properties" (click)="upDateTransforamtionDetails()">
             {{getUpdateBtnText}}</button>

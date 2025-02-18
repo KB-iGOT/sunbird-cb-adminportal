@@ -197,7 +197,7 @@ export class ProviderDetailsComponent implements OnInit, OnChanges {
           lastModified: Date.now(),
         })
       }
-    },            'image/png')
+    }, 'image/png')
 
     this.imageUrl = canvas.toDataURL('image/png')
   }
@@ -316,9 +316,11 @@ export class ProviderDetailsComponent implements OnInit, OnChanges {
         contentPartnerName: formDetails.contentPartnerName,
         providerTips: formDetails.providerTips,
         link: this.thumbNailUrl,
-        documentUrl: this.uploadedPdfUrl,
-        documentUploadedDate: this.fileUploadedDate,
         partnerCode: formDetails.partnerCode.toUpperCase(),
+      }
+      if (this.uploadedPdfUrl) {
+        formBody['documentUrl'] = this.uploadedPdfUrl
+        formBody['documentUploadedDate'] = this.fileUploadedDate
       }
 
       this.marketPlaceSvc.createProvider(formBody).subscribe({
@@ -330,12 +332,15 @@ export class ProviderDetailsComponent implements OnInit, OnChanges {
               this.showSnackBar(successMsg)
               const providerId = _.get(responce, 'result.id')
               this.router.navigate([`/app/home/marketplace-providers/onboard-partner/${providerId}`])
-            },         1000)
+            }, 1000)
           }
         },
         error: (error: HttpErrorResponse) => {
           this.loaderService.changeLoad.next(false)
-          const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
+          let errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
+          if (errmsg.includes('Validation error(s): \n$.websiteUrl:')) {
+            errmsg = 'Please provide a valid URL for the website'
+          }
           this.showSnackBar(errmsg)
         },
       })
@@ -353,8 +358,13 @@ export class ProviderDetailsComponent implements OnInit, OnChanges {
       this.providerDetalsBeforUpdate['data']['contentPartnerName'] = formDetails.contentPartnerName
       this.providerDetalsBeforUpdate['data']['providerTips'] = formDetails.providerTips
       this.providerDetalsBeforUpdate['data']['link'] = this.thumbNailUrl
-      this.providerDetalsBeforUpdate['data']['documentUrl'] = this.uploadedPdfUrl
-      this.providerDetalsBeforUpdate['data']['documentUploadedDate'] = this.fileUploadedDate
+      if (this.uploadedPdfUrl) {
+        this.providerDetalsBeforUpdate['data']['documentUrl'] = this.uploadedPdfUrl
+        this.providerDetalsBeforUpdate['data']['documentUploadedDate'] = this.fileUploadedDate
+      } else {
+        delete this.providerDetalsBeforUpdate['data']['documentUrl']
+        delete this.providerDetalsBeforUpdate['data']['documentUploadedDate']
+      }
 
       this.marketPlaceSvc.updateProvider(this.providerDetalsBeforUpdate).subscribe({
         next: (responce: any) => {
@@ -364,12 +374,15 @@ export class ProviderDetailsComponent implements OnInit, OnChanges {
               const successMsg = 'Provider details updated successfully.'
               this.showSnackBar(successMsg)
               this.sendDetailsUpdateEvent()
-            },         1000)
+            }, 1000)
           }
         },
         error: (error: HttpErrorResponse) => {
           this.loaderService.changeLoad.next(false)
-          const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
+          let errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
+          if (errmsg.includes('Validation error(s): \n$.websiteUrl:')) {
+            errmsg = 'Please provide a valid URL for the website'
+          }
           this.showSnackBar(errmsg)
         },
       })

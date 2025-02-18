@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core'
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core'
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MarketplaceService } from '../../services/marketplace.service'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import * as _ from 'lodash'
 import { HttpErrorResponse } from '@angular/common/http'
 import { ActivatedRoute } from '@angular/router'
-import { JsonEditorOptions } from 'ang-jsoneditor'
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor'
 
 @Component({
   selector: 'ws-app-via-api',
@@ -14,10 +14,12 @@ import { JsonEditorOptions } from 'ang-jsoneditor'
 })
 export class ViaApiComponent implements OnInit, OnChanges {
   //#region (global varialbles)
+  @ViewChild('jsonEditor') jsonEditor: JsonEditorComponent | undefined
   //#region (view chaild, input and output)
   @Input() providerDetails?: any
   @Input() viaApiTabIndex = 0
   @Input() tabIndex = -1
+  @Input() transformationType = ''
 
   @Output() loadProviderDetails = new EventEmitter<Boolean>()
   //#endregion
@@ -34,7 +36,8 @@ export class ViaApiComponent implements OnInit, OnChanges {
   apiUrlEdited = false
 
   //#region (transformation variables)
-  transforamtionForm!: FormGroup
+  transformationSpecForm!: FormControl
+  transforamtionType = 'viaSpec'
   editorOptions = new JsonEditorOptions()
   transformationsUpdated = false
   providerConfiguration: any
@@ -65,7 +68,7 @@ export class ViaApiComponent implements OnInit, OnChanges {
     this.servicesFormGroup = this.formBuilder.group({
       serviceName: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\] ' !]*$/)]),
       serviceCode: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\] ' !]*$/)]),
-      serviceDescription: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\] ' !]*$/)]),
+      serviceDescription: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,.\-_$/:\[\] ' !]*$/)]),
       isAuthenticated: new FormControl(false),
       strictCache: new FormControl(false),
       strictCacheTimeInMinutes: new FormControl()
@@ -113,9 +116,7 @@ export class ViaApiComponent implements OnInit, OnChanges {
     this.editorOptions.enableSort = false
     this.editorOptions.enableTransform = false
 
-    this.transforamtionForm = this.formBuilder.group({
-      transformContent: new FormControl({}, Validators.required)
-    })
+    this.transformationSpecForm = new FormControl({}, Validators.required)
 
     this.paramsFormArray.valueChanges.subscribe((params: any) => {
       if (!this.apiUrlEdited) {
@@ -125,7 +126,10 @@ export class ViaApiComponent implements OnInit, OnChanges {
       }
     })
     this.viaApiFormGroup.controls.apiUrl.valueChanges.subscribe((event: string) => {
-      if (event !== this.displayUrl) {
+      const trimValue = event.replace(' ', '')
+      if (trimValue !== event) {
+        this.viaApiFormGroup.controls.apiUrl.patchValue(trimValue)
+      } else if (event !== this.displayUrl) {
         this.displayUrl = event
         this.apiUrlEdited = true
         this.constructParamsFormArray()
@@ -134,7 +138,7 @@ export class ViaApiComponent implements OnInit, OnChanges {
   }
 
   get actualUrl(): string {
-    const actualUrl = this.actualUrl
+    const actualUrl = this.viaApiFormGroup.controls.apiUrl.value.split('?')[0]
     return actualUrl
   }
 
@@ -219,8 +223,8 @@ export class ViaApiComponent implements OnInit, OnChanges {
         this.patchFormData(responce)
       })
     } else {
-      const transformContent = _.get(this.providerConfiguration, 'transformContentViaApi')
-      this.transforamtionForm.controls.transformContent.patchValue(transformContent)
+      const transformContent = _.get(this.providerConfiguration, this.transformationType)
+      this.transformationSpecForm.patchValue(transformContent)
     }
   }
 
@@ -268,8 +272,8 @@ export class ViaApiComponent implements OnInit, OnChanges {
       this.authenticationFormGroup.controls.rawData.patchValue(authPayload)
     }
 
-    const transformContent = _.get(configurationDetails, 'transformContentViaApi', _.get(this.providerConfiguration, 'transformContentViaApi'))
-    this.transforamtionForm.controls.transformContent.patchValue(transformContent)
+    const transformContent = _.get(this.providerDetails, this.transformationType, _.get(this.providerConfiguration, this.transformationType))
+    this.transformationSpecForm.patchValue(transformContent)
 
   }
 
@@ -320,6 +324,24 @@ export class ViaApiComponent implements OnInit, OnChanges {
     this.servicesFormGroup.controls.strictCacheTimeInMinutes.updateValueAndValidity()
   }
 
+  get getUpdateBtnText(): string {
+    let btnText = ''
+    if (this.transformationType === 'transformContentViaApi') {
+      if (this.providerConfiguration && this.providerConfiguration.transformContentViaApi) {
+        btnText = 'Update Transform Content'
+      } else {
+        btnText = 'Save Transform Content'
+      }
+    } else if (this.transformationType === 'transformProgressViaApi') {
+      if (this.providerConfiguration && this.providerConfiguration.transformProgressViaApi) {
+        btnText = 'Update Transform Progress'
+      } else {
+        btnText = 'Save Transform Progress'
+      }
+    }
+    return btnText
+  }
+
   configure() {
     this.configured = true
     if (this.servicesFormGroup.valid && this.viaApiFormGroup.valid && this.transformationsUpdated) {
@@ -361,7 +383,7 @@ export class ViaApiComponent implements OnInit, OnChanges {
     } else {
       this.servicesFormGroup.markAllAsTouched()
       this.viaApiFormGroup.markAllAsTouched()
-      this.transforamtionForm.markAllAsTouched()
+      this.transformationSpecForm.markAsTouched()
       if (!this.transformationsUpdated) {
         const message = 'Please update transform content'
         this.showSnackBar(message)
@@ -374,6 +396,7 @@ export class ViaApiComponent implements OnInit, OnChanges {
     serviceDetails['serviceCode'] = this.servicesFormGroup.controls.serviceCode.value.toUpperCase()
     const params = this.getParamsAndUrl()
     const isFormData = this.bodyFormGroup.value.tableListFormArray[0].key ? true : false
+    const authPayload = _.get(this.authenticationFormGroup, 'value.rawData', '{}')
     const formBody = {
       isFormData,
       requestMethod: this.viaApiFormGroup.controls.apiType.value,
@@ -391,18 +414,18 @@ export class ViaApiComponent implements OnInit, OnChanges {
       requestPayload: {
         requestMap: isFormData ? this.generateObjectFromForm(this.bodyFormGroup.value.tableListFormArray) : this.bodyFormGroup.value.rawData,
         headerMap: this.generateObjectFromForm(this.headersFormGroup.value.tableListFormArray),
-        urlMap: this.generateObjectFromForm(this.paramsFormGroup.value.tableListFormArray, true),
-        strictCache: serviceDetails.strictCache,
-        strictCacheTimeInMinutes: serviceDetails.strictCacheTimeInMinutes
+        urlMap: this.generateObjectFromForm(this.paramsFormGroup.value.tableListFormArray, true)
       },
-      authPayload: this.authenticationFormGroup.value.rawData
+      authPayload: authPayload ? authPayload : {},
+      strictCache: serviceDetails.strictCache,
+      strictCacheTimeInMinutes: serviceDetails.strictCacheTimeInMinutes
     }
     return formBody
   }
 
   getParamsAndUrl() {
     const parmsAndUrl = {
-      url: `${this.viaApiFormGroup.controls.apiUrl.value.split('?')[0]}`,
+      url: `${this.actualUrl}`,
       urlPlaceholder: '',
     }
     const params = this.paramsFormGroup.value.tableListFormArray
@@ -436,30 +459,36 @@ export class ViaApiComponent implements OnInit, OnChanges {
 
   upDateTransforamtionDetails() {
     this.providerDetails['data']['isActive'] = true
-    const hasTransformationAlready = this.providerDetails['transformContentViaApi'] ? true : false
-    this.transforamtionForm.markAllAsTouched()
-    if (this.transforamtionForm.valid) {
-      this.providerDetails['transformContentViaApi'] = this.transforamtionForm.controls.transformContent.value
-      this.marketPlaceSvc.updateProvider(this.providerDetails).subscribe({
-        next: (responce: any) => {
-          if (responce) {
-            setTimeout(() => {
-              let successMsg = 'Saved Successfully'
-              successMsg = hasTransformationAlready ? 'Transform Content updated successfully.' : 'Transform Content saved successfully.'
-              this.showSnackBar(successMsg)
-              this.transformationsUpdated = true
-              this.loadProviderDetails.emit(true)
-            }, 1000)
-          }
-        },
-        error: (error: HttpErrorResponse) => {
-          const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
-          this.showSnackBar(errmsg)
-        },
-      })
+    const hasTransformationAlready = this.providerDetails[this.transformationType] ? true : false
+    this.transformationSpecForm.markAsTouched()
+    try {
+      this.jsonEditor!.get()
+      if (this.transformationSpecForm.valid && JSON.stringify(this.transformationSpecForm.value) !== '{}') {
+        this.providerDetails[this.transformationType] = this.transformationSpecForm.value
+        this.marketPlaceSvc.updateProvider(this.providerDetails).subscribe({
+          next: (responce: any) => {
+            if (responce) {
+              setTimeout(() => {
+                let successMsg = 'Saved Successfully'
+                successMsg = hasTransformationAlready ? 'Transform Content updated successfully.' : 'Transform Content saved successfully.'
+                this.showSnackBar(successMsg)
+                this.transformationsUpdated = true
+                this.loadProviderDetails.emit(true)
+              }, 1000)
+            }
+          },
+          error: (error: HttpErrorResponse) => {
+            const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
+            this.showSnackBar(errmsg)
+          },
+        })
 
-    } else {
-      const message = 'Please provide all mandatory fields'
+      } else {
+        const message = this.transforamtionType === 'viaForm' ? 'Please provide all mandatory fields' : 'Please provide valid spec json'
+        this.showSnackBar(message)
+      }
+    } catch (err) {
+      const message = 'Please provied valid spec json'
       this.showSnackBar(message)
     }
   }

@@ -61,7 +61,6 @@ export class ContentUploadComponent implements OnInit, OnChanges {
   unPublishedCoursesSearchKey = ''
   unPublishedCoursesTablePaginationDetails: any
 
-  uploadMode = 'viaCsv'
 
   defaultPagination = {
     startIndex: 0,
@@ -73,6 +72,7 @@ export class ContentUploadComponent implements OnInit, OnChanges {
 
   delayTabLoad = true
   viaApiTabIndex = 0
+  openedTab = ''
   //#endregion
 
   //#region (constructor: contains Intialization of TransforamtionControls from routes data)
@@ -383,7 +383,7 @@ export class ContentUploadComponent implements OnInit, OnChanges {
             this.showSnackBar(msg)
             setTimeout(() => {
               this.getUnPublishedCoursesList()
-            },         2000)
+            }, 2000)
           }
         },
         error: (error: HttpErrorResponse) => {

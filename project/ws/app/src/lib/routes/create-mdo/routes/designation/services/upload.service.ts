@@ -17,8 +17,8 @@ const API_ENDPOINTS = {
   // Bulk Upload Designation
   BULK_UPLOAD_SAMPLE_FILE: (frameworkId: string) =>
     `/apis/proxies/v8/designation/v1/orgMapping/sample/${frameworkId}`,
-  BULK_UPLOAD_DESIGNATION: (frameworkId: string) =>
-    `/apis/proxies/v8/designation/v1/orgMapping/bulkUpload/${frameworkId}`,
+  BULK_UPLOAD_DESIGNATION: (frameworkId: string, orgId: string) =>
+    `/apis/proxies/v8/designation/v1/orgMapping/bulkUpload/${orgId}/${frameworkId}`,
   GET_BULK_UPLOAD_DESIGNATION_DATA: (rootOrgId: string) =>
     `/apis/proxies/v8/designation/v1/orgMapping/bulkUpload/progress/details/${rootOrgId}`,
   GET_BULK_UPLOAD_DESIGNATION_STATUS: (filePath: string) =>
@@ -75,7 +75,7 @@ export class FileService {
           fileSaver.saveAs(res.body, filename || 'sample.xlsx')
         }
 
-      },         () => (this.matSnackBar.open('Could not download the file')
+      }, () => (this.matSnackBar.open('Could not download the file')
       ))
   }
 
@@ -149,9 +149,9 @@ export class FileService {
     return API_ENDPOINTS.BULK_UPLOAD_SAMPLE_FILE(frameworkId)
   }
 
-  public bulkUploadDesignation(_fileName: string, fileContent: FormData, frameworkId: string): Observable<any> {
+  public bulkUploadDesignation(_fileName: string, fileContent: FormData, frameworkId: string, orgId: string): Observable<any> {
     this.displayLoader$.next(true)
-    return this.http.post<any>(API_ENDPOINTS.BULK_UPLOAD_DESIGNATION(frameworkId), fileContent)
+    return this.http.post<any>(API_ENDPOINTS.BULK_UPLOAD_DESIGNATION(frameworkId, orgId), fileContent)
       .pipe(finalize(() => this.displayLoader$.next(false)))
   }
 

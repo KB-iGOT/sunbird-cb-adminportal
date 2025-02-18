@@ -34,7 +34,9 @@
 
   .sinput {
     margin-top: 0;
+    /* stylelint-disable */
     font: normal 14px Lato;
+    /* stylelint-enable */
     font-weight: 400;
     width: 700px;
     border-radius: 9999px;
@@ -85,7 +87,9 @@
   color: #1b4ca1 !important;
   font-weight: 700;
   letter-spacing: 0.25px;
+  /* stylelint-disable */
   font-family: 'Lato';
+  /* stylelint-enable */
 }
 
 .master-designations {
@@ -96,27 +100,27 @@
     }
 
     .custom-user-card {
-      width: 360px;
+      width: 324px;
       border: 1px solid rgba(0, 0, 0, 0.16);
       border-radius: 4px;
-      height: 82px;
+      height: 40px;
     }
 
     .disableCard {
       background-color: #d6d6d6;
-      pointer-events: none;
+      cursor: default !important
     }
 
     .custom-user-desc {
       display: flex;
       flex-direction: column;
       padding: 0 16px;
-      width: 230px;
+      width: 260px;
       white-space: nowrap;
       p {
         padding: 0;
         margin: 0;
-        width: 190px;
+        width: 250px;
         overflow: hidden;
         text-overflow: ellipsis;
       }

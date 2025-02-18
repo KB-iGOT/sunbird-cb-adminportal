@@ -313,8 +313,20 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
   }
 
   onSearchEnter(event: any) {
-    this.searchText = event
-    this.searchByEnterKey.emit(event)
+    // this.searchText = event
+    // this.searchByEnterKey.emit(event)
+    if (event === '') {
+      this.searchByEnterKey.emit('')
+    }
+    else if (event?.length > 2) {
+      this.searchByEnterKey.emit(event)
+    }
+    if (event?.target?.value === '') {
+      this.searchByEnterKey.emit('')
+    }
+    else if (event?.target?.value?.length > 2) {
+      this.searchByEnterKey.emit(event?.target?.value)
+    }
   }
 
   downloadUsersReport(value: string) {
