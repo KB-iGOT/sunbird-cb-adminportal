@@ -49,7 +49,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   isReportsPath = false
   userRoles: any
-  allowedCreateRoles = ['DASHBOARD_ADMIN', 'SPV_ADMIN', 'SPV_PUBLISHER']
+  allowedCreateRoles = ['DASHBOARD_ADMIN', 'SPV_ADMIN', 'SPV_PUBLISHER', 'STATE_ADMIN']
   constructor(private usersSvc: UsersService, private router: Router,
     private route: ActivatedRoute,
     private profile: ProfileV2Service,
@@ -136,7 +136,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
       sortState: 'asc',
     }
 
-    if (this.currentDept === 'mdo') {
+    if (this.currentDept === 'organisation') {
       this.tabledata['actions'] = [{ name: 'Edit', label: 'Edit info', optional: true, icon: 'remove_red_eye', type: 'button' }]
     }
 

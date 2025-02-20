@@ -39,9 +39,6 @@ export class DirectoryService {
             isTenant: true,
             status: 1,
           },
-          sort_by: {
-            createdDate: "desc",
-          },
           query: queryText,
           limit: pagination.limit || 20,
           offset: pagination.offset || 0,

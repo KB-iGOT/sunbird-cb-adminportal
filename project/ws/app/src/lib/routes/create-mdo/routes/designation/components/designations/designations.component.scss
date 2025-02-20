@@ -41,7 +41,9 @@
 }
 
 .organisation-lable {
+  /* stylelint-disable */
   font-family: 'lato';
+  /* stylelint-enable */
   font-weight: 700;
   font-size: 14px;
   line-height: 21px;
@@ -54,7 +56,9 @@
 .btn-upload {
   background: #1b4ca1 !important;
   color: white !important;
+  /* stylelint-disable */
   font-family: 'Lato';
+  /* stylelint-enable */
   font-weight: 700;
   font-size: 14px;
   height: 40px;
@@ -76,7 +80,9 @@
 
   .sinput {
     margin-top: 0;
+    /* stylelint-disable */
     font: normal 14px Lato;
+    /* stylelint-enable */
     font-weight: 400;
     width: 390px;
     border-radius: 9999px;
@@ -98,7 +104,9 @@
 .empty-desigantions-text {
   font-size: 14px;
   font-weight: 600;
+  /* stylelint-disable */
   font-family: Lato;
+  /* stylelint-enable */
 }
 
 .download-icon {
