@@ -127,7 +127,7 @@ export class RolesAccessComponent implements OnInit, AfterViewInit {
   }
   onRoleSearch(searchQuery: string) {
     if (searchQuery?.length) {
-      this.filteredRoles = this.data.filter((role: any) =>
+      this.filteredRoles = this.data?.filter((role: any) =>
         role?.role?.toLowerCase().includes(searchQuery?.toLowerCase())
       )
     } else {

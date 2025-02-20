@@ -127,11 +127,11 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
   // }
   applyFilter(filterValue: any) {
 
-    if (filterValue.length === 0) {
+    if (filterValue?.length === 0) {
       this.onSearchEnter('')
       this.filterSubject.next('')
     }
-    if (filterValue.length > 2) {
+    if (filterValue?.length > 2) {
       this.moreThanTwoChar = true
     } else {
       this.moreThanTwoChar = false
