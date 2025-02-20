@@ -12,13 +12,25 @@
     }
 
     .sinput {
-        border-radius: 4px;
-        border: 1px solid #d5d0d0;
-        padding: 15px 36px;
-        /* stylelint-disable */
-        font: 400 14px Lato;
-        /* stylelint-enable */
-    }
+width: 400px;
+  border-radius: 20px;
+  border: 1px solid #d5d0d0;
+  padding: 8px 16px;
+  box-sizing: border-box;
+  // margin-bottom: 10px;
+  height: 42px;
+
+    .material-icons {
+    vertical-align: middle;
+    font-size: 20px;
+    margin-right: 7px;
+  }
+
+  input {
+    border: 0 !important;
+    outline: none !important;
+  }
+}
 }
 
 .filter-section span {
