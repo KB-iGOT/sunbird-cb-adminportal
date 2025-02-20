@@ -169,6 +169,7 @@ input[type=number] {
   .mar{
     margin-left: 30px;
     min-width: 175px;
+    border-radius: 20px;
   }
 
   .radio-toolbar label:hover {
@@ -200,7 +201,7 @@ input[type=number] {
   }
 
   .btn-success {
-    background-color: #0075B7!important;
+    background-color: #1b4ca1!important;
     border-radius: 4px;
     width: 240px;
     box-shadow: none;

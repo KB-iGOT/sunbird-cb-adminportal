@@ -24,6 +24,9 @@ td, th {
 textarea.mat-input-element {
   padding-top: 5px !important;
 }
+.cancle-btn, .add-karmayogi-btn {
+  border-radius: 20px;
+}
 
 .sub_title {
   font-size: 12px;
@@ -75,11 +78,12 @@ textarea.mat-input-element {
 
 .create-btn {
   // width: 130px;
-  background: #0075B7 !important;
+  background: #1b4ca1 !important;
   color: white !important;
   font-family: 'Lato', sans-serif;
   font-weight: 700;
   font-size: 14px;
+  border-radius: 20px;
 }
 .create-btn[disabled] {
   opacity: 0.6;
@@ -390,7 +394,7 @@ input[type=number] {
   }
 
   .btn-success {
-    background-color: #0075B7!important;
+    background-color: #1b4ca1!important;
     border-radius: 4px;
     width: 240px;
     box-shadow: none;
