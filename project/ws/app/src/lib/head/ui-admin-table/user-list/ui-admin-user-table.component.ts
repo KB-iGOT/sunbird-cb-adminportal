@@ -314,7 +314,7 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
   }
 
   onSearchEnter(event: any) {
-    if (event === '' || event.length === 0) {
+    if (event === '' || event?.length === 0) {
       this.searchByEnterKey.emit('')
     }
     else if (event?.length > 2) {
