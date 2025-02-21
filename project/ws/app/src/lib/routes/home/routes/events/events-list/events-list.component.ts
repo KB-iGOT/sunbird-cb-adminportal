@@ -89,6 +89,7 @@ export class EventsListComponent implements OnInit {
         filters: {
           status: ['Live', 'Retired'],
           contentType: 'Event',
+          createdFor: this.departmentID,
         },
         sort_by: {
           lastUpdatedOn: 'desc',
