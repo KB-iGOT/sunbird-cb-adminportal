@@ -2,215 +2,125 @@ import { CommsComponent } from './comms.component'
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
 import { ConfigurationsService } from '@sunbird-cb/utils'
 import { CommsService } from './comms.service'
-import { DatePipe } from '@angular/common'
 import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
-import { of, throwError } from 'rxjs'
+import { DatePipe } from '@angular/common'
+import { of } from 'rxjs'
 
 describe('CommsComponent', () => {
     let component: CommsComponent
-    let mockDialog: jest.Mocked<MatDialog>
-    let mockConfigService: jest.Mocked<ConfigurationsService>
-    let mockCommsService: jest.Mocked<CommsService>
-    let mockDatePipe: jest.Mocked<DatePipe>
-    let mockSnackBar: jest.Mocked<MatSnackBar>
+    let mockDialog: MatDialog
+    let mockConfigSvc: ConfigurationsService
+    let mockCommsService: CommsService
+    let mockSnackBar: MatSnackBar
+    let mockDatePipe: DatePipe
 
     beforeEach(() => {
-        // Create mock services
-        mockDialog = {
-            open: jest.fn()
-        } as any
+        mockDialog = { open: jest.fn() } as any
+        mockConfigSvc = { userProfile: { userId: 'test-user' } } as any
+        mockCommsService = { getCommsContent: jest.fn(), getCommsReportContnet: jest.fn() } as any
+        mockSnackBar = { open: jest.fn() } as any
+        mockDatePipe = { transform: jest.fn().mockReturnValue('02/24/2025') } as any
 
-        mockConfigService = {
-            userProfile: {
-                userId: 'test-user-id'
-            }
-        } as any
-
-        mockCommsService = {
-            getCommsContent: jest.fn(),
-            getCommsReportContnet: jest.fn()
-        } as any
-
-        mockDatePipe = {
-            transform: jest.fn()
-        } as any
-
-        mockSnackBar = {
-            open: jest.fn()
-        } as any
-
-        // Initialize component with mock services
         component = new CommsComponent(
             mockDialog,
-            mockConfigService,
+            mockConfigSvc,
             mockCommsService,
             mockDatePipe,
-            mockSnackBar
+            mockSnackBar,
         )
     })
 
-    it('should create', () => {
+    it('should create the component', () => {
         expect(component).toBeTruthy()
     })
 
-    describe('ngOnInit', () => {
-        beforeEach(() => {
-            mockDatePipe.transform.mockReturnValue('2024-02-24')
-            mockCommsService.getCommsContent.mockReturnValue(of({
-                comms: {
-                    buckets: [
-                        { key: 'bucket1', name: 'Bucket 1', enable: true },
-                        { key: 'bucket2', name: 'Bucket 2', enable: false }
-                    ]
-                }
-            }))
-            mockCommsService.getCommsReportContnet.mockReturnValue(of({
-                bucket1: {
-                    lastModified: '2024-02-24T10:00:00'
-                }
-            }))
-        })
+    it('should initialize component properties on ngOnInit', () => {
+        jest.spyOn(mockCommsService, 'getCommsContent').mockReturnValue(of({ comms: { buckets: [] } }))
+        component.ngOnInit()
 
-        it('should initialize component with correct data', () => {
-            component.ngOnInit()
-
-            expect(component.todayDate).toBeTruthy()
-            expect(component.maxDate).toBeTruthy()
-            expect(component.tabledata).toBeDefined()
-            expect(component.tabledata.columns.length).toBe(2)
-        })
-
-        it('should fetch comms content and report data', () => {
-            component.ngOnInit()
-
-            expect(mockCommsService.getCommsContent).toHaveBeenCalled()
-            expect(mockCommsService.getCommsReportContnet).toHaveBeenCalledWith('2024-02-24')
+        expect(component.currentUser).toBe('test-user')
+        expect(component.todayDate).toBeInstanceOf(Date)
+        expect(component.maxDate).toBeInstanceOf(Date)
+        expect(component.tabledata).toEqual({
+            columns: [
+                { displayName: 'Criteria', key: 'criteria' },
+                { displayName: 'Last updated on', key: 'lastUpdateOn' },
+            ],
+            needCheckBox: false,
+            needHash: false,
+            sortColumn: 'Criteria',
+            sortState: 'asc',
+            needUserMenus: false,
+            actionColumnName: 'Action',
+            actions: [{ icon: '', label: 'Download', name: 'DownloadFile', type: 'Standard', disabled: false }],
         })
     })
 
-    describe('getTableData', () => {
-        beforeEach(() => {
-            component.buckets = [
-                { key: 'bucket1.csv', name: 'Bucket 1', enable: true }
-            ]
-            mockDatePipe.transform
-                .mockReturnValueOnce('24/02/2024, 10:00 AM')
-                .mockReturnValueOnce('2024-02-24')
-        })
+    it('should call getTableData when commsContent is fetched', () => {
+        const mockBuckets = [{ enable: true, key: 'key1', name: 'Bucket 1' }]
+        jest.spyOn(mockCommsService, 'getCommsContent').mockReturnValue(of({ comms: { buckets: mockBuckets } }))
+        jest.spyOn(mockCommsService, 'getCommsReportContnet').mockReturnValue(of({}))
+        const spyGetTableData = jest.spyOn(component, 'getTableData')
 
-        it('should update reportSectionData with correct format', () => {
-            mockCommsService.getCommsReportContnet.mockReturnValue(of({
-                'bucket1.csv': {
-                    lastModified: '2024-02-24T10:00:00'
-                }
-            }))
-
-            component.getTableData('2024-02-24')
-
-            expect(component.displayLoader).toBe(true)
-            setTimeout(() => {
-                expect(component.reportSectionData).toEqual([{
-                    criteria: 'Bucket 1',
-                    lastUpdateOn: '24/02/2024, 10:00 AM',
-                    downloadUrl: '2024-02-24',
-                    bucketKey: 'bucket1.csv'
-                }])
-                expect(component.displayLoader).toBe(false)
-            }, 2000)
-        })
-
-        it('should handle error in getCommsReportContnet', () => {
-            mockCommsService.getCommsReportContnet.mockReturnValue(throwError(() => new Error('Test error')))
-
-            component.getTableData('2024-02-24')
-
-            expect(component.displayLoader).toBe(true)
-            setTimeout(() => {
-                expect(component.displayLoader).toBe(false)
-            }, 0)
-        })
+        component.ngOnInit()
+        expect(spyGetTableData).toHaveBeenCalledWith('2025-02-24') // Date format based on the mock datePipe return value
     })
 
-    describe('downloadFile', () => {
-        it('should call downloadReport when downloadUrl exists', () => {
-            const row = { downloadUrl: '2024-02-24', bucketKey: 'test.csv' }
-            const spy = jest.spyOn(component, 'downloadReport')
+    it('should update table data when getTableData is called', () => {
+        component.buckets = [{ enable: true, key: 'key1', name: 'Bucket 1' }]
+        const mockResponse = { key1: { lastModified: '2025-02-24T10:00:00' } }
+        jest.spyOn(mockCommsService, 'getCommsReportContnet').mockReturnValue(of(mockResponse))
 
-            component.downloadFile({ row })
-
-            expect(spy).toHaveBeenCalledWith(row)
-        })
-
-        it('should show snackbar when downloadUrl does not exist', () => {
-            const row = { downloadUrl: '' }
-
-            component.downloadFile({ row })
-
-            expect(mockSnackBar.open).toHaveBeenCalledWith(
-                'Report is not available.',
-                'X',
-                { duration: 2000 }
-            )
-        })
+        component.getTableData('2025-02-24')
+        expect(component.reportSectionData).toEqual([
+            { criteria: 'Bucket 1', lastUpdateOn: '24/02/2025, 10:00 am', downloadUrl: '2025-02-24', bucketKey: 'key1' },
+        ])
     })
 
-    describe('updateDate', () => {
-        it('should call getTableData with formatted date', () => {
-            const mockEvent = { value: new Date('2024-02-24') }
-            const spy = jest.spyOn(component, 'getTableData')
+    it('should handle error gracefully in getTableData', () => {
+        const consoleLogSpy = jest.spyOn(console, 'log')
+        jest.spyOn(mockCommsService, 'getCommsReportContnet').mockReturnValue(of(new Error('Failed')))
 
-            component.updateDate(mockEvent)
-
-            expect(spy).toHaveBeenCalledWith('2024-02-24')
-        })
+        component.getTableData('2025-02-24')
+        expect(consoleLogSpy).toHaveBeenCalledWith(new Error('Failed'))
     })
 
-    describe('downloadReport', () => {
-        let mockXHR: any
+    it('should call snackBar when downloadFile is invoked without a downloadUrl', () => {
+        const mockEvent = { row: { downloadUrl: '' } }
+        component.downloadFile(mockEvent)
+        expect(mockSnackBar.open).toHaveBeenCalledWith('Report is not available.', 'X', { duration: 2000 })
+    })
 
-        beforeEach(() => {
-            mockXHR = {
-                open: jest.fn(),
-                send: jest.fn(),
-                setRequestHeader: jest.fn(),
-            }
-            global.XMLHttpRequest = jest.fn(() => mockXHR) as any
-            global.window = {
-                location: {
-                    href: ''
-                }
-            } as any
-        })
+    it('should invoke downloadReport when downloadFile is called with a valid downloadUrl', () => {
+        const mockEvent = { row: { downloadUrl: '2025-02-24', bucketKey: 'key1.csv' } }
+        const spyDownloadReport = jest.spyOn(component, 'downloadReport')
+        component.downloadFile(mockEvent)
+        expect(spyDownloadReport).toHaveBeenCalledWith(mockEvent.row)
+    })
 
-        it('should make xhr request with correct url', () => {
-            const row = {
-                bucketKey: 'test.csv',
-                downloadUrl: '2024-02-24'
-            }
+    it('should update table data when updateDate is called', () => {
+        const spyGetTableData = jest.spyOn(component, 'getTableData')
+        component.updateDate({ value: '2025-02-24' })
+        expect(spyGetTableData).toHaveBeenCalledWith('2025-02-24')
+    })
 
-            component.downloadReport(row)
+    it('should download report', () => {
+        const row = { bucketKey: 'key1.csv', downloadUrl: '2025-02-24' }
+        const xhrMock = {
+            open: jest.fn(),
+            send: jest.fn(),
+            onreadystatechange: jest.fn(),
+            readyState: 4,
+            status: 200,
+        }
+        // global.XMLHttpRequest = jest.fn().mockImplementation(() => xhrMock)
 
-            expect(mockXHR.open).toHaveBeenCalledWith(
-                'GET',
-                expect.stringContaining('/storage/v1/spvReport/test/2024-02-24/test.csv')
-            )
-            expect(mockXHR.send).toHaveBeenCalled()
-        })
+        const spyLocationHref = jest.spyOn(window.location, 'href', 'set')
+        component.downloadReport(row)
 
-        it('should update window location on successful response', () => {
-            const row = {
-                bucketKey: 'test.csv',
-                downloadUrl: '2024-02-24'
-            }
-
-            component.downloadReport(row)
-
-            // Simulate successful XHR response
-            mockXHR.readyState = 4
-            mockXHR.status = 200
-            mockXHR.onreadystatechange()
-
-            expect(global.window.location.href).toContain('/storage/v1/spvReport/test/2024-02-24/test.csv')
-        })
+        expect(xhrMock.open).toHaveBeenCalledWith('GET', 'https://your-environment-url/spvReport/key1/2025-02-24/key1.csv')
+        expect(xhrMock.send).toHaveBeenCalled()
+        xhrMock.onreadystatechange()
+        expect(spyLocationHref).toHaveBeenCalledWith('https://your-environment-url/spvReport/key1/2025-02-24/key1.csv')
     })
 })
