@@ -12,7 +12,7 @@
     <ws-widget-ui-user-table *ngIf="currentTab==='users'" [tableData]="tabledata" [data]="data"
       [totalRecords]="totalRecordsCount" [otherInput]="createdDepartment" [needAddAdmin]="true"
       [needCreateUser]="isAllowed(allowedCreateRoles)" (actionsClick)="editUser($event)"
-      (searchByEnterKey)="onEnterkySearch($event)">
+      (searchByEnterKey)="onEnterkySearch($event)" [isSurveySearch]="true">
     </ws-widget-ui-user-table>
 
     <ws-app-roles-access *ngIf="currentTab==='rolesandaccess'" (clickedDepartment)="fClickedDepartment($event)">

@@ -3,8 +3,11 @@
     <ng-container *ngIf="showSearchBox">
       <div class="search">
         <div class=rsearch>
-          <mat-icon class="search-icon">search</mat-icon>
-          <input class="sinput" type="Standard" label="" [formControl]="searchControl" placeholder="Search">
+          <div class="sinput">
+            <mat-icon class="material-icons">search</mat-icon>
+            <input type="Standard" label="" [formControl]="searchControl" placeholder="Search">
+          </div>
+
         </div>
       </div>
     </ng-container>
