@@ -61,14 +61,14 @@
               </div>
             </div>
             <div class=" flex">
-              <div class="margin-right-l">
-                <button mat-stroked-button color="accent" type="button" class="mat-accent-border flex-auto-display"
+              <div class="margin-right-s">
+                <button mat-stroked-button color="accent" type="button" class="mat-accent-border cancle-btn flex-auto-display"
                   (click)="goToList()">
                   <span>Cancel</span>
                 </button>
               </div>
               <div class="">
-                <button mat-button class="create-btn btn-success" type="button" (click)="onSubmit()"
+                <button mat-button class="create-btn btn-success mat-btn-flat" type="button" (click)="onSubmit()"
                   [disabled]="!addSectorForm.valid || disableCreateButton">
                   <span>Save</span>
                 </button>

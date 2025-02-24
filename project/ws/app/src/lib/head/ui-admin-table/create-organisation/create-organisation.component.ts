@@ -44,7 +44,6 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
   uploadedLogoResponse!: IUploadedLogoresponse
   organizationNameList: string[] = []
   ORG_NAME_PATTERN = /^[a-zA-Z0-9 ().,@\-\$\/\\:\[\]!\s]*$/
-  rootOrgId: any
 
   untilDestroyed$ = new Subject<void>();
   isMatcompleteOpened = false
@@ -57,7 +56,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private createMDOService: CreateMDOService,
     private activatedRoute: ActivatedRoute,
-    private loaderService: LoaderService,
+    private loaderService: LoaderService
   ) {
 
     this.addOverflowHidden()
@@ -218,8 +217,6 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
   }
 
   onSubmitCreateOrganization() {
-    const userProfile = _.get(this.activatedRoute, 'snapshot.parent.data.configService.userProfile')
-    this.rootOrgId = userProfile.rootOrgId
     let payload: any = {
       orgName: this.controls['organisationName']?.value || "",
       channel: this.controls['organisationName']?.value || "",
@@ -230,10 +227,8 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       logo: this.uploadedLogoResponse?.qrcodepath || "",
       description: this.controls['description']?.value || "",
       parentMapId: "",
-      sbRootOrgId: this.rootOrgId
-
     }
-    // if (this.heirarchyObject && this.heirarchyObject.sbRootOrgId) {
+    // if (this.heirarchyObject.sbRootOrgId) {
     //   payload['sbRootOrgId'] = this.heirarchyObject.sbRootOrgId
     // }
     if (this.controls['category']?.value === 'state') {

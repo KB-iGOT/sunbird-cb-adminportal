@@ -672,20 +672,30 @@ $title-line-count: 2;
   display: flex;
   position: relative;
   flex: 1 1 auto;
+  margin-bottom: 12px;
 }
 
 .sinput {
-  width: 29%;
-  border-radius: 4px;
+width: 400px;
+  border-radius: 20px;
   border: 1px solid #d5d0d0;
-  padding: 9px 9px 9px 35px;
-  margin-bottom: 20px;
-  margin-top: 10px;
-  /* stylelint-disable */
-  font: normal 14px Lato;
-  /* stylelint-enable */
-  font-weight: 400;
+  padding: 8px 16px;
+  box-sizing: border-box;
+  // margin-bottom: 10px;
+  height: 42px;
+
+    .material-icons {
+    vertical-align: middle;
+    font-size: 20px;
+    margin-right: 7px;
+  }
+
+  input {
+    border: 0 !important;
+    outline: none !important;
+  }
 }
+
 
 .searchText {
   display: flex;
@@ -758,7 +768,6 @@ mat-header-row {
 
 .create-btn {
   width: 130px;
-  background: #0075B7 !important;
   color: white !important;
   /* stylelint-disable */
   font-family: 'Lato';

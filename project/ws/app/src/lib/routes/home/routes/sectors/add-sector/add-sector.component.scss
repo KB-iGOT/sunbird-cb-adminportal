@@ -18,12 +18,15 @@
 .flex-child-element:first-child {
   margin-right: 20px;
 }
+.cancle-btn {
+  border-radius: 20px;
+}
 
 
 
 .create-btn {
   // width: 130px;
-  background: #0075B7 !important;
+  background: #1b4ca1 !important;
   color: white !important;
   /* stylelint-disable */
   font-family: 'Lato';
@@ -110,8 +113,7 @@ input[type=number] {
   }
 
   .btn-success {
-    background-color: #0075B7!important;
-    border-radius: 4px;
+    border-radius: 20px;
     box-shadow: none;
     margin-right: 16px;
 
@@ -269,7 +271,7 @@ input.mat-input-element {
   }
 
   &:focus {
-    border: 2px solid #0074b6;
+    border: 2px solid #1b4ca1;
     outline: none;
   }
 
@@ -320,7 +322,7 @@ input.mat-input-element {
 .image-thumb {
   width: 50px;
   height: 50px;
-  border: 3px dotted #0075B7;
+  border: 3px dotted #1b4ca1;
   border-radius: 15px;
   position: relative;
   cursor: pointer;
@@ -328,7 +330,7 @@ input.mat-input-element {
 .camera {
   display: flex;
   padding: 5px;
-  background: #0075B7 !important;
+  background: #1b4ca1 !important;
   border-radius: 15px;
   color: white;
   position: absolute;
@@ -355,7 +357,7 @@ input.mat-input-element {
 
 .sectors-link {
   ::ng-deep.color-80 {
-    color: #0075B7 !important;
+    color: #1b4ca1 !important;
   }
 }
 

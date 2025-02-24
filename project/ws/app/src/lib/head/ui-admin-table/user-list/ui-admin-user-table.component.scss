@@ -636,18 +636,20 @@ $title-line-count: 2;
 .rsearch {
   display: flex;
   flex: 1 1 auto;
+  margin-bottom: 12px;
 
 }
 .w-100{
   width: 100%;
 }
 .sinput {
-  width: 300px;
-  border-radius: 4px;
+ width: 400px;
+  border-radius: 20px;
   border: 1px solid #d5d0d0;
-  padding: 4px 8px 8px;
-  margin-bottom: 20px;
-  min-height: 20px;
+  padding: 8px 16px;
+  box-sizing: border-box;
+  // margin-bottom: 10px;
+  height: 42px;
 
   .material-icons {
     vertical-align: bottom;
@@ -657,7 +659,6 @@ $title-line-count: 2;
 
   input {
     border: 0 !important;
-    width: 84%;
     outline: none !important;
   }
 }
@@ -702,4 +703,12 @@ $title-line-count: 2;
   font-family: "Lato-Regular", sans-serif;
   font-weight: 700;
   font-size: 14px;
+}
+.cstm-height-width {
+  height: 38px;
+}
+.disabled-cls {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
 }
