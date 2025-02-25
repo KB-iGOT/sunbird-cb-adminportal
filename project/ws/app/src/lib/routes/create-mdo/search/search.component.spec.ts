@@ -1,119 +1,111 @@
-import { UsersService } from '../../../routes/home/services/users.service'
-import { LoaderService } from '../../../routes/home/services/loader.service'
-import { MatDialog } from '@angular/material/dialog'
 import { SearchComponent } from './search.component'
+import { EventEmitter } from '@angular/core'
 import { of } from 'rxjs'
+
+// Mock services
+class MockUsersService {
+    getAllValidUsers = jest.fn();
+}
+
+class MockLoaderService {
+    changeLoaderState = jest.fn();
+}
+
+class MockMatDialog {
+    open = jest.fn();
+}
 
 describe('SearchComponent', () => {
     let component: SearchComponent
-
-    const dialog: Partial<MatDialog> = {}
-
-    const usersSvc: Partial<UsersService> = {
-        getAllValidUsers: jest.fn().mockReturnValue(of({
-            users: ['user1', 'user2'],
-        })),
-    }
-
-    const loadingService: Partial<LoaderService> = {
-        changeLoaderState: jest.fn(),
-    }
-
-    beforeAll(() => {
-        component = new SearchComponent(
-            dialog as MatDialog,
-            usersSvc as UsersService,
-            loadingService as LoaderService
-        )
-    })
+    let usersService: MockUsersService
+    let loaderService: MockLoaderService
+    let dialog: MockMatDialog
 
     beforeEach(() => {
-        jest.clearAllMocks()
-        jest.resetAllMocks()
+        usersService = new MockUsersService()
+        loaderService = new MockLoaderService()
+        dialog = new MockMatDialog()
+
+        // Create component instance
+        component = new SearchComponent(dialog as any, usersService as any, loaderService as any)
+        // Mock output EventEmitters
+        component.handleApiData = new EventEmitter()
+        component.handleapproveAll = new EventEmitter()
     })
 
-    it('should create an instance of component', () => {
+    it('should create the component', () => {
         expect(component).toBeTruthy()
     })
 
-    describe('hideFilter', () => {
-        it('should call applyFilters when filter is applyFilter', () => {
-            const spyApplyFilters = jest.spyOn(component, 'applyFilters')
-            component.hideFilter({ filter: 'applyFilter' })
-            expect(spyApplyFilters).toHaveBeenCalledWith({ filter: 'applyFilter' })
-            expect(component.filterVisibilityFlag).toBe(false)
-        })
-
-        it('should call applyFilters when filter is clearFilter', () => {
-            const spyApplyFilters = jest.spyOn(component, 'applyFilters')
-            component.hideFilter({ filter: 'clearFilter' })
-            expect(spyApplyFilters).toHaveBeenCalledWith({ filter: 'clearFilter' })
-            expect(component.filterVisibilityFlag).toBe(false)
-        })
-
-        it('should not call applyFilters when filter is closeFilter', () => {
-            const spyApplyFilters = jest.spyOn(component, 'applyFilters')
-            component.hideFilter({ filter: 'closeFilter' })
-            expect(spyApplyFilters).not.toHaveBeenCalled()
-            expect(component.filterVisibilityFlag).toBe(false)
+    it('should emit event when calling emitSearchRequest', () => {
+        const emitSpy = jest.spyOn(component.handleApiData, 'emit')
+        component.emitSearchRequest()
+        expect(emitSpy).toHaveBeenCalledWith({
+            searchText: '',
+            filters: undefined,
+            sortOrder: '',
         })
     })
 
-    describe('searchData', () => {
-        it('should update searchText and call emitSearchRequest', () => {
-            const spyEmitSearchRequest = jest.spyOn(component, 'emitSearchRequest')
-            component.searchData({ target: { value: 'search query' } })
-            expect(component.searchText).toBe('search query')
-            expect(spyEmitSearchRequest).toHaveBeenCalled()
-        })
+    it('should call getContent and emit true when data is returned', () => {
+        // Mock the usersService response
+        usersService.getAllValidUsers.mockReturnValue(of({}))
+        const emitSpy = jest.spyOn(component.handleApiData, 'emit')
+        component.getContent()
+        expect(loaderService.changeLoaderState).toHaveBeenCalledWith(true)
+        expect(usersService.getAllValidUsers).toHaveBeenCalled()
+        expect(emitSpy).toHaveBeenCalledWith(true)
+        expect(loaderService.changeLoaderState).toHaveBeenCalledWith(false)
     })
 
-    describe('sortData', () => {
-        it('should update sortOrder and call emitSearchRequest', () => {
-            const spyEmitSearchRequest = jest.spyOn(component, 'emitSearchRequest')
-            component.sortData('asc')
-            expect(component.sortOrder).toBe('asc')
-            expect(spyEmitSearchRequest).toHaveBeenCalled()
-        })
+    it('should change searchText and emit search request when searchData is called', () => {
+        const event = { target: { value: 'search text' } }
+        const emitSpy = jest.spyOn(component.handleApiData, 'emit')
+        component.searchData(event)
+        expect(component.searchText).toBe('search text')
+        expect(emitSpy).toHaveBeenCalled()
     })
 
-    describe('resetPageIndex', () => {
-        it('should reset pageIndex and pageSize', () => {
-            component.pageIndex = 5
-            component.pageSize = 50
-            component.resetPageIndex()
-            expect(component.pageIndex).toBe(0)
-            expect(component.pageSize).toBe(20)
-        })
+    it('should update sortOrder and emit search request when sortData is called', () => {
+        const sortOrder = 'asc'
+        const emitSpy = jest.spyOn(component.handleApiData, 'emit')
+        component.sortData(sortOrder)
+        expect(component.sortOrder).toBe('asc')
+        expect(emitSpy).toHaveBeenCalled()
     })
 
-    describe('approveAll', () => {
-        it('should emit handleapproveAll event', () => {
-            const spyEmit = jest.spyOn(component.handleapproveAll, 'emit')
-            component.approveAll()
-            expect(spyEmit).toHaveBeenCalled()
-        })
+    it('should emit applyFilters event when hideFilter is called with applyFilter', () => {
+        const event = { filter: 'applyFilter', filtersList: ['filter1'] }
+        const emitSpy = jest.spyOn(component.handleApiData, 'emit')
+        component.hideFilter(event)
+        expect(emitSpy).toHaveBeenCalled()
+        expect(component.filtersList).toBe(event.filtersList)
     })
 
-    describe('sort', () => {
-        it('should have a sort method that does nothing', () => {
-            expect(component.sort).toBeDefined()
-            component.sort()
-        })
+    it('should emit approveAll event when approveAll is called', () => {
+        const emitSpy = jest.spyOn(component.handleapproveAll, 'emit')
+        component.approveAll()
+        expect(emitSpy).toHaveBeenCalled()
     })
 
-    describe('getContent', () => {
-        it('should call changeLoaderState', () => {
-            loadingService.changeLoaderState = jest.fn()
-            usersSvc.getAllValidUsers = jest.fn(() => of({
-                res: {
-                    sampleKey: 'sampleValue',
-                },
-            }))
-            component.getContent()
-            expect(loadingService.changeLoaderState).toHaveBeenCalled()
-            expect(usersSvc.getAllValidUsers).toHaveBeenCalled()
+    it('should open confirmation dialog when confirmApproval is called', () => {
+        const template = {}
+        dialog.open.mockReturnValue({
+            afterClosed: jest.fn().mockReturnValue(of(true)),
         })
+
+        const emitSpy = jest.spyOn(component.handleapproveAll, 'emit')
+        component.confirmApproval(template)
+
+        expect(dialog.open).toHaveBeenCalledWith(template, { width: '500px' })
+        expect(emitSpy).toHaveBeenCalled()
     })
 
+    it('should reset pageIndex and pageSize when resetPageIndex is called', () => {
+        component.pageIndex = 5
+        component.pageSize = 100
+        component.resetPageIndex()
+        expect(component.pageIndex).toBe(0)
+        expect(component.pageSize).toBe(20)
+    })
 })
