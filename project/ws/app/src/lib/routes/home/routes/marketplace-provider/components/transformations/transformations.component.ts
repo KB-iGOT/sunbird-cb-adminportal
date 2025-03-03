@@ -140,14 +140,17 @@ export class TransformationsComponent implements OnInit, OnChanges {
   }
 
   getImageName(url: string): string {
-    const lastSlashIndex = url.lastIndexOf('/')
-    const imageWithPrefix = url.slice(lastSlashIndex + 1)
-    const firstUnderscoreIndex = imageWithPrefix.indexOf('_')
-    if (firstUnderscoreIndex !== -1) {
-      return imageWithPrefix.slice(firstUnderscoreIndex + 1)
-    }
+    if (url) {
+      const lastSlashIndex = url.lastIndexOf('/')
+      const imageWithPrefix = url.slice(lastSlashIndex + 1)
+      const firstUnderscoreIndex = imageWithPrefix.indexOf('_')
+      if (firstUnderscoreIndex !== -1) {
+        return imageWithPrefix.slice(firstUnderscoreIndex + 1)
+      }
 
-    return imageWithPrefix
+      return imageWithPrefix
+    }
+    return url
   }
 
   ngOnInit(): void {
