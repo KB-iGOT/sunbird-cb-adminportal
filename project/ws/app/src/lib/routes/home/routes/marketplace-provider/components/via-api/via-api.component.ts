@@ -30,6 +30,15 @@ export class ViaApiComponent implements OnInit, OnChanges {
   paramsFormGroup!: FormGroup
   bodyFormGroup!: FormGroup
   authenticationFormGroup!: FormGroup
+  //#region (values added dummy)
+  // transforamtionForm!: FormGroup
+  // providerDetalsBeforUpdate: any
+  // transFormContentKeysAndControls: {
+  //   lable: string,
+  //   controlName: string,
+  //   path: string
+  // }[] = []
+  //#endregion
   apiTypesList: any[] = []
   delayTabLoad = true
   displayUrl = ''
@@ -211,6 +220,11 @@ export class ViaApiComponent implements OnInit, OnChanges {
     if (changes.viaApiTabIndex && changes.viaApiTabIndex.currentValue === this.tabIndex) {
       this.delayTabLoad = false
     }
+    // if (changes.providerDetails &&
+    //   changes.providerDetails.currentValue) {
+    //   this.providerDetalsBeforUpdate = JSON.parse(JSON.stringify(changes.providerDetails.currentValue))
+    //   this.initializTransforamtionControls()
+    // }
     if (changes.providerDetails && changes.providerDetails.previousValue === undefined) {
       this.getCoursesConfiguration()
     }
@@ -290,6 +304,39 @@ export class ViaApiComponent implements OnInit, OnChanges {
       }
     }
   }
+
+  //#region (code to remove. added dummy data)
+  // initializTransforamtionControls() {
+  //   this.transformationSpecForm = new FormControl(
+  //     _.get(this.providerDetalsBeforUpdate, this.transformationType, {}), Validators.required)
+  //   this.transforamtionForm = this.formBuilder.group({})
+  //   this.providerDetalsBeforUpdate['certificateTemplateUrl'] =
+  //     _.get(this.providerDetalsBeforUpdate, 'certificateTemplateUrl', '').replace(' ', '')
+  //   let trasformationJson: any = {}
+  //   if (this.transformationType === 'transformContentViaApi') {
+  //     trasformationJson = _.get(this.providerConfiguration, 'trasformContentJson[0].spec')
+  //   } else if (this.transformationType === 'transformProgressJson') {
+  //     trasformationJson = _.get(this.providerConfiguration, 'transformProgressJson[0].spec')
+  //     // } else if (_.get(this.providerDetalsBeforUpdate, 'certificateTemplateUrl')) {
+  //     //   this.contentFileUploaded = true
+  //   }
+
+  //   if (trasformationJson) {
+  //     Object.entries(trasformationJson).forEach(([key, path]) => {
+  //       const transFormContentKeysAndControl: {
+  //         lable: string,
+  //         controlName: string,
+  //         path: string
+  //       } = {
+  //         lable: key,
+  //         controlName: key.replace(' ', ''),
+  //         path: path as string,
+  //       }
+  //       this.transforamtionForm.addControl(key.replace(' ', ''), new FormControl('', Validators.required))
+  //       this.transFormContentKeysAndControls.push(transFormContentKeysAndControl)
+  //     })
+  //   }
+  // }
 
   ngOnInit(): void {
   }

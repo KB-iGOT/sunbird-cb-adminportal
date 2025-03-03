@@ -184,6 +184,10 @@
   }
 }
 
+.certificatePreview {
+  width: 40%;
+}
+
 :host ::ng-deep .transformationEditor {
   .jsoneditor {
     height: 400px;

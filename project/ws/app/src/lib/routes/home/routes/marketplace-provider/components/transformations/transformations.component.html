@@ -33,8 +33,8 @@
         <mat-icon
           *ngIf="!(transformationType === 'certificateTemplateUrl' && providerDetalsBeforUpdate['certificateTemplateUrl'])"
           class="removeFile" matTooltip="Remove File" (click)="removeFile()">close</mat-icon>
-        <div class="flex items-center justify-center">
-          <!-- <img src="/assets/icons/samplePdf.svg" alt="file" class="samplePdf"> -->
+        <div class="flex items-center justify-center gap-10">
+          <img class="certificatePreview" [src]="certificateUrl" alt="">
           <div class="flex flex-column gap-4 pdfDetails">
             <ng-container *ngIf="fileName">
               <span class="pdfName">{{fileName}}</span>
