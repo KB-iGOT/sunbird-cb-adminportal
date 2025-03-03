@@ -73,7 +73,7 @@
           <span class="lable">Website URL</span>
         </div>
         <mat-form-field class="w-full provider-input-form">
-          <input formControlName="websiteUrl" matInput placeholder="Type here" maxlength="70">
+          <input formControlName="websiteUrl" matInput placeholder="Type here" maxlength="1024">
           <mat-error [hidden]="false" aria-label="Event title Error|Explains event title is required "
             *ngIf="getControlValidation('websiteUrl', 'required')">
             Website URL is mandatory
@@ -82,9 +82,9 @@
             *ngIf="getControlValidation('websiteUrl', 'pattern')">
             Please give valid URL
           </mat-error>
-          <mat-hint class="w-full flex justify-between items-center">
-            <span class="input-note">Only ( a-z/A-Z/0-9 . - _ $ / : [ ]' !) characters are supported</span>
-            <span class="input-note">{{getTextLength('websiteUrl')}}/70</span>
+          <mat-hint class="w-full flex justify-end items-center">
+            <!-- <span class="input-note">Please give valid URL</span> -->
+            <span class="input-note">{{getTextLength('websiteUrl')}}/1024</span>
           </mat-hint>
         </mat-form-field>
       </div>

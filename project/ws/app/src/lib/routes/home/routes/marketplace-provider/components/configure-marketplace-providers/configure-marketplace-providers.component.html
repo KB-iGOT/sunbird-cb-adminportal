@@ -37,7 +37,9 @@
                 <div class="flex flex-col w-full gap-10">
                   <div class="flex flex-col gap-4">
                     <span class="instruction-text mb-2">Open & follow these instruction</span>
-                    <span class="instruction-text">1.Please ensure the Certificate file is named correctly.</span>
+                    <ng-container *ngFor="let instruction of instructionsList; let i = index">
+                      <span class="instruction-text">{{i+1}}.{{instruction}} </span>
+                    </ng-container>
                   </div>
                   <ws-app-transformations [providerDetails]="providerDetails"
                     [transformationType]="'certificateTemplateUrl'" (loadProviderDetails)="getProviderDetails(true)"
