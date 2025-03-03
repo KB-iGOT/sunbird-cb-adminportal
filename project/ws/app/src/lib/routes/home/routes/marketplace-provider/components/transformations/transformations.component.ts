@@ -132,7 +132,7 @@ export class TransformationsComponent implements OnInit, OnChanges {
   generatePublicUrl(googleUrl: string): string {
     const urlToReplace = 'https://storage.googleapis.com/igot'
     let url = googleUrl
-    if (googleUrl.startsWith(urlToReplace)) {
+    if (googleUrl && googleUrl.startsWith(urlToReplace)) {
       const urlSplice = googleUrl.slice(urlToReplace.length).split('/')
       url = `${environment.karmYogiPath}/content-store/${urlSplice.slice(1).join('/')}`
     }
