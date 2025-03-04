@@ -74,7 +74,6 @@ export class CreateUserComponent implements OnInit {
       this.updateButton = extraData.updateButton
     }
     this.route.queryParams.subscribe(params => {
-      console.log(params, "params===")
       this.queryParam = params['id']
       this.deptId = params['id']
       this.orgName = params['orgName']
@@ -173,7 +172,6 @@ export class CreateUserComponent implements OnInit {
   getAllDepartmentsHeaderAPI() {
     // const userOrgName = _.get(this.route, 'snapshot.parent.data.configService.unMappedUser.rootOrg')
     const roles: any[] = _.get(this.route, 'snapshot.parent.data.configService.unMappedUser.roles')
-    // console.log(this.isStateAdmin, " this.isStateAdmin=")
     this.directoryService.getDepartmentTitles().subscribe(res => {
       const departmentHeaderArray = JSON.parse(res.result.response.value)
       departmentHeaderArray.orgTypeList.forEach((ele: { name: any, isHidden: any, roles: [] }) => {
