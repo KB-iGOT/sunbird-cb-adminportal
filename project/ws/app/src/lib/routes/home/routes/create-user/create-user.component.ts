@@ -52,6 +52,7 @@ export class CreateUserComponent implements OnInit {
   orgName!: string
   isThisExistingLeader = false
   disableRequired = false
+  stateAdminRoles = ["MDO_LEADER", "PUBIC"]
   // hideRole: any = []
 
   constructor(
@@ -73,6 +74,7 @@ export class CreateUserComponent implements OnInit {
       this.updateButton = extraData.updateButton
     }
     this.route.queryParams.subscribe(params => {
+      console.log(params, "params===")
       this.queryParam = params['id']
       this.deptId = params['id']
       this.orgName = params['orgName']
@@ -154,8 +156,8 @@ export class CreateUserComponent implements OnInit {
 
   ngOnInit() {
     // this.getAllDept()
-    this.getAllDepartmentsHeaderAPI()
 
+    this.getAllDepartmentsHeaderAPI()
     // this.getAllDepartmentsKong()
     // this.getAllDepartmentSubType()
 
@@ -169,6 +171,9 @@ export class CreateUserComponent implements OnInit {
     }
   }
   getAllDepartmentsHeaderAPI() {
+    // const userOrgName = _.get(this.route, 'snapshot.parent.data.configService.unMappedUser.rootOrg')
+    const roles: any[] = _.get(this.route, 'snapshot.parent.data.configService.unMappedUser.roles')
+    // console.log(this.isStateAdmin, " this.isStateAdmin=")
     this.directoryService.getDepartmentTitles().subscribe(res => {
       const departmentHeaderArray = JSON.parse(res.result.response.value)
       departmentHeaderArray.orgTypeList.forEach((ele: { name: any, isHidden: any, roles: [] }) => {
@@ -176,7 +181,11 @@ export class CreateUserComponent implements OnInit {
           this.currentDept = 'CBP'
         }
         if (ele.name === this.currentDept.toUpperCase()) {
-          this.roles = ele.roles
+          if (roles && roles.indexOf('STATE_ADMIN') >= 0) {
+            this.roles = this.stateAdminRoles
+          } else {
+            this.roles = ele.roles
+          }
         }
       })
 
