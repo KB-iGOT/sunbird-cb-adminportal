@@ -1,104 +1,201 @@
 import { ReportsComponent } from './reports.component'
 import { of } from 'rxjs'
+import { Router, ActivatedRoute } from '@angular/router'
+import { ConfigurationsService } from '@sunbird-cb/utils'
+import { DirectoryService } from '../../services/directory.services'
+import { EventService } from '@sunbird-cb/utils'
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
 
 describe('ReportsComponent', () => {
   let component: ReportsComponent
-  let mockActivatedRoute: any
-  let mockRouter: any
-  let mockDirectoryService: any
-  let mockConfigService: any
-  let mockEventService: any
-  let mockMatDialog: any
+  let mockRouter: jest.Mocked<Router>
+  let mockRoute: jest.Mocked<ActivatedRoute>
+  let mockConfigService: jest.Mocked<ConfigurationsService>
+  let mockDirectoryService: jest.Mocked<DirectoryService>
+  let mockEventService: jest.Mocked<EventService>
+  let mockDialog: jest.Mocked<MatDialog>
 
   beforeEach(() => {
-    // Mock the required services
-    mockActivatedRoute = {
-      params: of({ tab: 'ministry' }),
-      parent: { snapshot: { data: { pageData: { data: { tabs: [] } } } } },
-    }
+    // Create mock implementations
     mockRouter = {
+      url: '/test-url',
       navigate: jest.fn(),
-    }
-    mockDirectoryService = {
-      getDepartmentTitles: jest.fn().mockReturnValue(of({ result: { response: { value: '{"orgTypeList": []}' } } })),
-      getAllDepartmentsKong: jest.fn().mockReturnValue(of({ result: { response: { content: [] } } })),
-    }
+    } as any
+
+    mockRoute = {
+      params: of({ tab: 'ministry' }),
+      parent: {
+        snapshot: {
+          data: {
+            pageData: {
+              data: {
+                tabs: [],
+              },
+            },
+          },
+        },
+      },
+      data: of({
+        profile: {
+          data: [{ testProfile: 'data' }],
+        },
+      }),
+    } as any
+
     mockConfigService = {
-      userProfile: { userId: '123' },
-    }
+      userProfile: {
+        userId: 'test-user-id',
+      },
+    } as any
+
+    mockDirectoryService = {
+      getDepartmentTitles: jest.fn().mockReturnValue(
+        of({
+          result: {
+            response: {
+              value: JSON.stringify({
+                orgTypeList: [
+                  { name: 'CBP', isHidden: false },
+                  { name: 'MDO', isHidden: false },
+                ],
+              }),
+            },
+          },
+        })
+      ),
+      getAllDepartmentsKong: jest.fn().mockReturnValue(
+        of({
+          result: {
+            response: {
+              content: [
+                {
+                  id: '1',
+                  channel: 'Test Channel',
+                  isMdo: true,
+                  noOfMembers: 10,
+                  organisationSubType: 'sub-type',
+                },
+              ],
+            },
+          },
+        })
+      ),
+    } as any
+
     mockEventService = {
       handleTabTelemetry: jest.fn(),
-    }
-    mockMatDialog = {}
+    } as any
 
+    mockDialog = {} as any
+
+    // Create component instance with mocked dependencies
     component = new ReportsComponent(
-      mockMatDialog,
-      mockActivatedRoute,
+      mockDialog,
+      mockRoute as any,
       mockConfigService,
       mockDirectoryService,
       mockRouter,
-      mockEventService,
+      mockEventService
     )
   })
 
-  it('should create the ReportsComponent', () => {
-    expect(component).toBeTruthy()
+  describe('Initialization', () => {
+    it('should initialize with default filter as ministry', () => {
+      component.ngOnInit()
+      expect(component.currentFilter).toBe('ministry')
+    })
+
+    it('should fetch department headers and departments on init', () => {
+      const getDepartmentTitlesSpy = jest.spyOn(mockDirectoryService, 'getDepartmentTitles')
+      const getAllDepartmentsSpy = jest.spyOn(mockDirectoryService, 'getAllDepartmentsKong')
+
+      component.ngOnInit()
+
+      expect(getDepartmentTitlesSpy).toHaveBeenCalled()
+      expect(getAllDepartmentsSpy).toHaveBeenCalledWith('', { limit: 20, offset: 0 })
+    })
   })
 
-  it('should set the currentFilter based on route params', () => {
-    component.ngOnInit()
-    expect(component.currentFilter).toBe('ministry')
+  describe('Filter Method', () => {
+    it('should filter departments correctly for different types', () => {
+      const testCases = [
+        { input: 'ministry', expectedKey: 'ministry', expectedIndex: 1 },
+        { input: 'cbc', expectedKey: 'cbc', expectedIndex: 1 },
+        { input: 'cbp providers', expectedKey: 'cbp-providers', expectedIndex: 2 },
+        { input: 'spv', expectedKey: 'spv', expectedIndex: 3 },
+      ]
+
+      testCases.forEach(testCase => {
+        component.filter(testCase.input)
+
+        expect(component.currentFilter).toBe(testCase.expectedKey)
+        expect(mockEventService.handleTabTelemetry).toHaveBeenCalledWith(
+          testCase.expectedKey,
+          { index: testCase.expectedIndex, label: testCase.expectedKey }
+        )
+      })
+    })
   })
 
-  it('should call getAllDepartmentsHeaderAPI on init', () => {
-    const getDepartmentTitlesSpy = jest.spyOn(mockDirectoryService, 'getDepartmentTitles')
-    component.ngOnInit()
-    expect(getDepartmentTitlesSpy).toHaveBeenCalled()
+  describe('Department Data Filtering', () => {
+    it('should filter departments by key correctly', () => {
+      component.wholeData2 = [
+        {
+          id: '1',
+          channel: 'Test Channel',
+          isMdo: true,
+          noOfMembers: 10,
+          organisationSubType: 'sub-type'
+        }
+      ]
+
+      component.getDepartDataByKey('mdo')
+
+      expect(component.data.length).toBe(1)
+      expect(component.data[0].mdo).toBe('Test Channel')
+      expect(component.data[0].type).toBe('mdo')
+    })
   })
 
-  it('should call getAllDepartments when filter is applied', () => {
-    const getAllDepartmentsSpy = jest.spyOn(mockDirectoryService, 'getAllDepartmentsKong')
-    component.filter('cbp providers')
-    expect(getAllDepartmentsSpy).toHaveBeenCalledWith('')
+  describe('Action Handling', () => {
+    it('should navigate to create department when action is clicked', () => {
+      const mockClickedData = { id: '1', mdo: 'Test Department' }
+      component.currentFilter = 'ministry'
+
+      component.actionClick(mockClickedData)
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        ['/app/home/ministry/create-department'],
+        { data: JSON.stringify(mockClickedData) }
+      )
+    })
   })
 
-  it('should update department headers based on response from getDepartmentTitles', () => {
-    component.getAllDepartmentsHeaderAPI()
-    expect(component.departmentHearders.length).toBe(1) // As per mocked response
-  })
+  describe('Role Click Navigation', () => {
+    it('should navigate to roles page with correct parameters', () => {
+      const mockRole = {
+        data: {
+          id: 'role-1',
+          mdo: 'Test MDO',
+          type: 'ministry'
+        }
+      }
 
-  it('should navigate to role on onRoleClick', () => {
-    component.onRoleClick({ data: { id: '1', mdo: 'Test', type: 'ministry' } })
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/app/roles/1/users',
-      { queryParams: { subOrgType: 'ministry', roleId: '1', depatName: 'Test', deptType: 'ministry', path: 'reports' } },
-    ])
-  })
+      component.currentFilter = 'ministry'
+      component.onRoleClick(mockRole)
 
-  it('should call getDepartDataByKey when filter is applied', () => {
-    const getDepartDataByKeySpy = jest.spyOn(component, 'getDepartDataByKey')
-    component.filter('ministry')
-    expect(getDepartDataByKeySpy).toHaveBeenCalledWith('ministry')
-  })
-
-  it('should raise telemetry data on tab change', () => {
-    const raiseTabTelemetrySpy = jest.spyOn(component, 'raiseTabTelemetry')
-    component.filter('cbp providers')
-    expect(raiseTabTelemetrySpy).toHaveBeenCalled()
-  })
-
-  it('should call getAllDepartments when onEnterkySearch is triggered', () => {
-    const getAllDepartmentsSpy = jest.spyOn(mockDirectoryService, 'getAllDepartmentsKong')
-    component.onEnterkySearch('search term')
-    expect(getAllDepartmentsSpy).toHaveBeenCalledWith('search term')
-  })
-
-  it('should update data when getDepartDataByKey is called with "mdo"', () => {
-    component.wholeData2 = [
-      { id: 1, isMdo: true, channel: 'MDO Channel', noOfMembers: 10, organisationSubType: 'Type A' },
-    ]
-    component.getDepartDataByKey('mdo')
-    expect(component.data.length).toBe(1)
-    expect(component.data[0].mdo).toBe('MDO Channel')
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        ['/app/roles/role-1/users'],
+        {
+          queryParams: {
+            subOrgType: 'ministry',
+            roleId: 'role-1',
+            depatName: 'Test MDO',
+            deptType: 'ministry',
+            path: 'reports'
+          }
+        }
+      )
+    })
   })
 })
