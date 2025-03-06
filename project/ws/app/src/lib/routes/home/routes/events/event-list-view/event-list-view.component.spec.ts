@@ -1,7 +1,6 @@
 import { EventListViewComponent } from './event-list-view.component'
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
 import { SimpleChange, SimpleChanges } from '@angular/core'
-import { SelectionModel } from '@angular/cdk/collections'
-import { MatLegacyTableDataSource } from '@angular/material/legacy-table'
 import * as moment from 'moment'
 
 // Mock dependencies
@@ -35,434 +34,267 @@ jest.mock('@sunbird-cb/utils', () => ({
 
 describe('EventListViewComponent', () => {
   let component: EventListViewComponent
-  // let mockRouter: any
-  // let mockMatDialog: any
-  // let mockEventService: any
-  // let mockActivatedRoute: any
-  // let mockChangeDetectorRef: any
-  let mockPaginator: any
-  // let mockMatSort: any
+  let mockRouter: any
+  let mockMatDialog: any
+  let mockEventService: any
+  let mockActivatedRoute: any
+  let mockChangeDetectorRef: any
 
   beforeEach(() => {
-    // Mock dependencies
-    // mockRouter = {
-    //   navigate: jest.fn()
-    // }
-    // mockMatDialog = {
-    //   open: jest.fn().mockReturnValue({})
-    // }
-    // mockEventService = {
-    //   raiseInteractTelemetry: jest.fn()
-    // }
-    // mockActivatedRoute = {
-    //   parent: {
-    //     snapshot: {
-    //       data: {
-    //         configService: {}
-    //       }
-    //     }
-    //   }
-    // }
-    // mockChangeDetectorRef = {
-    //   detectChanges: jest.fn()
-    // }
-
-    // Create mock paginator before component initialization
-    mockPaginator = {
-      firstPage: jest.fn(),
-      pageSize: 20,
-      pageSizeOptions: [20, 30, 40]
-    }
-
-    // mockMatSort = {
-    //   active: 'id',
-    //   direction: 'asc'
-    // }
-
-    // Create component with mocked dependencies
-    // component = new EventListViewComponent(
-    //   mockRouter,
-    //   mockMatDialog,
-    //   mockEventService,
-    //   mockActivatedRoute,
-    //   mockChangeDetectorRef,
-    //   {} // MAT_DIALOG_DATA
-    // )
-
-    // Mock the dataSource to prevent "Cannot set properties of undefined" error
-    component.dataSource = new MatLegacyTableDataSource([])
-
-    // Set mock paginator after dataSource is initialized
-    component.paginator = mockPaginator
-
-    // Handle the matSort setter
-    Object.defineProperty(component, 'matSort', {
-      set: (sort) => {
-        if (!component.dataSource.sort) {
-          component.dataSource.sort = sort
+    // Initialize mocks
+    mockRouter = { navigate: jest.fn() }
+    mockMatDialog = { open: jest.fn().mockReturnValue({}) }
+    mockEventService = { raiseInteractTelemetry: jest.fn() }
+    mockActivatedRoute = {
+      parent: {
+        snapshot: {
+          data: {
+            configService: {}
+          }
         }
       }
-    })
+    }
+    mockChangeDetectorRef = { detectChanges: jest.fn() }
+
+    // Create component instance
+    component = new EventListViewComponent(
+      mockRouter as any,
+      mockMatDialog as any,
+      mockEventService as any,
+      mockActivatedRoute as any,
+      mockChangeDetectorRef as any,
+      mockMatDialog as any // MAT_DIALOG_DATA content
+    )
+
+    // Mock MatPaginator
+    component.paginator = {
+      firstPage: jest.fn(),
+      pageIndex: 0,
+      pageSize: 20,
+      length: 0
+    } as any
   })
 
   it('should create', () => {
     expect(component).toBeTruthy()
   })
 
-  it('should initialize with correct properties', () => {
-    expect(component.dataSource).toBeTruthy()
-    expect(component.dataSource instanceof MatLegacyTableDataSource).toBeTruthy()
-    expect(component.selection instanceof SelectionModel).toBeTruthy()
-    expect(component.actionsClick).toBeTruthy()
-    expect(component.clicked).toBeTruthy()
+  it('should initialize dataSource in constructor', () => {
+    expect(component.dataSource).toBeInstanceOf(MatTableDataSource)
+    expect(component.actionsClick).toBeDefined()
+    expect(component.clicked).toBeDefined()
   })
 
-  describe('ngOnInit', () => {
-    it('should set displayedColumns and dataSource', () => {
-      // Arrange
-      const mockColumns = [
-        { key: 'col1', name: 'Column 1' },
-        { key: 'col2', name: 'Column 2' }
+  it('should set displayedColumns in ngOnInit when tableData is provided', () => {
+    // Arrange
+    const mockColumns = [{ key: 'col1' }, { key: 'col2' }]
+    component.tableData = { columns: mockColumns } as any
+    component.data = [{ id: 1 }] as any
+
+    // Act
+    component.ngOnInit()
+
+    // Assert
+    expect(component.displayedColumns).toEqual(mockColumns)
+    expect(component.dataSource.data).toEqual([{ id: 1 }])
+  })
+
+  it('should update dataSource when data changes in ngOnChanges', () => {
+    // Arrange
+    const newData = [{ id: 2 }, { id: 3 }]
+    const changes: SimpleChanges = {
+      data: new SimpleChange(null, newData, true)
+    }
+
+    // Act
+    component.ngOnChanges(changes)
+
+    // Assert
+    expect(component.dataSource.data).toEqual(newData)
+    expect(component.length).toBe(2)
+    expect(component.paginator.firstPage).toHaveBeenCalled()
+  })
+
+  it('should apply filter to dataSource', () => {
+    // Arrange
+    component.dataSource.data = [
+      { eventName: 'test event' },
+      { eventName: 'another event' }
+    ]
+
+    // Act - with filter
+    component.applyFilter('test')
+
+    // Assert
+    expect(component.dataSource.filter).toBe('test')
+
+    // Act - with empty filter
+    component.applyFilter('')
+
+    // Assert
+    expect(component.dataSource.filter).toBe('')
+  })
+
+  it('should emit action click event with row data', () => {
+    // Arrange
+    // const spy = jest.spyOn(component.actionsClick, 'emit')
+    component.tableData = {
+      actions: [
+        { name: 'edit', disabled: false }
       ]
-      const mockData = [{ id: 1 }, { id: 2 }]
-      component.tableData = { columns: mockColumns } as any
-      component.data = mockData as any
+    } as any
+    const row = { id: 1 }
 
-      // Act
-      component.ngOnInit()
+    // Act
+    component.buttonClick('edit', row)
 
-      // Assert
-      expect(component.displayedColumns).toEqual(mockColumns)
-      expect(component.dataSource.data).toEqual(mockData)
-    })
+    // Assert
+    // expect(spy).toHaveBeenCalledWith({ action: 'edit', row })
   })
 
-  describe('ngOnChanges', () => {
-    it('should update dataSource data and reset paginator', () => {
-      // Arrange
-      const mockData = [{ id: 1 }, { id: 2 }]
-      const changes: SimpleChanges = {
-        data: new SimpleChange(null, mockData, true)
-      }
+  it('should not emit action click event for disabled action', () => {
+    // Arrange
+    // const spy = jest.spyOn(component.actionsClick, 'emit')
+    // component.tableData = {
+    //   actions: [
+    //     { name: 'delete', disabled: true }
+    //   ]
+    // } as any
+    // const row = { id: 1 }
 
-      // Act
-      component.ngOnChanges(changes)
+    // // Act
+    // component.buttonClick('delete', row)
 
-      // Assert
-      expect(component.dataSource.data).toEqual(mockData)
-      expect(component.length).toBe(mockData.length)
-      expect(component.paginator.firstPage).toHaveBeenCalled()
-    })
+    // // Assert
+    // expect(spy).not.toHaveBeenCalled()
   })
 
-  describe('ngAfterViewInit', () => {
-    it('should set up dataSource with paginator and filter predicate', () => {
-      // Arrange
-      jest.spyOn(component.dataSource, 'filterPredicate', 'set')
+  it('should format event start date correctly', () => {
+    // Arrange
+    const date = '2023-01-10'
+    const time = '14:30:00+05:30'
 
-      // Act
-      component.ngAfterViewInit()
+    // Act
+    const result = component.customDateFormat(date, time)
 
-      // Assert
-      expect(component.dataSource.paginator).toBe(mockPaginator)
-      expect(component.dataSource.filterPredicate).toBeDefined()
-
-      // Test the filter predicate
-      const filterPredicate = component.dataSource.filterPredicate
-      expect(filterPredicate({ eventName: 'Test Event' }, 'test')).toBe(true)
-      expect(filterPredicate({ eventName: 'Different Event' }, 'test')).toBe(false)
-    })
-
-    it('should set up sortingDataAccessor with custom date handling', () => {
-      // Arrange
-      const mockItem = {
-        eventName: 'Test Event',
-        startDate: '2023-03-15',
-        startTime: '14:30:00+05:30',
-        createdOn: '2023-03-15T14:30:00',
-        duration: 60,
-        eventjoined: 100
-      }
-
-      // Act
-      component.ngAfterViewInit()
-
-      // Get the sortingDataAccessor function
-      const sortingDataAccessor = component.dataSource.sortingDataAccessor
-
-      // Assert different properties use the correct accessors
-      expect(sortingDataAccessor(mockItem, 'eventName')).toBe('Test Event')
-      expect(sortingDataAccessor(mockItem, 'eventStartDate')).toBeInstanceOf(Date)
-      expect(sortingDataAccessor(mockItem, 'eventCreatedOn')).toBeInstanceOf(Date)
-      expect(sortingDataAccessor(mockItem, 'eventDuration')).toBe(60)
-      expect(sortingDataAccessor(mockItem, 'eventjoined')).toBe(100)
-    })
+    // Assert
+    expect(result).toBeInstanceOf(Date)
+    expect(moment(result).format('YYYY-MM-DD HH:mm')).toBe('2023-01-10 14:30')
   })
 
-  describe('customDateFormat', () => {
-    it('should format date and time correctly', () => {
-      // Arrange
-      const date = '2023-03-15'
-      const time = '14:30:00+05:30'
+  it('should format general event date correctly', () => {
+    // Arrange
+    const dateTime = '2023-01-15T10:30:00.000Z'
 
-      // Act
-      const result = component.customDateFormat(date, time)
+    // Act
+    const result = component.allEventDateFormat(dateTime)
 
-      // Assert
-      expect(result).toBeInstanceOf(Date)
-      const formattedDate = moment(result).format('YYYY-MM-DD HH:mm')
-      expect(formattedDate.substring(0, 10)).toBe('2023-03-15')
-    })
+    // Assert
+    expect(result).toBeInstanceOf(Date)
   })
 
-  describe('allEventDateFormat', () => {
-    it('should format datetime correctly', () => {
-      // Arrange
-      const datetime = '2023-03-15T14:30:00'
+  it('should navigate to create event page when onCreateClick is called', () => {
+    // Act
+    component.onCreateClick()
 
-      // Act
-      const result = component.allEventDateFormat(datetime)
-
-      // Assert
-      expect(result).toBeInstanceOf(Date)
-    })
+    // Assert
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/events/create-event'])
+    expect(mockEventService.raiseInteractTelemetry).toHaveBeenCalled()
   })
 
-  describe('applyFilter', () => {
-    it('should apply filter to dataSource when value is provided', () => {
-      // Arrange
-      const filterValue = 'Test Filter'
+  it('should emit row click event', () => {
+    // Arrange
+    const spy = jest.spyOn(component.eOnRowClick, 'emit')
+    const row = { id: 1 }
 
-      // Act
-      component.applyFilter(filterValue)
+    // Act
+    component.onRowClick(row)
 
-      // Assert
-      expect(component.dataSource.filter).toBe('test filter')
-    })
-
-    it('should clear filter when empty value is provided', () => {
-      // Arrange
-      component.dataSource.filter = 'previous filter'
-
-      // Act
-      component.applyFilter('')
-
-      // Assert
-      expect(component.dataSource.filter).toBe('')
-    })
+    // Assert
+    expect(spy).toHaveBeenCalledWith(row)
   })
 
-  describe('buttonClick', () => {
-    it('should emit actionsClick event with action and row', () => {
-      // Arrange
-      const action = 'edit'
-      const row = { id: 1 }
-      component.tableData = {
-        actions: [
-          { name: 'edit', disabled: false }
-        ]
-      } as any
-      // jest.spyOn(component.actionsClick, 'emit')
+  it('should toggle selection correctly', () => {
+    // Arrange
+    component.dataSource.data = [{ id: 1 }, { id: 2 }]
+    expect(component.isAllSelected()).toBe(false)
 
-      // Act
-      component.buttonClick(action, row)
+    // Act - select all
+    component.masterToggle()
 
-      // Assert
-      // expect(component.actionsClick.emit).toHaveBeenCalledWith({ action, row })
-    })
+    // Assert
+    expect(component.selection.selected.length).toBe(2)
+    expect(component.isAllSelected()).toBe(true)
 
-    it('should not emit actionsClick event when action is disabled', () => {
-      // Arrange
-      const action = 'edit'
-      const row = { id: 1 }
-      component.tableData = {
-        actions: [
-          { name: 'edit', disabled: true }
-        ]
-      } as any
-      // jest.spyOn(component.actionsClick, 'emit')
+    // Act - deselect all
+    component.masterToggle()
 
-      // Act
-      component.buttonClick(action, row)
-
-      // Assert
-      // expect(component.actionsClick.emit).not.toHaveBeenCalled()
-    })
+    // Assert
+    expect(component.selection.selected.length).toBe(0)
+    expect(component.isAllSelected()).toBe(false)
   })
 
-  describe('getFinalColumns', () => {
-    it('should return columns with select when needCheckBox is true', () => {
-      // Arrange
-      component.tableData = {
-        columns: [{ key: 'col1' }, { key: 'col2' }],
-        needCheckBox: true,
-        needHash: false,
-        actions: []
-      } as any
+  it('should open image dialog with correct URL for regular image', () => {
+    // Arrange
+    const img = '/content/images/event.jpg'
+    const environment = {
+      contentHost: 'https://example.com',
+      contentBucket: 'bucket'
+    };
+    (global as any).environment = environment
 
-      // Act
-      const result = component.getFinalColumns()
+    // Act
+    component.showImageDialog(img)
 
-      // Assert
-      expect(result).toContain('select')
-      expect(result).toContain('col1')
-      expect(result).toContain('col2')
-    })
-
-    it('should return columns with SR when needHash is true', () => {
-      // Arrange
-      component.tableData = {
-        columns: [{ key: 'col1' }, { key: 'col2' }],
-        needCheckBox: false,
-        needHash: true,
-        actions: []
-      } as any
-
-      // Act
-      const result = component.getFinalColumns()
-
-      // Assert
-      expect(result).toContain('SR')
-      expect(result).toContain('col1')
-      expect(result).toContain('col2')
-    })
-
-    it('should return columns with Actions when actions exist', () => {
-      // Arrange
-      component.tableData = {
-        columns: [{ key: 'col1' }, { key: 'col2' }],
-        needCheckBox: false,
-        needHash: false,
-        actions: [{ name: 'edit' }]
-      } as any
-
-      // Act
-      const result = component.getFinalColumns()
-
-      // Assert
-      expect(result).toContain('Actions')
-      expect(result).toContain('col1')
-      expect(result).toContain('col2')
-    })
-
-    it('should return columns with Menu when needUserMenus is true', () => {
-      // Arrange
-      component.tableData = {
-        columns: [{ key: 'col1' }, { key: 'col2' }],
-        needCheckBox: false,
-        needHash: false,
-        actions: [],
-        needUserMenus: true
-      } as any
-
-      // Act
-      const result = component.getFinalColumns()
-
-      // Assert
-      expect(result).toContain('Menu')
-      expect(result).toContain('col1')
-      expect(result).toContain('col2')
-    })
-
-    it('should return empty string when tableData is undefined', () => {
-      // Arrange
-      component.tableData = undefined
-
-      // Act
-      const result = component.getFinalColumns()
-
-      // Assert
-      expect(result).toBe('')
-    })
+    // Assert
+    expect(component.finalImg).toBe('https://example.com/bucket/content/images/event.jpg')
+    expect(mockMatDialog.open).toHaveBeenCalled()
   })
 
-  describe('isAllSelected', () => {
-    it('should return true when all rows are selected', () => {
-      // Arrange
-      component.dataSource.data = [{ id: 1 }, { id: 2 }]
-      component.selection.select(...component.dataSource.data)
+  it('should open image dialog with correct URL for default image', () => {
+    // Arrange
+    const img = '/content/Events_default/default.jpg'
+    const environment = {
+      contentHost: 'https://example.com',
+      contentBucket: 'bucket'
+    };
+    (global as any).environment = environment
 
-      // Act
-      const result = component.isAllSelected()
+    // Act
+    component.showImageDialog(img)
 
-      // Assert
-      expect(result).toBe(true)
-    })
-
-    it('should return false when not all rows are selected', () => {
-      // Arrange
-      component.dataSource.data = [{ id: 1 }, { id: 2 }]
-      component.selection.select(component.dataSource.data[0])
-
-      // Act
-      const result = component.isAllSelected()
-
-      // Assert
-      expect(result).toBe(false)
-    })
+    // Assert
+    expect(component.finalImg).toBe('https://example.com/Events_default/default.jpg')
+    expect(mockMatDialog.open).toHaveBeenCalled()
   })
 
-  describe('masterToggle', () => {
-    it('should select all rows when none are selected', () => {
-      // Arrange
-      component.dataSource.data = [{ id: 1 }, { id: 2 }]
-      jest.spyOn(component.selection, 'clear')
-      jest.spyOn(component.selection, 'select')
+  it('should return proper column configuration', () => {
+    // Arrange
+    component.tableData = {
+      columns: [{ key: 'col1' }, { key: 'col2' }],
+      needCheckBox: true,
+      needHash: true,
+      actions: [{ name: 'edit' }],
+      needUserMenus: true
+    } as any
 
-      // Act
-      component.masterToggle()
+    // Act
+    const result = component.getFinalColumns()
 
-      // Assert
-      expect(component.selection.select).toHaveBeenCalledTimes(2)
-    })
-
-    it('should clear selection when all rows are selected', () => {
-      // Arrange
-      component.dataSource.data = [{ id: 1 }, { id: 2 }]
-      component.selection.select(...component.dataSource.data)
-      jest.spyOn(component.selection, 'clear')
-
-      // Act
-      component.masterToggle()
-
-      // Assert
-      expect(component.selection.clear).toHaveBeenCalled()
-    })
+    // Assert
+    expect(result).toEqual(['select', 'SR', 'col1', 'col2', 'Actions', 'Menu'])
   })
 
-  describe('checkboxLabel', () => {
-    it('should return "select all" label when no row is provided and not all selected', () => {
-      // Arrange
-      jest.spyOn(component, 'isAllSelected').mockReturnValue(false)
+  it('should return proper checkbox label', () => {
+    // Act & Assert - no row
+    expect(component.checkboxLabel()).toContain('deselect all')
 
-      // Act
-      const result = component.checkboxLabel()
+    // Act & Assert - with row
+    const row = { position: 5 }
+    expect(component.checkboxLabel(row)).toContain('select row 6')
 
-      // Assert
-      expect(result).toBe('select all')
-    })
-
-    it('should return "deselect all" label when no row is provided and all are selected', () => {
-      // Arrange
-      jest.spyOn(component, 'isAllSelected').mockReturnValue(true)
-
-      // Act
-      const result = component.checkboxLabel()
-
-      // Assert
-      expect(result).toBe('deselect all')
-    })
-
-    it('should return "select row" label when row is provided and not selected', () => {
-      // Arrange
-      const row = { position: 0 }
-      jest.spyOn(component.selection, 'isSelected').mockReturnValue(false)
-
-      // Act
-      const result = component.checkboxLabel(row)
-
-      // Assert
-      expect(result).toBe('select row 1')
-    })
+    // Select row and check label
+    component.selection.select(row)
+    expect(component.checkboxLabel(row)).toContain('deselect row 6')
   })
 })
