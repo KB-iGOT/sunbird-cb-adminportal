@@ -1,70 +1,115 @@
-
-import { ActivatedRoute } from '@angular/router'
 import { ConfigureMarketplaceProvidersComponent } from './configure-marketplace-providers.component'
-import { MatSnackBar } from '@angular/material/snack-bar'
-import { MarketplaceService } from '../../services/marketplace.service'
-import { of } from 'rxjs'
+import { of, throwError } from 'rxjs'
+
+jest.mock('lodash', () => ({
+    get: jest.fn(),
+}))
 
 describe('ConfigureMarketplaceProvidersComponent', () => {
     let component: ConfigureMarketplaceProvidersComponent
-
-    const activateRoute: Partial<ActivatedRoute> = {
-        data: of(
-            {
-                providerDetails: {
-                    data: {
-                        result: {
-                            id: '2'
-                        }
-                    }
-                }
-            }
-        )
-    }
-    const snackBar: Partial<MatSnackBar> = {}
-    const marketPlaceSvc: Partial<MarketplaceService> = {
-        getProviderDetails: jest.fn(() => of({
-            result: {
-                id: '2'
-            }
-        }))
-    }
-
-    beforeAll(() => {
-        component = new ConfigureMarketplaceProvidersComponent(
-            activateRoute as ActivatedRoute,
-            snackBar as MatSnackBar,
-            marketPlaceSvc as MarketplaceService
-        )
-    })
+    let activatedRouteMock: any
+    let snackBarMock: any
+    let marketplaceServiceMock: any
 
     beforeEach(() => {
-        jest.clearAllMocks()
-        jest.resetAllMocks()
+        // Mock services
+        activatedRouteMock = {
+            data: of({
+                providerDetails: { data: { result: 'providerData' } },
+                pageData: { data: { configureCertificateGuide: { helpCenterGuide: 'guide', instructions: 'instructions' } } }
+            })
+        }
+
+        snackBarMock = {
+            open: jest.fn()
+        }
+
+        marketplaceServiceMock = {
+            getProviderDetails: jest.fn().mockReturnValue(of({ result: 'providerDetails' }))
+        }
+
+        // Create component instance
+        component = new ConfigureMarketplaceProvidersComponent(
+            activatedRouteMock,
+            snackBarMock,
+            marketplaceServiceMock
+        )
     })
 
-    it('should create a instance of component', () => {
+    it('should create the component', () => {
         expect(component).toBeTruthy()
     })
 
-    describe('ngOnInit', () => {
-        it('should call getRoutesData()', () => {
-            // arrange
-            const getRoutesDataSpy = jest.spyOn(component, 'getRoutesData')
-
-            // act
-            component.ngOnInit()
-            //assert
-            expect(getRoutesDataSpy).toHaveBeenCalled()
+    it('should initialize widgetData correctly', () => {
+        expect(component.widgetData).toEqual({
+            titles: [
+                { title: 'Marketplace Providers', url: '/app/home/marketplace-providers', path: '/app/home/marketplace-providers' },
+                { title: 'Onboard Provider', url: 'none' },
+                { title: 'Configure', url: 'none' }
+            ]
         })
     })
 
-    describe('getProviderDetails', () => {
-        it('should call getProviderDetails and set providerDetails', () => {
-            const event = true
+    it('should call getRoutesData and set providerDetails and disableCourseCatalog correctly', () => {
+        component.ngOnInit()
+        expect(component.providerDetails).toBe('providerData')
+        expect(component.disableCourseCatalog).toBe(false)
+    })
 
-            component.getProviderDetails(event)
+    it('should call getRoutesData and set helpCenterGuide and instructionsList correctly', () => {
+        component.ngOnInit()
+        expect(component.helpCenterGuide).toBe('guide')
+        expect(component.instructionsList).toBe('instructions')
+    })
+
+    it('should call getProviderDetails and set providerDetails on success', () => {
+        // const response = { result: 'newProviderDetails' }
+        component.providerDetails = { id: 123 }
+
+        component.getProviderDetails({})
+
+        expect(marketplaceServiceMock.getProviderDetails).toHaveBeenCalledWith(123)
+        marketplaceServiceMock.getProviderDetails().subscribe(() => {
+            expect(component.providerDetails).toBe('newProviderDetails')
+            expect(component.disableCourseCatalog).toBe(false)
         })
     })
 
+    it('should call showSnackBar when getProviderDetails fails', () => {
+        const errorResponse = {
+            error: {
+                params: {
+                    errMsg: 'Error occurred'
+                }
+            }
+        }
+
+        marketplaceServiceMock.getProviderDetails = jest.fn().mockReturnValue(throwError(errorResponse))
+        component.providerDetails = { id: 123 }
+
+        component.getProviderDetails({})
+
+        expect(snackBarMock.open).toHaveBeenCalledWith('Error occurred')
+    })
+
+    it('should show default error message when error response does not contain errMsg', () => {
+        const errorResponse = {
+            error: {}
+        }
+
+        marketplaceServiceMock.getProviderDetails = jest.fn().mockReturnValue(throwError(errorResponse))
+        component.providerDetails = { id: 123 }
+
+        component.getProviderDetails({})
+
+        expect(snackBarMock.open).toHaveBeenCalledWith('Something went worng, please try again later')
+    })
+
+    it('should call showSnackBar with custom message when error occurs', () => {
+        const customErrorMessage = 'Custom error message'
+
+        component.showSnackBar(customErrorMessage)
+
+        expect(snackBarMock.open).toHaveBeenCalledWith(customErrorMessage)
+    })
 })
