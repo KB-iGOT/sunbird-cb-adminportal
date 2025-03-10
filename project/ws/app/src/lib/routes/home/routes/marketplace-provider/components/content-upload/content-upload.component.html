@@ -25,7 +25,7 @@
                 <mat-expansion-panel class="margin-0" (opened)="openedTab = 'trasformContentJson'"
                   (closed)="openedTab = ''">
                   <mat-expansion-panel-header>
-                    <mat-panel-description class="accoridan-description"> Via CSV
+                    <mat-panel-description class="accordian-description"> Via CSV
                     </mat-panel-description>
                   </mat-expansion-panel-header>
                   <ws-app-transformations [providerDetails]="providerDetails"
@@ -36,7 +36,7 @@
 
                 <mat-expansion-panel class="margin-0" (opened)="openedTab = 'transformContentViaApi'">
                   <mat-expansion-panel-header>
-                    <mat-panel-description class="accoridan-description"> Via API
+                    <mat-panel-description class="accordian-description"> Via API
                     </mat-panel-description>
                   </mat-expansion-panel-header>
                   <ws-app-via-api [providerDetails]="providerDetails" [viaApiTabIndex]="viaApiTabIndex" [tabIndex]="0"
@@ -46,12 +46,12 @@
               </mat-accordion>
             </div>
           </mat-tab>
-          <mat-tab label="Transform Progress">
+          <!-- <mat-tab label="Transform Progress">
             <div class="w-full mt-4">
               <mat-accordion class="flex gap-6 flex-col">
                 <mat-expansion-panel class="margin-0" (opened)="openedTab = 'transformProgressJson'">
                   <mat-expansion-panel-header>
-                    <mat-panel-description class="accoridan-description"> Via CSV
+                    <mat-panel-description class="accordian-description"> Via CSV
                     </mat-panel-description>
                   </mat-expansion-panel-header>
                   <ws-app-transformations [providerDetails]="providerDetails"
@@ -67,7 +67,7 @@
               <mat-accordion class="flex gap-6 flex-col">
                 <mat-expansion-panel class="margin-0" (opened)="openedTab = 'certificateTemplateUrl'">
                   <mat-expansion-panel-header>
-                    <mat-panel-description class="accoridan-description" class="accoridan-description"> Via CSV
+                    <mat-panel-description class="accordian-description"> Via CSV
                     </mat-panel-description>
                   </mat-expansion-panel-header>
                   <ws-app-transformations [providerDetails]="providerDetails"
@@ -77,7 +77,7 @@
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
-          </mat-tab>
+          </mat-tab> -->
         </mat-tab-group>
       </ng-container>
     </div>
