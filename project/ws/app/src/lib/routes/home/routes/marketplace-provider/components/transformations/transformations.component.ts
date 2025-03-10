@@ -35,6 +35,7 @@ export class TransformationsComponent implements OnInit, OnChanges {
   contentFileUploaded = false
   fileName = ''
   dialogRef: any
+  certificateUrl = ''
 
   //#region (transformation variables)
   transforamtionType = 'viaForm'
@@ -107,6 +108,8 @@ export class TransformationsComponent implements OnInit, OnChanges {
       trasformationJson = _.get(this.providerConfiguration, 'transformProgressJson[0].spec')
     } else if (_.get(this.providerDetalsBeforUpdate, 'certificateTemplateUrl')) {
       this.contentFileUploaded = true
+      this.certificateUrl = this.generatePublicUrl(_.get(this.providerDetalsBeforUpdate, 'certificateTemplateUrl'))
+      this.fileName = this.getImageName(_.get(this.providerDetalsBeforUpdate, 'certificateTemplateUrl'))
     }
 
     if (trasformationJson) {
@@ -126,6 +129,30 @@ export class TransformationsComponent implements OnInit, OnChanges {
     }
   }
 
+  generatePublicUrl(googleUrl: string): string {
+    const urlToReplace = 'https://storage.googleapis.com/igot'
+    let url = googleUrl
+    if (googleUrl && googleUrl.startsWith(urlToReplace)) {
+      const urlSplice = googleUrl.slice(urlToReplace.length).split('/')
+      url = `${environment.karmYogiPath}/content-store/${urlSplice.slice(1).join('/')}`
+    }
+    return url
+  }
+
+  getImageName(url: string): string {
+    if (url) {
+      const lastSlashIndex = url.lastIndexOf('/')
+      const imageWithPrefix = url.slice(lastSlashIndex + 1)
+      const firstUnderscoreIndex = imageWithPrefix.indexOf('_')
+      if (firstUnderscoreIndex !== -1) {
+        return imageWithPrefix.slice(firstUnderscoreIndex + 1)
+      }
+
+      return imageWithPrefix
+    }
+    return url
+  }
+
   ngOnInit(): void {
   }
 
@@ -141,6 +168,7 @@ export class TransformationsComponent implements OnInit, OnChanges {
       this.showSnackBar('Please upload a file less than 100 MB')
     } else {
       this.contentFile = file
+      this.certificateUrl = URL.createObjectURL(file)
       this.contentFileUploaded = true
       if (this.fileName.toLowerCase().endsWith('.csv')) {
         this.getCsvHeaders(file)
@@ -254,6 +282,9 @@ export class TransformationsComponent implements OnInit, OnChanges {
           }
         },
         error: (error: HttpErrorResponse) => {
+          if (this.contentFileUploaded) {
+            this.providerDetalsBeforUpdate['certificateTemplateUrl'] = ''
+          }
           const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
           this.showSnackBar(errmsg)
         },
@@ -434,16 +465,10 @@ export class TransformationsComponent implements OnInit, OnChanges {
   }
 
   uploadCertificate(formData: any) {
-    this.marketPlaceSvc.uploadCIOSContract(formData).subscribe({
+    this.marketPlaceSvc.uploadThumbNail(formData).subscribe({
       next: responce => {
         const createdUrl = _.get(responce, 'result.url')
-        const urlToReplace = 'https://storage.googleapis.com/igot'
-        let url = createdUrl
-        if (createdUrl.startsWith(urlToReplace)) {
-          const urlSplice = createdUrl.slice(urlToReplace.length).split('/')
-          url = `${environment.karmYogiPath}/content-store/${urlSplice.slice(1).join('/')}`
-        }
-        this.providerDetalsBeforUpdate['certificateTemplateUrl'] = url
+        this.providerDetalsBeforUpdate['certificateTemplateUrl'] = createdUrl
         this.fileName = ''
         this.upDateTransforamtionDetails()
         this.dialogRef.close()

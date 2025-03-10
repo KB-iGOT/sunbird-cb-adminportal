@@ -24,6 +24,18 @@ export class ConfigureMarketplaceProvidersComponent implements OnInit {
   providerDetails: any
   disableCourseCatalog = true
 
+  helpCenterGuide = {
+    header: 'Content Upload Details: Video Guides and Tips',
+    guideNotes: [
+      `Upload the certificate using a SVG file.`,
+    ],
+    helpVideoLink: `/assets/public/content/guide-videos/CIOS_Updated_demo.mp4`,
+  }
+
+  instructionsList = [
+    'Please ensure the Certificate file is named correctly'
+  ]
+
   constructor(
     private activateRoute: ActivatedRoute,
     private snackBar: MatSnackBar,
@@ -40,6 +52,10 @@ export class ConfigureMarketplaceProvidersComponent implements OnInit {
       if (data.providerDetails && data.providerDetails.data) {
         this.disableCourseCatalog = false
         this.providerDetails = data.providerDetails.data.result
+      }
+      if (_.get(data, 'pageData.data.configureCertificateGuide')) {
+        this.helpCenterGuide = _.get(data, 'pageData.data.configureCertificateGuide.helpCenterGuide', this.helpCenterGuide)
+        this.instructionsList = _.get(data, 'pageData.data.configureCertificateGuide.instructions', this.instructionsList)
       }
     })
   }
@@ -60,6 +76,8 @@ export class ConfigureMarketplaceProvidersComponent implements OnInit {
       })
     }
   }
+
+  getTablesData() { }
 
   showSnackBar(message: string) {
     this.snackBar.open(message)

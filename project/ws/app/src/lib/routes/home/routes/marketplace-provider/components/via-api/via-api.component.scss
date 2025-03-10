@@ -103,6 +103,21 @@
   min-height: 803px;
   padding: 24px;
 
+  .lable {
+      /* stylelint-enable */
+      font: 700 14px Lato;
+      /* stylelint-disable */
+      color: #212529;
+      width:  50%;
+    }
+
+    .colun {
+      /* stylelint-enable */
+      font: 700 14px Lato;
+      /* stylelint-disable */
+      color: #212529;
+      width: 5px;
+    }
 }
 
 .transformation-required {
