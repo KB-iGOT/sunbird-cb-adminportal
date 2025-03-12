@@ -197,6 +197,44 @@
                                 </label>
                             </mat-checkbox> -->
                         </div>
+                        <div class="margin-bottom-s" *ngIf="showRajyaField">
+                            <label class="required">State</label>
+                            <mat-form-field appearance="outline" class="custom-width margin-top-xs">
+                                <mat-select formControlName="state">
+                                    <mat-option [value]="type?.stateOrMinistryName"
+                                        *ngFor="let type of stateList">{{type?.stateOrMinistryName}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <!-- <div class="flex custom mt-5" fxLayout="row wrap">
+                                                        <mat-card class="event_container padding-remove" fxLayout="row"
+                                                            fxLayoutWrap>
+                                                            <mat-card *ngFor="let type of eventTypes"
+                                                                class="event_types mb-10"
+                                                                [ngClass]="type.disabled == false ? 'highlight' : 'dull'">
+                                                                <mat-card-header>
+                                                                    <mat-card-subtitle class="mat-body-2">
+                                                                        <input type="radio" name="eventType" checked
+                                                                            [value]="type.title"
+                                                                            (change)="changeEventType($event)"
+                                                                            [disabled]="type.disabled">
+                                                                        <label class="event_types">{{ type?.title }}</label>
+                                                                    </mat-card-subtitle>
+                                                                </mat-card-header>
+                                                                <mat-card-content class="event_type_desc">
+                                                                    {{ type?.desc }}
+                                                                </mat-card-content>
+                                                            </mat-card>
+                                                        </mat-card>
+                                                    </div>
+                                                    <br /><mat-checkbox aria-label="Get Karmayogi badge" id="kb-badge"
+                                                        formControlName="isItKarmayogiTalk" #isItKarmayogiTalk [checked]=""
+                                                         aria-label="Is it Karmayogi talk">
+                                                        <label >
+                                                            Is it Karmayogi talk
+                                                        </label>
+                                                    </mat-checkbox> -->
+                        </div>
                     </div>
                     <div class="input-column px-2 ws-mat-accent-border mb-6 padding-top-m padding-bottom-m padding-right-xl padding-left-l"
                         id="videoinfo">
@@ -426,7 +464,8 @@
                             </label>
                             <div class="flex flex-1 custom button-row-add-user">
                                 <button mat-stroked-button color="accent" type="button"
-                                    class="mat-accent-border flex-auto-display add-karmayogi-btn" (click)="openDialog()">
+                                    class="mat-accent-border flex-auto-display add-karmayogi-btn"
+                                    (click)="openDialog()">
                                     <span>Add karmayogi user</span>
                                 </button>
                             </div>

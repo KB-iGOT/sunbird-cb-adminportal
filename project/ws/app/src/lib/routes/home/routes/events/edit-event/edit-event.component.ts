@@ -72,7 +72,7 @@ export class EditEventComponent implements OnInit {
   // ]
 
   evntTypesList = ['Webinar', 'Karmayogi Talks', 'Karmayogi Saptah', 'Rajya Karmayogi Spatah']
-
+  stateList = []
   timeArr = [
     { value: '00:00' }, { value: '00:30' }, { value: '01:00' }, { value: '01:30' },
     { value: '02:00' }, { value: '02:30' }, { value: '03:00' }, { value: '03:30' },
@@ -124,7 +124,7 @@ export class EditEventComponent implements OnInit {
   eventId: any
   eventObject: any
   reqPayload: any
-
+  showRajyaField = false
   constructor(private snackBar: MatSnackBar, private eventsSvc: EventsService, private matDialog: MatDialog,
     // tslint:disable-next-line:align
     private router: Router, private configSvc: ConfigurationsService, private changeDetectorRefs: ChangeDetectorRef,
@@ -168,6 +168,7 @@ export class EditEventComponent implements OnInit {
       eventDurationMinutes: new UntypedFormControl('', []),
       conferenceLink: new UntypedFormControl('', [Validators.required, Validators.pattern(this.myreg)]),
       presenters: new UntypedFormControl('', []),
+      state: new UntypedFormControl('', []),
     })
 
     this.activeRoute.params.subscribe(params => {
@@ -206,6 +207,14 @@ export class EditEventComponent implements OnInit {
         this.createEventForm.controls['eventDurationMinutes'].setValue(this.minutes)
         this.imageSrcURL = eventObj.appIcon
         this.eventimageURL = eventObj.appIcon
+
+        if (eventObj && eventObj.resourceTypeDetails && eventObj.resourceTypeDetails.stateOrMinistryName) {
+          this.showRajyaField = true
+          this.getSlwResourceTypeDetail(eventObj)
+
+        } else {
+          this.showRajyaField = false
+        }
         // this.eventimageURL = eventObj.appIcon && (eventObj.appIcon !== null || eventObj.appIcon !== undefined) ?
         //   this.eventsSvc.getPublicUrl(eventObj.appIcon) : this.eventsSvc.getPublicUrl('/assets/icons/Events_default.png')
         const presents = eventObj.creatorDetails
@@ -566,6 +575,10 @@ export class EditEventComponent implements OnInit {
         },
       }
     }
+
+    if (this.createEventForm.controls['state'] && this.createEventForm.controls['state'].value && this.showRajyaField) {
+      this.reqPayload['request']['event']['resourceTypeDetails'] = this.getStateDetail()
+    }
     // const formJson = this.encodeToBase64(form)
     if (eventDurationMinutes === 0) {
       this.displayLoader = false
@@ -635,5 +648,67 @@ export class EditEventComponent implements OnInit {
     this.dialogRef.afterClosed().subscribe(() => {
       this.router.navigate([`/app/home/events`])
     })
+  }
+
+  resetDateField() {
+    let eventTypeControl = this.createEventForm.get('eventType')
+    if (eventTypeControl && eventTypeControl.value === 'Rajya Karmayogi Spatah') {
+      this.showRajyaField = true
+      this.createEventForm.controls['state'].setValidators([Validators.required])
+    } else {
+      this.showRajyaField = false
+      this.createEventForm.controls['state'].setValidators([])
+    }
+  }
+
+  getSlwResourceTypeDetail(eventObj: any) {
+    let payload = {
+      "request": {
+        "type": "page",
+        "subType": "slwResourceTypeDetails",
+        "action": "page-configuration",
+        "component": "spv", "rootOrgId": "*"
+      }
+    }
+    this.eventsSvc.getSlwResourceTypeDetail(payload).subscribe((data) => {
+      if (data && data.slwResourceTypeDetails && data.slwResourceTypeDetails.length) {
+        this.stateList = data.slwResourceTypeDetails
+        if (this.stateList && this.stateList.length) {
+          this.showRajyaField = true
+          setTimeout(() => {
+            const control = this.createEventForm.get('state')
+            if (control) {
+              control.setValue(eventObj.resourceTypeDetails.stateOrMinistryName)
+
+            }
+          }, 0)
+
+        }
+
+        //this.createEventForm.get['state'].setValue(this.stateList[0]['stateOrMinistryName'])
+      }
+
+      this.createEventForm.controls['state'].setValidators([Validators.required])
+    })
+
+  }
+
+  getStateDetail() {
+    let payload: any
+    if (this.createEventForm.controls['state'].value) {
+      payload = this.stateList.filter((item: any) => {
+        if (item && item.stateOrMinistryName && item.stateOrMinistryName === this.createEventForm.controls['state'].value) {
+          return item
+        }
+      })
+    }
+
+    console.log('payload', payload)
+    console.log('value', this.createEventForm.controls['state'].value)
+    return payload && payload[0] ? payload[0] : null
+  }
+
+  ngOnDestroy() {
+    this.stateList = []
   }
 }
