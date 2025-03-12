@@ -114,6 +114,6 @@ export class EventsService {
   }
 
   formReadData(request: any): Observable<any> {
-    return this.http.post<any>(`${environment.karmYogiPath}${API_END_POINTS.FORM_READ}`, request)
+    return this.http.post<any>(`https://${environment.sitePath}${API_END_POINTS.FORM_READ}`, request)
   }
 }
