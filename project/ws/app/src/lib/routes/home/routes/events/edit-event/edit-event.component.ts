@@ -208,7 +208,7 @@ export class EditEventComponent implements OnInit {
         this.imageSrcURL = eventObj.appIcon
         this.eventimageURL = eventObj.appIcon
 
-        if (eventObj && eventObj.resourceTypeDetails && eventObj.resourceTypeDetails.stateOrMinistryName) {
+        if (eventObj && eventObj.resourceTypeDetails && eventObj.resourceTypeDetails.stateOrMinistryName && eventObj.resourceType === 'Rajya Karmayogi Spatah') {
           this.showRajyaField = true
           this.getSlwResourceTypeDetail(eventObj)
 
