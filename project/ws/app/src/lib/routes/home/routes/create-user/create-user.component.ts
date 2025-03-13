@@ -52,7 +52,7 @@ export class CreateUserComponent implements OnInit {
   orgName!: string
   isThisExistingLeader = false
   disableRequired = false
-  stateAdminRoles = ["MDO_LEADER", "PUBIC"]
+  stateAdminRoles = ["MDO_LEADER", "PUBLIC"]
   // hideRole: any = []
 
   constructor(
