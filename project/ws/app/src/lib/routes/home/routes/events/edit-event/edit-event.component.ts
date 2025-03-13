@@ -70,7 +70,7 @@ export class EditEventComponent implements OnInit {
   // eventTypes = [
   //   { title: 'Webinar', desc: 'General discussion involving', border: 'rgb(0, 116, 182)', disabled: false },
   // ]
-  evntTypesList = ['Webinar', 'Karmayogi Talks', 'Karmayogi Saptah', 'Rajya Karmayogi Spatah']
+  evntTypesList = ['Webinar', 'Karmayogi Talks', 'Karmayogi Saptah', 'Rajya Karmayogi Saptah']
   stateList = []
   timeArr = [
     { value: '00:00' }, { value: '00:30' }, { value: '01:00' }, { value: '01:30' },
@@ -210,7 +210,7 @@ export class EditEventComponent implements OnInit {
         this.imageSrcURL = eventObj.appIcon
         this.eventimageURL = eventObj.appIcon
 
-        if (eventObj && eventObj.resourceTypeDetails && eventObj.resourceTypeDetails.stateOrMinistryName && eventObj.resourceType === 'Rajya Karmayogi Spatah') {
+        if (eventObj && eventObj.resourceTypeDetails && eventObj.resourceTypeDetails.stateOrMinistryName && eventObj.resourceType === 'Rajya Karmayogi Saptah') {
           this.showRajyaField = true
           this.getSlwResourceTypeDetail(eventObj)
 
@@ -654,7 +654,7 @@ export class EditEventComponent implements OnInit {
 
   resetDateField() {
     let eventTypeControl = this.createEventForm.get('eventType')
-    if (eventTypeControl && eventTypeControl.value === 'Rajya Karmayogi Spatah') {
+    if (eventTypeControl && eventTypeControl.value === 'Rajya Karmayogi Saptah') {
       this.showRajyaField = true
       this.createEventForm.controls['state'].setValidators([Validators.required])
     } else {

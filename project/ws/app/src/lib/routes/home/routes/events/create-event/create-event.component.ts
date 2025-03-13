@@ -74,7 +74,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   // eventTypes = [
   //   { title: 'Webinar', desc: 'General discussion involving', border: 'rgb(0, 116, 182)', disabled: false },
   // ]
-  evntTypesList = ['Webinar', 'Karmayogi Talks', 'Karmayogi Saptah', 'Rajya Karmayogi Spatah']
+  evntTypesList = ['Webinar', 'Karmayogi Talks', 'Karmayogi Saptah', 'Rajya Karmayogi Saptah']
   stateList = []
   timeArr = [
     { value: '00:00' }, { value: '00:15' }, { value: '00:30' }, { value: '00:45' },
@@ -625,7 +625,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
       control.setValue(this.currentDate)
     }
     let eventTypeControl = this.createEventForm.get('eventType')
-    if (eventTypeControl && eventTypeControl.value === 'Rajya Karmayogi Spatah') {
+    if (eventTypeControl && eventTypeControl.value === 'Rajya Karmayogi Saptah') {
       // if (this.stateList.length === 0) {
       this.getSlwResourceTypeDetail()
       // }
