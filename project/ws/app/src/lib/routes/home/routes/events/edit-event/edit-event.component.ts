@@ -70,7 +70,6 @@ export class EditEventComponent implements OnInit {
   // eventTypes = [
   //   { title: 'Webinar', desc: 'General discussion involving', border: 'rgb(0, 116, 182)', disabled: false },
   // ]
-
   evntTypesList = ['Webinar', 'Karmayogi Talks', 'Karmayogi Saptah', 'Rajya Karmayogi Spatah']
   stateList = []
   timeArr = [
@@ -170,6 +169,9 @@ export class EditEventComponent implements OnInit {
       presenters: new UntypedFormControl('', []),
       state: new UntypedFormControl('', []),
     })
+
+    this.createEventForm.get('eventType')?.disable()
+    this.createEventForm.get('state')?.disable()
 
     this.activeRoute.params.subscribe(params => {
       this.eventId = params['id']
