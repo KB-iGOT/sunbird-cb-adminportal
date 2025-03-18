@@ -556,7 +556,7 @@ export class EditEventComponent implements OnInit {
             learningObjective: this.createEventForm.controls['agenda'].value,
             expiryDate: expiryDateTime,
             duration: eventDurationMinutes,
-            registrationLink: this.createEventForm.controls['conferenceLink'].value,
+            registrationLink: this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value),
             resourceType: this.createEventForm.controls['eventType'].value,
             categoryType: 'Article',
             creatorDetails: this.createEventForm.controls['presenters'].value,
@@ -708,6 +708,16 @@ export class EditEventComponent implements OnInit {
     console.log('payload', payload)
     console.log('value', this.createEventForm.controls['state'].value)
     return payload && payload[0] ? payload[0] : null
+  }
+
+  youTubeUrlChange(url: string): string {
+
+    const regExp = /^.*(youtube.com\/|embed\/|watch\?v=)([^#\&\?]*).*/
+    const match = url.match(regExp)
+    if (match && match[2].length === 11) {
+      return `https://www.youtube.com/embed/${match[2]}`
+    }
+    return url
   }
 
   ngOnDestroy() {
