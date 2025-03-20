@@ -228,9 +228,10 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       description: this.controls['description']?.value || "",
       parentMapId: "",
     }
-    // if (this.heirarchyObject.sbRootOrgId) {
-    //   payload['sbRootOrgId'] = this.heirarchyObject.sbRootOrgId
-    // }
+    const sbRootOrgId = _.get(this.activatedRoute, 'snapshot?.parent?.data?.configService?.unMappedUser?.rootOrgId')
+    if (sbRootOrgId) {
+      payload['sbRootOrgId'] = sbRootOrgId
+    }
     if (this.controls['category']?.value === 'state') {
       const orgDetails = _.find(this.statesList, { orgName: this.stateName })
       if (orgDetails) {
@@ -242,8 +243,6 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       }
     } else if (this.controls['ministry']?.value?.mapId) {
       payload.parentMapId = this.controls['ministry'].value.mapId // Assign ministry mapId
-    } else {
-      return // Exit function in case of error
     }
 
     if (this.openMode === 'editMode') {
