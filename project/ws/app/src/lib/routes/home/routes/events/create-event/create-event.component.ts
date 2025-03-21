@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core'
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core'
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
 import { EventsService } from '../services/events.service'
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core'
@@ -42,7 +42,7 @@ export const MY_FORMATS = {
   ],
 })
 
-export class CreateEventComponent implements OnInit {
+export class CreateEventComponent implements OnInit, OnDestroy {
 
   errorMessages = ''
   artifactURL: any
@@ -74,8 +74,8 @@ export class CreateEventComponent implements OnInit {
   // eventTypes = [
   //   { title: 'Webinar', desc: 'General discussion involving', border: 'rgb(0, 116, 182)', disabled: false },
   // ]
-  evntTypesList = ['Webinar', 'Karmayogi Talks', 'Karmayogi Saptah']
-
+  evntTypesList = ['Webinar', 'Karmayogi Talks', 'Karmayogi Saptah', 'Rajya Karmayogi Saptah']
+  stateList = []
   timeArr = [
     { value: '00:00' }, { value: '00:15' }, { value: '00:30' }, { value: '00:45' },
     { value: '01:00' }, { value: '01:15' }, { value: '01:30' }, { value: '01:45' },
@@ -135,7 +135,7 @@ export class CreateEventComponent implements OnInit {
   displayLoader = false
   reqPayload: any
   currentDate = new Date()
-
+  showRajyaField = false
   constructor(private snackBar: MatSnackBar, private eventsSvc: EventsService, private matDialog: MatDialog,
     // tslint:disable-next-line:align
     private router: Router, private configSvc: ConfigurationsService, private changeDetectorRefs: ChangeDetectorRef,
@@ -179,6 +179,7 @@ export class CreateEventComponent implements OnInit {
       eventDurationMinutes: new UntypedFormControl(30, [Validators.required]),
       conferenceLink: new UntypedFormControl('', [Validators.required, Validators.pattern(this.myreg)]),
       presenters: new UntypedFormControl('', []),
+      state: new UntypedFormControl('', []),
     })
 
     // this.createEventForm.controls['eventDurationHours'].setValue(0)
@@ -217,6 +218,7 @@ export class CreateEventComponent implements OnInit {
       this.timeArr = alltimearray
       this.todayTime = _.get(this.newtimearray, '[0].value')
     }
+
   }
 
   openDialog() {
@@ -501,7 +503,7 @@ export class CreateEventComponent implements OnInit {
             learningObjective: this.createEventForm.controls['agenda'].value,
             expiryDate: expiryDateTime,
             duration: eventDurationMinutes,
-            registrationLink: this.createEventForm.controls['conferenceLink'].value,
+            registrationLink: this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value),
             resourceType: this.createEventForm.controls['eventType'].value,
             categoryType: 'Article',
             creatorDetails: this.createEventForm.controls['presenters'].value,
@@ -523,12 +525,17 @@ export class CreateEventComponent implements OnInit {
       }
     }
 
+    if (this.createEventForm.controls['state'] && this.createEventForm.controls['state'].value && this.showRajyaField) {
+      this.reqPayload['request']['event']['resourceTypeDetails'] = this.getStateDetail()
+    }
+
     // const formJson = this.encodeToBase64(form)
     if (eventDurationMinutes === 0) {
       this.displayLoader = false
       this.disableCreateButton = false
       this.openSnackbar('Duration cannot be zero')
     } else {
+      //console.log('this.reqPayload', this.reqPayload)
       this.eventsSvc.createEvent(this.reqPayload).subscribe(
         res => {
           this.displayLoader = false
@@ -617,5 +624,71 @@ export class CreateEventComponent implements OnInit {
     if (control) {
       control.setValue(this.currentDate)
     }
+    let eventTypeControl = this.createEventForm.get('eventType')
+    if (eventTypeControl && eventTypeControl.value === 'Rajya Karmayogi Saptah') {
+      // if (this.stateList.length === 0) {
+      this.getSlwResourceTypeDetail()
+      // }
+    } else {
+      this.showRajyaField = false
+      this.createEventForm.controls['state'].setValidators([])
+    }
+  }
+
+  getSlwResourceTypeDetail() {
+    let payload = {
+      "request": {
+        "type": "page",
+        "subType": "slwResourceTypeDetails",
+        "action": "page-configuration",
+        "component": "spv", "rootOrgId": "*"
+      }
+    }
+    this.eventsSvc.getSlwResourceTypeDetail(payload).subscribe((data) => {
+      if (data && data.slwResourceTypeDetails && data.slwResourceTypeDetails.length) {
+        this.stateList = data.slwResourceTypeDetails
+        if (this.stateList && this.stateList.length) {
+          this.showRajyaField = true
+          setTimeout(() => {
+            const control = this.createEventForm.get('state')
+            if (control) {
+              control.setValue(this.stateList[0]['stateOrMinistryName'])
+            }
+          }, 0)
+
+        }
+
+        //this.createEventForm.get['state'].setValue(this.stateList[0]['stateOrMinistryName'])
+      }
+
+      this.createEventForm.controls['state'].setValidators([Validators.required])
+    })
+
+  }
+
+  getStateDetail() {
+    let payload: any
+    if (this.createEventForm.controls['state'].value) {
+      payload = this.stateList.filter((item: any) => {
+        if (item && item.stateOrMinistryName && item.stateOrMinistryName === this.createEventForm.controls['state'].value) {
+          return item
+        }
+      })
+    }
+    return payload && payload[0] ? payload[0] : null
+  }
+
+  youTubeUrlChange(url: string): string {
+
+    const regExp = /^.*(youtube.com\/|embed\/|watch\?v=)([^#\&\?]*).*/
+    const match = url.match(regExp)
+    if (match && match[2].length === 11) {
+      return `https://www.youtube.com/embed/${match[2]}`
+    }
+    return url
+  }
+
+  ngOnDestroy() {
+    this.stateList = []
   }
 }

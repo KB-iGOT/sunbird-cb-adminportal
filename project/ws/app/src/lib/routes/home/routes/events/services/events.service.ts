@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Observable } from 'rxjs'
 import { environment } from '..//../../../../../../../../../src/environments/environment'
+import { map } from 'rxjs/operators'
+// import { catchError, map } from 'rxjs/operators'
 
 const API_END_POINTS = {
   CREATE_EVENT: '/apis/proxies/v8/event/v4/create',
@@ -16,6 +18,7 @@ const API_END_POINTS = {
   CREATE_ASSET: 'apis/proxies/v8/action/content/v3/create',
   UPLOAD_FILE: 'apis/proxies/v8/upload/action/content/v3/upload',
   ARCHIVE_EVENT: '/apis/proxies/v8/event/v4/retire',
+  FORM_READ: `/apis/v1/form/read`,
 }
 
 @Injectable({
@@ -91,5 +94,26 @@ export class EventsService {
   getPublicUrl(url: string): string {
     const mainUrl = url.split('/content').pop() || ''
     return `${environment.contentHost}/${environment.contentBucket}/content${mainUrl}`
+  }
+
+  getSlwResourceTypeDetail(payload: any): Observable<any> {
+    return this.formReadData(payload).pipe(
+      map((rData: any) => {
+        const finalData = rData && rData.result.form.data
+        return (finalData)
+      }),
+      // catchError((_error: any) => {
+      //   const baseUrl = environment.sitePath
+      //   return this.http.get(`${baseUrl}/netcore.json`).pipe(
+      //     map(data => (data)),
+      //     catchError(err => of({ data: null, error: err })),
+      //   )
+      // }
+      // ),
+    )
+  }
+
+  formReadData(request: any): Observable<any> {
+    return this.http.post<any>(`${API_END_POINTS.FORM_READ}`, request)
   }
 }
