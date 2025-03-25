@@ -228,7 +228,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       description: this.controls['description']?.value || "",
       parentMapId: "",
     }
-    const sbRootOrgId = _.get(this.activatedRoute, 'snapshot?.parent?.data?.configService?.unMappedUser?.rootOrgId')
+    const sbRootOrgId = _.get(this.activatedRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrgId')
     if (sbRootOrgId) {
       payload['sbRootOrgId'] = sbRootOrgId
     }
