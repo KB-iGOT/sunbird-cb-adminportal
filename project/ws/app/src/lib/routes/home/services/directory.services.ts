@@ -29,6 +29,7 @@ export class DirectoryService {
       filters = {
         isTenant: true,
         status: 1,
+        ...(state === 'organisation' ? { isMdo: true } : { isCbp: true }),
       }
     }
 
@@ -38,6 +39,7 @@ export class DirectoryService {
           filters: {
             isTenant: true,
             status: 1,
+            ...(state === 'organisation' ? { isMdo: true } : { isCbp: true }),
           },
           query: queryText,
           limit: pagination.limit || 20,
