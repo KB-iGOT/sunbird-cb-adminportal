@@ -118,7 +118,9 @@ export class DirectoryViewComponent implements OnInit {
       }
     } else {
       this.tabledata = {
-        actions: [{ name: 'Edit', label: 'Edit info', icon: 'remove_red_eye', type: 'button' }],
+        // actions: [{ name: 'Edit', label: 'Edit info', icon: 'remove_red_eye', type: 'button' }],
+        actions: [{ name: '', label: '', icon: 'remove_red_eye', type: 'menu' }],
+        // link: { name: 'generate_link', generateLabel: 'Generate Link', column: 'Custom Registration', viewLabel: 'View Link' },
         columns: [
           { displayName: 'Department', key: 'mdo' },
           { displayName: 'Type', key: 'type' },

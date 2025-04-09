@@ -52,7 +52,7 @@
       </div>
       <ng-container>
         <ws-widget-directory-table [selectedDepartment]='currentDepartment' [tableData]='tabledata' [data]='data'
-          [needCreate]="isAllowed(allowedCreateRoles)" (eOnRowClick)="onRoleClick($event)"
+          [needCreate]="isAllowed(allowedCreateRoles)" (eOnRowClick)="onRoleClick($event)" [currentTab]="currentTab"
           (actionsClick)="actionClick($event)" (pageChangeEvent)="onPageChange($event)"
           (searchByEnterKey)="onEnterkySearch($event)">
         </ws-widget-directory-table>

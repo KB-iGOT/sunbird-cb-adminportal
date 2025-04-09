@@ -143,6 +143,9 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!this.isAllowed(this.allowedCreateRoles)) {
       this.tabsData = this.tabsData.filter(item => !(['designation_master'].includes(item.key)))
     }
+    if (this.currentDept === 'cbp-providers') {
+      this.tabsData = this.tabsData.filter(tab => tab?.key !== 'mentormanage' && tab?.key !== 'designation_master')
+    }
 
   }
   ngAfterViewInit() {
