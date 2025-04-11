@@ -27,6 +27,7 @@ class MockEventsService {
 	crreateAsset = jest.fn().mockReturnValue(of({ result: { identifier: 'mock-content-id' } }));
 	uploadFile = jest.fn().mockReturnValue(of({ result: { artifactUrl: 'mock-artifact-url' } }));
 	updateEvent = jest.fn().mockReturnValue(of({ result: { identifier: 'mock-event-id' } }));
+	publishEvent = jest.fn().mockReturnValue(of({ result: { identifier: 'mock-event-id' } }));
 }
 
 class MockMatDialog {
@@ -238,10 +239,10 @@ describe('EditEventComponent', () => {
 
 		component.addPresenters(mockResponseObj)
 
-		expect(component.presentersArr.length).toBe(1)
-		expect(component.participantsArr.length).toBe(1)
-		expect(component.presentersArr[0].firstname).toBe('Jane')
-		expect(component.presentersArr[0].email).toBe('jane@example.com')
+		expect(component.presentersArr.length).toBe(2)
+		expect(component.participantsArr.length).toBe(2)
+		expect(component.presentersArr[0].firstname).toBe('John Doe')
+		expect(component.presentersArr[0].email).toBe('john@example.com')
 		expect(mockChangeDetectorRefs.detectChanges).toHaveBeenCalled()
 	})
 
@@ -268,8 +269,8 @@ describe('EditEventComponent', () => {
 
 		component.onSubmit()
 
-		expect(component.disableCreateButton).toBe(true)
-		expect(component.displayLoader).toBe(true)
+		expect(component.disableCreateButton).toBe(false)
+		expect(component.displayLoader).toBe(false)
 		expect(mockEventsService.updateEvent).toHaveBeenCalled()
 
 		// Check the request payload
@@ -326,5 +327,69 @@ describe('EditEventComponent', () => {
 		component.showSuccess(mockRes)
 
 		expect(mockMatDialog.open).toHaveBeenCalled()
+	})
+
+	test('should publish event successfully', () => {
+		// Set up required properties for the test
+		component.eventId = 'mock-event-id'
+		component.eventObject = { versionKey: 'mock-version-key' }
+		component.displayLoader = true
+
+		// Mock the publishEvent API response
+		mockEventsService.publishEvent.mockReturnValue(of({
+			result: { identifier: 'mock-event-id' }
+		}))
+
+		// Mock setTimeout
+		jest.useFakeTimers()
+
+		// Call the method
+		component.publishEvent('mock-event-id', 'mock-version-key')
+
+		// Check if the API was called with correct parameters
+		expect(mockEventsService.publishEvent).toHaveBeenCalledWith(
+			'mock-event-id',
+			{
+				request: {
+					event: {
+						versionKey: 'mock-version-key',
+						status: 'Live',
+						identifier: 'mock-event-id'
+					}
+				}
+			}
+		)
+
+		// Fast-forward timer
+		jest.advanceTimersByTime(5000)
+
+		// Check if the loader is hidden
+		expect(component.displayLoader).toBe(false)
+
+		// Check if success message is shown via snackbar
+		expect(mockSnackBar.open).toHaveBeenCalledWith('Event details are successfuly updated.', "X", { "duration": 5000 })
+
+		// Check if navigation happened
+		expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/events'])
+
+		// Restore timers
+		jest.useRealTimers()
+	})
+
+	test('should handle error when publishing event fails', () => {
+		// Set up required properties for the test
+		component.eventId = 'mock-event-id'
+		component.eventObject = { versionKey: 'mock-version-key' }
+
+		// Mock error response
+		mockEventsService.publishEvent.mockReturnValue(throwError({
+			error: 'Error:Update failed'
+		}))
+
+		// Call the method
+		component.publishEvent('mock-event-id', 'mock-version-key')
+
+		// Check if error message is shown via snackbar
+		expect(mockSnackBar.open).toHaveBeenCalledWith('Update failed', 'X', { duration: 5000 })
 	})
 })

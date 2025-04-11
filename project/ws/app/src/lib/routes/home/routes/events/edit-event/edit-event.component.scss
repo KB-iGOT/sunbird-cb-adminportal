@@ -879,3 +879,9 @@ input.mat-input-element {
   top: 50%;
   left: 50%;
 }
+
+::ng-deep.mat-mdc-icon-button[disabled] {
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.5!important
+}

@@ -124,6 +124,7 @@ export class EditEventComponent implements OnInit {
   eventObject: any
   reqPayload: any
   showRajyaField = false
+  fullEdit: boolean = false
   constructor(private snackBar: MatSnackBar, private eventsSvc: EventsService, private matDialog: MatDialog,
     // tslint:disable-next-line:align
     private router: Router, private configSvc: ConfigurationsService, private changeDetectorRefs: ChangeDetectorRef,
@@ -234,6 +235,22 @@ export class EditEventComponent implements OnInit {
             this.createEventForm.controls['presenters'].setValue(this.presentersArr)
           }
         }
+        const expiryDateFormat = this.getCustomDateFormat(eventObj.endDate, eventObj.endTime)
+        if (this.compareDate(expiryDateFormat)) {
+          this.fullEdit = false
+          this.createEventForm.get('eventTitle')?.disable()
+          this.createEventForm.get('description')?.disable()
+          if (eventObj.learningObjective) {
+            this.createEventForm.get('agenda')?.disable()
+          }
+
+          this.createEventForm.get('eventDate')?.disable()
+          this.createEventForm.get('eventTime')?.disable()
+          this.createEventForm.get('eventDurationHours')?.disable()
+          this.createEventForm.get('eventDurationMinutes')?.disable()
+        } else {
+          this.fullEdit = true
+        }
         this.changeDetectorRefs.detectChanges()
       })
     })
@@ -247,6 +264,19 @@ export class EditEventComponent implements OnInit {
     this.maxDate = maxNewDate.setMonth(maxNewDate.getMonth() + 1)
     // this.todayDate = new Date((new Date().getTime()))
     // this.todayTime = '00:00'
+  }
+
+  compareDate(selectedDate: any) {
+    const now = new Date()
+    const today = moment(now).format('YYYY-MM-DD HH:mm')
+    return (selectedDate < today) ? true : false
+  }
+
+  getCustomDateFormat(date: any, time: any) {
+    const stime = time.split('+')[0]
+    const hour = stime.substr(0, 2)
+    const min = stime.substr(2, 3)
+    return `${date} ${hour}${min}`
   }
 
   ngOnInit() {
@@ -592,11 +622,9 @@ export class EditEventComponent implements OnInit {
           if (res) {
             // console.log('res', res)
             this.disableCreateButton = false
-            setTimeout(() => {
-              this.displayLoader = false
-              this.openSnackbar('Event details are successfuly updated.')
-              this.router.navigate([`/app/home/events`])
-            }, 5000)
+            const identifier = res.result.identifier
+            const versionKey = res.result.versionKey
+            this.publishEvent(identifier, versionKey)
           }
         },
         (err: any) => {
@@ -606,6 +634,32 @@ export class EditEventComponent implements OnInit {
         }
       )
     }
+  }
+
+  publishEvent(identifierkey: any, versionKey: any) {
+    const reqestBody = {
+      request: {
+        event: {
+          versionKey,
+          status: 'Live',
+          identifier: identifierkey,
+        },
+      },
+    }
+    this.eventsSvc.publishEvent(identifierkey, reqestBody).subscribe(
+      res => {
+        // tslint:disable-next-line:align
+        console.log("res", res)
+        setTimeout(() => {
+          this.displayLoader = false
+          this.openSnackbar('Event details are successfuly updated.')
+          this.router.navigate([`/app/home/events`])
+        }, 5000)
+      },
+      (err: any) => {
+        this.openSnackbar(err.error.split(':')[1])
+      }
+    )
   }
 
   encodeToBase64(body: any) {
