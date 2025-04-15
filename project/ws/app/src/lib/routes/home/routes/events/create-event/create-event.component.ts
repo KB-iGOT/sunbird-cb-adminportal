@@ -481,6 +481,13 @@ export class CreateEventComponent implements OnInit, OnDestroy {
             registrationEndDate: moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
             owner: this.department,
             createdFor: createdforarray,
+            startDateTime: this.combineDateAndTime(
+              moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              this.createEventForm.controls['eventTime'].value + ':00+05:30'),
+            endDateTime: this.combineDateAndTime(
+              newendDate ? newendDate : moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              finalTime
+            ),
           },
         },
       }
@@ -520,6 +527,13 @@ export class CreateEventComponent implements OnInit, OnDestroy {
             registrationEndDate: moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
             owner: this.department,
             createdFor: createdforarray,
+            startDateTime: this.combineDateAndTime(
+              moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              this.createEventForm.controls['eventTime'].value + ':00+05:30'),
+            endDateTime: this.combineDateAndTime(
+              newendDate ? newendDate : moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              finalTime
+            ),
           },
         },
       }
@@ -553,6 +567,14 @@ export class CreateEventComponent implements OnInit, OnDestroy {
       )
     }
   }
+
+  combineDateAndTime(date: any, time: any) {
+    const combinedDateTime = `${date}T${time}`
+    const dateObj = new Date(combinedDateTime)
+    const isoString = dateObj.toISOString()
+    return isoString.replace('Z', '+0000')
+  }
+
 
   encodeToBase64(body: any) {
     const sString = JSON.stringify(body)
