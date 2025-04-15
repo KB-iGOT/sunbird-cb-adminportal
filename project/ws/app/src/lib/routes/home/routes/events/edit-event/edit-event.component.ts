@@ -534,6 +534,13 @@ export class EditEventComponent implements OnInit {
             createdFor: createdforarray,
             identifier: this.eventId,
             versionKey: this.eventObject.versionKey,
+            startDateTime: this.combineDateAndTime(
+              moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              this.createEventForm.controls['eventTime'].value + ':00+05:30'),
+            endDateTime: this.combineDateAndTime(
+              newendDate ? newendDate : moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              finalTime
+            ),
           },
         },
       }
@@ -573,6 +580,13 @@ export class EditEventComponent implements OnInit {
             createdFor: createdforarray,
             identifier: this.eventId,
             versionKey: this.eventObject.versionKey,
+            startDateTime: this.combineDateAndTime(
+              moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              this.createEventForm.controls['eventTime'].value + ':00+05:30'),
+            endDateTime: this.combineDateAndTime(
+              newendDate ? newendDate : moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              finalTime
+            ),
           },
         },
       }
@@ -606,6 +620,13 @@ export class EditEventComponent implements OnInit {
         }
       )
     }
+  }
+
+  combineDateAndTime(date: any, time: any) {
+    const combinedDateTime = `${date}T${time}`
+    const dateObj = new Date(combinedDateTime)
+    const isoString = dateObj.toISOString()
+    return isoString.replace('Z', '+0000')
   }
 
   encodeToBase64(body: any) {
