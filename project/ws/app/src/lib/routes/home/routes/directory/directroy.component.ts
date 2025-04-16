@@ -318,7 +318,11 @@ export class DirectoryViewComponent implements OnInit {
             const obj = {
               id: element.id,
               currentDepartment: department,
-              type: element.ministryOrStateType ? element.ministryOrStateType.charAt(0).toUpperCase() + element.ministryOrStateType.slice(1) : '',
+              type: element.ministryOrStateType
+                ? element.ministryOrStateType.charAt(0).toUpperCase() + element.ministryOrStateType.slice(1)
+                : element.ministryorstatetype
+                  ? element.ministryorstatetype.charAt(0).toUpperCase() + element.ministryorstatetype.slice(1)
+                  : '',
               user: element.noOfMembers || 0,
               head: department,
               typeid: element.organisationSubType,
@@ -332,7 +336,7 @@ export class DirectoryViewComponent implements OnInit {
               registrationLink: element?.registrationLink || null,
               startDateRegistration: element?.startDateRegistration || null,
               endDateRegistration: element?.endDateRegistration || null,
-              stateOrMinistry: element?.ministryOrStateName
+              stateOrMinistry: element?.ministryOrStateName || element?.ministryorstatename
 
             }
             filteredData2.push(obj)
