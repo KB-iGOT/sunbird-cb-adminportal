@@ -69,7 +69,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
 
     this.initialization()
     if (this.openMode === 'editMode') {
-      this.getOrganization(this.rowData.organisation, this.rowData.type.toLowerCase())
+      this.editOrganization(this.rowData)
     }
 
     this.organizationNameList = this.orgList.map(org => org.organisation.trim().toLowerCase())
@@ -118,6 +118,16 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       this.filteredMinistry = [...this.ministriesList]
 
     }
+    // let stateOrMinistryData = {}
+    // if (_.get(this.rowData, 'type', '').toLowerCase() === 'state') {
+    //   const stateName = _.get(this.rowData, 'stateOrMinistry', '')
+    //   stateOrMinistryData = this.statesList.find((state: any) => state.orgName === stateName) || {}
+    // } else {
+    //   const ministryName = _.get(this.rowData, 'stateOrMinistry', '')
+    //   stateOrMinistryData = this.ministriesList.find((ministry: any) => ministry.orgName === ministryName) || {}
+    // }
+    // state: new FormControl(stateOrMinistryData),
+    //   ministry: new FormControl(stateOrMinistryData),
 
     this.organisationForm = this.formBuilder.group({
       organisationName: new FormControl(_.get(this.rowData, 'organisation', ''),
@@ -126,14 +136,15 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
           Validators.maxLength(100),
           Validators.pattern(this.ORG_NAME_PATTERN)
         ]),
-      category: new FormControl(_.get(this.rowData, 'type', ''), [Validators.required]),
+      category: new FormControl(_.get(this.rowData, 'type', '') || 'State', [Validators.required]),
       state: new FormControl(_.get(this.rowData, 'state', '')),
       ministry: new FormControl(_.get(this.rowData, 'ministry', '')),
       description: new FormControl(_.get(this.rowData, 'description', ''), [Validators.required, Validators.maxLength(1000)])
     })
 
-    this.selectedLogo = this.rowData?.logo
+    this.selectedLogo = this.rowData?.logo || ''
     this.valueChangeEvents()
+    console.log(this.organisationForm)
   }
 
   createDuplicateOrgNameValidator(organizationNameList: string[]) {
@@ -206,7 +217,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
   }
 
   get getCategory() {
-    return this.organisationForm.controls.category.value
+    return this.organisationForm?.controls?.category?.value
   }
 
   closeNaveBar() {
@@ -342,6 +353,21 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       },
     })
   }
+  editOrganization(org: any) {
+    // let identifier = org.id
+    this.heirarchyObject = org
+    // this.createMDOService.signUpSearch(identifier).subscribe({
+    //   next: (response: any) => {
+    //     const organization = response.result.response.find(
+    //       (org: any) => org.orgName === org.organisation
+    //     )
+    //     if (organization) {
+    //       this.heirarchyObject = organization
+    //     }
+    //   },
+    // })
+  }
+
 
   onSelectStateMinistry(org: any) {
     this.getOrganization(org.orgName, this.controls['category'].value)
