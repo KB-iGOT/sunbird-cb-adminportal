@@ -17,7 +17,7 @@
       <button class="text-white ws-mat-primary-background margin-right-m" mat-raised-button color="primary"
         type="submit" [disabled]="!reasonForm.valid"><span class="text-white">Reject</span></button>
       <button mat-raised-button type="button"
-        class="flex-auto-display mat-button-base margin-right-m ws-mat-default-text" [mat-dialog-close]
+        class="flex-auto-display mat-button-base margin-right-m ws-mat-default-text" (click)="onNoClick()"
         cdkFocusInitial>Cancel</button>
     </div>
   </form>
