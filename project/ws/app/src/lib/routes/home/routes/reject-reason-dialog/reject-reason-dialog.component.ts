@@ -24,4 +24,8 @@ export class RejectReasonDialogComponent implements OnInit {
     this.dialogRef.close(this.reasonForm.value)
   }
 
+  onNoClick(): void {
+    this.dialogRef.close()
+  }
+
 }
