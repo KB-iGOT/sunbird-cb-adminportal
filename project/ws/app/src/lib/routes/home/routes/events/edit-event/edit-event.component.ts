@@ -526,7 +526,7 @@ export class EditEventComponent implements OnInit {
 
     if (eventDate < todayDate) {
       const linkArry = []
-      linkArry.push(this.createEventForm.controls['conferenceLink'].value)
+      linkArry.push(this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value))
       // form.request.event.recordedLinks = arry
       this.reqPayload = {
         request: {
@@ -547,7 +547,7 @@ export class EditEventComponent implements OnInit {
             expiryDate: expiryDateTime,
             duration: eventDurationMinutes,
             // registrationLink: this.createEventForm.controls['conferenceLink'].value,
-            recordedLinks: linkArry,
+            //recordedLinks: linkArry,
             resourceType: this.createEventForm.controls['eventType'].value,
             categoryType: 'Article',
             creatorDetails: this.createEventForm.controls['presenters'].value,
@@ -605,7 +605,7 @@ export class EditEventComponent implements OnInit {
             endTime: finalTime,
             code: this.createEventForm.controls['eventTitle'].value,
             eventType: 'Online',
-            registrationEndDate: moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+            //registrationEndDate: moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
             owner: this.department,
             createdFor: createdforarray,
             identifier: this.eventId,
@@ -621,7 +621,11 @@ export class EditEventComponent implements OnInit {
         },
       }
     }
-
+    if (this.createEventForm.controls['eventType'].value === 'Webinar') {
+      this.reqPayload.request.event.recordedLinks = [this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)]
+    } else {
+      this.reqPayload.request.event.registrationLink = this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)
+    }
     if (this.createEventForm.controls['state'] && this.createEventForm.controls['state'].value && this.showRajyaField) {
       this.reqPayload['request']['event']['resourceTypeDetails'] = this.getStateDetail()
     }
@@ -791,13 +795,9 @@ export class EditEventComponent implements OnInit {
   }
 
   youTubeUrlChange(url: string): string {
-
-    const regExp = /^.*(youtube.com\/|embed\/|watch\?v=)([^#\&\?]*).*/
+    const regExp = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/
     const match = url.match(regExp)
-    if (match && match[2].length === 11) {
-      return `https://www.youtube.com/embed/${match[2]}`
-    }
-    return url
+    return match && match[1] ? `https://www.youtube.com/embed/${match[1]}` : url
   }
 
   ngOnDestroy() {
