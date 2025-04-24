@@ -320,9 +320,9 @@ export class DirectoryViewComponent implements OnInit {
               currentDepartment: department,
               // type: element.ministryOrStateType ? element.ministryOrStateType.charAt(0).toUpperCase() + element.ministryOrStateType.slice(1) : '',
               type: element?.ministryOrStateType
-                ? element?.ministryOrStateType.charAt(0).toUpperCase() + element?.ministryOrStateType.slice(1)
+                ? element?.ministryOrStateType?.charAt(0).toUpperCase() + element?.ministryOrStateType.slice(1)
                 : element?.ministryorstatetype
-                  ? element?.ministryorstatetype.charAt(0).toUpperCase() + element?.ministryorstatetype.slice(1)
+                  ? element?.ministryorstatetype?.charAt(0).toUpperCase() + element?.ministryorstatetype.slice(1)
                   : '',
               user: element.noOfMembers || 0,
               head: department,
