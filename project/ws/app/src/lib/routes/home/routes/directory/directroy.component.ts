@@ -66,6 +66,7 @@ export class DirectoryViewComponent implements OnInit {
       this.currentTab = params['tab']
       if (this.currentFilter === null || this.currentFilter === undefined) {
         this.currentFilter = 'organisation'
+        this.currentTab = !this.currentTab ? 'organisation' : this.currentTab
       }
     })
     this.getAllDepartmentsHeaderAPI()
@@ -314,16 +315,13 @@ export class DirectoryViewComponent implements OnInit {
         case 'organisation':
           this.wholeData2.forEach((element: any) => {
             let department = key
+            let orgType = element.ministryorstatetype ? element.ministryorstatetype.charAt(0).toUpperCase() + element.ministryorstatetype.slice(1) :
+              element.ministryOrStateType ? element.ministryOrStateType.charAt(0).toUpperCase() + element.ministryOrStateType.slice(1) : ''
             // if (element.isMinistry || element.isState || element.isCbc || element.isMdo) {
             const obj = {
               id: element.id,
               currentDepartment: department,
-              // type: element.ministryOrStateType ? element.ministryOrStateType.charAt(0).toUpperCase() + element.ministryOrStateType.slice(1) : '',
-              type: element?.ministryOrStateType
-                ? element?.ministryOrStateType?.charAt(0).toUpperCase() + element?.ministryOrStateType.slice(1)
-                : element?.ministryorstatetype
-                  ? element?.ministryorstatetype?.charAt(0).toUpperCase() + element?.ministryorstatetype.slice(1)
-                  : '',
+              type: orgType,
               user: element.noOfMembers || 0,
               head: department,
               typeid: element.organisationSubType,
@@ -337,7 +335,7 @@ export class DirectoryViewComponent implements OnInit {
               registrationLink: element?.registrationLink || null,
               startDateRegistration: element?.startDateRegistration || null,
               endDateRegistration: element?.endDateRegistration || null,
-              stateOrMinistry: element?.ministryOrStateName || element?.ministryorstatename
+              stateOrMinistry: element?.ministryOrStateName || element?.ministryorstatename || null,
 
             }
             filteredData2.push(obj)
