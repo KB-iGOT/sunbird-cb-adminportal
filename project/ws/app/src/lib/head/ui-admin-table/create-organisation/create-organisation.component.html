@@ -6,7 +6,6 @@
           <div>{{ openMode === 'createNew' ? 'Create Organisation' : 'MDO Details'}}</div>
           <mat-icon class="closeIcon" (click)="closeNaveBar()">close</mat-icon>
         </div>
-        {{selectedLogo}} hi
         <div class="px-5 pt-6">
           <ng-container *ngIf="openMode !== 'createNew'">
             <div class="flex items-end gap-6 mb-10">
@@ -177,11 +176,11 @@
                 <div class="grid grid-cols-2 gap-8 mt-4">
                   <div class="flex flex-col gap-2">
                     <div class="viewModeLable">Type</div>
-                    <div class="viewModeValue">{{rowData?.type}}</div>
+                    <div class="viewModeValue">{{rowData?.type|| '-'}}</div>
                   </div>
                   <div class="flex flex-col gap-2">
                     <div class="viewModeLable">State/Center</div>
-                    <div class="viewModeValue">{{rowData?.stateOrMinistry}}</div>
+                    <div class="viewModeValue">{{rowData?.stateOrMinistry || '-'}}</div>
                   </div>
                   <div class="flex flex-col gap-2">
                     <div class="viewModeLable">Created Date and Time</div>
@@ -206,7 +205,6 @@
                   </div>
                 </div>
               </ng-container>
-              {{organisationForm?.value | json}}
             </form>
           </ng-container>
           <ng-template #viewMode>

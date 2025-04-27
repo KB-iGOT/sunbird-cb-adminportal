@@ -66,6 +66,7 @@ export class DirectoryViewComponent implements OnInit {
       this.currentTab = params['tab']
       if (this.currentFilter === null || this.currentFilter === undefined) {
         this.currentFilter = 'organisation'
+        this.currentTab = !this.currentTab ? 'organisation' : this.currentTab
       }
     })
     this.getAllDepartmentsHeaderAPI()

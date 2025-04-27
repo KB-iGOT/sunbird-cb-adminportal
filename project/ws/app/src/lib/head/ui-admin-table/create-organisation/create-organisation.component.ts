@@ -286,16 +286,16 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
     this.loaderService.changeLoad.next(true)
     this.isLoading = true
     const payload = {
-      orgName: request.orgName,
-      channel: request.channel,
+      // orgName: request.orgName,
+      // channel: request.channel,
       // organisationSubType: this.heirarchyObject.sbOrgSubType,
-      organisationSubType: "board",
+      // organisationSubType: "board",
       orgId: this.rowData.id,
       logo: this.uploadedLogoResponse?.qrcodepath || this.rowData.logo,
       description: request.description
     }
 
-    this.createMDOService.updateOrganization(payload).subscribe({
+    this.createMDOService.updateOrganizationV2(payload).subscribe({
       next: (response: any) => {
         if (response.result) {
           this.organizationCreated.emit(payload)
@@ -315,6 +315,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
 
   uploadLogo(event: Event) {
     const input = event.target as HTMLInputElement
+    this.isLoading = true
     if (input.files?.length) {
       this.selectedLogoFile = input.files[0]
       this.selectedLogoName = this.selectedLogoFile.name
@@ -330,6 +331,10 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
         return
       }
       this.uploadOrganizationLogo()
+    } else {
+
+
+      this.isLoading = false
     }
   }
 
@@ -358,9 +363,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
     this.heirarchyObject = org
     // this.createMDOService.signUpSearch(identifier).subscribe({
     //   next: (response: any) => {
-    //     const organization = response.result.response.find(
-    //       (org: any) => org.orgName === org.organisation
-    //     )
+    //     const organization = response.result.response.content[0]
     //     if (organization) {
     //       this.heirarchyObject = organization
     //     }
@@ -378,6 +381,8 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
     formData.append('file', this.selectedLogoFile)
     this.createMDOService.uploadOrganizationLogo(formData).subscribe({
       next: (response: any) => {
+
+        this.isLoading = false
         if (response.result && Object.keys(response.result).length > 0 && response.result.qrcodepath) {
           this.uploadedLogoResponse = response.result
           this.selectedLogo = this.uploadedLogoResponse.qrcodepath
@@ -391,6 +396,8 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
         this.snackBar.open(`Couldn't upload the logo, Please try again`, 'X', { panelClass: ['error'] })
         this.selectedLogoFile = null
         this.selectedLogoName = ''
+
+        this.isLoading = false
       }
     })
   }
