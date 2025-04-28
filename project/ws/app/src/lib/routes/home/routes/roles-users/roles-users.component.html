@@ -12,7 +12,7 @@
       <ng-container>
         <ws-widget-ui-user-table [hidden]="currentTab==='rolesandaccess'" [tableData]="tabledata" [data]="data"
           [otherInput]="createdDepartment" [needAddAdmin]="false" [needCreateUser]="false"
-          (searchByEnterKey)="onEnterkySearch($event)" [isSurveySearch]="true">
+          (actionsClick)="editUser($event)" (searchByEnterKey)="onEnterkySearch($event)" [isSurveySearch]="true">
         </ws-widget-ui-user-table>
       </ng-container>
     </mat-card-content>
