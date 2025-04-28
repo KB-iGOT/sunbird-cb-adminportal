@@ -175,7 +175,7 @@ export class CreateUserComponent implements OnInit {
     this.directoryService.getDepartmentTitles().subscribe(res => {
       const departmentHeaderArray = JSON.parse(res.result.response.value)
       departmentHeaderArray.orgTypeList.forEach((ele: { name: any, isHidden: any, roles: [] }) => {
-        if (environment.cbpProviderRoles.includes(this.currentDept.toLowerCase())) {
+        if (environment && environment.cbpProviderRoles && environment.cbpProviderRoles.includes(this.currentDept.toLowerCase())) {
           this.currentDept = 'CBP'
         }
         if (ele.name === this.currentDept.toUpperCase()) {
@@ -432,7 +432,7 @@ export class CreateUserComponent implements OnInit {
           this.displayLoader = false
           // this.disableCreateButton = false
           this.openSnackbar(`${data.result.response}`)
-          if (this.redirectionPath.indexOf('/app/home/') < 0) {
+          if (this.redirectionPath.indexOf('/app/home/') < 0 || this.redirectionPath.indexOf('/app/home/roles-users/') < 0) {
             // this.exact = this.redirectionPath.split("/app")
             // this.exactPath = "/app" + this.exact[1]
             // this.exactPath = this.exactPath.replace("%3B", ";")
