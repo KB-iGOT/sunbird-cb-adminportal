@@ -534,6 +534,13 @@ export class EditEventComponent implements OnInit {
             createdFor: createdforarray,
             identifier: this.eventId,
             versionKey: this.eventObject.versionKey,
+            startDateTime: this.combineDateAndTime(
+              moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              this.createEventForm.controls['eventTime'].value + ':00+05:30'),
+            endDateTime: this.combineDateAndTime(
+              newendDate ? newendDate : moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              finalTime
+            ),
           },
         },
       }
@@ -573,9 +580,22 @@ export class EditEventComponent implements OnInit {
             createdFor: createdforarray,
             identifier: this.eventId,
             versionKey: this.eventObject.versionKey,
+            startDateTime: this.combineDateAndTime(
+              moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              this.createEventForm.controls['eventTime'].value + ':00+05:30'),
+            endDateTime: this.combineDateAndTime(
+              newendDate ? newendDate : moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              finalTime
+            ),
           },
         },
       }
+    }
+
+    if (this.createEventForm.controls['eventType'].value === 'Webinar') {
+      this.reqPayload.request.event.recordedLinks = [this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)]
+    } else {
+      this.reqPayload.request.event.registrationLink = this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)
     }
 
     if (this.createEventForm.controls['state'] && this.createEventForm.controls['state'].value && this.showRajyaField) {
@@ -606,6 +626,13 @@ export class EditEventComponent implements OnInit {
         }
       )
     }
+  }
+
+  combineDateAndTime(date: any, time: any) {
+    const combinedDateTime = `${date}T${time}`
+    const dateObj = new Date(combinedDateTime)
+    const isoString = dateObj.toISOString()
+    return isoString.replace('Z', '+0000')
   }
 
   encodeToBase64(body: any) {
@@ -712,12 +739,9 @@ export class EditEventComponent implements OnInit {
 
   youTubeUrlChange(url: string): string {
 
-    const regExp = /^.*(youtube.com\/|embed\/|watch\?v=)([^#\&\?]*).*/
+    const regExp = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/
     const match = url.match(regExp)
-    if (match && match[2].length === 11) {
-      return `https://www.youtube.com/embed/${match[2]}`
-    }
-    return url
+    return match && match[1] ? `https://www.youtube.com/embed/${match[1]}` : url
   }
 
   ngOnDestroy() {

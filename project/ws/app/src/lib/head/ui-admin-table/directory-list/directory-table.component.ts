@@ -28,6 +28,7 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
   @ViewChild('searchInput') searchInput!: ElementRef
   @Input() tableData!: any
   @Input() data?: []
+  @Input() currentTab?: any
   @Input() totalDataCount!: number
   @Input() selectedDepartment!: string
   @Input() departmentID!: string

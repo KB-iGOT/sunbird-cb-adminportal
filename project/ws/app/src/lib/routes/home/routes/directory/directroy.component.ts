@@ -118,7 +118,9 @@ export class DirectoryViewComponent implements OnInit {
       }
     } else {
       this.tabledata = {
-        actions: [{ name: 'Edit', label: 'Edit info', icon: 'remove_red_eye', type: 'button' }],
+        // actions: [{ name: 'Edit', label: 'Edit info', icon: 'remove_red_eye', type: 'button' }],
+        actions: [{ name: '', label: '', icon: 'remove_red_eye', type: 'menu' }],
+        // link: { name: 'generate_link', generateLabel: 'Generate Link', column: 'Custom Registration', viewLabel: 'View Link' },
         columns: [
           { displayName: 'Department', key: 'mdo' },
           { displayName: 'Type', key: 'type' },
@@ -316,7 +318,12 @@ export class DirectoryViewComponent implements OnInit {
             const obj = {
               id: element.id,
               currentDepartment: department,
-              type: element.ministryOrStateType ? element.ministryOrStateType.charAt(0).toUpperCase() + element.ministryOrStateType.slice(1) : '',
+              // type: element.ministryOrStateType ? element.ministryOrStateType.charAt(0).toUpperCase() + element.ministryOrStateType.slice(1) : '',
+              type: element?.ministryOrStateType
+                ? element?.ministryOrStateType?.charAt(0).toUpperCase() + element?.ministryOrStateType.slice(1)
+                : element?.ministryorstatetype
+                  ? element?.ministryorstatetype?.charAt(0).toUpperCase() + element?.ministryorstatetype.slice(1)
+                  : '',
               user: element.noOfMembers || 0,
               head: department,
               typeid: element.organisationSubType,
@@ -330,7 +337,7 @@ export class DirectoryViewComponent implements OnInit {
               registrationLink: element?.registrationLink || null,
               startDateRegistration: element?.startDateRegistration || null,
               endDateRegistration: element?.endDateRegistration || null,
-              stateOrMinistry: element?.ministryOrStateName
+              stateOrMinistry: element?.ministryOrStateName || element?.ministryorstatename
 
             }
             filteredData2.push(obj)
