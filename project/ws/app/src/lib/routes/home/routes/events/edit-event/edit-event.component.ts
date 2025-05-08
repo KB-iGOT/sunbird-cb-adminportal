@@ -176,7 +176,7 @@ export class EditEventComponent implements OnInit {
 
     this.activeRoute.params.subscribe(params => {
       this.eventId = params['id']
-      this.eventsSvc.getEventDetails(this.eventId).subscribe(res => {
+      this.eventsSvc.getEventDetailsInEditMode(this.eventId).subscribe(res => {
         const eventObj = res.result.event
         this.eventObject = eventObj
         this.createEventForm.controls['eventPicture'].setValue(eventObj.appIcon)
@@ -189,16 +189,13 @@ export class EditEventComponent implements OnInit {
         const newendDate = `${eventObj.startDate} ${eventObj.startTime}`
         const eTime = new Date(newendDate).valueOf()
         const cDate = new Date().valueOf()
-        if (eTime < cDate) {
-          if (eventObj.recordedLinks && eventObj.recordedLinks.length > 0) {
-            this.createEventForm.controls['conferenceLink'].setValue(eventObj.recordedLinks[0])
-          } else {
-            this.createEventForm.controls['conferenceLink'].setValue(eventObj.registrationLink)
-          }
+        if (eventObj.resourceType === 'Webinar') {
+          this.getLink(eventObj)
+        } else if (eTime < cDate) {
+          this.getLink(eventObj)
         } else {
           this.createEventForm.controls['conferenceLink'].setValue(eventObj.registrationLink)
         }
-
         this.createEventForm.controls['eventTime'].setValue(eventObj.endDate)
         this.createEventForm.controls['eventType'].setValue(eventObj.resourceType)
         this.todayDate = new Date((new Date(eventObj.endDate).getTime()))
@@ -240,9 +237,7 @@ export class EditEventComponent implements OnInit {
           this.fullEdit = false
           this.createEventForm.get('eventTitle')?.disable()
           this.createEventForm.get('description')?.disable()
-          if (eventObj.learningObjective) {
-            this.createEventForm.get('agenda')?.disable()
-          }
+          this.createEventForm.get('agenda')?.disable()
 
           this.createEventForm.get('eventDate')?.disable()
           this.createEventForm.get('eventTime')?.disable()
@@ -264,6 +259,14 @@ export class EditEventComponent implements OnInit {
     this.maxDate = maxNewDate.setMonth(maxNewDate.getMonth() + 1)
     // this.todayDate = new Date((new Date().getTime()))
     // this.todayTime = '00:00'
+  }
+
+  getLink(eventObj: any) {
+    if (eventObj.recordedLinks && eventObj.recordedLinks.length > 0) {
+      this.createEventForm.controls['conferenceLink'].setValue(eventObj.recordedLinks[0])
+    } else {
+      this.createEventForm.controls['conferenceLink'].setValue(eventObj.registrationLink)
+    }
   }
 
   compareDate(selectedDate: any) {
@@ -625,7 +628,11 @@ export class EditEventComponent implements OnInit {
     if (this.createEventForm.controls['eventType'].value === 'Webinar') {
       this.reqPayload.request.event.recordedLinks = [this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)]
     } else {
-      this.reqPayload.request.event.registrationLink = this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)
+      if (eventDate < todayDate) {
+        this.reqPayload.request.event.recordedLinks = [this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)]
+      } else {
+        this.reqPayload.request.event.registrationLink = this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)
+      }
     }
 
     if (this.createEventForm.controls['state'] && this.createEventForm.controls['state'].value && this.showRajyaField) {
