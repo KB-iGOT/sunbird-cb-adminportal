@@ -22,6 +22,7 @@ export interface INotification {
 export enum ENotificationType {
   Action = 'Action',
   Information = 'Information',
+  Info = "Info",
 }
 
 export enum ENotificationEvent {

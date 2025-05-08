@@ -78,7 +78,7 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
     private events: EventService,
     private snackBar: MatSnackBar) {
     this.userRoles = _.get(this.activatedRoute, 'snapshot.parent.data.configService.unMappedUser.roles')
-    if (this.userRoles.indexOf('STATE_ADMIN') >= 0) {
+    if (this.userRoles && this.userRoles.indexOf('STATE_ADMIN') >= 0) {
       this.isStateAdmin = true
     }
     this.dataSource = new MatTableDataSource<any>()
@@ -97,7 +97,7 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
     this.dataSource.paginator = this.paginator
     this.dataSource.sort = this.sort
     this.viewPaginator = true
-    this.activatedRoute.queryParams.subscribe(params => {
+    this.activatedRoute && this.activatedRoute.queryParams.subscribe(params => {
       this.departmentRole = params['currentDept']
       this.departmentName = params['depatName']
       this.orgName = params['orgName']
