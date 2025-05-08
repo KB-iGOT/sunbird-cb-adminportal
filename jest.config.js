@@ -6,6 +6,7 @@ module.exports = {
     'node_modules/(?!.*\\.mjs$)',
   ],
   moduleNameMapper: {
+    '@ws/app/(.*)$': '<rootDir>/project/ws/app/$1',
     'worker-loader!.*': '<rootDir>/test/mocks/workerMock.js',
     'pdfjs-dist/build/pdf.worker': '<rootDir>/test/mocks/workerMock.js',
     "^src/environments/environment$": "<rootDir>/src/environments/environment.ts",
