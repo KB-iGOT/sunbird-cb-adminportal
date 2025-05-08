@@ -75,6 +75,11 @@ export class RolesUsersComponent implements OnInit, AfterViewInit, OnDestroy {
           depType: this.currentDept,
         }
         this.createdDepartment = obj
+      } else {
+        this.createdDepartment = {
+          depName: this.configSvc.unMappedUser.rootOrg.orgName,
+          depType: 'SPV',
+        }
       }
 
       this.getAllKongUsers()
@@ -91,6 +96,7 @@ export class RolesUsersComponent implements OnInit, AfterViewInit, OnDestroy {
       sortColumn: '',
       sortState: 'asc',
     }
+    this.tabledata['actions'] = [{ name: 'Edit', label: 'Edit info', optional: true, icon: 'remove_red_eye', type: 'button' }]
 
   }
   ngAfterViewInit() {
@@ -174,6 +180,7 @@ export class RolesUsersComponent implements OnInit, AfterViewInit, OnDestroy {
           fullName: user ? `${user.firstName}` : null,
           // fullName: user ? `${user.firstName} ${user.lastName}` : null,
           email: this.profileUtilSvc.emailTransform(email) || this.profileUtilSvc.emailTransform(user.email),
+          roles: this.getRoleList(user),
           position: this.getRoleList(user).toString().replace(',', ', '),
           userId: user.userId,
         })
@@ -217,12 +224,30 @@ export class RolesUsersComponent implements OnInit, AfterViewInit, OnDestroy {
             // fullName: `${user.firstName} ${user.lastName}`,
             email: this.profileUtilSvc.emailTransform(_.get(user, 'profileDetails.personalDetails.primaryEmail'))
               || this.profileUtilSvc.emailTransform(user.email),
+            roles: this.getRoleList(user),
             position: this.getRoleList(user).toString().replace(',', ', '),
             userId: user.userId,
           }
         })
     }
     this.data = users
+  }
+
+  editUser(event: any) {
+    debugger
+    let userData: any = {}
+    userData = event.row
+    userData['position'] = event.row.roles
+    this.router.navigate(['app/home/create-user'], {
+      queryParams: {
+        id: this.orgiId,
+        currentDept: "organisation",
+        createDept: JSON.stringify(this.createdDepartment),
+        orgName: this.deptName,
+        redirectionPath: window.location.href,
+        // subOrgType: this.getSubOrgType()
+      }, state: { userData, updateButton: true },
+    })
   }
 
 }
