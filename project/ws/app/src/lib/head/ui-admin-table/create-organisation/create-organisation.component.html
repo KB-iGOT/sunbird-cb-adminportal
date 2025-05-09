@@ -12,11 +12,12 @@
               <div class="flex justify-center items-center log-frame relative rounded">
                 <input type="file" name="edit-orgLogo" id="edit-orgLogo" class="hidden" (change)="uploadLogo($event)"
                   accept=".png, .jpeg, .jpg">
-                <ng-container>
+                <ng-container *ngIf="selectedLogo">
                   <img class="log" [src]="selectedLogo" alt="log">
-                  <!-- <ng-container *ngIf="!rowData?.logo">
-                    <div class="">Logo</div>
-                  </ng-container> -->
+
+                </ng-container>
+                <ng-container *ngIf="!selectedLogo">
+                  <div class="">Logo</div>
                 </ng-container>
                 <div class="edit-logo" onclick="document.getElementById('edit-orgLogo').click()">
                   <mat-icon>edit</mat-icon>

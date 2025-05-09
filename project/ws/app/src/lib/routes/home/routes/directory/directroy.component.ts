@@ -154,7 +154,7 @@ export class DirectoryViewComponent implements OnInit {
     if (event) {
       this.pagination.limit = event.pageSize
       this.pagination.offset = (event.pageIndex) * event.pageSize
-      this.getAllDepartments('')
+      this.getAllDepartments(this.searchInputvalue.searchInput.nativeElement.value)
     }
   }
 
