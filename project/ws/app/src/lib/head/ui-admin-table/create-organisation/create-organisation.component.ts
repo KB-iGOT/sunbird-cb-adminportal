@@ -144,7 +144,6 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
 
     this.selectedLogo = this.rowData?.logo || ''
     this.valueChangeEvents()
-    console.log(this.organisationForm)
   }
 
   createDuplicateOrgNameValidator(organizationNameList: string[]) {
