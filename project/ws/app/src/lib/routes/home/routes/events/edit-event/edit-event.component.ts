@@ -124,6 +124,7 @@ export class EditEventComponent implements OnInit {
   eventObject: any
   reqPayload: any
   showRajyaField = false
+  fullEdit: boolean = false
   constructor(private snackBar: MatSnackBar, private eventsSvc: EventsService, private matDialog: MatDialog,
     // tslint:disable-next-line:align
     private router: Router, private configSvc: ConfigurationsService, private changeDetectorRefs: ChangeDetectorRef,
@@ -175,7 +176,7 @@ export class EditEventComponent implements OnInit {
 
     this.activeRoute.params.subscribe(params => {
       this.eventId = params['id']
-      this.eventsSvc.getEventDetails(this.eventId).subscribe(res => {
+      this.eventsSvc.getEventDetailsInEditMode(this.eventId).subscribe(res => {
         const eventObj = res.result.event
         this.eventObject = eventObj
         this.createEventForm.controls['eventPicture'].setValue(eventObj.appIcon)
@@ -188,16 +189,13 @@ export class EditEventComponent implements OnInit {
         const newendDate = `${eventObj.startDate} ${eventObj.startTime}`
         const eTime = new Date(newendDate).valueOf()
         const cDate = new Date().valueOf()
-        if (eTime < cDate) {
-          if (eventObj.recordedLinks && eventObj.recordedLinks.length > 0) {
-            this.createEventForm.controls['conferenceLink'].setValue(eventObj.recordedLinks[0])
-          } else {
-            this.createEventForm.controls['conferenceLink'].setValue(eventObj.registrationLink)
-          }
+        if (eventObj.resourceType === 'Webinar') {
+          this.getLink(eventObj)
+        } else if (eTime < cDate) {
+          this.getLink(eventObj)
         } else {
           this.createEventForm.controls['conferenceLink'].setValue(eventObj.registrationLink)
         }
-
         this.createEventForm.controls['eventTime'].setValue(eventObj.endDate)
         this.createEventForm.controls['eventType'].setValue(eventObj.resourceType)
         this.todayDate = new Date((new Date(eventObj.endDate).getTime()))
@@ -234,6 +232,20 @@ export class EditEventComponent implements OnInit {
             this.createEventForm.controls['presenters'].setValue(this.presentersArr)
           }
         }
+        const expiryDateFormat = this.getCustomDateFormat(eventObj.endDate, eventObj.endTime)
+        if (this.compareDate(expiryDateFormat)) {
+          this.fullEdit = false
+          this.createEventForm.get('eventTitle')?.disable()
+          this.createEventForm.get('description')?.disable()
+          this.createEventForm.get('agenda')?.disable()
+
+          this.createEventForm.get('eventDate')?.disable()
+          this.createEventForm.get('eventTime')?.disable()
+          this.createEventForm.get('eventDurationHours')?.disable()
+          this.createEventForm.get('eventDurationMinutes')?.disable()
+        } else {
+          this.fullEdit = true
+        }
         this.changeDetectorRefs.detectChanges()
       })
     })
@@ -247,6 +259,27 @@ export class EditEventComponent implements OnInit {
     this.maxDate = maxNewDate.setMonth(maxNewDate.getMonth() + 1)
     // this.todayDate = new Date((new Date().getTime()))
     // this.todayTime = '00:00'
+  }
+
+  getLink(eventObj: any) {
+    if (eventObj.recordedLinks && eventObj.recordedLinks.length > 0) {
+      this.createEventForm.controls['conferenceLink'].setValue(eventObj.recordedLinks[0])
+    } else {
+      this.createEventForm.controls['conferenceLink'].setValue(eventObj.registrationLink)
+    }
+  }
+
+  compareDate(selectedDate: any) {
+    const now = new Date()
+    const today = moment(now).format('YYYY-MM-DD HH:mm')
+    return (selectedDate < today) ? true : false
+  }
+
+  getCustomDateFormat(date: any, time: any) {
+    const stime = time.split('+')[0]
+    const hour = stime.substr(0, 2)
+    const min = stime.substr(2, 3)
+    return `${date} ${hour}${min}`
   }
 
   ngOnInit() {
@@ -595,7 +628,11 @@ export class EditEventComponent implements OnInit {
     if (this.createEventForm.controls['eventType'].value === 'Webinar') {
       this.reqPayload.request.event.recordedLinks = [this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)]
     } else {
-      this.reqPayload.request.event.registrationLink = this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)
+      if (eventDate < todayDate) {
+        this.reqPayload.request.event.recordedLinks = [this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)]
+      } else {
+        this.reqPayload.request.event.registrationLink = this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)
+      }
     }
 
     if (this.createEventForm.controls['state'] && this.createEventForm.controls['state'].value && this.showRajyaField) {
@@ -612,11 +649,14 @@ export class EditEventComponent implements OnInit {
           if (res) {
             // console.log('res', res)
             this.disableCreateButton = false
-            setTimeout(() => {
-              this.displayLoader = false
-              this.openSnackbar('Event details are successfuly updated.')
-              this.router.navigate([`/app/home/events`])
-            }, 5000)
+            const identifier = res.result.identifier
+            const versionKey = res.result.versionKey
+            this.publishEvent(identifier, versionKey)
+            // setTimeout(() => {
+            //   this.displayLoader = false
+            //   this.openSnackbar('Event details are successfuly updated.')
+            //   this.router.navigate([`/app/home/events`])
+            // }, 5000)
           }
         },
         (err: any) => {
@@ -626,6 +666,32 @@ export class EditEventComponent implements OnInit {
         }
       )
     }
+  }
+
+  publishEvent(identifierkey: any, versionKey: any) {
+    const reqestBody = {
+      request: {
+        event: {
+          versionKey,
+          status: 'Live',
+          identifier: identifierkey,
+        },
+      },
+    }
+    this.eventsSvc.publishEvent(identifierkey, reqestBody).subscribe(
+      res => {
+        // tslint:disable-next-line:align
+        console.log("res", res)
+        setTimeout(() => {
+          this.displayLoader = false
+          this.openSnackbar('Event details are successfuly updated.')
+          this.router.navigate([`/app/home/events`])
+        }, 5000)
+      },
+      (err: any) => {
+        this.openSnackbar(err.error.split(':')[1])
+      }
+    )
   }
 
   combineDateAndTime(date: any, time: any) {

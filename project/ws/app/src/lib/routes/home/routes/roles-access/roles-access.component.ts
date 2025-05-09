@@ -142,7 +142,8 @@ export class RolesAccessComponent implements OnInit {
   /* Click event to navigate to a particular role */
   onRoleClick(event: any) {
     const rootOrgId = _.get(this.activeRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrg.rootOrgId')
-    this.router.navigate([`/app/home/roles-users`], { queryParams: { role: event.role, orgID: rootOrgId } })
+    const rootOrgName = _.get(this.activeRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrg.orgName')
+    this.router.navigate([`/app/home/roles-users`], { queryParams: { role: event.role, orgID: rootOrgId, depatName: rootOrgName } })
   }
 
   // ngOnDestroy() { }

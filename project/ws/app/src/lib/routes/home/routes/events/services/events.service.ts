@@ -87,6 +87,10 @@ export class EventsService {
     return this.http.get<any>(`${API_END_POINTS.EVENT_DETAILS}/${eventID}`)
   }
 
+  getEventDetailsInEditMode(eventID: any): Observable<any> {
+    return this.http.get<any>(`${API_END_POINTS.EVENT_DETAILS}/${eventID}?mode='edit`)
+  }
+
   retireEvent(eventId: any): Observable<any> {
     return this.http.delete<any>(`${API_END_POINTS.ARCHIVE_EVENT}/${eventId}`)
   }
