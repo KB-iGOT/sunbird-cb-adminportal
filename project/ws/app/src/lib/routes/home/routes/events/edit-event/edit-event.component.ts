@@ -125,6 +125,7 @@ export class EditEventComponent implements OnInit {
   reqPayload: any
   showRajyaField = false
   fullEdit: boolean = false
+  filter = 'upcoming'
   constructor(private snackBar: MatSnackBar, private eventsSvc: EventsService, private matDialog: MatDialog,
     // tslint:disable-next-line:align
     private router: Router, private configSvc: ConfigurationsService, private changeDetectorRefs: ChangeDetectorRef,
@@ -247,6 +248,9 @@ export class EditEventComponent implements OnInit {
           this.fullEdit = true
         }
         this.changeDetectorRefs.detectChanges()
+        if (eventObj?.endDate) {
+          this.filterTimeSlotsByDate(new Date(eventObj?.endDate))
+        }
       })
     })
 
@@ -283,29 +287,38 @@ export class EditEventComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.activeRoute?.queryParams.subscribe(params => {
+      this.filter = params['filter']
+    })
 
-    this.orgtimeArr = this.timeArr
+    this.orgtimeArr = this.timeArr?.map(slot => ({ ...slot })) // Deep copy
 
-    // if (this.timeArr) {
-    //   const hr = new Date().getHours()
-    //   const min = new Date().getMinutes()
+    if (this.timeArr) {
+      const now = new Date()
+      const currentTime = `${('0' + now.getHours()).slice(-2)}:${('0' + now.getMinutes()).slice(-2)}`
 
-    //   // tslint:disable-next-line:prefer-template
-    //   const nhr = ('0' + hr).slice(-2)
-    //   // tslint:disable-next-line:prefer-template
-    //   const nmin = ('0' + min).slice(-2)
+      this.newtimearray = this.timeArr?.map(slot => {
+        return {
+          value: slot?.value,
+          disabled: slot?.value <= currentTime
+        }
+      })
+    }
+  }
+  filterTimeSlotsByDate(event: Date): void {
+    const selected = new Date(event)
+    const today = new Date()
+    const isToday =
+      selected.getDate() === today?.getDate() &&
+      selected.getMonth() === today?.getMonth() &&
+      selected.getFullYear() === today?.getFullYear()
 
-    //   const currentTime = `${nhr}:${nmin}`
-    //   const newtimearray: any = []
-    //   this.timeArr.forEach((time: any) => {
-    //     if (time.value > currentTime) {
-    //       newtimearray.push(time)
-    //     }
-    //   })
-    //   this.newtimearray = newtimearray
-    //   this.timeArr = newtimearray
-    //   this.todayTime = this.timeArr[0].value
-    // }
+    if (isToday) {
+      this.timeArr = this.newtimearray
+    } else {
+      this.timeArr = this.orgtimeArr?.map(slot => ({ value: slot?.value, disabled: false }))
+    }
+    this.todayTime = this.createEventForm?.get('eventTime')?.value || this.timeArr[0]?.value
   }
 
   openDialog() {
@@ -431,23 +444,19 @@ export class EditEventComponent implements OnInit {
   }
 
   updateDate(event: any) {
-    const dd = event.value.getDate()
-    const mm = event.value.getMonth() + 1
-    const yr = event.value.getFullYear()
-    const selectedDate = `${dd}-${mm}-${yr}`
+    const selected = new Date(event?.value)
+    const today = new Date()
+    const isToday =
+      selected.getDate() === today?.getDate() &&
+      selected.getMonth() === today?.getMonth() &&
+      selected.getFullYear() === today?.getFullYear()
 
-    const dd1 = new Date().getDate()
-    const mm1 = new Date().getMonth() + 1
-    const yr1 = new Date().getFullYear()
-    const todaysDate = `${dd1}-${mm1}-${yr1}`
-
-    if (selectedDate === todaysDate) {
+    if (isToday) {
       this.timeArr = this.newtimearray
-      this.todayTime = this.timeArr[0].value
     } else {
-      this.timeArr = this.orgtimeArr
-      this.todayTime = this.timeArr[0].value
+      this.timeArr = this.orgtimeArr.map(slot => ({ value: slot.value, disabled: false }))
     }
+    this.todayTime = this.createEventForm?.get('eventTime')?.value || this.timeArr[0]?.value
   }
 
   onSubmit() {

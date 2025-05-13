@@ -74,7 +74,7 @@
 
 <mat-menu #cardMenu="matMenu">
     <ng-template matMenuContent let-rowData="data">
-        <button *ngIf="rowData && rowData.canArchive" (click)="buttonClick('update event',rowData)" mat-menu-item
+        <button *ngIf="rowData" (click)="buttonClick('update event',rowData)" mat-menu-item
             name="channel-analytics-button" class="ws-mat-primary-text" aria-label="Analytics">
             <mat-icon class="margin-right-xs">create</mat-icon><span>Update event</span>
         </button>

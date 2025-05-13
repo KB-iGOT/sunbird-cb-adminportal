@@ -274,7 +274,7 @@ export class EventsListComponent implements OnInit {
         }
       })
     } else {
-      this.router.navigate([`/app/home/events/${$event.row.identifier}/edit`], {})
+      this.router.navigate([`/app/home/events/${$event.row.identifier}/edit`], { queryParams: { filter: this.currentFilter } })
     }
   }
 

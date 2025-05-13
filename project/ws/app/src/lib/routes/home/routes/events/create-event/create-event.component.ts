@@ -196,27 +196,23 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.orgtimeArr = this.timeArr
 
-    if (this.timeArr) {
-      const hr = new Date().getHours()
-      const min = new Date().getMinutes()
-
+    if (this.timeArr?.length) {
+      const now = new Date()
       // tslint:disable-next-line:prefer-template
-      const nhr = ('0' + hr).slice(-2)
+      const nhr = now.getHours()?.toString()?.padStart(2, '0')
       // tslint:disable-next-line:prefer-template
-      const nmin = ('0' + min).slice(-2)
-
+      const nmin = now.getMinutes()?.toString()?.padStart(2, '0')
       const currentTime = `${nhr}:${nmin}`
-      const timearray: any = []
-      const alltimearray: any = []
-      this.timeArr.forEach((time: any) => {
-        alltimearray.push(time)
-        if (time.value > currentTime) {
-          timearray.push(time)
-        }
-      })
-      this.newtimearray = timearray
-      this.timeArr = alltimearray
-      this.todayTime = _.get(this.newtimearray, '[0].value')
+
+      this.newtimearray = this.timeArr?.filter((time: any) => time?.value > currentTime)
+
+      const today = now?.toDateString()
+      const selectedDate = this.createEventForm?.get('eventDate')?.value
+
+      if (!selectedDate || new Date(selectedDate)?.toDateString() === today) {
+        this.timeArr = this.newtimearray
+        this.todayTime = _.get(this.newtimearray, '[0].value', null)
+      }
     }
 
   }
@@ -355,11 +351,39 @@ export class CreateEventComponent implements OnInit, OnDestroy {
 
     if (selectedDate === todaysDate) {
       this.timeArr = this.newtimearray
-      this.todayTime = this.timeArr[0].value
+      this.todayTime = this.newtimearray[0]?.value
     } else {
       this.timeArr = this.orgtimeArr
       this.todayTime = this.timeArr[0].value
     }
+  }
+  isTimeDisabled(timeString: string): boolean {
+    const selectedDate = this.createEventForm?.get('eventDate')?.value
+
+    // Check if selectedDate is valid and is a Date object
+    if (!(selectedDate instanceof Date) || isNaN(selectedDate?.getTime())) {
+      return false // No date selected, don't disable any time slots
+    }
+
+    const today = new Date()
+    const isToday = selectedDate?.toDateString() === today?.toDateString()
+
+    if (!isToday) return false // If not today, no time slots are disabled
+
+    const currentMinutes = today?.getHours() * 60 + today?.getMinutes()
+    const timeMinutes = this.convertToMinutes(timeString)
+
+    return timeMinutes <= currentMinutes
+  }
+
+  convertToMinutes(timeStr: string): number {
+    const [time, modifier] = timeStr?.split(' ')
+    let [hours, minutes] = time?.split(':').map(Number)
+
+    if (modifier === 'PM' && hours !== 12) hours += 12
+    if (modifier === 'AM' && hours === 12) hours = 0
+
+    return hours * 60 + minutes
   }
 
   onSubmit() {
@@ -469,8 +493,8 @@ export class CreateEventComponent implements OnInit, OnDestroy {
             categoryType: 'Article',
             creatorDetails: this.createEventForm.controls['presenters'].value,
             sourceName: this.department,
-            startDate: moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
-            endDate: newendDate ? newendDate : moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+            startDate: moment(this.createEventForm.controls['eventDate']?.value, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+            endDate: newendDate ? newendDate : moment(this.createEventForm.controls['eventDate']?.value, 'YYYY-MM-DD').format('YYYY-MM-DD'),
             // tslint:disable-next-line:prefer-template
             startTime: this.createEventForm.controls['eventTime'].value + ':00+05:30',
             endTime: finalTime,
@@ -478,14 +502,14 @@ export class CreateEventComponent implements OnInit, OnDestroy {
             eventType: 'Online',
             // contentType: 'Event',
             // onlineProvider: 'Zoom',
-            registrationEndDate: moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+            registrationEndDate: moment(this.createEventForm.controls['eventDate']?.value, 'YYYY-MM-DD').format('YYYY-MM-DD'),
             owner: this.department,
             createdFor: createdforarray,
             startDateTime: this.combineDateAndTime(
-              moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              moment(this.createEventForm.controls['eventDate']?.value, 'YYYY-MM-DD').format('YYYY-MM-DD'),
               this.createEventForm.controls['eventTime'].value + ':00+05:30'),
             endDateTime: this.combineDateAndTime(
-              newendDate ? newendDate : moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              newendDate ? newendDate : moment(this.createEventForm.controls['eventDate']?.value, 'YYYY-MM-DD').format('YYYY-MM-DD'),
               finalTime
             ),
           },
@@ -515,8 +539,8 @@ export class CreateEventComponent implements OnInit, OnDestroy {
             categoryType: 'Article',
             creatorDetails: this.createEventForm.controls['presenters'].value,
             sourceName: this.department,
-            startDate: moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
-            endDate: newendDate ? newendDate : moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+            startDate: moment(this.createEventForm.controls['eventDate']?.value, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+            endDate: newendDate ? newendDate : moment(this.createEventForm.controls['eventDate']?.value, 'YYYY-MM-DD').format('YYYY-MM-DD'),
             // tslint:disable-next-line:prefer-template
             startTime: this.createEventForm.controls['eventTime'].value + ':00+05:30',
             endTime: finalTime,
@@ -524,14 +548,14 @@ export class CreateEventComponent implements OnInit, OnDestroy {
             eventType: 'Online',
             // contentType: 'Event',
             // onlineProvider: 'Zoom',
-            registrationEndDate: moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+            registrationEndDate: moment(this.createEventForm.controls['eventDate']?.value, 'YYYY-MM-DD').format('YYYY-MM-DD'),
             owner: this.department,
             createdFor: createdforarray,
             startDateTime: this.combineDateAndTime(
-              moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              moment(this.createEventForm.controls['eventDate']?.value, 'YYYY-MM-DD').format('YYYY-MM-DD'),
               this.createEventForm.controls['eventTime'].value + ':00+05:30'),
             endDateTime: this.combineDateAndTime(
-              newendDate ? newendDate : moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
+              newendDate ? newendDate : moment(this.createEventForm.controls['eventDate']?.value, 'YYYY-MM-DD').format('YYYY-MM-DD'),
               finalTime
             ),
           },
