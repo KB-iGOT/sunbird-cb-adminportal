@@ -6,18 +6,18 @@
           <div>{{ openMode === 'createNew' ? 'Create Organisation' : 'MDO Details'}}</div>
           <mat-icon class="closeIcon" (click)="closeNaveBar()">close</mat-icon>
         </div>
-
         <div class="px-5 pt-6">
           <ng-container *ngIf="openMode !== 'createNew'">
             <div class="flex items-end gap-6 mb-10">
               <div class="flex justify-center items-center log-frame relative rounded">
                 <input type="file" name="edit-orgLogo" id="edit-orgLogo" class="hidden" (change)="uploadLogo($event)"
                   accept=".png, .jpeg, .jpg">
-                <ng-container *ngIf="rowData?.logo">
+                <ng-container *ngIf="selectedLogo">
                   <img class="log" [src]="selectedLogo" alt="log">
-                  <ng-container *ngIf="!rowData?.logo">
-                    <div class="">Logo</div>
-                  </ng-container>
+
+                </ng-container>
+                <ng-container *ngIf="!selectedLogo">
+                  <div class="">Logo</div>
                 </ng-container>
                 <div class="edit-logo" onclick="document.getElementById('edit-orgLogo').click()">
                   <mat-icon>edit</mat-icon>
@@ -177,20 +177,20 @@
                 <div class="grid grid-cols-2 gap-8 mt-4">
                   <div class="flex flex-col gap-2">
                     <div class="viewModeLable">Type</div>
-                    <div class="viewModeValue">{{rowData?.type}}</div>
+                    <div class="viewModeValue">{{rowData?.type|| '-'}}</div>
                   </div>
                   <div class="flex flex-col gap-2">
                     <div class="viewModeLable">State/Center</div>
-                    <div class="viewModeValue">{{rowData?.stateOrMinistry}}</div>
+                    <div class="viewModeValue">{{rowData?.stateOrMinistry || '-'}}</div>
                   </div>
                   <div class="flex flex-col gap-2">
                     <div class="viewModeLable">Created Date and Time</div>
-                    <div class="viewModeValue">{{rowData?.createdOn}}</div>
+                    <div class="viewModeValue">{{rowData?.createdOn || rowData?.createdDate}}</div>
                   </div>
                 </div>
 
               </ng-container>
-              <ng-container *ngIf="getCategory">
+              <ng-container>
                 <div class="flex flex-column gap-1 w-full mt-8">
                   <div class="flex items-center gap-1 required">
                     <span class="lable">Description</span>
@@ -202,7 +202,7 @@
                     <mat-error *ngIf="controls['description'].errors?.['required']">Description is required.</mat-error>
                   </mat-form-field>
                   <div class="flex justify-end">
-                    <span class="descriptionLength">{{organisationForm.value.description.length}}/1000</span>
+                    <span class="descriptionLength">{{organisationForm?.value?.description?.length}}/1000</span>
                   </div>
                 </div>
               </ng-container>

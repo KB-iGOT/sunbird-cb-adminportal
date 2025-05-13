@@ -14,9 +14,11 @@ const API_END_POINTS = {
   GET_ORGS_OF_DEPT: '/apis/public/v8/org/v1/list',
   CREATE_STATE_OR_MINISTRY: '/apis/proxies/v8/org/ext/v1/create',
   UPDATE_STATE_OR_MINISTRY: '/apis/proxies/v8/org/ext/v1/update',
-  SEARCH_ORG: '/api/org/ext/v2/signup/search',
+  SEARCH_ORG: '/apis/proxies/v8/org/v1/search',
   UPDATE_ORGANIZATION: '/apis/proxies/v8/org/ext/v1/update',
+  UPDATE_ORGANIZATION_V2: '/apis/proxies/v8/org/ext/v2/update',
   UPLOAD_ORGANIZATION_LOGO: '/apis/proxies/v8/customselfregistration/upload/logo/gcpcontainer',
+  ORG_SEARCH: '/apis/proxies/v8/customselfregistration/upload/logo/gcpcontainer',
 
 }
 
@@ -122,8 +124,23 @@ export class CreateMDOService {
     return this.http.post(API_END_POINTS.SEARCH_ORG, req)
   }
 
+  signUpSearch(identifier: any) {
+    const req = {
+      request: {
+        filters: {
+          "identifier": identifier
+        }
+      },
+    }
+    return this.http.post(API_END_POINTS.SEARCH_ORG, req)
+  }
+
   updateOrganization(req: any): Observable<any> {
     return this.http.patch<any>(`${API_END_POINTS.UPDATE_ORGANIZATION}`, req)
+  }
+
+  updateOrganizationV2(req: any): Observable<any> {
+    return this.http.patch<any>(`${API_END_POINTS.UPDATE_ORGANIZATION_V2}`, req)
   }
 
   uploadOrganizationLogo(payload: any) {
