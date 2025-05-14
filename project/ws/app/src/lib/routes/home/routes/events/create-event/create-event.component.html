@@ -301,7 +301,7 @@
                                         *ngIf="!allowedCurrentDates?.includes(createEventForm.get('eventType')?.value)">
                                         <mat-form-field color="accent" appearance="outline">
                                             <input matInput [matDatepicker]="eventDate" formControlName="eventDate"
-                                                [max]="maxDate" [(ngModel)]="todayDate"
+                                                [min]="minDate" [max]="maxDate" [(ngModel)]="todayDate"
                                                 (dateChange)="updateDate($event)">
                                             <mat-datepicker-toggle matSuffix [for]="eventDate">
                                             </mat-datepicker-toggle>
@@ -328,7 +328,8 @@
                                     </label>
                                     <mat-form-field appearance="outline">
                                         <mat-select formControlName="eventTime" #eventTime [(ngModel)]="todayTime">
-                                            <mat-option *ngFor="let timeObj of timeArr" [value]="timeObj.value">
+                                            <mat-option *ngFor="let timeObj of timeArr" [value]="timeObj?.value"
+                                                [disabled]="isTimeDisabled(timeObj?.value)">
                                                 {{ timeObj.value }}
                                             </mat-option>
                                         </mat-select>

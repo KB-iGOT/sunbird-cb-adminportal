@@ -51,7 +51,8 @@
                                                 </div>
                                             </ng-container>
                                             <ng-container *ngIf="fullEdit">
-                                                <div id="thumbnail" class="deleteIcon" *ngIf="imageSrcURL">
+                                                <div id="thumbnail" class="deleteIcon"
+                                                    *ngIf="imageSrcURL && filter !== 'past'">
                                                     <a href="javascript:void(0);" (click)="removeSelectedFile()">
                                                         <!-- <span id="btnDelete">X</span> -->
                                                         <mat-icon id="btnDelete">close</mat-icon>
@@ -281,7 +282,8 @@
                                     </label>
                                     <mat-form-field color="accent" appearance="outline">
                                         <input matInput [matDatepicker]="eventDate" formControlName="eventDate"
-                                            [max]="maxDate" [(ngModel)]="todayDate" (dateChange)="updateDate($event)">
+                                            [min]="minDate" [max]="maxDate" [(ngModel)]="todayDate"
+                                            (dateChange)="updateDate($event)">
                                         <mat-datepicker-toggle matSuffix [for]="eventDate">
                                         </mat-datepicker-toggle>
                                         <mat-datepicker #eventDate></mat-datepicker>
@@ -306,7 +308,8 @@
                                     </label>
                                     <mat-form-field appearance="outline">
                                         <mat-select formControlName="eventTime" #eventTime [(ngModel)]="todayTime">
-                                            <mat-option *ngFor="let timeObj of timeArr" [value]="timeObj.value">
+                                            <mat-option *ngFor="let timeObj of timeArr" [value]="timeObj?.value"
+                                                [disabled]="timeObj?.disabled">
                                                 {{ timeObj.value }}
                                             </mat-option>
                                         </mat-select>
@@ -402,7 +405,7 @@
                                 Presenters added are displayed in the event details page
                             </label>
                             <div class="flex flex-1 custom button-row-add-user" *ngIf="fullEdit">
-                                <button mat-stroked-button color="accent" type="button"
+                                <button mat-stroked-button color="accent" type="button" [disabled]="filter === 'past'"
                                     class="mat-accent-border flex-auto-display" (click)="openDialog()">
                                     <span>Add Karmayogi user</span>
                                 </button>
