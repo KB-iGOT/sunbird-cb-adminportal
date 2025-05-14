@@ -454,7 +454,7 @@ export class EditEventComponent implements OnInit {
     if (isToday) {
       this.timeArr = this.newtimearray
     } else {
-      this.timeArr = this.orgtimeArr.map(slot => ({ value: slot.value, disabled: false }))
+      this.timeArr = this.orgtimeArr.map(slot => ({ value: slot?.value, disabled: false }))
     }
     this.todayTime = this.createEventForm?.get('eventTime')?.value || this.timeArr[0]?.value
   }
