@@ -26,9 +26,9 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
   totalRecords?: number | 0
 
   constructor(private route: Router,
-              private activatedRoute: ActivatedRoute,
-              private requestService: RequestsService,
-              private cdr: ChangeDetectorRef) {
+    private activatedRoute: ActivatedRoute,
+    private requestService: RequestsService,
+    private cdr: ChangeDetectorRef) {
     // this.requestType = this.activatedRoute.snapshot.params.type
   }
 
@@ -125,6 +125,7 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
   }
 
   formatData(resData: any, list: any) {
+    this.data = []
     resData.forEach((req: any) => {
       req.wfInfo.forEach((val: any) => {
         // this.data.push(val)
@@ -259,6 +260,7 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
     } else if (this.requestType === 'organisation') {
       this.requestService.getOrgsList(reqbody).subscribe((res: any) => {
         const resData = res.result.data
+        this.pendingListRecord = res.result.count
         this.formatData(resData, 'pending')
       })
     }
@@ -282,6 +284,7 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
     } else if (this.requestType === 'organisation') {
       this.requestService.getOrgsList(reqbody).subscribe((res: any) => {
         const resData = res.result.data
+        this.totalRecords = res.result.count
         this.formatData(resData, 'approved')
       })
     }
@@ -305,6 +308,7 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
     } else if (this.requestType === 'organisation') {
       this.requestService.getOrgsList(reqbody).subscribe((res: any) => {
         const resData = res.result.data
+        this.totalRecords = res.result.count
         this.formatData(resData, 'rejected')
       })
     }
@@ -323,9 +327,9 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
   }
 
   onPaginateChange(event: PageEvent) {
-    this.pageIndex = event.pageIndex
+    this.pageIndex = this.limit === event.pageSize ? event.pageIndex : 0
     this.limit = event.pageSize
-    this.currentOffset = event.pageIndex
+    this.currentOffset = this.limit === event.pageSize ? event.pageIndex : 0
     if (this.currentFilter === 'pending') {
       this.getPendingList()
     } else if (this.currentFilter === 'approved') {
