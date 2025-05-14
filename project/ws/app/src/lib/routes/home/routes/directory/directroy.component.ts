@@ -154,7 +154,7 @@ export class DirectoryViewComponent implements OnInit {
     if (event) {
       this.pagination.limit = event.pageSize
       this.pagination.offset = (event.pageIndex) * event.pageSize
-      this.getAllDepartments(this.searchInputvalue.searchInput.nativeElement.value)
+      this.getAllDepartments(this.searchInputvalue?.searchInput?.nativeElement?.value)
     }
   }
 
@@ -315,8 +315,8 @@ export class DirectoryViewComponent implements OnInit {
         case 'organisation':
           this.wholeData2.forEach((element: any) => {
             let department = key
-            let orgType = element.ministryorstatetype ? element.ministryorstatetype.charAt(0).toUpperCase() + element.ministryorstatetype.slice(1) :
-              element.ministryOrStateType ? element.ministryOrStateType.charAt(0).toUpperCase() + element.ministryOrStateType.slice(1) : ''
+            let orgType = element?.ministryorstatetype ? element?.ministryorstatetype.charAt(0).toUpperCase() + element?.ministryorstatetype.slice(1) :
+              element?.ministryOrStateType ? element?.ministryOrStateType.charAt(0).toUpperCase() + element?.ministryOrStateType.slice(1) : ''
             // if (element.isMinistry || element.isState || element.isCbc || element.isMdo) {
             const obj = {
               id: element.id,
