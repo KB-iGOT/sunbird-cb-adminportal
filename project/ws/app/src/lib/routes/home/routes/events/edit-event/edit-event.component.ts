@@ -550,7 +550,7 @@ export class EditEventComponent implements OnInit {
             expiryDate: expiryDateTime,
             duration: eventDurationMinutes,
             // registrationLink: this.createEventForm.controls['conferenceLink'].value,
-            recordedLinks: linkArry,
+            // recordedLinks: linkArry,
             resourceType: this.createEventForm.controls['eventType'].value,
             categoryType: 'Article',
             creatorDetails: this.createEventForm.controls['presenters'].value,
@@ -596,7 +596,7 @@ export class EditEventComponent implements OnInit {
             learningObjective: this.createEventForm.controls['agenda'].value,
             expiryDate: expiryDateTime,
             duration: eventDurationMinutes,
-            registrationLink: this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value),
+            //registrationLink: this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value),
             resourceType: this.createEventForm.controls['eventType'].value,
             categoryType: 'Article',
             creatorDetails: this.createEventForm.controls['presenters'].value,
@@ -628,11 +628,7 @@ export class EditEventComponent implements OnInit {
     if (this.createEventForm.controls['eventType'].value === 'Webinar') {
       this.reqPayload.request.event.recordedLinks = [this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)]
     } else {
-      if (eventDate < todayDate) {
-        this.reqPayload.request.event.recordedLinks = [this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)]
-      } else {
-        this.reqPayload.request.event.registrationLink = this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)
-      }
+      this.reqPayload.request.event.registrationLink = this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)
     }
 
     if (this.createEventForm.controls['state'] && this.createEventForm.controls['state'].value && this.showRajyaField) {
