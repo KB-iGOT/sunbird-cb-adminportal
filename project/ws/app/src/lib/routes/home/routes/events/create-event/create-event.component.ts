@@ -561,7 +561,11 @@ export class CreateEventComponent implements OnInit, OnDestroy {
     }
 
     if (this.createEventForm.controls['eventType'].value === 'Webinar') {
-      this.reqPayload.request.event.recordedLinks = [this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)]
+      if (eventDate < newtodayDate) {
+        this.reqPayload.request.event.recordedLinks = [this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)]
+      } else {
+        this.reqPayload.request.event.registrationLink = this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)
+      }
     } else {
       this.reqPayload.request.event.registrationLink = this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)
     }
