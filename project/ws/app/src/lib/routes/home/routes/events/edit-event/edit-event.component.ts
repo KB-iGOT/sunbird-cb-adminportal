@@ -626,7 +626,11 @@ export class EditEventComponent implements OnInit {
     }
 
     if (this.createEventForm.controls['eventType'].value === 'Webinar') {
-      this.reqPayload.request.event.recordedLinks = [this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)]
+      if (eventDate < todayDate) {
+        this.reqPayload.request.event.recordedLinks = [this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)]
+      } else {
+        this.reqPayload.request.event.registrationLink = this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)
+      }
     } else {
       this.reqPayload.request.event.registrationLink = this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)
     }
