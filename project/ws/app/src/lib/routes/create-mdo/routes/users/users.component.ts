@@ -136,9 +136,9 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
       sortState: 'asc',
     }
 
-    if (this.currentDept === 'organisation') {
-      this.tabledata['actions'] = [{ name: 'Edit', label: 'Edit info', optional: true, icon: 'remove_red_eye', type: 'button' }]
-    }
+    // if (this.currentDept === 'organisation') {
+    this.tabledata['actions'] = [{ name: 'Edit', label: 'Edit info', optional: true, icon: 'remove_red_eye', type: 'button' }]
+    // }
 
     if (!this.isAllowed(this.allowedCreateRoles)) {
       this.tabsData = this.tabsData.filter(item => !(['designation_master'].includes(item.key)))
