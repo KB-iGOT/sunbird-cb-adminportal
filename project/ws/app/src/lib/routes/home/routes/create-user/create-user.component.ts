@@ -374,7 +374,7 @@ export class CreateUserComponent implements OnInit {
         {
           queryParams:
           {
-            currentDept: this.currentDept === 'mdo' || this.currentDept === 'state' ? 'organisation' : this.currentDept === 'CBP' ? this.getSubOrgType() : this.currentDept,
+            currentDept: this.getCurrentDept() === 'mdo' || this.getCurrentDept() === 'state' ? 'organisation' : this.getCurrentDept() === 'cbp' ? this.getSubOrgType() : this.currentDept,
             roleId: this.deptId,
             depatName: this.createdDepartment.depName,
             subOrgType: this.getSubOrgType(),
@@ -484,5 +484,11 @@ export class CreateUserComponent implements OnInit {
     } else {
       this.createUserForm.patchValue({ mobileNumber: mobile })
     }
+  }
+  getCurrentDept() {
+    if (this.currentDept) {
+      return this.currentDept.toLowerCase()
+    }
+    return this.currentDept
   }
 }
