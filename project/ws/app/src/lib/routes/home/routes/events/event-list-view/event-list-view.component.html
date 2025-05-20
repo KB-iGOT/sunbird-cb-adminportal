@@ -78,8 +78,10 @@
             name="channel-analytics-button" class="ws-mat-primary-text" aria-label="Analytics">
             <mat-icon class="margin-right-xs">create</mat-icon><span>Update event</span>
         </button>
-        <button *ngIf="rowData && rowData.canArchive" (click)="buttonClick('archive',rowData)" mat-menu-item
-            name="channel-analytics-button" class="ws-mat-primary-text" aria-label="Analytics">
+        <button
+            *ngIf="((rowData && rowData?.canArchive) && (currentFilter && currentFilter?.toLowerCase() !== 'archive'))"
+            (click)="buttonClick('archive',rowData)" mat-menu-item name="channel-analytics-button"
+            class="ws-mat-primary-text" aria-label="Analytics">
             <mat-icon class="margin-right-xs">archive</mat-icon><span>Archive event</span>
         </button>
     </ng-template>

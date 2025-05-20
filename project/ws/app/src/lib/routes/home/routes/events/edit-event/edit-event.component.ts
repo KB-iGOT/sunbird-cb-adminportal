@@ -292,6 +292,10 @@ export class EditEventComponent implements OnInit {
       this.filter = params['filter']
     })
 
+    // if (this.configSvc?.eventBufferTimeInMinutes) {
+    //   this.eventBufferTime = this.configSvc?.eventBufferTimeInMinutes
+    // }
+
     this.orgtimeArr = this.timeArr?.map(slot => ({ ...slot })) // Deep copy
 
     if (this.timeArr) {

@@ -197,6 +197,10 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.orgtimeArr = this.timeArr
 
+    // if (this.configSvc?.eventBufferTimeInMinutes) {
+    //   this.eventBufferTime = this.configSvc?.eventBufferTimeInMinutes
+    // }
+
     if (this.timeArr?.length) {
       const now = new Date()
       // tslint:disable-next-line:prefer-template
