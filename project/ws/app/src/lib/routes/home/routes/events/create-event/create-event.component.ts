@@ -127,6 +127,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   todayTime: any
   eventimageURL: any
   departmentID: any
+  eventBufferTime: any = 0
   orgtimeArr!: {
     value: string
   }[]
@@ -196,10 +197,14 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.orgtimeArr = this.timeArr
 
+    if (this.configSvc?.eventBufferTimeInMinutes) {
+      this.eventBufferTime = this.configSvc?.eventBufferTimeInMinutes
+    }
+
     if (this.timeArr?.length) {
       const now = new Date()
       // tslint:disable-next-line:prefer-template
-      now?.setMinutes(now?.getMinutes() + 30) // Added 30 minutes buffer
+      now?.setMinutes(now?.getMinutes() + this.eventBufferTime) // Added 30 minutes buffer
       const nhr = now?.getHours()?.toString()?.padStart(2, '0')
       // tslint:disable-next-line:prefer-template
       const nmin = now?.getMinutes()?.toString()?.padStart(2, '0')

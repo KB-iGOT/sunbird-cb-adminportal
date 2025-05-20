@@ -114,6 +114,7 @@ export class EditEventComponent implements OnInit {
   minutes: any
   eventimageURL: any
   departmentID: any
+  eventBufferTime: any = 0
   orgtimeArr!: {
     value: string
   }[]
@@ -291,11 +292,15 @@ export class EditEventComponent implements OnInit {
       this.filter = params['filter']
     })
 
+    if (this.configSvc?.eventBufferTimeInMinutes) {
+      this.eventBufferTime = this.configSvc?.eventBufferTimeInMinutes
+    }
+
     this.orgtimeArr = this.timeArr?.map(slot => ({ ...slot })) // Deep copy
 
     if (this.timeArr) {
       const now = new Date()
-      now.setMinutes(now?.getMinutes() + 30) // Added 30-minute buffer
+      now.setMinutes(now?.getMinutes() + this.eventBufferTime) // Added 30-minute buffer
       const bufferedTime = `${('0' + now?.getHours()).slice(-2)}:${('0' + now?.getMinutes()).slice(-2)}`
 
       this.newtimearray = this.timeArr?.map(slot => {
