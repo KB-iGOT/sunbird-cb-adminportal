@@ -259,6 +259,7 @@ export class InitService {
     this.configSvc.rootOrg = publicConfig.rootOrg
     this.configSvc.org = publicConfig.org
     this.configSvc.activeOrg = publicConfig.org[0]
+    this.configSvc.eventBufferTimeInMinutes = publicConfig?.eventBufferTimeInMinutes
     this.updateAppIndexMeta()
     return publicConfig
   }
