@@ -127,6 +127,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   todayTime: any
   eventimageURL: any
   departmentID: any
+  eventBufferTime: any = 30
   orgtimeArr!: {
     value: string
   }[]
@@ -196,17 +197,23 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.orgtimeArr = this.timeArr
 
+    // if (this.configSvc?.eventBufferTimeInMinutes) {
+    //   this.eventBufferTime = this.configSvc?.eventBufferTimeInMinutes
+    // }
+
     if (this.timeArr?.length) {
       const now = new Date()
       // tslint:disable-next-line:prefer-template
-      const nhr = now.getHours()?.toString()?.padStart(2, '0')
+      now?.setMinutes(now?.getMinutes() + this.eventBufferTime) // Added 30 minutes buffer
+      const nhr = now?.getHours()?.toString()?.padStart(2, '0')
       // tslint:disable-next-line:prefer-template
-      const nmin = now.getMinutes()?.toString()?.padStart(2, '0')
-      const currentTime = `${nhr}:${nmin}`
+      const nmin = now?.getMinutes()?.toString()?.padStart(2, '0')
+      const bufferedTime = `${nhr}:${nmin}`
 
-      this.newtimearray = this.timeArr?.filter((time: any) => time?.value > currentTime)
+      // Filter time slots greater than buffered time
+      this.newtimearray = this.timeArr?.filter((time: any) => time?.value > bufferedTime)
 
-      const today = now?.toDateString()
+      const today = new Date()?.toDateString()
       const selectedDate = this.createEventForm?.get('eventDate')?.value
 
       if (!selectedDate || new Date(selectedDate)?.toDateString() === today) {
