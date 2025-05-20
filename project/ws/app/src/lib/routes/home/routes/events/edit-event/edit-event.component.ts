@@ -114,7 +114,7 @@ export class EditEventComponent implements OnInit {
   minutes: any
   eventimageURL: any
   departmentID: any
-  eventBufferTime: any = 0
+  eventBufferTime = 30
   orgtimeArr!: {
     value: string
   }[]
@@ -292,18 +292,21 @@ export class EditEventComponent implements OnInit {
       this.filter = params['filter']
     })
 
-    if (this.configSvc?.eventBufferTimeInMinutes) {
-      this.eventBufferTime = this.configSvc?.eventBufferTimeInMinutes
-    }
+    // if (this.configSvc?.eventBufferTimeInMinutes) {
+    //   this.eventBufferTime = this.configSvc?.eventBufferTimeInMinutes
+    // }
 
     this.orgtimeArr = this.timeArr?.map(slot => ({ ...slot })) // Deep copy
 
     if (this.timeArr) {
       const now = new Date()
-      now.setMinutes(now?.getMinutes() + this.eventBufferTime) // Added 30-minute buffer
-      const bufferedTime = `${('0' + now?.getHours()).slice(-2)}:${('0' + now?.getMinutes()).slice(-2)}`
+      now.setMinutes(now.getMinutes() + this.eventBufferTime) // assuming this.eventBufferTime = 30
 
-      this.newtimearray = this.timeArr?.map(slot => {
+      // Format buffered time as "HH:mm"
+      const bufferedTime = `${('0' + now.getHours()).slice(-2)}:${('0' + now.getMinutes()).slice(-2)}`
+
+      // Update time array with disabled flags
+      this.newtimearray = this.timeArr.map(slot => {
         return {
           value: slot?.value,
           disabled: slot?.value <= bufferedTime
