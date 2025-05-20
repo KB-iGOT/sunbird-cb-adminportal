@@ -295,12 +295,13 @@ export class EditEventComponent implements OnInit {
 
     if (this.timeArr) {
       const now = new Date()
-      const currentTime = `${('0' + now.getHours()).slice(-2)}:${('0' + now.getMinutes()).slice(-2)}`
+      now.setMinutes(now?.getMinutes() + 30) // Added 30-minute buffer
+      const bufferedTime = `${('0' + now?.getHours()).slice(-2)}:${('0' + now?.getMinutes()).slice(-2)}`
 
       this.newtimearray = this.timeArr?.map(slot => {
         return {
           value: slot?.value,
-          disabled: slot?.value <= currentTime
+          disabled: slot?.value <= bufferedTime
         }
       })
     }
