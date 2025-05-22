@@ -48,11 +48,14 @@
 
       <ng-container *ngIf="requestType === 'organisation'">
         <ng-container *ngIf="currentFilter === 'pending'">
-          <ws-widget-org-user-table [tableData]="tabledata" [data]="data"
-            (actionsClick)="actionsClick($event)"></ws-widget-org-user-table>
+          <ws-widget-org-user-table-v2 [tableData]="tabledata" [isSearchBar]="false" [data]="data"
+            [totalRecords]="pendingListRecord" (pageChangeClick)="onPaginateChange($event)" [tabChangeIndex]="pageIndex"
+            (actionsClick)="actionsClick($event)"></ws-widget-org-user-table-v2>
         </ng-container>
         <ng-container *ngIf="currentFilter === 'approved' || currentFilter === 'rejected'">
-          <ws-widget-org-user-table [tableData]="tabledataApproved" [data]='data'></ws-widget-org-user-table>
+          <ws-widget-org-user-table-v2 [tableData]="tabledataApproved" [data]='data'
+            (pageChangeClick)="onPaginateChange($event)" [tabChangeIndex]="pageIndex" [totalRecords]="totalRecords"
+            [isSearchBar]="false"></ws-widget-org-user-table-v2>
         </ng-container>
         <!-- <ng-container *ngIf="currentFilter === 'rejected'">
           <ws-widget-org-user-table [tableData]="tabledataApproved" [data]='data'></ws-widget-org-user-table>

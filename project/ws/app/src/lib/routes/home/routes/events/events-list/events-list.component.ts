@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { MatDialog } from '@angular/material/dialog'
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ConfigurationsService, EventService } from '@sunbird-cb/utils'
 import * as moment from 'moment'
@@ -274,7 +274,7 @@ export class EventsListComponent implements OnInit {
         }
       })
     } else {
-      this.router.navigate([`/app/home/events/${$event.row.identifier}/edit`], {})
+      this.router.navigate([`/app/home/events/${$event.row.identifier}/edit`], { queryParams: { filter: this.currentFilter } })
     }
   }
 

@@ -96,7 +96,7 @@ export class CreateUserComponent implements OnInit {
       if (this.route.snapshot.queryParams.createDept) {
         const deptObj = JSON.parse(this.route.snapshot.queryParams.createDept)
         this.currentDept = deptObj.depType
-        if (this.currentDept === 'CBP Providers') {
+        if (this.currentDept === 'CBP Providers' || this.currentDept === 'cbp-providers') {
           this.currentDept = 'CBP'
         }
       } else {
@@ -374,7 +374,7 @@ export class CreateUserComponent implements OnInit {
         {
           queryParams:
           {
-            currentDept: this.currentDept === 'mdo' || 'state' ? 'organisation' : this.currentDept,
+            currentDept: this.getCurrentDept() === 'mdo' || this.getCurrentDept() === 'state' ? 'organisation' : this.getCurrentDept() === 'cbp' ? this.getSubOrgType() : this.currentDept,
             roleId: this.deptId,
             depatName: this.createdDepartment.depName,
             subOrgType: this.getSubOrgType(),
@@ -393,6 +393,8 @@ export class CreateUserComponent implements OnInit {
         return 'ministry'
       case 'state':
         return 'state'
+      case 'CBP':
+        return 'cbp-providers'
       default:
         return 'cbp-providers'
     }
@@ -482,5 +484,11 @@ export class CreateUserComponent implements OnInit {
     } else {
       this.createUserForm.patchValue({ mobileNumber: mobile })
     }
+  }
+  getCurrentDept() {
+    if (this.currentDept) {
+      return this.currentDept.toLowerCase()
+    }
+    return this.currentDept
   }
 }

@@ -135,6 +135,9 @@
 .log-frame {
   width: 89px;
   height: 85px;
+
+  min-width: 89px;
+  min-height: 85px;
   border: 1px solid #00000029;
 
   .log {

@@ -114,6 +114,7 @@ export class EditEventComponent implements OnInit {
   minutes: any
   eventimageURL: any
   departmentID: any
+  eventBufferTime = 30
   orgtimeArr!: {
     value: string
   }[]
@@ -124,6 +125,8 @@ export class EditEventComponent implements OnInit {
   eventObject: any
   reqPayload: any
   showRajyaField = false
+  fullEdit: boolean = false
+  filter = 'upcoming'
   constructor(private snackBar: MatSnackBar, private eventsSvc: EventsService, private matDialog: MatDialog,
     // tslint:disable-next-line:align
     private router: Router, private configSvc: ConfigurationsService, private changeDetectorRefs: ChangeDetectorRef,
@@ -175,7 +178,7 @@ export class EditEventComponent implements OnInit {
 
     this.activeRoute.params.subscribe(params => {
       this.eventId = params['id']
-      this.eventsSvc.getEventDetails(this.eventId).subscribe(res => {
+      this.eventsSvc.getEventDetailsInEditMode(this.eventId).subscribe(res => {
         const eventObj = res.result.event
         this.eventObject = eventObj
         this.createEventForm.controls['eventPicture'].setValue(eventObj.appIcon)
@@ -188,16 +191,13 @@ export class EditEventComponent implements OnInit {
         const newendDate = `${eventObj.startDate} ${eventObj.startTime}`
         const eTime = new Date(newendDate).valueOf()
         const cDate = new Date().valueOf()
-        if (eTime < cDate) {
-          if (eventObj.recordedLinks && eventObj.recordedLinks.length > 0) {
-            this.createEventForm.controls['conferenceLink'].setValue(eventObj.recordedLinks[0])
-          } else {
-            this.createEventForm.controls['conferenceLink'].setValue(eventObj.registrationLink)
-          }
+        if (eventObj.resourceType === 'Webinar') {
+          this.getLink(eventObj)
+        } else if (eTime < cDate) {
+          this.getLink(eventObj)
         } else {
           this.createEventForm.controls['conferenceLink'].setValue(eventObj.registrationLink)
         }
-
         this.createEventForm.controls['eventTime'].setValue(eventObj.endDate)
         this.createEventForm.controls['eventType'].setValue(eventObj.resourceType)
         this.todayDate = new Date((new Date(eventObj.endDate).getTime()))
@@ -234,7 +234,24 @@ export class EditEventComponent implements OnInit {
             this.createEventForm.controls['presenters'].setValue(this.presentersArr)
           }
         }
+        const expiryDateFormat = this.getCustomDateFormat(eventObj.endDate, eventObj.endTime)
+        if (this.compareDate(expiryDateFormat)) {
+          this.fullEdit = false
+          this.createEventForm.get('eventTitle')?.disable()
+          this.createEventForm.get('description')?.disable()
+          this.createEventForm.get('agenda')?.disable()
+
+          this.createEventForm.get('eventDate')?.disable()
+          this.createEventForm.get('eventTime')?.disable()
+          this.createEventForm.get('eventDurationHours')?.disable()
+          this.createEventForm.get('eventDurationMinutes')?.disable()
+        } else {
+          this.fullEdit = true
+        }
         this.changeDetectorRefs.detectChanges()
+        if (eventObj?.endDate) {
+          this.filterTimeSlotsByDate(new Date(eventObj?.endDate))
+        }
       })
     })
 
@@ -249,30 +266,68 @@ export class EditEventComponent implements OnInit {
     // this.todayTime = '00:00'
   }
 
+  getLink(eventObj: any) {
+    if (eventObj.recordedLinks && eventObj.recordedLinks.length > 0) {
+      this.createEventForm.controls['conferenceLink'].setValue(eventObj.recordedLinks[0])
+    } else {
+      this.createEventForm.controls['conferenceLink'].setValue(eventObj.registrationLink)
+    }
+  }
+
+  compareDate(selectedDate: any) {
+    const now = new Date()
+    const today = moment(now).format('YYYY-MM-DD HH:mm')
+    return (selectedDate < today) ? true : false
+  }
+
+  getCustomDateFormat(date: any, time: any) {
+    const stime = time.split('+')[0]
+    const hour = stime.substr(0, 2)
+    const min = stime.substr(2, 3)
+    return `${date} ${hour}${min}`
+  }
+
   ngOnInit() {
+    this.activeRoute?.queryParams.subscribe(params => {
+      this.filter = params['filter']
+    })
 
-    this.orgtimeArr = this.timeArr
-
-    // if (this.timeArr) {
-    //   const hr = new Date().getHours()
-    //   const min = new Date().getMinutes()
-
-    //   // tslint:disable-next-line:prefer-template
-    //   const nhr = ('0' + hr).slice(-2)
-    //   // tslint:disable-next-line:prefer-template
-    //   const nmin = ('0' + min).slice(-2)
-
-    //   const currentTime = `${nhr}:${nmin}`
-    //   const newtimearray: any = []
-    //   this.timeArr.forEach((time: any) => {
-    //     if (time.value > currentTime) {
-    //       newtimearray.push(time)
-    //     }
-    //   })
-    //   this.newtimearray = newtimearray
-    //   this.timeArr = newtimearray
-    //   this.todayTime = this.timeArr[0].value
+    // if (this.configSvc?.eventBufferTimeInMinutes) {
+    //   this.eventBufferTime = this.configSvc?.eventBufferTimeInMinutes
     // }
+
+    this.orgtimeArr = this.timeArr?.map(slot => ({ ...slot })) // Deep copy
+
+    if (this.timeArr) {
+      const now = new Date()
+      now.setMinutes(now.getMinutes() + this.eventBufferTime) // assuming this.eventBufferTime = 30
+
+      // Format buffered time as "HH:mm"
+      const bufferedTime = `${('0' + now.getHours()).slice(-2)}:${('0' + now.getMinutes()).slice(-2)}`
+
+      // Update time array with disabled flags
+      this.newtimearray = this.timeArr.map(slot => {
+        return {
+          value: slot?.value,
+          disabled: slot?.value <= bufferedTime
+        }
+      })
+    }
+  }
+  filterTimeSlotsByDate(event: Date): void {
+    const selected = new Date(event)
+    const today = new Date()
+    const isToday =
+      selected.getDate() === today?.getDate() &&
+      selected.getMonth() === today?.getMonth() &&
+      selected.getFullYear() === today?.getFullYear()
+
+    if (isToday) {
+      this.timeArr = this.newtimearray
+    } else {
+      this.timeArr = this.orgtimeArr?.map(slot => ({ value: slot?.value, disabled: false }))
+    }
+    this.todayTime = this.createEventForm?.get('eventTime')?.value || this.timeArr[0]?.value
   }
 
   openDialog() {
@@ -398,23 +453,19 @@ export class EditEventComponent implements OnInit {
   }
 
   updateDate(event: any) {
-    const dd = event.value.getDate()
-    const mm = event.value.getMonth() + 1
-    const yr = event.value.getFullYear()
-    const selectedDate = `${dd}-${mm}-${yr}`
+    const selected = new Date(event?.value)
+    const today = new Date()
+    const isToday =
+      selected.getDate() === today?.getDate() &&
+      selected.getMonth() === today?.getMonth() &&
+      selected.getFullYear() === today?.getFullYear()
 
-    const dd1 = new Date().getDate()
-    const mm1 = new Date().getMonth() + 1
-    const yr1 = new Date().getFullYear()
-    const todaysDate = `${dd1}-${mm1}-${yr1}`
-
-    if (selectedDate === todaysDate) {
+    if (isToday) {
       this.timeArr = this.newtimearray
-      this.todayTime = this.timeArr[0].value
     } else {
-      this.timeArr = this.orgtimeArr
-      this.todayTime = this.timeArr[0].value
+      this.timeArr = this.orgtimeArr.map(slot => ({ value: slot?.value, disabled: false }))
     }
+    this.todayTime = this.createEventForm?.get('eventTime')?.value || this.timeArr[0]?.value
   }
 
   onSubmit() {
@@ -517,7 +568,7 @@ export class EditEventComponent implements OnInit {
             expiryDate: expiryDateTime,
             duration: eventDurationMinutes,
             // registrationLink: this.createEventForm.controls['conferenceLink'].value,
-            recordedLinks: linkArry,
+            // recordedLinks: linkArry,
             resourceType: this.createEventForm.controls['eventType'].value,
             categoryType: 'Article',
             creatorDetails: this.createEventForm.controls['presenters'].value,
@@ -563,7 +614,7 @@ export class EditEventComponent implements OnInit {
             learningObjective: this.createEventForm.controls['agenda'].value,
             expiryDate: expiryDateTime,
             duration: eventDurationMinutes,
-            registrationLink: this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value),
+            //registrationLink: this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value),
             resourceType: this.createEventForm.controls['eventType'].value,
             categoryType: 'Article',
             creatorDetails: this.createEventForm.controls['presenters'].value,
@@ -593,7 +644,11 @@ export class EditEventComponent implements OnInit {
     }
 
     if (this.createEventForm.controls['eventType'].value === 'Webinar') {
-      this.reqPayload.request.event.recordedLinks = [this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)]
+      if (eventDate < todayDate) {
+        this.reqPayload.request.event.recordedLinks = [this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)]
+      } else {
+        this.reqPayload.request.event.registrationLink = this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)
+      }
     } else {
       this.reqPayload.request.event.registrationLink = this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value)
     }
@@ -612,11 +667,14 @@ export class EditEventComponent implements OnInit {
           if (res) {
             // console.log('res', res)
             this.disableCreateButton = false
-            setTimeout(() => {
-              this.displayLoader = false
-              this.openSnackbar('Event details are successfuly updated.')
-              this.router.navigate([`/app/home/events`])
-            }, 5000)
+            const identifier = res.result.identifier
+            const versionKey = res.result.versionKey
+            this.publishEvent(identifier, versionKey)
+            // setTimeout(() => {
+            //   this.displayLoader = false
+            //   this.openSnackbar('Event details are successfuly updated.')
+            //   this.router.navigate([`/app/home/events`])
+            // }, 5000)
           }
         },
         (err: any) => {
@@ -626,6 +684,32 @@ export class EditEventComponent implements OnInit {
         }
       )
     }
+  }
+
+  publishEvent(identifierkey: any, versionKey: any) {
+    const reqestBody = {
+      request: {
+        event: {
+          versionKey,
+          status: 'Live',
+          identifier: identifierkey,
+        },
+      },
+    }
+    this.eventsSvc.publishEvent(identifierkey, reqestBody).subscribe(
+      res => {
+        // tslint:disable-next-line:align
+        console.log("res", res)
+        setTimeout(() => {
+          this.displayLoader = false
+          this.openSnackbar('Event details are successfuly updated.')
+          this.router.navigate([`/app/home/events`])
+        }, 5000)
+      },
+      (err: any) => {
+        this.openSnackbar(err.error.split(':')[1])
+      }
+    )
   }
 
   combineDateAndTime(date: any, time: any) {
