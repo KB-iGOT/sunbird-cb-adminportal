@@ -361,7 +361,9 @@ export class CreateEventComponent implements OnInit, OnDestroy {
       this.todayTime = this.newtimearray[0]?.value
     } else {
       this.timeArr = this.orgtimeArr
-      this.todayTime = this.timeArr[0].value
+      if (this.timeArr && this.timeArr.length) {
+        this.todayTime = this.timeArr[0].value
+      }
     }
   }
   isTimeDisabled(timeString: string): boolean {

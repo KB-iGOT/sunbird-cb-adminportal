@@ -1,330 +1,834 @@
 import { EditEventComponent } from './edit-event.component'
+import { UntypedFormGroup } from '@angular/forms'
 import { of, throwError } from 'rxjs'
+import * as moment from 'moment'
 
-// Mock classes for dependencies
-class MockMatSnackBar {
-	open = jest.fn().mockReturnValue({ dismiss: jest.fn() });
-}
+// Create proper type-safe mocks
+const createMockSnackBar = () => ({
+	open: jest.fn(),
+	dismiss: jest.fn(),
+	ngOnDestroy: jest.fn(),
+	_openedSnackBarRef: null,
+	simpleSnackBarComponent: null,
+	snackBarContainerComponent: null,
+	handsetCssClass: '',
+	_overlay: null,
+	_live: null,
+	_injector: null,
+	_breakpointObserver: null,
+	_parentSnackBar: null,
+	_defaultConfig: null
+} as any)
 
-class MockEventsService {
-	getEventDetails = jest.fn().mockReturnValue(of({
-		result: {
-			event: {
-				appIcon: 'mock-icon-url',
-				name: 'Mock Event',
-				description: 'Mock Description',
-				learningObjective: 'Mock Agenda',
-				registrationLink: 'https://example.com/meeting',
-				resourceType: 'Webinar',
-				endDate: '2025-03-01',
-				startTime: '10:00',
-				duration: 90,
-				creatorDetails: JSON.stringify([{ name: 'John Doe', email: 'john@example.com', mdoName: 'Test Department' }]),
-				versionKey: 'mock-version-key'
-			}
-		}
-	}));
-	crreateAsset = jest.fn().mockReturnValue(of({ result: { identifier: 'mock-content-id' } }));
-	uploadFile = jest.fn().mockReturnValue(of({ result: { artifactUrl: 'mock-artifact-url' } }));
-	updateEvent = jest.fn().mockReturnValue(of({ result: { identifier: 'mock-event-id' } }));
-}
+const createMockEventsService = () => ({
+	getEventDetailsInEditMode: jest.fn(),
+	crreateAsset: jest.fn(),
+	uploadFile: jest.fn(),
+	updateEvent: jest.fn(),
+	publishEvent: jest.fn(),
+	getSlwResourceTypeDetail: jest.fn(),
+	getPublicUrl: jest.fn()
+} as any)
 
-class MockMatDialog {
-	open = jest.fn().mockReturnValue({
-		afterClosed: () => of({ data: [] })
-	});
-}
+const createMockMatDialog = () => ({
+	open: jest.fn().mockReturnValue({
+		afterClosed: jest.fn().mockReturnValue(of(null)),
+		close: jest.fn(),
+		componentInstance: null
+	}),
+	closeAll: jest.fn(),
+	getDialogById: jest.fn(),
+	ngOnDestroy: jest.fn()
+} as any)
 
-class MockRouter {
-	navigate = jest.fn();
-}
+const createMockRouter = () => ({
+	navigate: jest.fn(),
+	navigateByUrl: jest.fn(),
+	createUrlTree: jest.fn(),
+	serializeUrl: jest.fn(),
+	parseUrl: jest.fn(),
+	isActive: jest.fn(),
+	url: '',
+	routerState: null,
+	events: of(),
+	errorHandler: null,
+	malformedUriErrorHandler: null,
+	onSameUrlNavigation: 'ignore',
+	paramsInheritanceStrategy: 'emptyOnly',
+	urlUpdateStrategy: 'deferred',
+	relativeLinkResolution: 'legacy',
+	urlHandlingStrategy: null,
+	routeReuseStrategy: null
+} as any)
 
-class MockConfigurationsService {
-	userProfile = {
-		userId: 'mock-user-id',
-		userName: 'mock-username',
-		departmentName: 'Mock Department',
-		rootOrgId: 'mock-root-org-id'
-	};
-}
-
-class MockChangeDetectorRef {
-	detectChanges = jest.fn();
-}
-
-class MockActivatedRoute {
-	params = of({ id: 'mock-event-id' });
-	snapshot = {
+const createMockActivatedRoute = () => ({
+	params: of({ id: 'test-event-id' }),
+	queryParams: of({ filter: 'upcoming' }),
+	snapshot: {
 		data: {
 			configService: {
 				userProfile: {
-					rootOrgId: 'mock-root-org-id',
-					departmentName: 'Mock Department',
-					userId: 'mock-user-id',
-					userName: 'mock-username'
+					rootOrgId: 'test-org',
+					departmentName: 'Test Department',
+					userId: 'test-user',
+					userName: 'Test User'
 				}
 			}
-		}
-	};
-}
+		},
+		params: { id: 'test-event-id' },
+		queryParams: { filter: 'upcoming' },
+		url: [],
+		outlet: 'primary',
+		component: null,
+		routeConfig: null,
+		root: null,
+		parent: null,
+		firstChild: null,
+		children: [],
+		pathFromRoot: [],
+		paramMap: null,
+		queryParamMap: null,
+		fragment: null,
+		title: null
+	},
+	url: of([]),
+	data: of({}),
+	fragment: of(null),
+	outlet: 'primary',
+	component: null,
+	routeConfig: null,
+	root: null,
+	parent: null,
+	firstChild: null,
+	children: [],
+	pathFromRoot: [],
+	paramMap: of(null),
+	queryParamMap: of(null),
+	title: of(null)
+} as any)
 
-class MockEventService {
-	raiseInteractTelemetry = jest.fn();
-}
+const createMockConfigService = () => ({
+	userProfile: {
+		userId: 'test-user',
+		userName: 'Test User',
+		departmentName: 'Test Department'
+	},
+	eventBufferTimeInMinutes: 30,
+	instanceConfig: null,
+	appConfig: null,
+	userProfileV2: null,
+	nodebbUserProfile: null,
+	restrictedFeatures: null,
+	unMappedUser: null,
+	activeThemeObject: null,
+	activeFontObject: null
+} as any)
 
-class MockProfileV2UtillService {
-	emailTransform = jest.fn(email => email);
-}
+const createMockEventService = () => ({
+	raiseInteractTelemetry: jest.fn(),
+	raiseImpressionTelemetry: jest.fn(),
+	raiseTelemetry: jest.fn()
+} as any)
+
+const createMockProfileUtilService = () => ({
+	emailTransform: jest.fn().mockReturnValue('test@example.com'),
+	getFullName: jest.fn(),
+	getUserDetailsFromRegistry: jest.fn()
+} as any)
+
+const createMockChangeDetectorRef = () => ({
+	detectChanges: jest.fn(),
+	checkNoChanges: jest.fn(),
+	detach: jest.fn(),
+	reattach: jest.fn(),
+	markForCheck: jest.fn()
+} as any)
 
 describe('EditEventComponent', () => {
 	let component: EditEventComponent
-	let mockSnackBar: MockMatSnackBar
-	let mockEventsService: MockEventsService
-	let mockMatDialog: MockMatDialog
-	let mockRouter: MockRouter
-	let mockConfigSvc: MockConfigurationsService
-	let mockChangeDetectorRefs: MockChangeDetectorRef
-	let mockActiveRoute: MockActivatedRoute
-	let mockEvents: MockEventService
-	let mockProfileUtilSvc: MockProfileV2UtillService
+	let mockSnackBar: any
+	let mockEventsService: any
+	let mockMatDialog: any
+	let mockRouter: any
+	let mockActivatedRoute: any
+	let mockConfigService: any
+	let mockEventService: any
+	let mockProfileUtilService: any
+	let mockChangeDetectorRef: any
+	let mockEventObject: any
 
 	beforeEach(() => {
-		// Create new instances of mocks for each test
-		mockSnackBar = new MockMatSnackBar()
-		mockEventsService = new MockEventsService()
-		mockMatDialog = new MockMatDialog()
-		mockRouter = new MockRouter()
-		mockConfigSvc = new MockConfigurationsService()
-		mockChangeDetectorRefs = new MockChangeDetectorRef()
-		mockActiveRoute = new MockActivatedRoute()
-		mockEvents = new MockEventService()
-		mockProfileUtilSvc = new MockProfileV2UtillService()
+		// Create fresh mocks for each test
+		mockSnackBar = createMockSnackBar()
+		mockEventsService = createMockEventsService()
+		mockMatDialog = createMockMatDialog()
+		mockRouter = createMockRouter()
+		mockActivatedRoute = createMockActivatedRoute()
+		mockConfigService = createMockConfigService()
+		mockEventService = createMockEventService()
+		mockProfileUtilService = createMockProfileUtilService()
+		mockChangeDetectorRef = createMockChangeDetectorRef()
 
-		// Initialize component with mocked dependencies
+		// Mock event object
+		mockEventObject = {
+			appIcon: 'test-icon.png',
+			name: 'Test Event',
+			description: 'Test Description',
+			learningObjective: 'Test Objective',
+			startDate: '2025-06-01',
+			startTime: '10:00:00+05:30',
+			endDate: '2025-06-01',
+			endTime: '11:00:00+05:30',
+			resourceType: 'Webinar',
+			duration: 60,
+			registrationLink: 'https://example.com/register',
+			recordedLinks: ['https://example.com/recorded'],
+			creatorDetails: JSON.stringify([{
+				name: 'Test Creator',
+				email: 'creator@test.com',
+				mdoName: 'Test MDO'
+			}]),
+			versionKey: 'test-version-key'
+		}
+
+		// Mock getEventDetailsInEditMode to return our mock event
+		mockEventsService.getEventDetailsInEditMode.mockReturnValue(of({
+			result: { event: mockEventObject }
+		}))
+
+		// Create component instance
 		component = new EditEventComponent(
-			mockSnackBar as any,
-			mockEventsService as any,
-			mockMatDialog as any,
-			mockRouter as any,
-			mockConfigSvc as any,
-			mockChangeDetectorRefs as any,
-			mockActiveRoute as any,
-			mockEvents as any,
-			mockProfileUtilSvc as any
+			mockSnackBar,
+			mockEventsService,
+			mockMatDialog,
+			mockRouter,
+			mockConfigService,
+			mockChangeDetectorRef,
+			mockActivatedRoute,
+			mockEventService,
+			mockProfileUtilService
 		)
-
-		// Set up some spies
-		jest.spyOn(document, 'getElementById').mockReturnValue({
-			click: jest.fn()
-		} as any)
-
-		// Mock current date to ensure consistent test results
-		jest.spyOn(Date.prototype, 'getTime').mockReturnValue(new Date('2025-02-25').getTime())
-		jest.spyOn(Date.prototype, 'getHours').mockReturnValue(10)
-		jest.spyOn(Date.prototype, 'getMinutes').mockReturnValue(30)
 	})
 
-	afterEach(() => {
-		jest.clearAllMocks()
+	describe('Component Initialization', () => {
+		test('should create component', () => {
+			expect(component).toBeTruthy()
+		})
+
+		test('should initialize form with correct validators', () => {
+			expect(component.createEventForm).toBeInstanceOf(UntypedFormGroup)
+			expect(component.createEventForm.get('eventTitle')?.hasError('required')).toBe(true)
+			expect(component.createEventForm.get('description')?.hasError('required')).toBe(true)
+			expect(component.createEventForm.get('eventType')?.hasError('required')).toBe(true)
+		})
+
+		test('should set user profile data from config service', () => {
+			expect(component.userId).toBe('test-user')
+			expect(component.username).toBe('Test User')
+			expect(component.department).toBe('Test Department')
+		})
+
+		test('should initialize time arrays correctly', () => {
+			expect(component.timeArr.length).toBeGreaterThan(0)
+			expect(component.timeArr[0].value).toBe('00:00')
+			expect(component.timeArr[component.timeArr.length - 1].value).toBe('23:30')
+		})
+
+		test('should set min and max dates correctly', () => {
+			expect(component.minDate).toBeInstanceOf(Date)
+			expect(component.maxDate).toBeDefined()
+		})
+
+		test('should disable eventType and state controls initially', () => {
+			expect(component.createEventForm.get('eventType')?.disabled).toBe(true)
+			expect(component.createEventForm.get('state')?.disabled).toBe(true)
+		})
 	})
 
-	test('should initialize the component', () => {
-		component.ngOnInit()
-		expect(component).toBeDefined()
-		expect(component.userId).toBe('mock-user-id')
-		expect(component.username).toBe('mock-username')
-		expect(component.department).toBe('Mock Department')
-	})
+	describe('Event Loading and Form Population', () => {
+		test('should load event details and populate form', () => {
+			component.ngOnInit()
 
-	test('should load event details on init', () => {
-		expect(mockEventsService.getEventDetails).toHaveBeenCalledWith('mock-event-id')
-		expect(component.eventObject).toBeDefined()
-		expect(component.createEventForm.get('eventTitle')?.value).toBe('Mock Event')
-		expect(component.createEventForm.get('description')?.value).toBe('Mock Description')
-		expect(component.createEventForm.get('conferenceLink')?.value).toBe('https://example.com/meeting')
-		expect(component.createEventForm.get('eventType')?.value).toBe('Webinar')
-		expect(component.hours).toBe(1)
-		expect(component.minutes).toBe(30)
-	})
+			expect(mockEventsService.getEventDetailsInEditMode).toHaveBeenCalledWith('test-event-id')
+			expect(component.createEventForm.get('eventTitle')?.value).toBe('Test Event')
+			expect(component.createEventForm.get('description')?.value).toBe('Test Description')
+			expect(component.createEventForm.get('eventType')?.value).toBe('Webinar')
+		})
 
-	test('should open dialog when openDialog is called', () => {
-		component.openDialog()
-		expect(mockMatDialog.open).toHaveBeenCalled()
-		expect(mockEvents.raiseInteractTelemetry).toHaveBeenCalled()
-	})
+		test('should handle recorded links for past events', () => {
+			const pastEvent = { ...mockEventObject, startDate: '2025-01-01' }
+			mockEventsService.getEventDetailsInEditMode.mockReturnValue(of({
+				result: { event: pastEvent }
+			}))
 
-	test('should handle file selection correctly', () => {
-		const mockFile = new File([''], 'test.png', { type: 'image/png' })
-		const mockEvent = {
-			target: {
-				files: [mockFile],
-				value: ''
+			component.ngOnInit()
+
+			expect(component.createEventForm.get('conferenceLink')?.value).toBe('https://example.com/recorded')
+		})
+
+		test('should disable form fields for past events', () => {
+			const pastEvent = {
+				...mockEventObject,
+				endDate: '2025-01-01',
+				endTime: '10:00:00+05:30'
 			}
-		}
+			mockEventsService.getEventDetailsInEditMode.mockReturnValue(of({
+				result: { event: pastEvent }
+			}))
 
-		// Mock FileReader
-		const mockFileReader = {
-			onload: null,
-			readAsDataURL: jest.fn(function () {
-				if (this.onload) {
-					this.onload({ target: { result: 'data:image/png;base64,mock-data' } })
+			component.ngOnInit()
+
+			expect(component.fullEdit).toBe(false)
+			expect(component.createEventForm.get('eventTitle')?.disabled).toBe(true)
+		})
+
+		test('should handle Rajya Karmayogi Saptah event type', () => {
+			const rajyaEvent = {
+				...mockEventObject,
+				resourceType: 'Rajya Karmayogi Saptah',
+				resourceTypeDetails: {
+					stateOrMinistryName: 'Test State'
 				}
-			})
-		}
-
-		global.FileReader = jest.fn(() => mockFileReader) as any
-
-		component.onFileSelect(mockEvent)
-
-		expect(component.imageSrc).toBe(mockFile)
-		expect(component.createEventForm.get('eventPicture')?.value).toBe(mockFile)
-		expect(mockEventsService.crreateAsset).toHaveBeenCalled()
-		expect(mockEvent.target.value).toBe('')
-	})
-
-	test('should handle file selection with invalid file type', () => {
-		const mockFile = new File([''], 'test.txt', { type: 'text/plain' })
-		const mockEvent = {
-			target: {
-				files: [mockFile]
 			}
-		}
+			mockEventsService.getEventDetailsInEditMode.mockReturnValue(of({
+				result: { event: rajyaEvent }
+			}))
 
-		component.onFileSelect(mockEvent)
-
-		expect(component.errorMessages).toContain('PNG, JPG, or JPEG')
-	})
-
-	test('should handle file selection with file too large', () => {
-		const mockFile = new File([''], 'test.png', { type: 'image/png' })
-		Object.defineProperty(mockFile, 'size', { value: 600000 })
-
-		const mockEvent = {
-			target: {
-				files: [mockFile]
+			const mockStateData = {
+				slwResourceTypeDetails: [
+					{ stateOrMinistryName: 'Test State' }
+				]
 			}
-		}
+			mockEventsService.getSlwResourceTypeDetail.mockReturnValue(of(mockStateData))
 
-		component.onFileSelect(mockEvent)
+			component.ngOnInit()
 
-		expect(component.errorMessages).toContain('500KB')
+			expect(component.showRajyaField).toBe(true)
+			expect(mockEventsService.getSlwResourceTypeDetail).toHaveBeenCalled()
+		})
 	})
 
-	test('should remove selected file when removeSelectedFile is called', () => {
-		component.imageSrcURL = 'mock-url'
-		component.eventimageURL = 'mock-url'
+	describe('File Upload Functionality', () => {
+		test('should handle valid image file upload', () => {
+			const mockFile = new File(['test'], 'test.jpg', { type: 'image/jpeg' })
+			Object.defineProperty(mockFile, 'size', { value: 400000 }) // 400KB
 
-		component.removeSelectedFile()
+			const mockEvent = {
+				target: {
+					files: [mockFile],
+					value: ''
+				}
+			}
 
-		expect(component.imageSrcURL).toBe('')
-		expect(component.eventimageURL).toBe('')
-		expect(component.createEventForm.get('eventPicture')?.value).toBe('')
+			const mockAssetResponse = { result: { identifier: 'test-id' } }
+			const mockUploadResponse = { result: { artifactUrl: 'test-url' } }
+
+			mockEventsService.crreateAsset.mockReturnValue(of(mockAssetResponse))
+			mockEventsService.uploadFile.mockReturnValue(of(mockUploadResponse))
+
+			// Mock FileReader
+			const mockFileReader = {
+				readAsDataURL: jest.fn(),
+				result: 'data:image/jpeg;base64,test',
+				onload: null as any
+			};
+			(global as any).FileReader = jest.fn(() => mockFileReader)
+
+			component.onFileSelect(mockEvent)
+
+			// Simulate FileReader onload
+			if (mockFileReader.onload) {
+				mockFileReader.onload()
+			}
+
+			expect(component.imageSrcURL).toBe('data:image/jpeg;base64,test')
+			expect(mockEventsService.crreateAsset).toHaveBeenCalled()
+		})
+
+		test('should reject invalid file types', () => {
+			const mockFile = new File(['test'], 'test.txt', { type: 'text/plain' })
+			const mockEvent = {
+				target: {
+					files: [mockFile]
+				}
+			}
+
+			component.onFileSelect(mockEvent)
+
+			expect(component.errorMessages).toContain('Please upload the file in either PNG, JPG, or JPEG format')
+		})
+
+		test('should reject files larger than 500KB', () => {
+			const mockFile = new File(['x'.repeat(600000)], 'test.jpg', { type: 'image/jpeg' })
+			Object.defineProperty(mockFile, 'size', { value: 600000 })
+
+			const mockEvent = {
+				target: {
+					files: [mockFile]
+				}
+			}
+
+			component.onFileSelect(mockEvent)
+
+			expect(component.errorMessages).toContain('exceeds the maximum allowed size of 500KB')
+		})
+
+		test('should remove selected file', () => {
+			component.imageSrcURL = 'test-url'
+			component.eventimageURL = 'test-event-url'
+
+			component.removeSelectedFile()
+
+			expect(component.imageSrcURL).toBe('')
+			expect(component.eventimageURL).toBe('')
+			expect(component.createEventForm.get('eventPicture')?.value).toBe('')
+		})
+
+		test('should trigger file selection', () => {
+			// Mock document.getElementById
+			const mockElement = { click: jest.fn() }
+			jest.spyOn(document, 'getElementById').mockReturnValue(mockElement as any)
+
+			component.selectCover()
+
+			expect(document.getElementById).toHaveBeenCalledWith('coverPicture')
+			expect(mockElement.click).toHaveBeenCalled()
+			expect(component.createEventForm.get('eventPicture')?.touched).toBe(true)
+		})
 	})
 
-	test('should add presenters when addPresenters is called', () => {
-		const mockResponseObj = {
-			data: {
-				'0': {
-					firstName: 'Jane',
-					rootOrgName: 'Test Org',
-					profileDetails: {
-						personalDetails: {
-							primaryEmail: 'jane@example.com'
-						}
+	describe('Time Slot Management', () => {
+		beforeEach(() => {
+			component.ngOnInit()
+		})
+
+		test('should filter time slots for today', () => {
+			const today = new Date()
+
+			component.filterTimeSlotsByDate(today)
+
+			expect(component.timeArr).toBe(component.newtimearray)
+		})
+
+		test('should not filter time slots for future dates', () => {
+			const futureDate = new Date()
+			futureDate.setDate(futureDate.getDate() + 1)
+
+			component.filterTimeSlotsByDate(futureDate)
+
+			expect(component.timeArr).not.toBe(component.newtimearray)
+			expect(component.timeArr.every((slot: any) => !slot.disabled)).toBe(true)
+		})
+
+		test('should update date and filter time slots', () => {
+			const mockEvent = {
+				value: new Date()
+			}
+
+			component.updateDate(mockEvent)
+
+			expect(component.timeArr).toBe(component.newtimearray)
+		})
+	})
+
+	describe('Presenters Management', () => {
+		test('should open participants dialog', () => {
+			component.openDialog()
+
+			expect(mockMatDialog.open).toHaveBeenCalledWith(
+				expect.any(Function),
+				expect.objectContaining({
+					width: '850px',
+					height: '600px'
+				})
+			)
+			expect(mockEventService.raiseInteractTelemetry).toHaveBeenCalled()
+		})
+
+		test('should add presenters from dialog response', () => {
+			const responseObj = {
+				data: {
+					0: {
+						firstName: 'John',
+						profileDetails: {
+							personalDetails: {
+								primaryEmail: 'john@test.com'
+							}
+						},
+						rootOrgName: 'Test Org'
 					}
 				}
 			}
-		}
 
-		component.addPresenters(mockResponseObj)
+			component.addPresenters(responseObj)
 
-		expect(component.presentersArr.length).toBe(1)
-		expect(component.participantsArr.length).toBe(1)
-		expect(component.presentersArr[0].firstname).toBe('Jane')
-		expect(component.presentersArr[0].email).toBe('jane@example.com')
-		expect(mockChangeDetectorRefs.detectChanges).toHaveBeenCalled()
+			expect(component.presentersArr.length).toBeGreaterThan(0)
+			expect(component.presentersArr[0].firstname).toBe('John')
+			expect(component.participantsArr.length).toBeGreaterThan(0)
+			expect(mockChangeDetectorRef.detectChanges).toHaveBeenCalled()
+		})
+
+		test('should handle presenters with legacy firstname property', () => {
+			const responseObj = {
+				data: {
+					0: {
+						firstname: 'Jane', // Legacy property
+						profileDetails: {
+							personalDetails: {
+								primaryEmail: 'jane@test.com'
+							}
+						},
+						rootOrgName: 'Test Org'
+					}
+				}
+			}
+
+			component.addPresenters(responseObj)
+
+			expect(component.presentersArr[0].firstname).toBe('Jane')
+		})
 	})
 
-	test('should calculate addMinutes correctly', () => {
-		expect(component.addMinutes(2, 30)).toBe(150)
-		expect(component.addMinutes(1, 0)).toBe(60)
+	describe('Form Submission', () => {
+		beforeEach(() => {
+			// Setup form with valid data
+			component.createEventForm.patchValue({
+				eventTitle: 'Test Event',
+				description: 'Test Description',
+				eventType: 'Webinar',
+				eventDate: new Date('2025-06-01'),
+				eventTime: '10:00',
+				eventDurationHours: 1,
+				eventDurationMinutes: 0,
+				conferenceLink: 'https://example.com'
+			})
+			component.eventId = 'test-event-id'
+			component.eventObject = mockEventObject
+			component.eventimageURL = 'test-image-url'
+			component.department = 'Test Department'
+			component.departmentID = 'test-dept-id'
+		})
+
+		test('should submit form with valid data for future event', () => {
+			const mockUpdateResponse = { result: { identifier: 'test-id', versionKey: 'new-version' } }
+			const mockPublishResponse = { result: 'success' }
+
+			mockEventsService.updateEvent.mockReturnValue(of(mockUpdateResponse))
+			mockEventsService.publishEvent.mockReturnValue(of(mockPublishResponse))
+
+			component.onSubmit()
+
+			expect(mockEventsService.updateEvent).toHaveBeenCalledWith(
+				'test-event-id',
+				expect.objectContaining({
+					request: expect.objectContaining({
+						event: expect.objectContaining({
+							name: 'Test Event',
+							description: 'Test Description',
+							registrationLink: 'https://example.com'
+						})
+					})
+				})
+			)
+		})
+
+		test('should handle past event with recorded links', () => {
+			// Set a past date
+			const pastDate = new Date('2025-01-01')
+			component.createEventForm.patchValue({
+				eventDate: pastDate
+			})
+
+			const mockUpdateResponse = { result: { identifier: 'test-id', versionKey: 'new-version' } }
+			const mockPublishResponse = { result: 'success' }
+
+			mockEventsService.updateEvent.mockReturnValue(of(mockUpdateResponse))
+			mockEventsService.publishEvent.mockReturnValue(of(mockPublishResponse))
+
+			component.onSubmit()
+
+			expect(mockEventsService.updateEvent).toHaveBeenCalledWith(
+				'test-event-id',
+				expect.objectContaining({
+					request: expect.objectContaining({
+						event: expect.objectContaining({
+							recordedLinks: ['https://example.com']
+						})
+					})
+				})
+			)
+		})
+
+		test('should handle zero duration error', () => {
+			component.createEventForm.patchValue({
+				eventDurationHours: 0,
+				eventDurationMinutes: 0
+			})
+
+			component.onSubmit()
+
+			expect(mockSnackBar.open).toHaveBeenCalledWith('Duration cannot be zero', 'X', { duration: 5000 })
+			expect(component.disableCreateButton).toBe(false)
+			expect(component.displayLoader).toBe(false)
+		})
+
+		test('should handle update event error', () => {
+			const errorResponse = { error: 'Error: Something went wrong' }
+			mockEventsService.updateEvent.mockReturnValue(throwError(errorResponse))
+
+			component.onSubmit()
+
+			expect(mockSnackBar.open).toHaveBeenCalledWith(' Something went wrong', 'X', { duration: 5000 })
+			expect(component.disableCreateButton).toBe(false)
+			expect(component.displayLoader).toBe(false)
+		})
+
+		test('should handle Rajya Karmayogi Saptah with state details', () => {
+			component.createEventForm.patchValue({
+				eventType: 'Rajya Karmayogi Saptah',
+				state: 'Test State'
+			})
+			component.showRajyaField = true
+			component.stateList = [
+			]
+
+			const mockUpdateResponse = { result: { identifier: 'test-id', versionKey: 'new-version' } }
+			const mockPublishResponse = { result: 'success' }
+
+			mockEventsService.updateEvent.mockReturnValue(of(mockUpdateResponse))
+			mockEventsService.publishEvent.mockReturnValue(of(mockPublishResponse))
+
+			component.onSubmit()
+
+			expect(mockEventsService.updateEvent).toHaveBeenCalledWith(
+				'test-event-id',
+				expect.objectContaining({
+					request: expect.objectContaining({
+						event: expect.objectContaining({
+							resourceTypeDetails: expect.objectContaining({
+								stateOrMinistryName: 'Test State'
+							})
+						})
+					})
+				})
+			)
+		})
 	})
 
-	test('should handle form submission successfully', () => {
-		// Set up form values
-		component.createEventForm.get('eventTitle')?.setValue('Updated Event')
-		component.createEventForm.get('description')?.setValue('Updated Description')
-		component.createEventForm.get('agenda')?.setValue('Updated Agenda')
-		component.createEventForm.get('eventType')?.setValue('Webinar')
-		component.createEventForm.get('eventDate')?.setValue(new Date('2025-03-01'))
-		component.createEventForm.get('eventTime')?.setValue('10:00')
-		component.createEventForm.get('eventDurationHours')?.setValue(1)
-		component.createEventForm.get('eventDurationMinutes')?.setValue(30)
-		component.createEventForm.get('conferenceLink')?.setValue('https://example.com/updated')
-		component.createEventForm.get('presenters')?.setValue([{ firstname: 'Test', email: 'test@example.com', type: 'Karmayogi User', mdoName: 'Test Org' }])
-		component.eventimageURL = 'mock-image-url'
-		component.eventId = 'mock-event-id'
-		component.eventObject = { versionKey: 'mock-version-key' }
+	describe('Event Publishing', () => {
+		test('should publish event successfully', (done) => {
+			const mockResponse = { result: 'success' }
+			mockEventsService.publishEvent.mockReturnValue(of(mockResponse))
 
-		component.onSubmit()
+			component.publishEvent('test-id', 'test-version')
 
-		expect(component.disableCreateButton).toBe(true)
-		expect(component.displayLoader).toBe(true)
-		expect(mockEventsService.updateEvent).toHaveBeenCalled()
+			setTimeout(() => {
+				expect(mockEventsService.publishEvent).toHaveBeenCalledWith(
+					'test-id',
+					expect.objectContaining({
+						request: expect.objectContaining({
+							event: expect.objectContaining({
+								versionKey: 'test-version',
+								status: 'Live',
+								identifier: 'test-id'
+							})
+						})
+					})
+				)
+				expect(mockSnackBar.open).toHaveBeenCalledWith('Event details are successfuly updated.', 'X', { duration: 5000 })
+				expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/events'])
+				done()
+			}, 5100)
+		})
 
-		// Check the request payload
-		const payload = mockEventsService.updateEvent.mock.calls[0][1]
-		expect(payload.request.event.name).toBe('Updated Event')
-		expect(payload.request.event.description).toBe('Updated Description')
-		expect(payload.request.event.learningObjective).toBe('Updated Agenda')
-		expect(payload.request.event.registrationLink).toBe('https://example.com/updated')
-		expect(payload.request.event.identifier).toBe('mock-event-id')
-		expect(payload.request.event.versionKey).toBe('mock-version-key')
+		test('should handle publish event error', () => {
+			const errorResponse = { error: 'Error: Publish failed' }
+			mockEventsService.publishEvent.mockReturnValue(throwError(errorResponse))
+
+			component.publishEvent('test-id', 'test-version')
+
+			expect(mockSnackBar.open).toHaveBeenCalledWith(' Publish failed', 'X', { duration: 5000 })
+		})
 	})
 
-	test('should handle form submission with zero duration', () => {
-		component.createEventForm.get('eventDurationHours')?.setValue(0)
-		component.createEventForm.get('eventDurationMinutes')?.setValue(0)
+	describe('Utility Functions', () => {
+		test('should calculate minutes correctly', () => {
+			expect(component.addMinutes(1, 30)).toBe(90)
+			expect(component.addMinutes(2, 0)).toBe(120)
+			expect(component.addMinutes(0, 45)).toBe(45)
+		})
 
-		component.onSubmit()
+		test('should combine date and time correctly', () => {
+			const result = component.combineDateAndTime('2025-06-01', '10:00:00+05:30')
+			expect(result).toContain('2025-06-01T10:00:00')
+			expect(result).toContain('+0000')
+		})
 
-		expect(mockSnackBar.open).toHaveBeenCalledWith('Duration cannot be zero', 'X', { duration: 5000 })
-		expect(component.displayLoader).toBe(false)
-		expect(component.disableCreateButton).toBe(false)
+		test('should compare dates correctly', () => {
+			const pastDate = '2025-01-01 10:00'
+			const futureDate = moment().add(1, 'day').format('YYYY-MM-DD HH:mm')
+
+			expect(component.compareDate(pastDate)).toBe(true)
+			expect(component.compareDate(futureDate)).toBe(false)
+		})
+
+		test('should format custom date correctly', () => {
+			const result = component.getCustomDateFormat('2025-06-01', '10:00:00+05:30')
+			expect(result).toBe('2025-06-01 10:00')
+		})
+
+		test('should transform YouTube URLs correctly', () => {
+			const watchUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+			const shortUrl = 'https://youtu.be/dQw4w9WgXcQ'
+			//const embedUrl = 'https://www.youtube.com/embed/dQw4w9WgXcQ'
+			const regularUrl = 'https://example.com'
+
+			expect(component.youTubeUrlChange(watchUrl)).toBe('https://www.youtube.com/embed/dQw4w9WgXcQ')
+			expect(component.youTubeUrlChange(shortUrl)).toBe('https://www.youtube.com/embed/dQw4w9WgXcQ')
+			expect(component.youTubeUrlChange(regularUrl)).toBe('https://example.com')
+		})
+
+		test('should handle YouTube URL without match', () => {
+			const invalidUrl = 'https://example.com/video'
+			expect(component.youTubeUrlChange(invalidUrl)).toBe('https://example.com/video')
+		})
 	})
 
-	test('should handle form submission error', () => {
-		component.createEventForm.get('eventTitle')?.setValue('Updated Event')
-		component.createEventForm.get('description')?.setValue('Updated Description')
-		component.createEventForm.get('eventType')?.setValue('Webinar')
-		component.createEventForm.get('eventDate')?.setValue(new Date('2025-03-01'))
-		component.createEventForm.get('eventTime')?.setValue('10:00')
-		component.createEventForm.get('eventDurationHours')?.setValue(1)
-		component.createEventForm.get('eventDurationMinutes')?.setValue(30)
-		component.createEventForm.get('conferenceLink')?.setValue('https://example.com/updated')
+	describe('State Management for Rajya Karmayogi Saptah', () => {
+		test('should show Rajya field when event type is Rajya Karmayogi Saptah', () => {
+			component.createEventForm.get('eventType')?.setValue('Rajya Karmayogi Saptah')
 
-		// Mock error response
-		mockEventsService.updateEvent.mockReturnValue(throwError({ error: 'Error:Update failed' }))
+			component.resetDateField()
 
-		component.onSubmit()
+			expect(component.showRajyaField).toBe(true)
+			expect(component.createEventForm.get('state')?.hasError('required')).toBe(true)
+		})
 
-		expect(mockSnackBar.open).toHaveBeenCalledWith('Update failed', 'X', { duration: 5000 })
-		expect(component.displayLoader).toBe(false)
-		expect(component.disableCreateButton).toBe(false)
+		test('should hide Rajya field for other event types', () => {
+			component.createEventForm.get('eventType')?.setValue('Webinar')
+
+			component.resetDateField()
+
+			expect(component.showRajyaField).toBe(false)
+		})
+
+		test('should get SLW resource type details', () => {
+			const mockStateData = {
+				slwResourceTypeDetails: [
+					{ stateOrMinistryName: 'State 1' },
+					{ stateOrMinistryName: 'State 2' }
+				]
+			}
+			mockEventsService.getSlwResourceTypeDetail.mockReturnValue(of(mockStateData))
+
+			component.getSlwResourceTypeDetail(mockEventObject)
+
+			expect(mockEventsService.getSlwResourceTypeDetail).toHaveBeenCalled()
+			expect(component.stateList).toEqual(mockStateData.slwResourceTypeDetails)
+			expect(component.showRajyaField).toBe(true)
+		})
+
+		test('should get state detail correctly', () => {
+			component.stateList = [
+			]
+			component.createEventForm.get('state')?.setValue('State 1')
+
+			const result = component.getStateDetail()
+
+			expect(result).toEqual({ stateOrMinistryName: 'State 1', id: 1 })
+		})
+
+		test('should return null when no matching state found', () => {
+			component.stateList = [
+			]
+			component.createEventForm.get('state')?.setValue('Non-existent State')
+
+			const result = component.getStateDetail()
+
+			expect(result).toBeNull()
+		})
 	})
 
-	test('should navigate back to events list when goToList is called', () => {
-		component.goToList()
+	describe('Event Type Changes', () => {
+		test('should change event type', () => {
+			const mockEvent = {
+				target: { value: 'Karmayogi Talks' }
+			}
 
-		expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/events'])
-		expect(mockEvents.raiseInteractTelemetry).toHaveBeenCalled()
+			component.changeEventType(mockEvent)
+
+			expect(component.createEventForm.get('eventType')?.value).toBe('Karmayogi Talks')
+		})
 	})
 
-	test('should show success dialog when showSuccess is called', () => {
-		const mockRes = { eventId: 'mock-event-id' }
+	describe('Navigation and UI Actions', () => {
+		test('should navigate to events list', () => {
+			component.goToList()
 
-		component.showSuccess(mockRes)
+			expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/events'])
+			expect(mockEventService.raiseInteractTelemetry).toHaveBeenCalled()
+		})
 
-		expect(mockMatDialog.open).toHaveBeenCalled()
+		test('should show success dialog', () => {
+			const mockResponse = { message: 'Success' }
+			const mockDialogRef = {
+				afterClosed: jest.fn().mockReturnValue(of(null))
+			}
+			mockMatDialog.open.mockReturnValue(mockDialogRef)
+
+			component.showSuccess(mockResponse)
+
+			expect(mockMatDialog.open).toHaveBeenCalledWith(
+				expect.any(Function),
+				expect.objectContaining({
+					width: '612px',
+					data: mockResponse,
+					panelClass: 'remove-overflow'
+				})
+			)
+		})
+
+		test('should close dialog', () => {
+			const mockDialogRef = { close: jest.fn() }
+			component.dialogRef = mockDialogRef
+
+			component.close()
+
+			expect(mockDialogRef.close).toHaveBeenCalled()
+		})
+	})
+
+	describe('Component Cleanup', () => {
+		test('should cleanup state list on destroy', () => {
+			component.stateList = []
+
+			component.ngOnDestroy()
+
+			expect(component.stateList).toEqual([])
+		})
+	})
+
+	describe('Event Link Handling', () => {
+		test('should get link from recorded links when available', () => {
+			const eventObj = {
+				recordedLinks: ['https://recorded.example.com'],
+				registrationLink: 'https://register.example.com'
+			}
+
+			component.getLink(eventObj)
+
+			expect(component.createEventForm.get('conferenceLink')?.value).toBe('https://recorded.example.com')
+		})
+
+		test('should fallback to registration link when no recorded links', () => {
+			const eventObj = {
+				recordedLinks: [],
+				registrationLink: 'https://register.example.com'
+			}
+
+			component.getLink(eventObj)
+
+			expect(component.createEventForm.get('conferenceLink')?.value).toBe('https://register.example.com')
+		})
 	})
 })

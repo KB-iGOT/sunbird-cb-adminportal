@@ -60,7 +60,7 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
       statesList: [],
       ministriesList: [],
     }
-  @ViewChild(MatPaginator) private paginator!: MatPaginator
+  @ViewChild(MatPaginator) public paginator!: MatPaginator
   @ViewChild(MatSort, { static: true }) sort?: MatSort
   selection = new SelectionModel<any>(true, [])
   customSelfRegistration = false
