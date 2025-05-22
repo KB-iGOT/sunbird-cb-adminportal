@@ -85,7 +85,7 @@ export class CreateMdoComponent implements OnInit {
   widgetData!: NsWidgetResolver.IWidgetData<ILeftMenu>
   sideNavBarOpened = true
   isFromDirectory = false
-  private bannerSubscription: any
+  public bannerSubscription: any
   public screenSizeIsLtMedium = false
   hideMDOField = false
   subTypeId!: any
@@ -100,7 +100,7 @@ export class CreateMdoComponent implements OnInit {
   mode$ = this.isLtMedium$.pipe(map(isMedium => (isMedium ? 'over' : 'side')))
   subDepartments!: any
   subMDODepartments!: any
-  private defaultSideNavBarOpenedSubscription: any
+  public defaultSideNavBarOpenedSubscription: any
 
   isUpdate = false
   isAddAdmin = false
@@ -267,28 +267,31 @@ export class CreateMdoComponent implements OnInit {
   }
 
   specialCharachters(event: any, deptName: any) {
-    const regexMatch = event.target.value.match(this.noSpecialChar)
-    if (deptName === 'cbpProvider') {
-      if (!regexMatch) {
-        this.contentForm.controls['name'].setErrors({ invalid: true })
-      }
-    } else if (deptName === 'state') {
-      if (!regexMatch) {
-        this.stateForm.controls['state'].setErrors({ invalid: true })
-      }
-    } else if (deptName === 'ministry') {
-      if (!regexMatch) {
-        this.departmentForm.controls['ministry'].setErrors({ invalid: true })
-      }
-    } else if (deptName === 'organization') {
-      if (!regexMatch) {
-        this.departmentForm.controls['organisation'].setErrors({ invalid: true })
-      }
-    } else if (deptName === 'department') {
-      if (!regexMatch) {
-        this.departmentForm.controls['department'].setErrors({ invalid: true })
+    if (event && event.target && event.target.value) {
+      const regexMatch = event.target.value.match(this.noSpecialChar)
+      if (deptName === 'cbpProvider') {
+        if (!regexMatch) {
+          this.contentForm.controls['name'].setErrors({ invalid: true })
+        }
+      } else if (deptName === 'state') {
+        if (!regexMatch) {
+          this.stateForm.controls['state'].setErrors({ invalid: true })
+        }
+      } else if (deptName === 'ministry') {
+        if (!regexMatch) {
+          this.departmentForm.controls['ministry'].setErrors({ invalid: true })
+        }
+      } else if (deptName === 'organization') {
+        if (!regexMatch) {
+          this.departmentForm.controls['organisation'].setErrors({ invalid: true })
+        }
+      } else if (deptName === 'department') {
+        if (!regexMatch) {
+          this.departmentForm.controls['department'].setErrors({ invalid: true })
+        }
       }
     }
+
 
     if (event.which === 32) {
       event.preventDefault()
@@ -297,7 +300,7 @@ export class CreateMdoComponent implements OnInit {
       return false
     }
 
-    if (event.target.value.length) {
+    if (event && event.target && event.target.value.length) {
       if (event.target.value.startsWith(' ') || event.target.value.endsWith(' ')) {
         this.openSnackbar(`Please check for leading or trailing whitespace`)
       } else {
@@ -467,7 +470,7 @@ export class CreateMdoComponent implements OnInit {
 
               // this.router.navigate([`/app/home/directory`])
             }
-          },          (error: any) => {
+          }, (error: any) => {
             this.openSnackbar(`Something went wrong, please try again later`)
             this.disableStateCreateButton = false
             this.displayLoader = false
@@ -581,7 +584,7 @@ export class CreateMdoComponent implements OnInit {
     })
   }
 
-  private filterStates(orgname: string): any {
+  public filterStates(orgname: string): any {
     if (orgname.match(this.noSpecialChar)) {
       this.validationCreateButton = false
     } else {

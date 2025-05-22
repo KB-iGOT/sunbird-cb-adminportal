@@ -7,7 +7,7 @@ import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack
 import { CompetencyViewComponent } from '../competency-view/competency-view.component'
 import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component'
 /* tslint:disable */
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { debounceTime, distinctUntilChanged, startWith } from 'rxjs/operators'
 import { preventHtmlAndJs } from '../../../validators/prevent-html-and-js.validator'
 import { ICompentencyKeys } from '../interface/interface'
@@ -101,7 +101,7 @@ export class RequestCopyDetailsComponent implements OnInit {
     this.competencyTheme = new UntypedFormControl('')
     this.competencySubtheme = new UntypedFormControl('')
 
-    if (this.compentencyKey.vKey === 'competencies_v5') {
+    if (this.compentencyKey && this.compentencyKey.vKey === 'competencies_v5') {
       this.getFilterEntity()
     } else {
       this.getFilterEntityV2()
@@ -493,7 +493,7 @@ export class RequestCopyDetailsComponent implements OnInit {
   addCompetency() {
     if (this.seletedCompetencyArea && this.seletedCompetencyTheme && this.seletedCompetencySubTheme) {
       let obj: any
-      if (this.compentencyKey.vKey === 'competencies_v5') {
+      if (this.compentencyKey && this.compentencyKey.vKey === 'competencies_v5') {
         obj = {
           competencyArea: this.seletedCompetencyArea.name,
           competencyAreaId: this.seletedCompetencyArea.id,
@@ -501,7 +501,7 @@ export class RequestCopyDetailsComponent implements OnInit {
           competencyTheme: this.seletedCompetencyTheme.name,
           competencyThemeId: this.seletedCompetencyTheme.id,
           competecnyThemeDescription: this.seletedCompetencyTheme.description,
-          competencyThemeType: this.seletedCompetencyTheme.additionalProperties.themeType,
+          competencyThemeType: this.seletedCompetencyTheme.additionalProperties ? this.seletedCompetencyTheme.additionalProperties.themeType : '',
           competencySubTheme: this.seletedCompetencySubTheme.name,
           competencySubThemeId: this.seletedCompetencySubTheme.id,
           competecnySubThemeDescription: this.seletedCompetencySubTheme.description,
