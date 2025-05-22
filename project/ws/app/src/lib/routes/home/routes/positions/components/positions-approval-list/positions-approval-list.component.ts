@@ -37,7 +37,7 @@ export class PositionsApprovalListComponent implements OnInit {
 
   }
   ngOnInit() {
-    if (this.aRoute.snapshot.data && this.aRoute.snapshot.data.positions.data) {
+    if (this.aRoute.snapshot.data && this.aRoute.snapshot.data.positions && this.aRoute.snapshot.data.positions.data) {
       const resData = this.aRoute.snapshot.data.positions.data
       resData.forEach((req: any) => {
         req.wfInfo.forEach((val: any) => {

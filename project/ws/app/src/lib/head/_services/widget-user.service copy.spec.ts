@@ -1,272 +1,249 @@
-import { of, throwError } from 'rxjs'
 import { WidgetUserService } from './widget-user.service'
+import { HttpClient } from '@angular/common/http'
+import { of, throwError } from 'rxjs'
 import { IUserGroupDetails } from './widget-user.model'
 import { NsContent } from './widget-content.model'
 
-// Mock HttpClient
-const mockHttpClient = {
-  get: jest.fn()
-}
-
-// Mock data
-const mockUserGroupDetails: IUserGroupDetails[] = [
-
-]
-
-const mockUserBatchResponse = {
-  result: {
-    courses: [
-      {
-        identifier: 'course1',
-        name: 'Course 1',
-        contentType: 'Course',
-        mimeType: 'application/vnd.ekstep.content-collection'
-      },
-      {
-        identifier: 'course2',
-        name: 'Course 2',
-        contentType: 'Course',
-        mimeType: 'application/vnd.ekstep.content-collection'
-      }
-    ] as unknown as NsContent.ICourse[]
-  }
-}
-
 describe('WidgetUserService', () => {
   let service: WidgetUserService
+  let httpClientMock: jest.Mocked<HttpClient>
 
   beforeEach(() => {
-    // Reset all mocks before each test
-    jest.clearAllMocks()
-    // Create service instance with mocked HttpClient
-    service = new WidgetUserService(mockHttpClient as any)
+    httpClientMock = {
+      get: jest.fn()
+    } as any
+
+    service = new WidgetUserService(httpClientMock)
   })
 
-  describe('constructor', () => {
-    it('should create service instance', () => {
-      expect(service).toBeDefined()
-      expect(service).toBeInstanceOf(WidgetUserService)
-    })
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('should be created', () => {
+    expect(service).toBeTruthy()
   })
 
   describe('handleError', () => {
-    it('should return error message when error.error is an ErrorEvent instance', () => {
-      const errorEvent = new ErrorEvent('test', { message: 'Test error message' })
-      const mockError = {
-        error: errorEvent
-      } as any
+    it('should return error message when error is instance of ErrorEvent', (done) => {
+      const errorEvent = new ErrorEvent('test error', {
+        error: new Error('Test error message')
+      })
 
-      const result = service.handleError(mockError)
+      const result = service.handleError(errorEvent as any)
 
       result.subscribe({
         error: (error) => {
           expect(error).toBe('Error: Test error message')
+          done()
         }
       })
     })
 
-    it('should return empty string when error.error is not an ErrorEvent instance', () => {
-      const mockError = {
-        error: { message: 'Some other error' }
+    it('should return empty string when error is not instance of ErrorEvent', (done) => {
+      const errorEvent = {
+        error: 'some string error'
       } as any
 
-      const result = service.handleError(mockError)
+      const result = service.handleError(errorEvent)
 
       result.subscribe({
         error: (error) => {
           expect(error).toBe('')
-        }
-      })
-    })
-
-    it('should return empty string when error.error is undefined', () => {
-      const mockError = {
-        error: undefined
-      } as any
-
-      const result = service.handleError(mockError)
-
-      result.subscribe({
-        error: (error) => {
-          expect(error).toBe('')
+          done()
         }
       })
     })
   })
 
   describe('fetchUserGroupDetails', () => {
-    const userId = 'test-user-id'
-    const expectedUrl = '/apis/protected/v8/user/group/fetchUserGroup?userId=test-user-id'
+    it('should return user group details for valid userId', (done) => {
+      const userId = 'test-user-123'
+      const mockUserGroups: IUserGroupDetails[] = [
+        {
+          id: '1',
+          name: 'Test Group',
+          description: 'Test Description'
+        } as unknown as IUserGroupDetails
+      ]
 
-    it('should fetch user group details successfully', (done) => {
-      mockHttpClient.get.mockReturnValue(of(mockUserGroupDetails))
+      httpClientMock.get.mockReturnValue(of(mockUserGroups))
 
       service.fetchUserGroupDetails(userId).subscribe({
         next: (result) => {
-          expect(result).toEqual(mockUserGroupDetails)
-          expect(mockHttpClient.get).toHaveBeenCalledWith(expectedUrl)
-          expect(mockHttpClient.get).toHaveBeenCalledTimes(1)
+          expect(result).toEqual(mockUserGroups)
+          expect(httpClientMock.get).toHaveBeenCalledWith(
+            `/apis/protected/v8/user/group/fetchUserGroup?userId=${userId}`
+          )
           done()
         }
       })
     })
 
-    it('should handle HTTP error and call handleError', (done) => {
-      const httpError = new Error('HTTP Error')
-      mockHttpClient.get.mockReturnValue(throwError(httpError))
+    it('should handle error when HTTP request fails', (done) => {
+      const userId = 'test-user-123'
+      const errorEvent = new ErrorEvent('network error', {
+        error: new Error('Network failure')
+      })
 
-      // Spy on handleError method
-      const handleErrorSpy = jest.spyOn(service, 'handleError')
+      httpClientMock.get.mockReturnValue(throwError(errorEvent))
 
       service.fetchUserGroupDetails(userId).subscribe({
-        error: () => {
-          expect(handleErrorSpy).toHaveBeenCalledWith(httpError)
-          expect(mockHttpClient.get).toHaveBeenCalledWith(expectedUrl)
+        error: (error) => {
+          expect(error).toBe('Error: Network failure')
           done()
         }
       })
     })
 
-    it('should construct correct API endpoint with userId', () => {
-      mockHttpClient.get.mockReturnValue(of(mockUserGroupDetails))
+    it('should call correct API endpoint with userId', () => {
+      const userId = 'user-456'
+      const mockUserGroups: IUserGroupDetails[] = []
+
+      httpClientMock.get.mockReturnValue(of(mockUserGroups))
 
       service.fetchUserGroupDetails(userId).subscribe()
 
-      expect(mockHttpClient.get).toHaveBeenCalledWith(expectedUrl)
-    })
-
-    it('should handle different userId values', () => {
-      const differentUserId = 'another-user-123'
-      const expectedUrlForDifferentUser = `/apis/protected/v8/user/group/fetchUserGroup?userId=${differentUserId}`
-
-      mockHttpClient.get.mockReturnValue(of(mockUserGroupDetails))
-
-      service.fetchUserGroupDetails(differentUserId).subscribe()
-
-      expect(mockHttpClient.get).toHaveBeenCalledWith(expectedUrlForDifferentUser)
+      expect(httpClientMock.get).toHaveBeenCalledWith(
+        `/apis/protected/v8/user/group/fetchUserGroup?userId=${userId}`
+      )
     })
   })
 
   describe('fetchUserBatchList', () => {
-    const userId = 'test-user-id'
-    const expectedUrl = `/apis/proxies/v8/learner/course/v1/user/enrollment/list/${userId}?orgdetails=orgName,email&licenseDetails=name,description,url&fields=contentType,topic,name,channel,mimeType,appIcon,gradeLevel,resourceType,identifier,medium,pkgVersion,board,subject,trackable&batchDetails=name,endDate,startDate,status,enrollmentType,createdBy,certificates`
+    it('should return courses from result.courses when request succeeds', (done) => {
+      const userId = 'test-user-123'
+      const mockCourses: NsContent.ICourse[] = [
+        {
+          identifier: 'course-1',
+          name: 'Test Course',
+          contentType: 'Course'
+        } as unknown as NsContent.ICourse
+      ]
 
-    it('should fetch user batch list successfully and extract courses', (done) => {
-      mockHttpClient.get.mockReturnValue(of(mockUserBatchResponse))
+      const mockResponse = {
+        result: {
+          courses: mockCourses
+        }
+      }
+
+      httpClientMock.get.mockReturnValue(of(mockResponse))
 
       service.fetchUserBatchList(userId).subscribe({
         next: (result) => {
-          expect(result).toEqual(mockUserBatchResponse.result.courses)
-          expect(mockHttpClient.get).toHaveBeenCalledWith(expectedUrl)
-          expect(mockHttpClient.get).toHaveBeenCalledTimes(1)
+          expect(result).toEqual(mockCourses)
           done()
         }
       })
     })
 
     it('should handle undefined userId', (done) => {
-      const expectedUrlWithUndefined = `/apis/proxies/v8/learner/course/v1/user/enrollment/list/undefined?orgdetails=orgName,email&licenseDetails=name,description,url&fields=contentType,topic,name,channel,mimeType,appIcon,gradeLevel,resourceType,identifier,medium,pkgVersion,board,subject,trackable&batchDetails=name,endDate,startDate,status,enrollmentType,createdBy,certificates`
-
-      mockHttpClient.get.mockReturnValue(of(mockUserBatchResponse))
-
-      service.fetchUserBatchList(undefined).subscribe({
-        next: (result) => {
-          expect(result).toEqual(mockUserBatchResponse.result.courses)
-          expect(mockHttpClient.get).toHaveBeenCalledWith(expectedUrlWithUndefined)
-          done()
-        }
-      })
-    })
-
-    it('should handle HTTP error and call handleError', (done) => {
-      const httpError = new Error('HTTP Error')
-      mockHttpClient.get.mockReturnValue(throwError(httpError))
-
-      const handleErrorSpy = jest.spyOn(service, 'handleError')
-
-      service.fetchUserBatchList(userId).subscribe({
-        error: () => {
-          expect(handleErrorSpy).toHaveBeenCalledWith(httpError)
-          expect(mockHttpClient.get).toHaveBeenCalledWith(expectedUrl)
-          done()
-        }
-      })
-    })
-
-    it('should map response data correctly', (done) => {
-      const customResponse = {
+      const userId = undefined
+      const mockCourses: NsContent.ICourse[] = []
+      const mockResponse = {
         result: {
-          courses: [
-            { identifier: 'custom-course', name: 'Custom Course' }
-          ]
+          courses: mockCourses
         }
       }
 
-      mockHttpClient.get.mockReturnValue(of(customResponse))
+      httpClientMock.get.mockReturnValue(of(mockResponse))
 
       service.fetchUserBatchList(userId).subscribe({
         next: (result) => {
-          expect(result).toEqual(customResponse.result.courses)
-          expect(result).not.toEqual(customResponse) // Should not return the entire response
+          expect(result).toEqual(mockCourses)
+          expect(httpClientMock.get).toHaveBeenCalledWith(
+            `/apis/proxies/v8/learner/course/v1/user/enrollment/list/${userId}?orgdetails=orgName,email&licenseDetails=name,description,url&fields=contentType,topic,name,channel,mimeType,appIcon,gradeLevel,resourceType,identifier,medium,pkgVersion,board,subject,trackable&batchDetails=name,endDate,startDate,status,enrollmentType,createdBy,certificates`
+          )
           done()
         }
       })
     })
 
-    it('should construct correct API endpoint with complex query parameters', () => {
-      mockHttpClient.get.mockReturnValue(of(mockUserBatchResponse))
-
-      service.fetchUserBatchList(userId).subscribe()
-
-      expect(mockHttpClient.get).toHaveBeenCalledWith(expectedUrl)
-      expect(expectedUrl).toContain('orgdetails=orgName,email')
-      expect(expectedUrl).toContain('licenseDetails=name,description,url')
-      expect(expectedUrl).toContain('fields=contentType,topic,name,channel,mimeType,appIcon,gradeLevel,resourceType,identifier,medium,pkgVersion,board,subject,trackable')
-      expect(expectedUrl).toContain('batchDetails=name,endDate,startDate,status,enrollmentType,createdBy,certificates')
-    })
-
-    it('should handle response with empty courses array', (done) => {
-      const emptyCoursesResponse = {
+    it('should call correct API endpoint with all query parameters', () => {
+      const userId = 'user-789'
+      const mockResponse = {
         result: {
           courses: []
         }
       }
 
-      mockHttpClient.get.mockReturnValue(of(emptyCoursesResponse))
+      httpClientMock.get.mockReturnValue(of(mockResponse))
+
+      service.fetchUserBatchList(userId).subscribe()
+
+      const expectedUrl = `/apis/proxies/v8/learner/course/v1/user/enrollment/list/${userId}?orgdetails=orgName,email&licenseDetails=name,description,url&fields=contentType,topic,name,channel,mimeType,appIcon,gradeLevel,resourceType,identifier,medium,pkgVersion,board,subject,trackable&batchDetails=name,endDate,startDate,status,enrollmentType,createdBy,certificates`
+
+      expect(httpClientMock.get).toHaveBeenCalledWith(expectedUrl)
+    })
+
+    it('should handle error when HTTP request fails', (done) => {
+      const userId = 'test-user-123'
+      const errorEvent = new ErrorEvent('api error', {
+        error: new Error('API request failed')
+      })
+
+      httpClientMock.get.mockReturnValue(throwError(errorEvent))
+
+      service.fetchUserBatchList(userId).subscribe({
+        error: (error) => {
+          expect(error).toBe('Error: API request failed')
+          done()
+        }
+      })
+    })
+
+    it('should extract courses from nested response structure', (done) => {
+      const userId = 'test-user-123'
+      const mockCourses = [
+        { identifier: 'course-1', name: 'Course 1' },
+        { identifier: 'course-2', name: 'Course 2' }
+      ]
+
+      const mockResponse = {
+        result: {
+          courses: mockCourses,
+          otherData: 'should be ignored'
+        },
+        metadata: 'should also be ignored'
+      }
+
+      httpClientMock.get.mockReturnValue(of(mockResponse))
 
       service.fetchUserBatchList(userId).subscribe({
         next: (result) => {
-          expect(result).toEqual([])
-          expect(Array.isArray(result)).toBe(true)
+          expect(result).toEqual(mockCourses)
+          expect(result).not.toContain('should be ignored')
           done()
         }
       })
     })
   })
 
-  describe('API_END_POINTS', () => {
-    it('should generate correct FETCH_USER_GROUPS endpoint', () => {
+  describe('API endpoint construction', () => {
+    it('should construct correct FETCH_USER_GROUPS endpoint', () => {
       const userId = 'test-123'
-      const expectedEndpoint = '/apis/protected/v8/user/group/fetchUserGroup?userId=test-123'
+      const mockUserGroups: IUserGroupDetails[] = []
 
-      // Access the API_END_POINTS through the service file (you might need to export it)
-      // For this test, we're verifying the endpoint construction logic by checking the actual calls
-      mockHttpClient.get.mockReturnValue(of([]))
+      httpClientMock.get.mockReturnValue(of(mockUserGroups))
 
       service.fetchUserGroupDetails(userId).subscribe()
 
-      expect(mockHttpClient.get).toHaveBeenCalledWith(expectedEndpoint)
+      expect(httpClientMock.get).toHaveBeenCalledWith(
+        '/apis/protected/v8/user/group/fetchUserGroup?userId=test-123'
+      )
     })
 
-    it('should generate correct FETCH_USER_ENROLLMENT_LIST endpoint', () => {
+    it('should construct correct FETCH_USER_ENROLLMENT_LIST endpoint', () => {
       const userId = 'test-456'
-      const expectedEndpoint = `/apis/proxies/v8/learner/course/v1/user/enrollment/list/${userId}?orgdetails=orgName,email&licenseDetails=name,description,url&fields=contentType,topic,name,channel,mimeType,appIcon,gradeLevel,resourceType,identifier,medium,pkgVersion,board,subject,trackable&batchDetails=name,endDate,startDate,status,enrollmentType,createdBy,certificates`
+      const mockResponse = { result: { courses: [] } }
 
-      mockHttpClient.get.mockReturnValue(of({ result: { courses: [] } }))
+      httpClientMock.get.mockReturnValue(of(mockResponse))
 
       service.fetchUserBatchList(userId).subscribe()
 
-      expect(mockHttpClient.get).toHaveBeenCalledWith(expectedEndpoint)
+      const expectedUrl = '/apis/proxies/v8/learner/course/v1/user/enrollment/list/test-456?orgdetails=orgName,email&licenseDetails=name,description,url&fields=contentType,topic,name,channel,mimeType,appIcon,gradeLevel,resourceType,identifier,medium,pkgVersion,board,subject,trackable&batchDetails=name,endDate,startDate,status,enrollmentType,createdBy,certificates'
+
+      expect(httpClientMock.get).toHaveBeenCalledWith(expectedUrl)
     })
   })
 })
