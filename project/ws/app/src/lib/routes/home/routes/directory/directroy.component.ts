@@ -135,6 +135,7 @@ export class DirectoryViewComponent implements OnInit {
 
       }
     }
+    this.tabledata.loader = false
     // console.log(key, 'key-------')
   }
   getAllDepartments(queryText: any) {
