@@ -42,7 +42,12 @@
               role="button">
               Organisation</a>
           </div>
-
+          <a class="filter-option"
+            [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'orgHierarchies',
+                                                                            'ws-mat-accent-border font-medium':currentFilter !== 'state'}"
+            mat-button [routerLink]="'/app/home/directory/orgHierarchies'" (click)="filter(department.toLowerCase())"
+            role="button">
+            Organisation Hierarchies</a>
           <!-- <a *ngFor="let department of departmentHearders" class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter ===department,
               'ws-mat-accent-border font-medium':currentFilter !== 'department'}" mat-button
             [routerLink]="'/app/home/directory'" [queryParams]="{ status: department }" (click)="filter(department)"
@@ -50,12 +55,15 @@
             {{department}}</a> -->
         </div>
       </div>
-      <ng-container>
+      <ng-container *ngIf="currentFilter !== 'orgHierarchies'">
         <ws-widget-directory-table [selectedDepartment]='currentDepartment' [tableData]='tabledata' [data]='data'
           [needCreate]="isAllowed(allowedCreateRoles)" (eOnRowClick)="onRoleClick($event)" [currentTab]="currentTab"
           (actionsClick)="actionClick($event)" (pageChangeEvent)="onPageChange($event)"
           (searchByEnterKey)="onEnterkySearch($event)">
         </ws-widget-directory-table>
+      </ng-container>
+      <ng-container *ngIf="currentFilter === 'orgHierarchies'">
+        <ws-app-org-hierarchy-mapping></ws-app-org-hierarchy-mapping>
       </ng-container>
     </mat-card-content>
   </mat-card>

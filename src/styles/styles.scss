@@ -204,6 +204,7 @@ iframe {
 }
 
 mat-toolbar {
+
   &.mat-toolbar-row,
   &.mat-toolbar-single-row {
     // height: 56px;
@@ -460,7 +461,7 @@ h3.shepherd-title {
 //   overflow: hidden;
 // }
 
-.checkbox-sidenav > div.mat-drawer-inner-container {
+.checkbox-sidenav>div.mat-drawer-inner-container {
   height: auto !important;
   overflow: hidden !important;
 }
@@ -612,6 +613,7 @@ h3.shepherd-title {
   background-color: #1b4ca1 !important;
   border-radius: 9999px !important;
   font-weight: 700;
+
   mat-icon {
     color: #1b4ca1;
   }
@@ -672,9 +674,29 @@ h3.shepherd-title {
     --mat-mdc-snack-bar-button-color: #fff;
     --mdc-snackbar-supporting-text-color: #fff;
   }
+
   &.error {
     --mdc-snackbar-container-color: #891d1d;
     --mat-mdc-snack-bar-button-color: #fff;
     --mdc-snackbar-supporting-text-color: #fff;
   }
+}
+
+.btn-common {
+  height: 32px !important;
+  padding: 0 16px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  border-radius: 15px !important;
+  line-height: normal !important;
+}
+
+.btn-primary {
+  background-color: #1B4CA1 !important;
+  color: white !important;
+}
+
+.btn-secondary {
+  border-color: #1B4CA1 !important;
+  color: #1B4CA1 !important;
 }

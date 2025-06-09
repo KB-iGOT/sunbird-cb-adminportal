@@ -1,0 +1,35 @@
+<div class="org-hierarchy-container">
+  <div class="flex flex-1 flex-column margin-bottom-s">
+    <div class="flex flex-1 filter max-height-60 gap-4">
+      <div *ngFor="let orglist of orgTypeList">
+        <button mat-stroked-button class="btn-common"
+          [ngClass]="{'btn-primary': selectedOrgType === orglist.value, 'btn-secondary': selectedOrgType !== orglist.value}"
+          (click)="orgSelected(orglist.value)">{{orglist.name}}</button>
+      </div>
+      <div class="select-search-container">
+        <mat-form-field appearance="outline" class="w-full custom-height-select">
+          <mat-select [formControl]="organizationCtrl" placeholder="Select" #singleSelect
+            [panelClass]="'mat-select-panel-below'" disableOptionCentering [disableOptionCentering]="true">
+            <div class="search-container">
+              <input type="text" [formControl]="searchControl" placeholder="Search..."
+                (keydown)="$event.key === ' ' ? $event.stopPropagation() : null" (click)="$event.stopPropagation()"
+                class="search-input" #searchInput>
+            </div>
+            <mat-option *ngFor="let organization of filteredOrganizations" [value]="organization.identifier">
+              {{organization.orgName}}
+            </mat-option>
+            <mat-option *ngIf="filteredOrganizations.length === 0" disabled>
+              No matching {{selectedOrgType}} found
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="organizationCtrl?.value">
+    <div class="tree-view-container" style="height: calc(100vh - 10vh)">
+      <lib-tree-view [environment]="environmentVal" [taxonomyConfig]="defaultOrgConfig"
+        [orgSelectedData]="getOrgDetails()"></lib-tree-view>
+    </div>
+  </ng-container>
+</div>
