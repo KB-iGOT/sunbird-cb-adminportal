@@ -201,4 +201,8 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     }
   }
 
+  checkloader($event: boolean) {
+    this.loaderService.setLoaderState($event)
+  }
+
 }

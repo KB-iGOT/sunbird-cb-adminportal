@@ -29,7 +29,7 @@
   <ng-container *ngIf="organizationCtrl?.value && hasOrgHierarchyFrameworkId()">
     <div class="tree-view-container" style="height: calc(100vh - 10vh)">
       <lib-tree-view [environment]="environmentVal" [taxonomyConfig]="defaultOrgConfig"
-        [orgSelectedData]="getOrgDetails()"></lib-tree-view>
+        [orgSelectedData]="getOrgDetails()" (loaderEnable)="checkloader($event)"></lib-tree-view>
     </div>
   </ng-container>
   <ng-container *ngIf="organizationCtrl?.value && !hasOrgHierarchyFrameworkId()">
