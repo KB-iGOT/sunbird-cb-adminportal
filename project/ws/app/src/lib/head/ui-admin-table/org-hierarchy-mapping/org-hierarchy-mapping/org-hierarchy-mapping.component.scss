@@ -68,3 +68,10 @@
 ::ng-deep .cdk-overlay-pane {
   transform-origin: top center !important;
 }
+
+.no-hierarchy-container {
+  max-width: 60%;
+  margin: 50px auto;
+  text-align: center;
+  padding: 50px;
+}

@@ -3,6 +3,8 @@ import { FormControl } from '@angular/forms'
 import { MatSelect } from '@angular/material/select'
 import { environment } from '../../../../../../../../../src/environments/environment'
 import { OrgHierarchyService } from '../../services/org-hierarchy.service'
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { GlobalEventsService } from '../../../../../../../../../src/app/services/global-events.service'
 
 @Component({
   selector: 'ws-app-org-hierarchy-mapping',
@@ -30,10 +32,10 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
       iconEnabled: false,
       // categoryDisplayName: 'Competency Area',
       // labelName: 'Competency Area',
-      enableAdd: true,
-      enableView: false,
-      enabaleEdit: false,
-      enableThreeDot: false,
+      enableManageOrganization: true,
+      enableUpdateHierarchy: true,
+      enabaleRemoveConnection: true,
+      enableThreeDot: true,
       showSearch: false,
       addOrgEnabled: true,
     }]
@@ -48,7 +50,11 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   public organizationCtrl: FormControl = new FormControl();
   public searchControl: FormControl = new FormControl();
 
-  constructor(private orgHieService: OrgHierarchyService) { }
+  constructor(
+    private snackbar: MatSnackBar,
+    private orgHieService: OrgHierarchyService,
+    private loaderService: GlobalEventsService
+  ) { }
 
   ngOnInit() {
     // Initialize with all organizations
@@ -116,8 +122,8 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
           'orgName',
           'description',
           'parentOrgName',
-          'orgHierarchyId',
-          'orgHierarchyStatus',
+          'orgHierarchyFrameworkId',
+          'orgHierarchyFrameworkStatus',
           'sbOrgType'
         ]
       }
@@ -127,10 +133,14 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     } else if (orgType === 'state') {
       requestBody.request.filters.sbOrgType = 'state'
     }
-    const listRes = await this.orgHieService.getCenterOrStateList(requestBody).toPromise().catch(_err => { })
+    this.loaderService.setLoaderState(true)
+    const listRes = await this.orgHieService.getCenterOrStateList(requestBody).toPromise().catch(_err => {
+      this.loaderService.setLoaderState(false)
+    })
     if (listRes && listRes.result && listRes.result.response &&
       listRes.result.response.content && listRes.result.response.content.length > 0
     ) {
+      this.loaderService.setLoaderState(false)
       this.allOrganizations = listRes.result.response.content
       this.filteredOrganizations = [...this.allOrganizations]
     }
@@ -145,4 +155,50 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
       organization.identifier === this.organizationCtrl.value
     ) || null
   }
+
+  hasOrgHierarchyFrameworkId(): boolean {
+    if (!this.organizationCtrl?.value) {
+      return false
+    }
+
+    const selectedOrg = this.filteredOrganizations.find(org => org.identifier === this.organizationCtrl.value)
+    return !!selectedOrg && !!selectedOrg.orgHierarchyFrameworkId
+  }
+
+  cancelHierarchyCreation() {
+    this.organizationCtrl.reset()
+    this.filteredOrganizations = [...this.allOrganizations]
+    this.singleSelect.close()
+  }
+
+  async createNewHierarchy() {
+    const selectedOrg = this.getOrgDetails()
+    if (selectedOrg) {
+      const requestBody = {
+        frameworkName: `org_hierarchy`,
+        identifier: selectedOrg.identifier
+      }
+      this.loaderService.setLoaderState(true)
+      const createFrameworkData = await this.orgHieService.createMasterFrameWork(requestBody).toPromise().catch(_err => {
+        this.loaderService.setLoaderState(false)
+        if (_err && _err.error && _err.error.params && _err.error.params.errMsg) {
+          this.snackbar.open(`${_err.error.params.errMsg}`)
+          this.cancelHierarchyCreation()
+        }
+      })
+      if (createFrameworkData && createFrameworkData.result && createFrameworkData.result.framework) {
+        this.cancelHierarchyCreation()
+        setTimeout(() => {
+          this.loaderService.setLoaderState(false)
+          this.getCentenrOrStateList(this.selectedOrgType)
+          this.organizationCtrl.setValue(selectedOrg.identifier)
+          this.snackbar.open(`Framework created successfully for ${selectedOrg.orgName}`)
+        }, 2000)
+      } else {
+        this.loaderService.setLoaderState(false)
+        this.snackbar.open(`Failed to create framework for ${selectedOrg.orgName}`)
+      }
+    }
+  }
+
 }
