@@ -234,7 +234,6 @@ export class RolesUsersComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   editUser(event: any) {
-    debugger
     let userData: any = {}
     userData = event.row
     userData['position'] = event.row.roles
