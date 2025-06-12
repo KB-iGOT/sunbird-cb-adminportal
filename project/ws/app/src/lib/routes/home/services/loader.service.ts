@@ -16,7 +16,6 @@ export class LoaderService {
   }
 
   changeLoaderState(state: boolean) {
-    console.log('Loader state changing to:', state)  // Add logging
     this.changeLoad.next(state)
   }
 }
