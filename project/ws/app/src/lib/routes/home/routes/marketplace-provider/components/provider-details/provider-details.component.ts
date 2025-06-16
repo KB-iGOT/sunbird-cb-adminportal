@@ -146,7 +146,7 @@ export class ProviderDetailsComponent implements OnInit, OnChanges {
     if (this.thumbnailFile) {
       if (fileName.toLowerCase().endsWith('.svg') || fileName.toLowerCase().endsWith('.png')) {
         const fileSizeInKB = this.thumbnailFile.size / 1000
-        const minSizeKB = 300
+        const minSizeKB = 10
         const maxSizeMB = 2
         const maxSizeKB = maxSizeMB * 1000
         if (fileSizeInKB >= minSizeKB && fileSizeInKB <= maxSizeKB) {
@@ -160,7 +160,7 @@ export class ProviderDetailsComponent implements OnInit, OnChanges {
           }
           reader.readAsDataURL(this.thumbnailFile)
         } else {
-          this.showSnackBar('Please upload image sized between 300 KB and 2 MB')
+          this.showSnackBar('Please upload image sized between 10 KB and 2 MB')
         }
       } else {
         this.showSnackBar('Please upload svg or png image')
