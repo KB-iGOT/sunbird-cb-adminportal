@@ -724,3 +724,7 @@ h3.shepherd-title {
     background-color: var(--mdc-theme-primary, #1976d2);
   }
 }
+
+.category-edit-container .mat-dialog-container {
+  padding: 0 !important;
+}
