@@ -5,6 +5,7 @@ import { environment } from '../../../../../../../../../src/environments/environ
 import { OrgHierarchyService } from '../../services/org-hierarchy.service'
 import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
 import { GlobalEventsService } from '../../../../../../../../../src/app/services/global-events.service'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'ws-app-org-hierarchy-mapping',
@@ -30,6 +31,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
       color: '#F8B861',
       createBtnEnabled: false,
       iconEnabled: false,
+      levelNameEdit: true,
       // categoryDisplayName: 'Competency Area',
       // labelName: 'Competency Area',
       enableManageOrganization: true,
@@ -53,7 +55,8 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   constructor(
     private snackbar: MatSnackBar,
     private orgHieService: OrgHierarchyService,
-    private loaderService: GlobalEventsService
+    private loaderService: GlobalEventsService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -203,6 +206,23 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
 
   checkloader($event: boolean) {
     this.loaderService.setLoaderState($event)
+  }
+
+  redirectOrg(event: any) {
+    console.log('redirectOrg', event)
+    this.router.navigate([`/app/roles/${event.additionalProperties.orgId}/users`], {
+      queryParams:
+      {
+        currentDept: 'organisation',
+        roleId: event.additionalProperties.orgId,
+        depatName: event.additionalProperties.orgName,
+        orgName: event.additionalProperties.orgName,
+        tab: 'users',
+        // subOrgType: !this.isAllowed(this.allowedCreateRoles) ? 'ministry' : role.data.type ? role.data.type : 'cbp-providers'
+        // subOrgType: !this.isAllowed(this.allowedCreateRoles) ? 'ministry' : role.data.type ? role.data.type : 'ministry'
+        subOrgType: event.additionalProperties.ministryOrStateType
+      }
+    })
   }
 
 }
