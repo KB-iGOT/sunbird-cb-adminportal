@@ -32,6 +32,9 @@ import { GlobalEventsService } from '../../services/global-events.service'
   selector: 'ws-root',
   templateUrl: './root.component.html',
   styleUrls: ['./root.component.scss'],
+  host: {
+    '[attr.aria-hidden]': 'false'  // Explicitly set aria-hidden to false
+  }
 })
 export class RootComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('previewContainer', { read: ViewContainerRef, static: true })
