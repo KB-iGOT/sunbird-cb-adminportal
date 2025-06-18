@@ -254,7 +254,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
     } else if (this.controls['ministry']?.value?.mapId) {
       payload.parentMapId = this.controls['ministry'].value.mapId // Assign ministry mapId
     }
-
+    payload.ministryOrStateId = this.controls[this.controls['category']?.value]?.value?.sbOrgId
     if (this.openMode === 'editMode') {
       this.updateOrganization(payload)
     } else {

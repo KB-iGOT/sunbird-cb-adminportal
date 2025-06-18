@@ -16,10 +16,14 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   @ViewChild('singleSelect') singleSelect!: MatSelect
   @ViewChild('searchInput') searchInput!: ElementRef
 
+  @ViewChild('fileInput') fileInput!: ElementRef
+
   orgTypeList = [
     { name: 'Center', value: 'center' },
     { name: 'State', value: 'state' },
   ]
+
+  bulkUploadRefresh: boolean = false
 
   allOrganizations = [];
 
@@ -229,14 +233,14 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     const frameworkData: any = this.getselectedOrgData()
     if (frameworkData && frameworkData.orgHierarchyFrameworkId) {
       this.loaderService.setLoaderState(true)
-      const fileData: any = await this.orgHieService.downloadTemplate(frameworkData.orgHierarchyFrameworkId).toPromise().catch(_err => {
+      const fileData: any = await this.orgHieService.downloadSampleTemplate(frameworkData.orgHierarchyFrameworkId).toPromise().catch(_err => {
         this.loaderService.setLoaderState(false)
         if (_err && _err.error && _err.error.params && _err.error.params.errMsg) {
           this.snackbar.open(`${_err.error.params.errMsg}`)
         }
       })
       if (fileData) {
-        debugger
+        this.snackbar.open(`Download successfully`)
       }
     }
   }
@@ -262,6 +266,64 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
       return this.allOrganizations.filter((v: any) => v.identifier === this.organizationCtrl.value)[0]
     }
     return null
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0]
+    if (file) {
+      // Validate file type
+      if (!this.isValidExcelFile(file)) {
+        this.showMessage('Please select a valid Excel file (.xlsx)')
+        this.clearFileInput()
+        return
+      }
+
+      // Check file size (limit to 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        this.showMessage('File size should not exceed 5MB')
+        this.clearFileInput()
+        return
+      }
+      this.uploadExcelFile(file)
+    }
+  }
+
+  isValidExcelFile(file: File): boolean {
+    const allowedTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+    console.log('File type: ', allowedTypes)
+    return allowedTypes.includes(file.type)
+  }
+
+  async uploadExcelFile(file: File) {
+    // Create form data
+    const formData = new FormData()
+    formData.append('file', file)
+    this.loaderService.setLoaderState(true)
+    this.bulkUploadRefresh = true
+    const uploadFileRes = await this.orgHieService.uploadFreameworkTemplate(formData, this.getselectedOrgData()).toPromise().catch((_err: any) => {
+      this.loaderService.setLoaderState(false)
+      this.bulkUploadRefresh = false
+      if (_err && _err.error && _err.error.params && _err.error.params.errMsg) {
+        this.snackbar.open(`${_err.error.params.errMsg}`)
+      }
+    })
+
+    if (uploadFileRes && uploadFileRes.result && uploadFileRes.result.fileName) {
+      this.loaderService.setLoaderState(false)
+      this.snackbar.open(`File uploaded successfully. Please check after 5 minutes for the results.`)
+    }
+  }
+
+  clearFileInput() {
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = ''
+    }
+  }
+
+  showMessage(message: string) {
+    this.snackbar.open(message, 'Close', {
+      duration: 5000,
+    })
   }
 
 }

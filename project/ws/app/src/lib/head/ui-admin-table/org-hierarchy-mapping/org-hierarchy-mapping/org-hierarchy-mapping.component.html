@@ -32,11 +32,14 @@
           <mat-icon svgIcon="download-icon" class="btn-icon"></mat-icon>
         </button>
         <button mat-button class="btn-common btn-secondary" type="button" (click)="exportData()">Export</button>
-        <button mat-button class="btn-common btn-primary" type="button">Bulk Upload</button>
+        <input type="file" #fileInput accept=".xlsx" style="display: none" (change)="onFileSelected($event)">
+        <button mat-button class="btn-common btn-primary" type="button" (click)="fileInput.click()">
+          Bulk Upload
+        </button>
       </div>
     </ng-container>
   </div>
-  <ng-container *ngIf="organizationCtrl?.value && hasOrgHierarchyFrameworkId()">
+  <ng-container *ngIf="organizationCtrl?.value && hasOrgHierarchyFrameworkId() && !bulkUploadRefresh">
     <div class="tree-view-container" style="height: calc(100vh - vh)">
       <lib-tree-view [environment]="environmentVal" [taxonomyConfig]="defaultOrgConfig"
         [orgSelectedData]="getOrgDetails()" (loaderEnable)="checkloader($event)"
