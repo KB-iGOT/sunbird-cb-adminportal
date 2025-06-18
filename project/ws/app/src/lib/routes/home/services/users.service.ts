@@ -71,7 +71,6 @@ export class UsersService {
   }
   // getAllRoleUsers(depId: string, role: {}): Observable<any> {
   getAllRoleUsers(depId: string, role: string): Observable<any> {
-    // debugger
     const reqBody = {
       request: {
         filters: {

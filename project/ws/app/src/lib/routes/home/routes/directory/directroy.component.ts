@@ -62,17 +62,42 @@ export class DirectoryViewComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.currentFilter = params['tab']
-      this.currentTab = params['tab']
-      if (this.currentFilter === null || this.currentFilter === undefined) {
+      try {
+        const tabParam = params['tab']
+        console.log('Route param tab:', tabParam)
+
+        if (!tabParam) {
+          this.currentFilter = 'organisation'
+          this.currentTab = 'organisation'
+        } else {
+          this.currentFilter = tabParam
+          this.currentTab = tabParam
+
+          // Special handling for orgHierarchies
+          if (this.currentFilter === 'orgHierarchies') {
+            console.log('Initializing orgHierarchies tab')
+            // Don't fetch dept data as this uses a different component
+          }
+        }
+      } catch (error) {
+        console.error('Error in route params handler:', error)
         this.currentFilter = 'organisation'
-        this.currentTab = !this.currentTab ? 'organisation' : this.currentTab
+        this.currentTab = 'organisation'
       }
+
+      // Debug info
+      console.log('Current filter set to:', this.currentFilter)
+      console.log('Current tab set to:', this.currentTab)
     })
+
     this.getAllDepartmentsHeaderAPI()
-    this.getAllDepartments('')
-    // console.log(this.key, 'key----')
+
+    // Only fetch departments if not on orgHierarchies
+    if (this.currentFilter !== 'orgHierarchies') {
+      this.getAllDepartments('')
+    }
   }
+
   getAllDepartmentsHeaderAPI() {
     this.directoryService.getDepartmentTitles().subscribe(res => {
       const departmentHeaderArray = JSON.parse(res.result.response.value)
@@ -175,42 +200,85 @@ export class DirectoryViewComponent implements OnInit {
   }
 
   filter(value: string) {
-    this.searchInputvalue.searchInput.nativeElement.value = ''
-    let key = ''
-    let index = 1
-    if (value === 'cbc') {
-      key = 'cbc'
-    } else if (value === 'cbp providers') {
-      key = 'cbp-providers'
-    } else if (value === 'mdo') {
-      key = 'mdo'
-    } else if (value === 'spv') {
-      key = 'spv'
-    } else if (value === 'state') {
-      key = 'state'
-    } else if (value === 'ministry') {
-      key = 'ministry'
-    } else if (value === 'organisation') {
-      key = 'organisation'
-    }
-    if (key === 'cbc') {
-      index = 1
-    } else if (key === 'cbp-providers') {
-      index = 2
-    } else if (key === 'spv') {
-      index = 3
-    }
-    const data = {
-      index,
-      label: key,
-    }
+    try {
+      // Safely access search input if it exists
+      if (this.searchInputvalue && this.searchInputvalue.searchInput) {
+        this.searchInputvalue.searchInput.nativeElement.value = ''
+      }
 
-    this.currentTab = value
-    this.searchInputvalue.applyFilter('')
-    this.getAllDepartments('')
-    this.raiseTabTelemetry(key, data)
-    this.getDepartDataByKey(key)
+      let key = ''
+      let index = 1
+
+      // Normalize the value to handle all cases
+      if (typeof value !== 'string') {
+        console.warn('Filter received non-string value:', value)
+        value = 'organisation' // Default to organisation if the value is invalid
+      }
+
+      // Convert value to lowercase for consistent comparison
+      const lowerValue = value.toLowerCase()
+
+      // Map the input value to the correct key
+      if (lowerValue === 'cbc') {
+        key = 'cbc'
+      } else if (lowerValue === 'cbp providers') {
+        key = 'cbp-providers'
+      } else if (lowerValue === 'mdo') {
+        key = 'mdo'
+      } else if (lowerValue === 'spv') {
+        key = 'spv'
+      } else if (lowerValue === 'state') {
+        key = 'state'
+      } else if (lowerValue === 'ministry') {
+        key = 'ministry'
+      } else if (lowerValue === 'organisation') {
+        key = 'organisation'
+      } else if (lowerValue === 'orghierarchies') {
+        key = 'orgHierarchies'
+      } else {
+        console.warn('Unknown filter value:', value)
+        key = 'organisation' // Default to organisation if the value is unknown
+      }
+
+      if (key === 'cbc') {
+        index = 1
+      } else if (key === 'cbp-providers') {
+        index = 2
+      } else if (key === 'spv') {
+        index = 3
+      }
+
+      const data = {
+        index,
+        label: key,
+      }
+
+      this.currentTab = key
+
+      // Clear any existing search filter
+      if (this.searchInputvalue && this.searchInputvalue.applyFilter) {
+        try {
+          this.searchInputvalue.applyFilter('')
+        } catch (e) {
+          console.warn('Error applying filter:', e)
+        }
+      }
+
+      // Only fetch data if not on orgHierarchies tab
+      if (key !== 'orgHierarchies') {
+        this.getAllDepartments('')
+      }
+
+      this.raiseTabTelemetry(key, data)
+      this.getDepartDataByKey(key)
+    } catch (error) {
+      console.error('Error in filter method:', error)
+      // Handle the error gracefully - perhaps set a default tab
+      this.currentTab = 'organisation'
+      this.getDepartDataByKey('organisation')
+    }
   }
+
   getDepartDataByKey(key: string) {
     if (key) {
       this.currentFilter = key
@@ -341,36 +409,41 @@ export class DirectoryViewComponent implements OnInit {
             filteredData2.push(obj)
             // }
           })
+          break
+        case 'orgHierarchies':
+          // No data processing needed for this tab as it uses a different component
+          this.data = []
+          this.tabledata.loader = false
+          break
       }
-      this.data = filteredData2.map((dept: any) => {
-        return {
-          id: dept.id,
-          mdo: dept.mdo,
-          channel: dept.channel,
-          type: dept.type,
-          user: dept.user,
-          head: dept.head,
-          typeid: dept.typeid,
-          createdBy: dept.createdBy,
-          createdOn: dept.createdOn,
-          organisation: dept.organisation,
-          logo: dept.logo,
-          description: dept.description,
-          qrRegistrationLink: dept.qrRegistrationLink,
-          registrationLink: dept.registrationLink,
-          startDateRegistration: dept.startDateRegistration,
-          endDateRegistration: dept.endDateRegistration,
-          stateOrMinistry: dept.stateOrMinistry,
 
-        }
-      })
-      this.data = [...this.data]
+      // Only perform data mapping if we have data
+      if (filteredData2.length > 0) {
+        this.data = filteredData2.map((dept: any) => {
+          return {
+            id: dept.id,
+            mdo: dept.mdo,
+            channel: dept.channel,
+            type: dept.type,
+            user: dept.user,
+            head: dept.head,
+            typeid: dept.typeid,
+            createdBy: dept.createdBy,
+            createdOn: dept.createdOn,
+            organisation: dept.organisation,
+            logo: dept.logo,
+            description: dept.description,
+            qrRegistrationLink: dept.qrRegistrationLink,
+            registrationLink: dept.registrationLink,
+            startDateRegistration: dept.startDateRegistration,
+            endDateRegistration: dept.endDateRegistration,
+            stateOrMinistry: dept.stateOrMinistry,
+          }
+        })
+        this.data = [...this.data]
+      }
+
       this.tabledata.loader = false
-      // this.data.sort((a: any, b: any) => {
-      //   const textA = a.mdo.trimStart().toUpperCase()
-      //   const textB = b.mdo.trimStart().toUpperCase()
-      //   return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
-      // })
     }
     this.createTableHeader()
   }
@@ -407,8 +480,9 @@ export class DirectoryViewComponent implements OnInit {
   getSubOrgType(type: string) {
     if (this.currentFilter === 'organisation') {
       return 'ministry'
-    }
-    else if (type === 'cbp-providers') {
+    } else if (this.currentFilter === 'orgHierarchies') {
+      return 'orgHierarchies'
+    } else if (type === 'cbp-providers') {
       return 'cbp-providers'
     }
     return ''

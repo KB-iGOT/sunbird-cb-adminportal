@@ -689,6 +689,13 @@ h3.shepherd-title {
   font-weight: 700 !important;
   border-radius: 15px !important;
   line-height: normal !important;
+
+  .btn-icon {
+    font-size: 14px !important;
+    height: 14px !important;
+    width: 14px !important;
+    margin-left: 5px !important;
+  }
 }
 
 .btn-primary {
@@ -699,6 +706,12 @@ h3.shepherd-title {
 .btn-secondary {
   border: 1px solid #1B4CA1 !important;
   color: #1B4CA1 !important;
+}
+
+.btn-with-out-border {
+  background-color: transparent !important;
+  color: #00000099 !important;
+  border: none !important;
 }
 
 :root {

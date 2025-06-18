@@ -28,6 +28,11 @@ export class GlobalEventsService {
       'frac-no-connection',
       this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/Frac_NoConnection.svg')
     )
+
+    this.iconRegistry.addSvgIcon(
+      'download-icon',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/download_icon.svg')
+    )
   }
 
   setLoaderState(isLoading: boolean) {
