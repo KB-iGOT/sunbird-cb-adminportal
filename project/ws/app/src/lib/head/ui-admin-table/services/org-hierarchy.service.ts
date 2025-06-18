@@ -4,7 +4,9 @@ import { Observable } from 'rxjs'
 
 const API_END_POINTS = {
   ORG_V1_Search: '/apis/proxies/v8/org/v1/search',
-  CREATE_FRAMEWORK: 'apis/proxies/v8/org/framework/v1/create'
+  CREATE_FRAMEWORK: 'apis/proxies/v8/org/framework/v1/create',
+  DOWNLOAD_TEMPLATE: '/apis/proxies/v8/organisation/v1/hierarchy/download/file/',
+  DOWNLOAD_FRAMEWORK_TEMPLATE: '/apis/proxies/v8/organisation/v1/hierarchy/download/'
 }
 
 @Injectable({
@@ -23,5 +25,13 @@ export class OrgHierarchyService {
       `${API_END_POINTS.CREATE_FRAMEWORK}?masterFrameworkName=${request.frameworkName}&orgId=${request.identifier}`,
       {}
     )
+  }
+
+  downloadTemplate(_orgType: string): Observable<any> {
+    return this.http.get(`${API_END_POINTS.DOWNLOAD_TEMPLATE}1749617076721_TestOrgHier.xlsx`) //${orgType}.xlsx
+  }
+
+  exportFramework(orgType: string): Observable<any> {
+    return this.http.get(`${API_END_POINTS.DOWNLOAD_FRAMEWORK_TEMPLATE}${orgType}`)
   }
 }

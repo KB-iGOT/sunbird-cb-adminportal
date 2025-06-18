@@ -225,4 +225,43 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     })
   }
 
+  async downloadTemplate() {
+    const frameworkData: any = this.getselectedOrgData()
+    if (frameworkData && frameworkData.orgHierarchyFrameworkId) {
+      this.loaderService.setLoaderState(true)
+      const fileData: any = await this.orgHieService.downloadTemplate(frameworkData.orgHierarchyFrameworkId).toPromise().catch(_err => {
+        this.loaderService.setLoaderState(false)
+        if (_err && _err.error && _err.error.params && _err.error.params.errMsg) {
+          this.snackbar.open(`${_err.error.params.errMsg}`)
+        }
+      })
+      if (fileData) {
+        debugger
+      }
+    }
+  }
+
+  async exportData() {
+    const frameworkData: any = this.getselectedOrgData()
+    if (frameworkData && frameworkData.orgHierarchyFrameworkId) {
+      this.loaderService.setLoaderState(true)
+      const fileData: any = await this.orgHieService.exportFramework(frameworkData.orgHierarchyFrameworkId).toPromise().catch(_err => {
+        this.loaderService.setLoaderState(false)
+        if (_err && _err.error && _err.error.params && _err.error.params.errMsg) {
+          this.snackbar.open(`${_err.error.params.errMsg}`)
+        }
+      })
+      if (fileData) {
+        this.snackbar.open(`Exported successfully for ${frameworkData.orgName}`)
+      }
+    }
+  }
+
+  getselectedOrgData() {
+    if (this.allOrganizations.filter((v: any) => v.identifier === this.organizationCtrl.value).length) {
+      return this.allOrganizations.filter((v: any) => v.identifier === this.organizationCtrl.value)[0]
+    }
+    return null
+  }
+
 }

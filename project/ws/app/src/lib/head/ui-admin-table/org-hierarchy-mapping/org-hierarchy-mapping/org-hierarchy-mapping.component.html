@@ -1,6 +1,6 @@
 <div class="org-hierarchy-container">
-  <div class="flex flex-1 flex-column margin-bottom-s">
-    <div class="flex flex-1 filter max-height-60 gap-4">
+  <div class="flex margin-bottom-s">
+    <div class="flex filter max-height-60 gap-4">
       <div *ngFor="let orglist of orgTypeList">
         <button mat-stroked-button class="btn-common"
           [ngClass]="{'btn-primary': selectedOrgType === orglist.value, 'btn-secondary': selectedOrgType !== orglist.value}"
@@ -25,9 +25,19 @@
         </mat-form-field>
       </div>
     </div>
+    <ng-container *ngIf="hasOrgHierarchyFrameworkId()">
+      <div class="bulk-upload-container flex gap-4 margin-left-auto">
+        <button mat-button class="btn-common btn-with-out-border" type="button" (click)="downloadTemplate()">
+          Download template
+          <mat-icon svgIcon="download-icon" class="btn-icon"></mat-icon>
+        </button>
+        <button mat-button class="btn-common btn-secondary" type="button" (click)="exportData()">Export</button>
+        <button mat-button class="btn-common btn-primary" type="button">Bulk Upload</button>
+      </div>
+    </ng-container>
   </div>
   <ng-container *ngIf="organizationCtrl?.value && hasOrgHierarchyFrameworkId()">
-    <div class="tree-view-container" style="height: calc(100vh - 10vh)">
+    <div class="tree-view-container" style="height: calc(100vh - vh)">
       <lib-tree-view [environment]="environmentVal" [taxonomyConfig]="defaultOrgConfig"
         [orgSelectedData]="getOrgDetails()" (loaderEnable)="checkloader($event)"
         (manageOrg)="redirectOrg($event)"></lib-tree-view>

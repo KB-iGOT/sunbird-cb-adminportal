@@ -45,7 +45,7 @@
           <a class="filter-option"
             [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'orgHierarchies',
                                                                             'ws-mat-accent-border font-medium':currentFilter !== 'state'}"
-            mat-button [routerLink]="'/app/home/directory/orgHierarchies'" (click)="filter(department.toLowerCase())"
+            mat-button [routerLink]="'/app/home/directory/orgHierarchies'" (click)="filter('orgHierarchies')"
             role="button">
             Organisation Hierarchies</a>
           <!-- <a *ngFor="let department of departmentHearders" class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter ===department,
