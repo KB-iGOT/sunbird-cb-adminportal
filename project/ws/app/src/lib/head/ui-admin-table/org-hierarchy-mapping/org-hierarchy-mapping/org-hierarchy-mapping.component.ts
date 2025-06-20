@@ -5,7 +5,10 @@ import { environment } from '../../../../../../../../../src/environments/environ
 import { OrgHierarchyService } from '../../services/org-hierarchy.service'
 import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
 import { GlobalEventsService } from '../../../../../../../../../src/app/services/global-events.service'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
+import _ from 'lodash'
+import { Subject, of } from 'rxjs'
+import { switchMap, finalize } from 'rxjs/operators'
 
 @Component({
   selector: 'ws-app-org-hierarchy-mapping',
@@ -15,16 +18,16 @@ import { Router } from '@angular/router'
 export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   @ViewChild('singleSelect') singleSelect!: MatSelect
   @ViewChild('searchInput') searchInput!: ElementRef
-
   @ViewChild('fileInput') fileInput!: ElementRef
 
   orgTypeList = [
     { name: 'Center', value: 'center' },
     { name: 'State', value: 'state' },
   ]
-
+  private destroy$ = new Subject<void>();
   bulkUploadRefresh: boolean = false
-
+  orgSearchData: any
+  orgReadData: any
   allOrganizations = [];
 
   defaultOrgConfig = {
@@ -42,7 +45,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
       enableUpdateHierarchy: true,
       enabaleRemoveConnection: true,
       enableThreeDot: true,
-      showSearch: false,
+      showSearch: true,
       addOrgEnabled: true,
     }]
   }
@@ -60,26 +63,43 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     private snackbar: MatSnackBar,
     private orgHieService: OrgHierarchyService,
     private loaderService: GlobalEventsService,
-    private router: Router
+    private router: Router,
+    private activeRoute: ActivatedRoute
   ) { }
+
+  get userRoles() {
+    return _.get(this.activeRoute, 'snapshot.parent.data.configService.userRoles')
+  }
+  get orgId() {
+    return _.get(this.activeRoute, 'snapshot.parent.data.configService.userProfile.rootOrgId')
+  }
 
   ngOnInit() {
     // Initialize with all organizations
     this.filteredOrganizations = [...this.allOrganizations]
 
-    // Listen for search input changes
-    this.searchControl.valueChanges.subscribe(value => {
-      this.filterOrganizations(value)
-    })
+    if (this.checkIfStateAdmin()) {
+      this.getOrgReadAndDetails()
+    } else {
+      // Listen for search input changes
+      this.searchControl.valueChanges.subscribe(value => {
+        this.filterOrganizations(value)
+      })
 
-    if (this.selectedOrgType) {
-      this.getCentenrOrStateList(this.selectedOrgType)
+      if (this.selectedOrgType) {
+        this.getCentenrOrStateList(this.selectedOrgType)
+      }
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next()
+    this.destroy$.complete()
   }
 
   ngAfterViewInit() {
     // When the dropdown is opened, focus on the search input
-    this.singleSelect.openedChange.subscribe(opened => {
+    this.singleSelect?.openedChange.subscribe(opened => {
       if (opened) {
         setTimeout(() => {
           this.searchInput.nativeElement.focus()
@@ -117,7 +137,6 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
         filters: {
           status: 1,
           sbOrgType: '',
-          ministryOrStateType: "SPV"
         },
         sort_by: {
           createdDate: "desc"
@@ -167,8 +186,13 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     if (!this.organizationCtrl?.value) {
       return false
     }
+    let selectedOrg: any
+    if (this.checkIfStateAdmin()) {
+      selectedOrg = this.orgReadData
+    } else {
+      selectedOrg = this.filteredOrganizations.find(org => org.identifier === this.organizationCtrl.value)
+    }
 
-    const selectedOrg = this.filteredOrganizations.find(org => org.identifier === this.organizationCtrl.value)
     return !!selectedOrg && !!selectedOrg.orgHierarchyFrameworkId
   }
 
@@ -179,11 +203,11 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   }
 
   async createNewHierarchy() {
-    const selectedOrg = this.getOrgDetails()
+    const selectedOrg = (this.checkIfStateAdmin()) ? this.orgReadData : this.getOrgDetails()
     if (selectedOrg) {
       const requestBody = {
         frameworkName: `org_hierarchy`,
-        identifier: selectedOrg.identifier
+        identifier: (this.checkIfStateAdmin()) ? selectedOrg.id : selectedOrg.identifier
       }
       this.loaderService.setLoaderState(true)
       const createFrameworkData = await this.orgHieService.createMasterFrameWork(requestBody).toPromise().catch(_err => {
@@ -197,8 +221,10 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
         this.cancelHierarchyCreation()
         setTimeout(() => {
           this.loaderService.setLoaderState(false)
-          this.getCentenrOrStateList(this.selectedOrgType)
-          this.organizationCtrl.setValue(selectedOrg.identifier)
+          if (!this.checkIfStateAdmin()) {
+            this.getCentenrOrStateList(this.selectedOrgType)
+            this.organizationCtrl.setValue(selectedOrg.identifier)
+          }
           this.snackbar.open(`Framework created successfully for ${selectedOrg.orgName}`)
         }, 2000)
       } else {
@@ -323,6 +349,58 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   showMessage(message: string) {
     this.snackbar.open(message, 'Close', {
       duration: 5000,
+    })
+  }
+
+  checkIfStateAdmin() {
+    return this.userRoles && this.userRoles.has('state_admin')
+  }
+
+  getOrgReadAndDetails() {
+    const requestBody = {
+      request: {
+        organisationId: this.orgId,
+      }
+    }
+    this.loaderService.setLoaderState(true)
+    this.orgHieService.getOrgReadData(requestBody).pipe(
+      switchMap((res: any) => {
+        if (res && res.params && res.params.status.toLowerCase() === 'success') {
+          // Get the organization ID from the first response
+          this.orgReadData = res.result?.response || null
+          if (this.orgReadData) {
+            const secondRequestBody = {
+              request: {
+                filters: {
+                  status: 1,
+                  ministryOrStateType: this.orgReadData.sbOrgType,
+                  ministryOrStateId: this.orgReadData.ministryOrStateId
+                }
+              }
+            }
+            this.organizationCtrl.setValue(this.orgReadData.ministryOrStateId)
+            return this.orgHieService.getOrganizationDetails(secondRequestBody)
+          }
+        }
+        this.loaderService.setLoaderState(false)
+        if (res?.error?.params?.errMsg) {
+          this.snackbar.open(`${res.error.params.errMsg}`)
+        }
+        return of(null)
+      }),
+      finalize(() => this.loaderService.setLoaderState(false))
+    ).subscribe({
+      next: (detailsRes: any) => {
+        if (detailsRes && detailsRes.result && detailsRes.result.content) {
+          this.orgSearchData = detailsRes.result.content
+        }
+      },
+      error: (err: any) => {
+        console.error('Error in API chain:', err)
+        if (err?.error?.params?.errMsg) {
+          this.snackbar.open(`${err.error.params.errMsg}`)
+        }
+      }
     })
   }
 

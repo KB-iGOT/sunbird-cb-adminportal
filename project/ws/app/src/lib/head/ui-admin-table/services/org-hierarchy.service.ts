@@ -8,7 +8,8 @@ const API_END_POINTS = {
   DOWNLOAD_FILE_RESULT: '/apis/proxies/v8/organisation/v1/hierarchy/download/file/',
   DOWNLOAD_FRAMEWORK_TEMPLATE: '/apis/proxies/v8/organisation/v1/hierarchy/download/',
   BULKUPLOAD_FRAMEWORK: '/apis/proxies/v8/organisation/v1/hierarchy/bulkUpload/',
-  DOWNLOAD_SAMPLE_TEMPLATE: '/apis/proxies/v8/organisation/v1/getMappingFile/sample/'
+  DOWNLOAD_SAMPLE_TEMPLATE: '/apis/proxies/v8/organisation/v1/getMappingFile/sample/',
+  ORG_READ: '/apis/proxies/v8/org/v1/read'
 }
 
 @Injectable({
@@ -43,5 +44,13 @@ export class OrgHierarchyService {
 
   uploadFreameworkTemplate(request: any, frameworkId: any): Observable<any> {
     return this.http.post<any>(`${API_END_POINTS.BULKUPLOAD_FRAMEWORK}${frameworkId.orgHierarchyFrameworkId}`, request)
+  }
+
+  getOrgReadData(request: any): Observable<any> {
+    return this.http.post<any>(API_END_POINTS.ORG_READ, request)
+  }
+
+  getOrganizationDetails(request: any): Observable<any> {
+    return this.http.post<any>(API_END_POINTS.ORG_V1_Search, request)
   }
 }
