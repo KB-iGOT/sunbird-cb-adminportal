@@ -30,8 +30,8 @@ export class OrgHierarchyService {
     )
   }
 
-  downloadfileResponse(_orgType: string): Observable<any> {
-    return this.http.get(`${API_END_POINTS.DOWNLOAD_FILE_RESULT}1750241663623_sample.xlsx`)//${orgType}
+  downloadfileResponse(orgType: string): Observable<any> {
+    return this.http.get(`${API_END_POINTS.DOWNLOAD_FILE_RESULT}${orgType}`)
   }
 
   downloadSampleTemplate(orgType: string): Observable<any> {

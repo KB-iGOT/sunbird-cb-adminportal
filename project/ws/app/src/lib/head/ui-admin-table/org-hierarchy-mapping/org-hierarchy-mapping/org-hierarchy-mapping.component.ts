@@ -173,13 +173,19 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   }
 
   getOrgDetails(): any {
-    if (!this.organizationCtrl.value || !this.filteredOrganizations?.length) {
+    if (!this.organizationCtrl.value || (!this.checkIfStateAdmin() && !this.filteredOrganizations?.length)) {
       return null
     }
+    let selectedOrg: any
 
-    return this.filteredOrganizations.find(organization =>
-      organization.identifier === this.organizationCtrl.value
-    ) || null
+    if (this.checkIfStateAdmin()) {
+      selectedOrg = this.orgReadData
+    } else {
+      selectedOrg = this.filteredOrganizations.find(organization =>
+        organization.identifier === this.organizationCtrl.value
+      ) || null
+    }
+    return selectedOrg
   }
 
   hasOrgHierarchyFrameworkId(): boolean {
@@ -199,7 +205,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   cancelHierarchyCreation() {
     this.organizationCtrl.reset()
     this.filteredOrganizations = [...this.allOrganizations]
-    this.singleSelect.close()
+    this.singleSelect?.close()
   }
 
   async createNewHierarchy() {
@@ -288,8 +294,12 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   }
 
   getselectedOrgData() {
-    if (this.allOrganizations.filter((v: any) => v.identifier === this.organizationCtrl.value).length) {
-      return this.allOrganizations.filter((v: any) => v.identifier === this.organizationCtrl.value)[0]
+    if (this.checkIfStateAdmin()) {
+      return this.orgReadData
+    } else {
+      if (this.allOrganizations.filter((v: any) => v.identifier === this.organizationCtrl.value).length) {
+        return this.allOrganizations.filter((v: any) => v.identifier === this.organizationCtrl.value)[0]
+      }
     }
     return null
   }
