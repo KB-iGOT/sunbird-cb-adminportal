@@ -49,6 +49,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
       enableThreeDot: true,
       showSearch: true,
       addOrgEnabled: true,
+      enableInfoIcon: true
     }]
   }
 
@@ -153,7 +154,8 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
           'parentOrgName',
           'orgHierarchyFrameworkId',
           'orgHierarchyFrameworkStatus',
-          'sbOrgType'
+          'sbOrgType',
+          'sbOrgSubType'
         ]
       }
     }
@@ -417,8 +419,6 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   }
 
   openBulkUploadDialog() {
-    const allowedTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
-    console.log('File type: ', allowedTypes)
     const bulkUploadConfig = {
       mainHeading: '',
       sampleFileDownloadInstructuons: {
@@ -446,7 +446,12 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
       maxHeight: '100vh',
       autoFocus: false,
     })
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(async result => {
+      if (this.checkIfStateAdmin()) {
+        await this.getOrgReadAndDetails()
+      } else {
+        await this.getCentenrOrStateList(this.selectedOrgType)
+      }
       this.bulkUploadRefresh = false
       console.log('The dialog was closed', result)
     })
