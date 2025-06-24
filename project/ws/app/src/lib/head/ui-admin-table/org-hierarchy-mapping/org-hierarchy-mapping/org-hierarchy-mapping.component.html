@@ -29,13 +29,14 @@
     </ng-container>
     <ng-container *ngIf="hasOrgHierarchyFrameworkId()">
       <div class="bulk-upload-container flex gap-4 margin-left-auto">
-        <button mat-button class="btn-common btn-with-out-border" type="button" (click)="downloadTemplate()">
+        <button mat-button class="btn-common btn-with-out-border flex flex-middle" type="button"
+          (click)="downloadTemplate()">
           Download template
           <mat-icon svgIcon="download-icon" class="btn-icon"></mat-icon>
         </button>
         <button mat-button class="btn-common btn-secondary" type="button" (click)="exportData()">Export</button>
         <input type="file" #fileInput accept=".xlsx" style="display: none" (change)="onFileSelected($event)">
-        <button mat-button class="btn-common btn-primary" type="button" (click)="fileInput.click()">
+        <button mat-button class="btn-common btn-primary" type="button" (click)="openBulkUploadDialog()">
           Bulk Upload
         </button>
       </div>

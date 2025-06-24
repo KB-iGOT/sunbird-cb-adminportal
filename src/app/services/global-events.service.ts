@@ -25,6 +25,11 @@ export class GlobalEventsService {
     )
 
     this.iconRegistry.addSvgIcon(
+      'users',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/users.svg')
+    )
+
+    this.iconRegistry.addSvgIcon(
       'frac-no-connection',
       this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/Frac_NoConnection.svg')
     )

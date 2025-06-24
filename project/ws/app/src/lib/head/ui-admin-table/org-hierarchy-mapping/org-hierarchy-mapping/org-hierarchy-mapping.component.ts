@@ -9,6 +9,8 @@ import { ActivatedRoute, Router } from '@angular/router'
 import _ from 'lodash'
 import { Subject, of } from 'rxjs'
 import { switchMap, finalize } from 'rxjs/operators'
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { BulkUploadOrgComponent } from '../../bulk-upload-org/bulk-upload-org.component'
 
 @Component({
   selector: 'ws-app-org-hierarchy-mapping',
@@ -21,7 +23,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   @ViewChild('fileInput') fileInput!: ElementRef
 
   orgTypeList = [
-    { name: 'Center', value: 'center' },
+    { name: 'Center', value: 'ministry' },
     { name: 'State', value: 'state' },
   ]
   private destroy$ = new Subject<void>();
@@ -64,7 +66,8 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     private orgHieService: OrgHierarchyService,
     private loaderService: GlobalEventsService,
     private router: Router,
-    private activeRoute: ActivatedRoute
+    private activeRoute: ActivatedRoute,
+    private dialog: MatDialog
   ) { }
 
   get userRoles() {
@@ -154,7 +157,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
         ]
       }
     }
-    if (orgType === 'center') {
+    if (orgType === 'ministry') {
       requestBody.request.filters.sbOrgType = 'ministry'
     } else if (orgType === 'state') {
       requestBody.request.filters.sbOrgType = 'state'
@@ -245,18 +248,17 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   }
 
   redirectOrg(event: any) {
-    console.log('redirectOrg', event)
     this.router.navigate([`/app/roles/${event.additionalProperties.orgId}/users`], {
       queryParams:
       {
         currentDept: 'organisation',
         roleId: event.additionalProperties.orgId,
-        depatName: event.additionalProperties.orgName,
-        orgName: event.additionalProperties.orgName,
+        depatName: event.name,
+        orgName: event.name,
         tab: 'users',
         // subOrgType: !this.isAllowed(this.allowedCreateRoles) ? 'ministry' : role.data.type ? role.data.type : 'cbp-providers'
         // subOrgType: !this.isAllowed(this.allowedCreateRoles) ? 'ministry' : role.data.type ? role.data.type : 'ministry'
-        subOrgType: event.additionalProperties.ministryOrStateType
+        subOrgType: (this.checkIfStateAdmin()) ? 'state' : this.selectedOrgType
       }
     })
   }
@@ -411,6 +413,42 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
           this.snackbar.open(`${err.error.params.errMsg}`)
         }
       }
+    })
+  }
+
+  openBulkUploadDialog() {
+    const allowedTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+    console.log('File type: ', allowedTypes)
+    const bulkUploadConfig = {
+      mainHeading: '',
+      sampleFileDownloadInstructuons: {
+        title: 'Open & follow these instruction',
+        instructions: [
+          'Keep the row of the items you wish to process',
+          'Keep the row of the items you wish to process',
+          'Delete the entire row you donot intend to process'
+        ],
+      },
+      sampleFileDownloadText: 'Download Sample File',
+      supportedFileTypeText2: '',
+      supportedFileTypeText: 'XLSX',
+      maxFileSizeText: '100 MB',
+      frameworkData: this.getselectedOrgData(),
+    }
+    this.bulkUploadRefresh = true
+    const dialogRef = this.dialog.open(BulkUploadOrgComponent, {
+      data: { bulkUploadConfig },
+      position: { top: '60px' },
+      height: '80%',
+      width: '65%',
+      panelClass: 'org-bulk-upload-dialog',
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      autoFocus: false,
+    })
+    dialogRef.afterClosed().subscribe(result => {
+      this.bulkUploadRefresh = false
+      console.log('The dialog was closed', result)
     })
   }
 
