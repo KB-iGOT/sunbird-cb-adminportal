@@ -582,7 +582,9 @@ export class CreateEventComponent implements OnInit, OnDestroy {
     if (this.createEventForm.controls['state'] && this.createEventForm.controls['state'].value && this.showRajyaField) {
       this.reqPayload['request']['event']['resourceTypeDetails'] = this.getStateDetail()
     } else {
-      this.reqPayload['request']['event']['resourceTypeDetails'] = this.getEventTemplate()
+      if (this.getEventTemplate() && Object.keys(this.getEventTemplate()).length) {
+        this.reqPayload['request']['event']['resourceTypeDetails'] = this.getEventTemplate()
+      }
     }
 
     // const formJson = this.encodeToBase64(form)
