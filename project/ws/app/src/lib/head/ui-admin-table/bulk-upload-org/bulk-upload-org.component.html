@@ -3,6 +3,8 @@
   <div class="modal-header flex">
     <h2 class="mat-dialog-title">Upload Organizations</h2>
     <div class="btn-container flex gap-4 margin-left-auto">
+      <button mat-button class="btn-common btn-secondary" type="button" [mat-dialog-close]>
+        Cancel</button>
       <button mat-button class="btn-common btn-secondary flex flex-middle" type="button"
         (click)="getBulkuploadPrgressData()">
         <mat-icon class="btn-icon">refresh</mat-icon>
