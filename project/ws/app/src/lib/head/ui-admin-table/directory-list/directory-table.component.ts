@@ -83,8 +83,8 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
         distinctUntilChanged()
       )
       .subscribe((filterValue) => {
-        this.searchByEnterKey.emit(filterValue)
         this.pageIndex = 0
+        this.searchByEnterKey.emit(filterValue)
       })
   }
 
@@ -250,6 +250,7 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
   }
 
   onSearchEnter(filterValue: any) {
+    this.pageIndex = 0
     if (filterValue === '') {
       this.searchByEnterKey.emit('')
     } else if (filterValue?.length > 2) {
@@ -342,6 +343,7 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
 
   organizationCreatedEmit(_event: any) {
     setTimeout(() => {
+      this.pageIndex = 0
       this.searchByEnterKey.emit('')
     }, 1000)
 
