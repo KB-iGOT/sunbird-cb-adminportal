@@ -68,7 +68,8 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   pictureObj: any
   myreg = /^(https?|http):\/\/[^\s/$.?#].[^\s]*$/
   eventTitleRegex = /^[a-zA-Z0-9\s',:]*$/
-
+  eventTypeCertification: any = {}
+  defaultCertification: any = {}
   // myreg = /^(http|https:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/
 
   // eventTypes = [
@@ -222,6 +223,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
       }
     }
 
+    this.getSlwResourceTypeDetail()
   }
 
   openDialog() {
@@ -579,6 +581,8 @@ export class CreateEventComponent implements OnInit, OnDestroy {
 
     if (this.createEventForm.controls['state'] && this.createEventForm.controls['state'].value && this.showRajyaField) {
       this.reqPayload['request']['event']['resourceTypeDetails'] = this.getStateDetail()
+    } else {
+      this.reqPayload['request']['event']['resourceTypeDetails'] = this.getEventTemplate()
     }
 
     // const formJson = this.encodeToBase64(form)
@@ -686,9 +690,16 @@ export class CreateEventComponent implements OnInit, OnDestroy {
     }
     let eventTypeControl = this.createEventForm.get('eventType')
     if (eventTypeControl && eventTypeControl.value === 'Rajya Karmayogi Saptah') {
-      // if (this.stateList.length === 0) {
-      this.getSlwResourceTypeDetail()
-      // }
+      if (this.stateList && this.stateList.length) {
+        this.showRajyaField = true
+        setTimeout(() => {
+          const control = this.createEventForm.get('state')
+          if (control) {
+            control.setValue(this.stateList[0]['stateOrMinistryName'])
+          }
+        }, 0)
+
+      }
     } else {
       this.showRajyaField = false
       this.createEventForm.controls['state'].setValidators([])
@@ -707,16 +718,9 @@ export class CreateEventComponent implements OnInit, OnDestroy {
     this.eventsSvc.getSlwResourceTypeDetail(payload).subscribe((data) => {
       if (data && data.slwResourceTypeDetails && data.slwResourceTypeDetails.length) {
         this.stateList = data.slwResourceTypeDetails
-        if (this.stateList && this.stateList.length) {
-          this.showRajyaField = true
-          setTimeout(() => {
-            const control = this.createEventForm.get('state')
-            if (control) {
-              control.setValue(this.stateList[0]['stateOrMinistryName'])
-            }
-          }, 0)
+        this.eventTypeCertification = data.eventTypeCert || {}
+        this.defaultCertification = data.defaultCertTemplate || {}
 
-        }
 
         //this.createEventForm.get['state'].setValue(this.stateList[0]['stateOrMinistryName'])
       }
@@ -736,6 +740,15 @@ export class CreateEventComponent implements OnInit, OnDestroy {
       })
     }
     return payload && payload[0] ? payload[0] : null
+  }
+
+  getEventTemplate() {
+    if (this.eventTypeCertification && this.eventTypeCertification[this.createEventForm.controls['eventType'].value]
+      && Object.keys(this.eventTypeCertification[this.createEventForm.controls['eventType'].value]).length > 0
+    ) {
+      return this.eventTypeCertification[this.createEventForm.controls['eventType'].value]
+    }
+    return this.defaultCertification
   }
 
   youTubeUrlChange(url: string): string {
