@@ -160,6 +160,7 @@ export class DirectoryViewComponent implements OnInit {
 
       }
     }
+    this.tabledata.loader = false
     // console.log(key, 'key-------')
   }
   getAllDepartments(queryText: any) {
@@ -172,6 +173,8 @@ export class DirectoryViewComponent implements OnInit {
       // this.wholeData2 = _.orderBy(this.wholeData2, ['createdDate'], ['desc'])
       if (this.departmentHearders && this.departmentHearders.length) {
         this.getDepartDataByKey(this.currentFilter)
+      } else {
+        this.tabledata.loader = false
       }
     })
   }
