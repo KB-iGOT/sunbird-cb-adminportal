@@ -71,11 +71,13 @@
             <div class="flex flex-row gap-1">
               <div class="font-bold">File Information</div>
             </div>
-            <button mat-button type="button" class="btn-common btn-secondary flex flex-middle"
-              (click)="handleDownloadFile(list)">
-              <mat-icon class="btn-icon" svgIcon="download-icon"></mat-icon>
-              {{ list?.status !== 'SUCCESSFUL' ? ' Download error log' : ' Download file' }}
-            </button>
+            <ng-container *ngIf="list?.status !== 'IN-PROGRESS'">
+              <button mat-button type="button" class="btn-common btn-secondary flex flex-middle"
+                (click)="handleDownloadFile(list)">
+                <mat-icon class="btn-icon" svgIcon="download-icon"></mat-icon>
+                {{ list?.status !== 'SUCCESSFUL' ? ' Download error log' : ' Download file' }}
+              </button>
+            </ng-container>
           </div>
           <div class="flex flex-wrap">
             <div class="flex flex-col w-full box">
@@ -85,7 +87,7 @@
             <div class="flex flex-col w-full box">
               <div class="label">Status</div>
               <div class="value"
-                [ngClass]="{'failed-text': list?.status !== 'SUCCESSFUL', 'success-text': list?.status === 'SUCCESSFUL'}">
+                [ngClass]="{'failed-text': list?.status !== 'SUCCESSFUL', 'success-text': list?.status === 'SUCCESSFUL', 'in-progress-text': list?.status === 'IN-PROGRESS'}">
                 {{ list?.status }}</div>
             </div>
             <div class="flex flex-col w-full box">
