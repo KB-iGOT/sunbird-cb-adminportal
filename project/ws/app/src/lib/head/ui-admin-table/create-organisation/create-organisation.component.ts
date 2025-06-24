@@ -237,22 +237,26 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       logo: this.uploadedLogoResponse?.qrcodepath || "",
       description: this.controls['description']?.value || "",
       parentMapId: "",
+      sbRootOrgId: ""
     }
-    const sbRootOrgId = _.get(this.activatedRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrgId')
-    if (sbRootOrgId) {
-      payload['sbRootOrgId'] = sbRootOrgId
-    }
+    // const sbRootOrgId = _.get(this.activatedRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrgId')
+    // if (sbRootOrgId) {
+    //   payload['sbRootOrgId'] = sbRootOrgId
+    // }
     if (this.controls['category']?.value === 'state') {
       const orgDetails = _.find(this.statesList, { orgName: this.stateName })
       if (orgDetails) {
-        payload.parentMapId = orgDetails.mapId || "" // Assign mapId from orgDetails
+        payload.parentMapId = orgDetails?.mapId || "" // Assign mapId from orgDetails
+        payload['sbRootOrgId'] = orgDetails?.sbOrgId || ""
       } else if (this.controls['state']?.value?.mapId) {
-        payload.parentMapId = this.controls['state'].value.mapId // Fallback to state control mapId
+        payload.parentMapId = this.controls['state'].value?.mapId || ""// Fallback to state control mapId
+        payload['sbRootOrgId'] = this.controls['state']?.value?.sbOrgId || ""
       } else {
         return // Exit function in case of error
       }
     } else if (this.controls['ministry']?.value?.mapId) {
-      payload.parentMapId = this.controls['ministry'].value.mapId // Assign ministry mapId
+      payload.parentMapId = this.controls['ministry'].value?.mapId || ""// Assign ministry mapId
+      payload['sbRootOrgId'] = this.controls['ministry']?.value?.sbOrgId || ""
     }
     payload.ministryOrStateId = this.controls[this.controls['category']?.value]?.value?.sbOrgId
     if (this.openMode === 'editMode') {
