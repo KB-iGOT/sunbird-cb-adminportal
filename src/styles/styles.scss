@@ -694,7 +694,8 @@ h3.shepherd-title {
     font-size: 14px !important;
     height: 14px !important;
     width: 14px !important;
-    margin-left: 5px !important;
+    position: relative;
+    top: -2px;
   }
 }
 

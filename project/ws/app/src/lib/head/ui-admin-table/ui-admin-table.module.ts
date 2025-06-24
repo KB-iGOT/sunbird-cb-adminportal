@@ -18,7 +18,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatIconModule } from '@angular/material/icon'
 import { AppButtonModule } from '../app-button/app-button.module'
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu'
-import { DefaultThumbnailModule, PipeCountTransformModule, PipeDurationTransformModule, PipeHtmlTagRemovalModule, PipePartialContentModule } from '@sunbird-cb/utils'
+import { DefaultThumbnailModule, PipeCountTransformModule, PipeDurationTransformModule, PipeHtmlTagRemovalModule, PipeOrderByModule, PipePartialContentModule } from '@sunbird-cb/utils'
 import { BtnChannelAnalyticsModule } from '../btn-channel-analytics/btn-channel-analytics.module'
 import { BtnContentFeedbackV2Module } from '../btn-content-feedback-v2/btn-content-feedback-v2.module'
 // import { BtnContentLikeModule } from '../btn-content-like/btn-content-like.module'
@@ -45,6 +45,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core'
 import { OrgHierarchyMappingComponent } from './org-hierarchy-mapping/org-hierarchy-mapping/org-hierarchy-mapping.component'
 import { TreeHierarchyModule } from '@sunbird-cb/tree-hierarchy'
 import { OrgHierarchyService } from './services/org-hierarchy.service'
+import { BulkUploadOrgComponent } from './bulk-upload-org/bulk-upload-org.component'
 @NgModule({
   declarations: [
     UIAdminUserTableComponent,
@@ -57,6 +58,7 @@ import { OrgHierarchyService } from './services/org-hierarchy.service'
     CreateOrganisationComponent,
     CustomSelfRegistrationComponent,
     OrgHierarchyMappingComponent,
+    BulkUploadOrgComponent,
   ],
   imports: [
     AppButtonModule,
@@ -88,7 +90,8 @@ import { OrgHierarchyService } from './services/org-hierarchy.service'
     ClipboardModule,
     MatAutocompleteModule,
     // MatRadioButton, MatRadioGroup
-    TreeHierarchyModule
+    TreeHierarchyModule,
+    PipeOrderByModule
   ],
   exports: [
     UIAdminUserTableComponent,
