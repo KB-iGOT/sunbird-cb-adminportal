@@ -8,7 +8,7 @@ import { GlobalEventsService } from '../../../../../../../../../src/app/services
 import { ActivatedRoute, Router } from '@angular/router'
 import _ from 'lodash'
 import { Subject, of } from 'rxjs'
-import { switchMap, finalize } from 'rxjs/operators'
+import { switchMap, finalize, debounceTime } from 'rxjs/operators'
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
 import { BulkUploadOrgComponent } from '../../bulk-upload-org/bulk-upload-org.component'
 
@@ -86,12 +86,15 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
       this.getOrgReadAndDetails()
     } else {
       // Listen for search input changes
-      this.searchControl.valueChanges.subscribe(value => {
-        this.filterOrganizations(value)
-      })
+      this.searchControl.valueChanges.pipe(
+        debounceTime(700)).subscribe(value => {
+          if (this.selectedOrgType) {
+            this.getCentenrOrStateList(this.selectedOrgType, value)
+          }
+        })
 
       if (this.selectedOrgType) {
-        this.getCentenrOrStateList(this.selectedOrgType)
+        this.getCentenrOrStateList(this.selectedOrgType, '')
       }
     }
   }
@@ -135,7 +138,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     }
   }
 
-  async getCentenrOrStateList(orgType: string) {
+  async getCentenrOrStateList(orgType: string, value?: string) {
     let requestBody = {
       request: {
         filters: {
@@ -145,6 +148,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
         sort_by: {
           createdDate: "desc"
         },
+        query: value || '',
         limit: 200,
         offset: 0,
         fields: [
@@ -174,6 +178,12 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
       this.loaderService.setLoaderState(false)
       this.allOrganizations = listRes.result.response.content
       this.filteredOrganizations = [...this.allOrganizations]
+    } else {
+      this.loaderService.setLoaderState(false)
+      this.allOrganizations = []
+      this.filteredOrganizations = []
+      // this.snackbar.open(`No organizations found for ${orgType}`)
+
     }
   }
 

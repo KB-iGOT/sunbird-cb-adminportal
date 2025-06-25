@@ -16,7 +16,8 @@
                   (keydown)="$event.key === ' ' ? $event.stopPropagation() : null" (click)="$event.stopPropagation()"
                   class="search-input" #searchInput>
               </div>
-              <mat-option *ngFor="let organization of filteredOrganizations" [value]="organization.identifier">
+              <mat-option *ngFor="let organization of filteredOrganizations | orderBy: 'orgName'"
+                [value]="organization.identifier">
                 {{organization.orgName}}
               </mat-option>
               <mat-option *ngIf="filteredOrganizations.length === 0" disabled>
@@ -57,6 +58,11 @@
         <button mat-button class="btn-common btn-primary" (click)="createNewHierarchy()">Create</button>
         <button mat-button class="btn-common btn-secondary" (click)="cancelHierarchyCreation()">Cancel</button>
       </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="!organizationCtrl?.value && !hasOrgHierarchyFrameworkId() && !checkIfStateAdmin()">
+    <div class="no-hierarchy-container">
+      <p>Select state or center to proceed.</p>
     </div>
   </ng-container>
 </div>
