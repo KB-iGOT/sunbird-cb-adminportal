@@ -44,7 +44,7 @@
     </ng-container>
   </div>
   <ng-container *ngIf="organizationCtrl?.value && hasOrgHierarchyFrameworkId() && !bulkUploadRefresh">
-    <div class="tree-view-container" style="height: calc(100vh - vh)">
+    <div class="tree-view-container">
       <lib-tree-view [environment]="environmentVal" [taxonomyConfig]="defaultOrgConfig"
         [orgSelectedData]="getOrgDetails()" (loaderEnable)="checkloader($event)"
         (manageOrg)="redirectOrg($event)"></lib-tree-view>
@@ -62,7 +62,7 @@
   </ng-container>
   <ng-container *ngIf="!organizationCtrl?.value && !hasOrgHierarchyFrameworkId() && !checkIfStateAdmin()">
     <div class="no-hierarchy-container flex flex-col flex-middle">
-      <div class="no-org-selected">
+      <div class="no-org-selected mb-3">
         <mat-icon svgIcon="frac-no-connection" class="info-icon"></mat-icon>
       </div>
       <p>Select state or center to proceed.</p>
