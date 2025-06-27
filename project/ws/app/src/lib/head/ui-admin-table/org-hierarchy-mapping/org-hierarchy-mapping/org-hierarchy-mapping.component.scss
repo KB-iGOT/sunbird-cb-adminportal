@@ -79,3 +79,12 @@
 .tree-view-container {
   height: calc(100vh - 42vh);
 }
+
+.no-org-selected {
+  width: 20px;
+  height: 20px;
+  padding: 10px;
+  background: #0000000A;
+  border-radius: 8px;
+  color: #1B4CA1;
+}
