@@ -61,7 +61,10 @@
     </div>
   </ng-container>
   <ng-container *ngIf="!organizationCtrl?.value && !hasOrgHierarchyFrameworkId() && !checkIfStateAdmin()">
-    <div class="no-hierarchy-container">
+    <div class="no-hierarchy-container flex flex-col flex-middle">
+      <div class="no-org-selected">
+        <mat-icon svgIcon="frac-no-connection" class="info-icon"></mat-icon>
+      </div>
       <p>Select state or center to proceed.</p>
     </div>
   </ng-container>
