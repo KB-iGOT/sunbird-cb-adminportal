@@ -32,7 +32,7 @@ export class BulkUploadOrgComponent implements OnInit {
   }
 
   async handleDownloadSampleFile() {
-    const frameworkData: any = this.bulkUploadConfig.frameworkData || {}
+    const frameworkData: any = this.bulkUploadConfig?.frameworkData || {}
     if (frameworkData && frameworkData.orgHierarchyFrameworkId) {
       this.loaderService.setLoaderState(true)
       const fileData: any = await this.orgHieService.downloadSampleTemplate(frameworkData.orgHierarchyFrameworkId).toPromise().catch(_err => {
@@ -73,7 +73,7 @@ export class BulkUploadOrgComponent implements OnInit {
     const formData = new FormData()
     formData.append('file', file)
     this.loaderService.setLoaderState(true)
-    const uploadFileRes = await this.orgHieService.uploadFreameworkTemplate(formData, this.bulkUploadConfig.frameworkData).toPromise().catch((_err: any) => {
+    const uploadFileRes = await this.orgHieService.uploadFreameworkTemplate(formData, this.bulkUploadConfig?.frameworkData).toPromise().catch((_err: any) => {
       this.loaderService.setLoaderState(false)
       if (_err && _err.error && _err.error.params && _err.error.params.errMsg) {
         this.snackbar.open(`${_err.error.params.errMsg}`)
@@ -101,8 +101,8 @@ export class BulkUploadOrgComponent implements OnInit {
 
   getBulkuploadPrgressData() {
     this.loaderService.setLoaderState(true)
-    const orgId = this.bulkUploadConfig.frameworkData.orgHierarchyFrameworkId.split(`_`)[0]
-    this.orgHieService.getBulkuploadProgress((orgId) ? orgId : '').subscribe(
+    const orgId = this.bulkUploadConfig?.frameworkData.orgHierarchyFrameworkId.split(`_`)[0]
+    this.orgHieService.getBulkuploadProgress((orgId) ? orgId : '')?.subscribe(
       (res: any) => {
         this.loaderService.setLoaderState(false)
         if (res && res.params && res.params.status?.toLowerCase() === 'successful') {
@@ -123,7 +123,7 @@ export class BulkUploadOrgComponent implements OnInit {
   handleDownloadFile(item: any) {
     if (item && item.fileName) {
       this.loaderService.setLoaderState(true)
-      this.orgHieService.downloadFileLog(item.fileName).subscribe(
+      this.orgHieService.downloadFileLog(item.fileName)?.subscribe(
         (res: any) => {
           this.loaderService.setLoaderState(false)
           const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
