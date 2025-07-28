@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  OnDestroy,
   OnInit,
   ViewChild,
   ViewContainerRef,
@@ -24,13 +25,18 @@ import {
 import { delay } from 'rxjs/operators'
 import { MobileAppsService } from '../../services/mobile-apps.service'
 import { RootService } from './root.service'
+import { Subscription } from 'rxjs'
+import { GlobalEventsService } from '../../services/global-events.service'
 
 @Component({
   selector: 'ws-root',
   templateUrl: './root.component.html',
   styleUrls: ['./root.component.scss'],
+  host: {
+    '[attr.aria-hidden]': 'false'  // Explicitly set aria-hidden to false
+  }
 })
-export class RootComponent implements OnInit, AfterViewInit {
+export class RootComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('previewContainer', { read: ViewContainerRef, static: true })
   previewContainerViewRef: ViewContainerRef | null = null
   @ViewChild('appUpdateTitle', { static: true })
@@ -46,6 +52,8 @@ export class RootComponent implements OnInit, AfterViewInit {
   isInIframe = false
   appStartRaised = false
   isSetupPage = false
+  isLoading = false
+  loaderSubscription!: Subscription
   constructor(
     private router: Router,
     // public authSvc: AuthKeycloakService,
@@ -55,6 +63,7 @@ export class RootComponent implements OnInit, AfterViewInit {
     private rootSvc: RootService,
     private btnBackSvc: BtnPageBackService,
     private changeDetector: ChangeDetectorRef,
+    private loader: GlobalEventsService,
   ) {
     this.mobileAppsSvc.init()
   }
@@ -110,9 +119,22 @@ export class RootComponent implements OnInit, AfterViewInit {
     this.rootSvc.showNavbarDisplay$.pipe(delay(500)).subscribe(display => {
       this.showNavbar = display
     })
+    this.loaderSubscription = this.loader.loaderState$.subscribe(
+      data => {
+        this.isLoading = data
+        this.changeDetector.detectChanges()
+      },
+    )
   }
 
   ngAfterViewInit() {
 
+  }
+
+  ngOnDestroy() {
+    if (this.loaderSubscription) {
+      this.loaderSubscription.unsubscribe()
+    }
+    this.changeDetector.detach()
   }
 }

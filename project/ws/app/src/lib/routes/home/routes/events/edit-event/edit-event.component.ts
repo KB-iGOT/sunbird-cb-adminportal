@@ -63,7 +63,7 @@ export class EditEventComponent implements OnInit {
   toastSuccess: any
   pictureObj: any
   myreg = /^(https?|http):\/\/[^\s/$.?#].[^\s]*$/
-  eventTitleRegex = /^[a-zA-Z0-9\s',:]*$/
+  eventTitleRegex = /^[a-zA-Z0-9\s'",:-]*$/
   // myreg = /(^|\s)((https?:\/\/)?[\w-]+(\.[\w-]+)+\.?(:\d+)?(\/\S*)?)/gi
   // myreg = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/
 
