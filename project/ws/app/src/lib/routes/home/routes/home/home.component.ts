@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   myRoles!: Set<string>
   subscription: Subscription
   banner!: NsWidgetResolver.IWidgetData<any>
-  private bannerSubscription: any
+  public bannerSubscription: any
   public screenSizeIsLtMedium = false
   isLtMedium$ = this.valueSvc.isLtMedium$
   mode$ = this.isLtMedium$.pipe(map(isMedium => (isMedium ? 'over' : 'side')))
@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   containerCustomCls = false
   // department: any = {}
   // departmentName = ''
-  private defaultSideNavBarOpenedSubscription: any
+  public defaultSideNavBarOpenedSubscription: any
   currentRouteData: any = []
   @HostListener('window:scroll', ['$event'])
   handleScroll() {

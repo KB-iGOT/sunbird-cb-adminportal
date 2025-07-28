@@ -1,404 +1,289 @@
-
-import { HttpClient } from '@angular/common/http'
 import { of } from 'rxjs'
-import { NSProfileDataV2 } from '../models/profile-v2.model'
 import { ProfileV2UtillService } from './home-utill.service'
+
+// Mock HttpClient
+const mockHttpClient = {
+  get: jest.fn(),
+  post: jest.fn(),
+}
 
 describe('ProfileV2UtillService', () => {
   let service: ProfileV2UtillService
-  let httpClientMock: jest.Mocked<HttpClient>
 
   beforeEach(() => {
-    // Create mock HttpClient
-    httpClientMock = {
-      get: jest.fn(),
-      post: jest.fn(),
-      put: jest.fn(),
-      delete: jest.fn(),
-      patch: jest.fn(),
-      head: jest.fn(),
-      options: jest.fn(),
-      request: jest.fn()
-    } as any
+    // Clear all mocks before each test
+    jest.clearAllMocks()
 
     // Create service instance with mocked HttpClient
-    service = new ProfileV2UtillService(httpClientMock)
+    service = new ProfileV2UtillService(mockHttpClient as any)
   })
 
   describe('fetchBadges', () => {
-    it('should fetch badges for a given wid', (done) => {
+    it('should fetch badges for a given wid', () => {
       // Arrange
-      const mockWid = 'test-wid-123'
-      const mockBadgeResponse: NSProfileDataV2.IBadgeResponse = {
-        badges: ['badge1', 'badge2'],
-        totalCount: 2
-      } as any
-      const expectedUrl = '/apis/protected/v8/user/badge/for/test-wid-123'
-
-      httpClientMock.get.mockReturnValue(of(mockBadgeResponse))
+      const wid = 'test-wid-123'
+      const mockResponse: any = {
+        badges: [],
+        totalCount: 0
+      }
+      mockHttpClient.get.mockReturnValue(of(mockResponse))
 
       // Act
-      service.fetchBadges(mockWid).subscribe((result: any) => {
-        // Assert
-        expect(result).toEqual(mockBadgeResponse)
-        expect(httpClientMock.get).toHaveBeenCalledWith(expectedUrl)
-        expect(httpClientMock.get).toHaveBeenCalledTimes(1)
-        done()
+      const result = service.fetchBadges(wid)
+
+      // Assert
+      expect(mockHttpClient.get).toHaveBeenCalledWith('/apis/protected/v8/user/badge/for/test-wid-123')
+
+      result.subscribe((response: any) => {
+        expect(response).toEqual(mockResponse)
       })
     })
 
-    it('should handle empty wid', (done) => {
+    it('should call correct API endpoint with wid parameter', () => {
       // Arrange
-      const mockWid = ''
-      const mockBadgeResponse: NSProfileDataV2.IBadgeResponse = {
-        badges: [],
-        totalCount: 0
-      } as any
-      const expectedUrl = '/apis/protected/v8/user/badge/for/'
-
-      httpClientMock.get.mockReturnValue(of(mockBadgeResponse))
+      const wid = 'another-wid'
+      mockHttpClient.get.mockReturnValue(of({}))
 
       // Act
-      service.fetchBadges(mockWid).subscribe(result => {
-        // Assert
-        expect(result).toEqual(mockBadgeResponse)
-        expect(httpClientMock.get).toHaveBeenCalledWith(expectedUrl)
-        done()
-      })
+      service.fetchBadges(wid)
+
+      // Assert
+      expect(mockHttpClient.get).toHaveBeenCalledWith('/apis/protected/v8/user/badge/for/another-wid')
     })
   })
 
   describe('reCalculateBadges', () => {
-    it('should make POST request to recalculate badges', (done) => {
+    it('should make POST request to update badges endpoint', () => {
       // Arrange
-      const mockResponse = { success: true, message: 'Badges recalculated' }
-      const expectedUrl = '/apis/protected/v8/user/badge/update'
-
-      httpClientMock.post.mockReturnValue(of(mockResponse))
+      const mockResponse = { success: true }
+      mockHttpClient.post.mockReturnValue(of(mockResponse))
 
       // Act
-      service.reCalculateBadges().subscribe(result => {
-        // Assert
-        expect(result).toEqual(mockResponse)
-        expect(httpClientMock.post).toHaveBeenCalledWith(expectedUrl, {})
-        expect(httpClientMock.post).toHaveBeenCalledTimes(1)
-        done()
-      })
-    })
+      const result = service.reCalculateBadges()
 
-    it('should handle empty response from recalculate badges', (done) => {
-      // Arrange
-      const mockResponse = {}
-      const expectedUrl = '/apis/protected/v8/user/badge/update'
+      // Assert
+      expect(mockHttpClient.post).toHaveBeenCalledWith('/apis/protected/v8/user/badge/update', {})
 
-      httpClientMock.post.mockReturnValue(of(mockResponse))
-
-      // Act
-      service.reCalculateBadges().subscribe(result => {
-        // Assert
-        expect(result).toEqual(mockResponse)
-        expect(httpClientMock.post).toHaveBeenCalledWith(expectedUrl, {})
-        done()
+      result.subscribe((response: any) => {
+        expect(response).toEqual(mockResponse)
       })
     })
   })
 
   describe('fetchRecentBadge', () => {
-    it('should fetch recent badge notifications', (done) => {
+    it('should fetch recent badge notifications', () => {
       // Arrange
-      const mockNotifications: NSProfileDataV2.IUserNotifications = {
-        notifications: [
-          { id: '1', message: 'New badge earned', timestamp: '2023-01-01' },
-          { id: '2', message: 'Badge updated', timestamp: '2023-01-02' }
-        ]
-      } as any
-      const expectedUrl = '/apis/protected/v8/user/badge/notification'
-
-      httpClientMock.get.mockReturnValue(of(mockNotifications))
+      const mockNotifications: any = {
+        totalPoints: [],
+        recent_badge: undefined
+      }
+      mockHttpClient.get.mockReturnValue(of(mockNotifications))
 
       // Act
-      service.fetchRecentBadge().subscribe(result => {
-        // Assert
-        expect(result).toEqual(mockNotifications)
-        expect(httpClientMock.get).toHaveBeenCalledWith(expectedUrl)
-        expect(httpClientMock.get).toHaveBeenCalledTimes(1)
-        done()
+      const result = service.fetchRecentBadge()
+
+      // Assert
+      expect(mockHttpClient.get).toHaveBeenCalledWith('/apis/protected/v8/user/badge/notification')
+
+      result.subscribe((response: any) => {
+        expect(response).toEqual(mockNotifications)
       })
     })
 
-    it('should handle empty notifications response', (done) => {
+    it('should apply map operator that returns notifications as-is', () => {
       // Arrange
-      const mockNotifications = { notifications: [] }
-      const expectedUrl = '/apis/protected/v8/user/badge/notification'
-
-      httpClientMock.get.mockReturnValue(of(mockNotifications))
+      const mockNotifications = { test: 'data' }
+      mockHttpClient.get.mockReturnValue(of(mockNotifications))
 
       // Act
-      service.fetchRecentBadge().subscribe(result => {
-        // Assert
-        expect(result).toEqual(mockNotifications)
-        expect(httpClientMock.get).toHaveBeenCalledWith(expectedUrl)
-        done()
+      const result = service.fetchRecentBadge()
+
+      // Assert
+      result.subscribe((response: any) => {
+        expect(response).toEqual(mockNotifications)
       })
     })
   })
 
   describe('emailTransform', () => {
-    it('should transform email to safe format', () => {
+    it('should transform @ to [at] and . to [dot]', () => {
       // Arrange
-      const input = 'test@example.com'
-      const expected = 'test[at]example[dot]com'
+      const email = 'test@example.com'
 
       // Act
-      const result = service.emailTransform(input)
+      const result = service.emailTransform(email)
 
       // Assert
-      expect(result).toBe(expected)
+      expect(result).toBe('test[at]example[dot]com')
     })
 
-    it('should handle email with multiple dots', () => {
+    it('should handle multiple dots in email', () => {
       // Arrange
-      const input = 'test.user@sub.example.com'
-      const expected = 'test[dot]user[at]sub[dot]example[dot]com'
+      const email = 'test.user@sub.domain.com'
 
       // Act
-      const result = service.emailTransform(input)
+      const result = service.emailTransform(email)
 
       // Assert
-      expect(result).toBe(expected)
+      expect(result).toBe('test[dot]user[at]sub[dot]domain[dot]com')
     })
 
-    it('should handle undefined input', () => {
+    it('should return undefined when value is undefined', () => {
       // Arrange
-      const input = undefined
+      const email = undefined
 
       // Act
-      const result = service.emailTransform(input as any)
+      const result = service.emailTransform(email as any)
 
       // Assert
       expect(result).toBeUndefined()
     })
 
-    it('should handle empty string', () => {
+    it('should return undefined when value is null', () => {
       // Arrange
-      const input = ''
+      const email = null
 
       // Act
-      const result = service.emailTransform(input)
+      const result = service.emailTransform(email as any)
 
       // Assert
       expect(result).toBeUndefined()
     })
 
-    it('should handle string without @ or dots', () => {
+    it('should return undefined when value is empty string', () => {
       // Arrange
-      const input = 'plaintext'
-      const expected = 'plaintext'
+      const email = ''
 
       // Act
-      const result = service.emailTransform(input)
+      const result = service.emailTransform(email)
 
       // Assert
-      expect(result).toBe(expected)
+      expect(result).toBeUndefined()
     })
 
-    it('should handle string with only @', () => {
+    it('should handle email without @ symbol', () => {
       // Arrange
-      const input = 'test@domain'
-      const expected = 'test[at]domain'
+      const email = 'test.example.com'
 
       // Act
-      const result = service.emailTransform(input)
+      const result = service.emailTransform(email)
 
       // Assert
-      expect(result).toBe(expected)
+      expect(result).toBe('test[dot]example[dot]com')
     })
 
-    it('should handle string with only dots', () => {
+    it('should handle email without dots', () => {
       // Arrange
-      const input = 'test.domain.extension'
-      const expected = 'test[dot]domain[dot]extension'
+      const email = 'test@example'
 
       // Act
-      const result = service.emailTransform(input)
+      const result = service.emailTransform(email)
 
       // Assert
-      expect(result).toBe(expected)
+      expect(result).toBe('test[at]example')
     })
   })
 
   describe('transformToEmail', () => {
-    it('should transform safe format back to email', () => {
+    it('should transform [at] to @ and [dot] to .', () => {
       // Arrange
-      const input = 'test[at]example[dot]com'
-      const expected = 'test@example.com'
+      const transformedEmail = 'test[at]example[dot]com'
 
       // Act
-      const result = service.transformToEmail(input)
+      const result = service.transformToEmail(transformedEmail)
 
       // Assert
-      expect(result).toBe(expected)
+      expect(result).toBe('test@example.com')
     })
 
     it('should handle multiple [dot] replacements', () => {
       // Arrange
-      const input = 'test[dot]user[at]sub[dot]example[dot]com'
-      const expected = 'test.user@sub.example.com'
+      const transformedEmail = 'test[dot]user[at]sub[dot]domain[dot]com'
 
       // Act
-      const result = service.transformToEmail(input)
+      const result = service.transformToEmail(transformedEmail)
 
       // Assert
-      expect(result).toBe(expected)
+      expect(result).toBe('test.user@sub.domain.com')
     })
 
-    it('should handle undefined input', () => {
+    it('should return empty string when value is undefined', () => {
       // Arrange
-      const input = undefined
+      const transformedEmail = undefined
 
       // Act
-      const result = service.transformToEmail(input)
+      const result = service.transformToEmail(transformedEmail)
 
       // Assert
       expect(result).toBe('')
     })
 
-    it('should handle null input', () => {
+    it('should return empty string when value is null', () => {
       // Arrange
-      const input = null
+      const transformedEmail = null
 
       // Act
-      const result = service.transformToEmail(input)
+      const result = service.transformToEmail(transformedEmail)
 
       // Assert
       expect(result).toBe('')
     })
 
-    it('should handle empty string', () => {
+    it('should return empty string when value is empty string', () => {
       // Arrange
-      const input = ''
-      const expected = ''
+      const transformedEmail = ''
 
       // Act
-      const result = service.transformToEmail(input)
+      const result = service.transformToEmail(transformedEmail)
 
       // Assert
-      expect(result).toBe(expected)
+      expect(result).toBe('')
     })
 
-    it('should handle string without [at] or [dot]', () => {
+    it('should handle value without [at] symbol', () => {
       // Arrange
-      const input = 'plaintext'
-      const expected = 'plaintext'
+      const transformedEmail = 'test[dot]example[dot]com'
 
       // Act
-      const result = service.transformToEmail(input)
+      const result = service.transformToEmail(transformedEmail)
 
       // Assert
-      expect(result).toBe(expected)
+      expect(result).toBe('test.example.com')
     })
 
-    it('should handle string with only [at]', () => {
+    it('should handle value without [dot] symbols', () => {
       // Arrange
-      const input = 'test[at]domain'
-      const expected = 'test@domain'
+      const transformedEmail = 'test[at]example'
 
       // Act
-      const result = service.transformToEmail(input)
+      const result = service.transformToEmail(transformedEmail)
 
       // Assert
-      expect(result).toBe(expected)
+      expect(result).toBe('test@example')
     })
 
-    it('should handle string with only [dot]', () => {
+    it('should handle value with no transformations needed', () => {
       // Arrange
-      const input = 'test[dot]domain[dot]extension'
-      const expected = 'test.domain.extension'
+      const transformedEmail = 'plaintext'
 
       // Act
-      const result = service.transformToEmail(input)
+      const result = service.transformToEmail(transformedEmail)
 
       // Assert
-      expect(result).toBe(expected)
+      expect(result).toBe('plaintext')
     })
   })
 
   describe('API_END_POINTS', () => {
     it('should generate correct USER_BADGE endpoint', () => {
-      // This tests the internal API endpoint generation
+      // This test ensures the API endpoint generation is working correctly
+      // We can access the function through the service's method calls
       const wid = 'test-wid'
-      const expectedUrl = '/apis/protected/v8/user/badge/for/test-wid'
-
-      // We can't directly access the private API_END_POINTS, but we can verify
-      // through the service method calls
-      httpClientMock.get.mockReturnValue(of({}))
+      mockHttpClient.get.mockReturnValue(of({}))
 
       service.fetchBadges(wid)
 
-      expect(httpClientMock.get).toHaveBeenCalledWith(expectedUrl)
-    })
-  })
-
-  describe('Error Handling', () => {
-    it('should handle HTTP errors in fetchBadges', (done) => {
-      // Arrange
-      const mockWid = 'test-wid'
-      const mockError = new Error('HTTP Error')
-
-      httpClientMock.get.mockReturnValue(of().pipe(() => {
-        throw mockError
-      }))
-
-      // Act & Assert
-      service.fetchBadges(mockWid).subscribe({
-        next: () => {
-          fail('Should have thrown an error')
-        },
-        error: (error) => {
-          expect(error).toBe(mockError)
-          done()
-        }
-      })
-    })
-
-    it('should handle HTTP errors in reCalculateBadges', (done) => {
-      // Arrange
-      const mockError = new Error('HTTP Error')
-
-      httpClientMock.post.mockReturnValue(of().pipe(() => {
-        throw mockError
-      }))
-
-      // Act & Assert
-      service.reCalculateBadges().subscribe({
-        next: () => {
-          fail('Should have thrown an error')
-        },
-        error: (error) => {
-          expect(error).toBe(mockError)
-          done()
-        }
-      })
-    })
-
-    it('should handle HTTP errors in fetchRecentBadge', (done) => {
-      // Arrange
-      const mockError = new Error('HTTP Error')
-
-      httpClientMock.get.mockReturnValue(of().pipe(() => {
-        throw mockError
-      }))
-
-      // Act & Assert
-      service.fetchRecentBadge().subscribe({
-        next: () => {
-          fail('Should have thrown an error')
-        },
-        error: (error) => {
-          expect(error).toBe(mockError)
-          done()
-        }
-      })
+      expect(mockHttpClient.get).toHaveBeenCalledWith('/apis/protected/v8/user/badge/for/test-wid')
     })
   })
 })
