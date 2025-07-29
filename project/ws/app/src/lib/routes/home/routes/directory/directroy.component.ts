@@ -464,7 +464,7 @@ export class DirectoryViewComponent implements OnInit {
   }
 
   transformDate(dateString: string): string | null {
-    const isoDateString = dateString
+    const isoDateString = dateString && dateString
       .replace(' ', 'T')
       .replace(/:(\d{3})\+/, '.$1+')
       .replace(/(\+\d{2})(\d{2})$/, '$1:$2')

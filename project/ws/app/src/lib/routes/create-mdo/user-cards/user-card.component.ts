@@ -294,7 +294,7 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
   // }
 
   async loadRoles() {
-    this.roleservice.getAllRoles().subscribe((_data: any) => {
+    this.roleservice.getAllRoles()?.subscribe((_data: any) => {
       const parseRoledata = JSON.parse(_data.result.response.value)
       this.orgTypeList = parseRoledata.orgTypeList
     })

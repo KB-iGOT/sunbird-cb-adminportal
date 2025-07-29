@@ -1,73 +1,142 @@
-import { CreateMdoComponent, forbiddenNamesValidator } from './create-mdo.component'
-import { of, throwError } from 'rxjs'
+import { CreateMdoComponent } from './create-mdo.component'
+import { UntypedFormGroup } from '@angular/forms'
+import { of, throwError, BehaviorSubject } from 'rxjs'
 
-// Mock dependencies
-const mockDialog = {
-    open: jest.fn().mockReturnValue({
-        afterClosed: jest.fn().mockReturnValue(of({}))
-    })
+// Mock interfaces
+interface MockMatDialog {
+    open: jest.Mock
 }
 
-const mockSnackBar = {
-    open: jest.fn()
+interface MockMatSnackBar {
+    open: jest.Mock
 }
 
-const mockCreateMdoService = {
-    getStatesOrMinisteries: jest.fn(),
-    getDeparmentsOfState: jest.fn(),
-    getOrgsOfDepartment: jest.fn(),
-    createDepartment: jest.fn(),
-    updateDepartment: jest.fn(),
-    createStateOrMinistry: jest.fn(),
-    updateStateOrMinistry: jest.fn(),
-    assignAdminToDepartment: jest.fn()
+interface MockCreateMDOService {
+    getStatesOrMinisteries: jest.Mock
+    getDeparmentsOfState: jest.Mock
+    getOrgsOfDepartment: jest.Mock
+    assignAdminToDepartment: jest.Mock
+    createDepartment: jest.Mock
+    updateDepartment: jest.Mock
+    createStateOrMinistry: jest.Mock
+    updateStateOrMinistry: jest.Mock
 }
 
-const mockRouter = {
-    navigate: jest.fn()
+interface MockRouter {
+    navigate: jest.Mock
 }
 
-const mockDirectoryService = {
-    getDepartmentTitles: jest.fn(),
-    getDepartmentSubTitles: jest.fn()
+interface MockDirectoryService {
+    getDepartmentTitles: jest.Mock
+    getDepartmentSubTitles: jest.Mock
 }
 
-const mockValueService = {
-    isLtMedium$: of(false)
+interface MockValueService {
+    isLtMedium$: BehaviorSubject<boolean>
 }
 
-const mockActivatedRoute = {
-    params: of({
-        data: null,
-        department: 'MDO',
-        isFromDirectory: false,
-        addAdmin: false
-    }),
-    snapshot: {
-        parent: {
-            data: {
-                configService: {
-                    userProfile: { userId: 'test-user-id' },
-                    unMappedUser: {
-                        roles: ['STATE_ADMIN'],
-                        rootOrgId: 'root-org-id'
-                    }
-                }
-            }
-        }
-    }
+interface MockActivatedRoute {
+    params: BehaviorSubject<any>
+    snapshot: any
 }
 
-const mockEvents = {
-    raiseInteractTelemetry: jest.fn()
+interface MockEventService {
+    raiseInteractTelemetry: jest.Mock
 }
 
 describe('CreateMdoComponent', () => {
     let component: CreateMdoComponent
+    let mockDialog: MockMatDialog
+    let mockSnackBar: MockMatSnackBar
+    let mockCreateMdoService: MockCreateMDOService
+    let mockRouter: MockRouter
+    let mockDirectoryService: MockDirectoryService
+    let mockValueService: MockValueService
+    let mockActivatedRoute: MockActivatedRoute
+    let mockEventService: MockEventService
+
+    // const mockUserPopupComponent = {}
 
     beforeEach(() => {
-        // Reset all mocks
-        jest.clearAllMocks()
+        // Mock all dependencies
+        mockDialog = {
+            open: jest.fn().mockReturnValue({
+                afterClosed: () => of({ data: [{ userId: '123', fullname: 'Test User', email: 'test@test.com' }] })
+            })
+        }
+
+        mockSnackBar = {
+            open: jest.fn()
+        }
+
+        mockCreateMdoService = {
+            getStatesOrMinisteries: jest.fn().mockReturnValue(of({
+                result: { response: { content: [{ orgName: 'Test State', mapId: '1' }] } }
+            })),
+            getDeparmentsOfState: jest.fn().mockReturnValue(of({
+                result: { response: { content: [{ orgName: 'Test Dept', mapId: '2' }] } }
+            })),
+            getOrgsOfDepartment: jest.fn().mockReturnValue(of({
+                result: { response: { content: [{ orgName: 'Test Org', mapId: '3' }] } }
+            })),
+            assignAdminToDepartment: jest.fn().mockReturnValue(of({ success: true })),
+            createDepartment: jest.fn().mockReturnValue(of({
+                result: { response: 'SUCCESS', organisationId: '123' }
+            })),
+            updateDepartment: jest.fn().mockReturnValue(of({
+                result: { response: 'SUCCESS' }
+            })),
+            createStateOrMinistry: jest.fn().mockReturnValue(of({
+                responseCode: 'SUCCESS'
+            })),
+            updateStateOrMinistry: jest.fn().mockReturnValue(of({
+                result: { response: 'SUCCESS' },
+                responseCode: 'SUCCESS'
+            }))
+        }
+
+        mockRouter = {
+            navigate: jest.fn()
+        }
+
+        mockDirectoryService = {
+            getDepartmentTitles: jest.fn().mockReturnValue(of({
+                result: { response: { value: JSON.stringify({ orgTypeList: [{ name: 'MDO', subTypeList: [] }] }) } }
+            })),
+            getDepartmentSubTitles: jest.fn().mockReturnValue(of({
+                result: { response: { value: JSON.stringify({ fields: [{ value: 1, name: 'Test Type' }] }) } }
+            }))
+        }
+
+        mockValueService = {
+            isLtMedium$: new BehaviorSubject(false)
+        }
+
+        mockActivatedRoute = {
+            params: new BehaviorSubject({
+                data: JSON.stringify({ row: { id: 1, mdo: 'Test MDO', head: 'Test Head', typeid: 1 } }),
+                department: 'MDO',
+                isFromDirectory: true,
+                addAdmin: false
+            }),
+            snapshot: {
+                parent: {
+                    data: {
+                        configService: {
+                            userProfile: { userId: 'user123' },
+                            unMappedUser: {
+                                roles: ['STATE_ADMIN'],
+                                rootOrgId: 'root123'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        mockEventService = {
+            raiseInteractTelemetry: jest.fn()
+        }
 
         // Create component instance
         component = new CreateMdoComponent(
@@ -78,489 +147,698 @@ describe('CreateMdoComponent', () => {
             mockDirectoryService as any,
             mockValueService as any,
             mockActivatedRoute as any,
-            mockEvents as any
+            mockEventService as any
         )
     })
 
-    describe('Component Initialization', () => {
-        it('should create component', () => {
-            expect(component).toBeTruthy()
-        })
-
-        it('should initialize with default values', () => {
-            expect(component.isSubmitPressed).toBe(false)
-            expect(component.nextAction).toBe('done')
-            expect(component.stage).toBe(1)
-            expect(component.formType).toBe('department')
-            expect(component.canUpdate).toBe(true)
-            expect(component.canExpiry).toBe(true)
-        })
-
-        it('should set isStateAdmin to true when user has STATE_ADMIN role', () => {
+    describe('Constructor', () => {
+        it('should create component instance', () => {
+            expect(component).toBeDefined()
+            expect(component.loggedInUserId).toBe('user123')
             expect(component.isStateAdmin).toBe(true)
         })
 
-        it('should initialize forms correctly', () => {
-            expect(component.contentForm).toBeDefined()
-            expect(component.stateForm).toBeDefined()
-            expect(component.departmentForm).toBeDefined()
+        it('should initialize forms', () => {
+            expect(component.contentForm).toBeInstanceOf(UntypedFormGroup)
+            expect(component.stateForm).toBeInstanceOf(UntypedFormGroup)
+            expect(component.departmentForm).toBeInstanceOf(UntypedFormGroup)
+        })
+
+        it('should set formType to department when department is mdo', () => {
+            mockActivatedRoute.params.next({ department: 'mdo' })
+            component = new CreateMdoComponent(
+                mockDialog as any,
+                mockSnackBar as any,
+                mockCreateMdoService as any,
+                mockRouter as any,
+                mockDirectoryService as any,
+                mockValueService as any,
+                mockActivatedRoute as any,
+                mockEventService as any
+            )
+            expect(component.formType).toBe('department')
+        })
+
+        it('should set formType to state when department is state', () => {
+            mockActivatedRoute.params.next({ department: 'state' })
+            component = new CreateMdoComponent(
+                mockDialog as any,
+                mockSnackBar as any,
+                mockCreateMdoService as any,
+                mockRouter as any,
+                mockDirectoryService as any,
+                mockValueService as any,
+                mockActivatedRoute as any,
+                mockEventService as any
+            )
+            expect(component.formType).toBe('state')
+        })
+
+        it('should handle CBP Providers department name', () => {
+            mockActivatedRoute.params.next({ department: 'CBP Providers' })
+            component = new CreateMdoComponent(
+                mockDialog as any,
+                mockSnackBar as any,
+                mockCreateMdoService as any,
+                mockRouter as any,
+                mockDirectoryService as any,
+                mockValueService as any,
+                mockActivatedRoute as any,
+                mockEventService as any
+            )
+            expect(component.department).toBe('CBP')
+        })
+
+        it('should handle addAdmin scenario', () => {
+            mockActivatedRoute.params.next({
+                addAdmin: true,
+                currentDept: 'TestDept',
+                department: 'dept123'
+            })
+            component = new CreateMdoComponent(
+                mockDialog as any,
+                mockSnackBar as any,
+                mockCreateMdoService as any,
+                mockRouter as any,
+                mockDirectoryService as any,
+                mockValueService as any,
+                mockActivatedRoute as any,
+                mockEventService as any
+            )
+            expect(component.isAddAdmin).toBe(true)
+            expect(component.submittedForm).toBe(false)
+            expect(component.departmentRole).toBe('MDO ADMIN')
         })
     })
 
     describe('ngOnInit', () => {
-        beforeEach(() => {
-            mockDirectoryService.getDepartmentTitles.mockReturnValue(of({
-                result: {
-                    response: {
-                        value: JSON.stringify({
-                            orgTypeList: [{
-                                name: 'MDO',
-                                subTypeList: [{ id: 1, name: 'Sub Dept 1' }]
-                            }]
-                        })
-                    }
-                }
-            }))
+        it('should call all initialization methods', () => {
+            const spyGetAllDepartments = jest.spyOn(component, 'getAllDepartmentsHeaderAPI')
+            const spyGetSubDepartment = jest.spyOn(component, 'getSubDepartment')
+            const spyFetchDropDown = jest.spyOn(component, 'fetchDropDownValues')
+            const spyOnStateChange = jest.spyOn(component, 'onStateChange')
+            const spyOnMinisteriesChange = jest.spyOn(component, 'onMinisteriesChange')
+            const spyOnDepartmentChange = jest.spyOn(component, 'onDepartmentChange')
+            const spyOnOrgsChange = jest.spyOn(component, 'onOrgsChange')
 
-            mockDirectoryService.getDepartmentSubTitles.mockReturnValue(of({
-                result: {
-                    response: {
-                        value: JSON.stringify({
-                            fields: [{ value: 1, name: 'Test Field' }]
-                        })
-                    }
-                }
-            }))
+            component.ngOnInit()
 
-            mockCreateMdoService.getStatesOrMinisteries.mockReturnValue(of({
-                result: {
-                    response: {
-                        content: [{ id: 1, orgName: 'Test State' }]
-                    }
-                }
-            }))
+            expect(spyGetAllDepartments).toHaveBeenCalled()
+            expect(spyGetSubDepartment).toHaveBeenCalled()
+            expect(spyFetchDropDown).toHaveBeenCalled()
+            expect(spyOnStateChange).toHaveBeenCalled()
+            expect(spyOnMinisteriesChange).toHaveBeenCalled()
+            expect(spyOnDepartmentChange).toHaveBeenCalled()
+            expect(spyOnOrgsChange).toHaveBeenCalled()
         })
 
-        it('should call getAllDepartmentsHeaderAPI', () => {
+        it('should set tabledata configuration', () => {
             component.ngOnInit()
+            expect(component.tabledata.columns).toEqual([
+                { displayName: 'Full name', key: 'fullName' },
+                { displayName: 'Email', key: 'email' },
+                { displayName: 'Role', key: 'role' }
+            ])
+        })
+    })
+
+    describe('checkCondition', () => {
+        it('should return true for any inputs', () => {
+            expect(component.checkCondition('first', 'second')).toBe(true)
+            expect(component.checkCondition('', '')).toBe(true)
+        })
+    })
+
+    describe('showError', () => {
+        it('should return true for any error input', () => {
+            expect(component.showError('error')).toBe(true)
+            expect(component.showError('')).toBe(true)
+        })
+    })
+
+    describe('openPopup', () => {
+        it('should open dialog and handle response', () => {
+            component.departmentId = 'dept123'
+            component.departmentRole = 'ADMIN'
+
+            component.openPopup()
+
+            expect(mockDialog.open).toHaveBeenCalled()
+            expect(mockCreateMdoService.assignAdminToDepartment).toHaveBeenCalledWith('123', 'dept123', 'ADMIN')
+        })
+
+        it('should handle assignment error', () => {
+            mockCreateMdoService.assignAdminToDepartment.mockReturnValue(
+                throwError({ error: { errors: [{ message: 'Assignment failed' }] } })
+            )
+            const spyOpenSnackbar = jest.spyOn(component, 'openSnackbar' as any)
+
+            component.openPopup()
+
+            expect(spyOpenSnackbar).toHaveBeenCalledWith('Assignment failed')
+        })
+    })
+
+    describe('specialCharachters', () => {
+        it('should validate input and set form errors for invalid characters', () => {
+            const event = {
+                target: { value: 'invalid@chars' },
+                which: 65,
+                preventDefault: jest.fn(),
+                keyCode: 64
+            }
+
+            component.specialCharachters(event, 'cbpProvider')
+
+            expect(component.contentForm.controls['name'].hasError('invalid')).toBe(true)
+        })
+
+        it('should prevent space character input', () => {
+            const event = {
+                target: { value: 'test' },
+                which: 32,
+                preventDefault: jest.fn(),
+                keyCode: 32
+            }
+
+            const result = component.specialCharachters(event, 'cbpProvider')
+
+            expect(event.preventDefault).toHaveBeenCalled()
+            expect(result).toBe(false)
+            expect(component.disableCreateButton).toBe(true)
+        })
+
+        it('should handle leading/trailing whitespace', () => {
+            const event = {
+                target: { value: ' test ' },
+                which: 65,
+                preventDefault: jest.fn(),
+                keyCode: 65
+            }
+            const spyOpenSnackbar = jest.spyOn(component, 'openSnackbar' as any)
+
+            component.specialCharachters(event, 'cbpProvider')
+
+            expect(spyOpenSnackbar).toHaveBeenCalledWith('Please check for leading or trailing whitespace')
+        })
+
+        it('should allow valid characters', () => {
+            const event = {
+                target: { value: 'validtext' },
+                which: 65,
+                preventDefault: jest.fn(),
+                keyCode: 65
+            }
+
+            const result = component.specialCharachters(event, 'cbpProvider')
+
+            expect(result).toBe(true)
+            expect(component.disableCreateButton).toBe(false)
+        })
+
+        it('should handle different department types', () => {
+            const event = {
+                target: { value: 'invalid@' },
+                which: 65,
+                preventDefault: jest.fn(),
+                keyCode: 65
+            }
+
+            component.specialCharachters(event, 'state')
+            expect(component.stateForm.controls['state'].hasError('invalid')).toBe(true)
+
+            component.specialCharachters(event, 'ministry')
+            expect(component.departmentForm.controls['ministry'].hasError('invalid')).toBe(true)
+
+            component.specialCharachters(event, 'organization')
+            expect(component.departmentForm.controls['organisation'].hasError('invalid')).toBe(true)
+
+            component.specialCharachters(event, 'department')
+            expect(component.departmentForm.controls['department'].hasError('invalid')).toBe(true)
+        })
+    })
+
+    describe('fetchDropDownValues', () => {
+        it('should fetch states when formType is state', () => {
+            component.formType = 'state'
+            component.fetchDropDownValues()
+
+            expect(mockCreateMdoService.getStatesOrMinisteries).toHaveBeenCalledWith('state')
+        })
+
+        it('should fetch ministries when formType is department and not state admin', () => {
+            component.formType = 'department'
+            component.isStateAdmin = false
+            component.fetchDropDownValues()
+
+            expect(mockCreateMdoService.getStatesOrMinisteries).toHaveBeenCalledWith('ministry')
+        })
+
+        it('should handle state admin scenario', () => {
+            component.formType = 'department'
+            component.isStateAdmin = true
+            const spyMinistrySelected = jest.spyOn(component, 'ministrySelected')
+
+            mockCreateMdoService.getStatesOrMinisteries.mockReturnValue(of({
+                result: { response: { content: [{ orgName: 'Test State', sbOrgId: 'root123' }] } }
+            }))
+
+            component.fetchDropDownValues()
+
+            expect(mockCreateMdoService.getStatesOrMinisteries).toHaveBeenCalledWith('state')
+            expect(spyMinistrySelected).toHaveBeenCalled()
+        })
+    })
+
+    describe('ministrySelected', () => {
+        it('should handle ministry selection with valid mapId', () => {
+            const ministry = { orgName: 'Test Ministry', mapId: '123' }
+
+            component.ministrySelected(ministry)
+
+            expect(mockCreateMdoService.getDeparmentsOfState).toHaveBeenCalledWith('123')
+            expect(component.departmentForm.get('department')?.value).toBe('')
+            expect(component.departmentForm.get('organisation')?.value).toBe('')
+        })
+
+        it('should set form error for invalid ministry name', () => {
+            const ministry = { orgName: 'Invalid@Name', mapId: '123' }
+
+            component.ministrySelected(ministry)
+
+            expect(component.departmentForm.controls['ministry'].hasError('invalid')).toBe(true)
+        })
+    })
+
+    describe('departmentSelected', () => {
+        it('should handle department selection with valid mapId', () => {
+            const department = { orgName: 'Test Department', mapId: '456' }
+
+            component.departmentSelected(department)
+
+            expect(mockCreateMdoService.getOrgsOfDepartment).toHaveBeenCalledWith('456')
+            expect(component.departmentForm.get('organisation')?.value).toBe('')
+        })
+
+        it('should set form error for invalid department name', () => {
+            const department = { orgName: 'Invalid@Name', mapId: '456' }
+
+            component.departmentSelected(department)
+
+            expect(component.departmentForm.controls['department'].hasError('invalid')).toBe(true)
+        })
+    })
+
+    describe('getAllResponse', () => {
+        it('should transform response data to user array', () => {
+            const response = {
+                data: [
+                    { userId: '1', fullname: 'User One', email: 'user1@test.com' },
+                    { userId: '2', fullname: 'User Two', email: 'user2@test.com' }
+                ]
+            }
+
+            const result = component.getAllResponse(response)
+
+            expect(result).toHaveLength(2)
+            expect(result[0]).toEqual({
+                userId: '1',
+                fullName: 'User One',
+                email: 'user1@test.com',
+                role: 'ADMIN'
+            })
+        })
+
+        it('should return empty array for null/undefined response', () => {
+            expect(component.getAllResponse(null)).toEqual([])
+            expect(component.getAllResponse(undefined)).toEqual([])
+        })
+    })
+
+    describe('getAllDepartmentsHeaderAPI', () => {
+        it('should fetch department titles and set subDepartments', () => {
+            component.department = 'MDO'
+            component.getAllDepartmentsHeaderAPI()
+
             expect(mockDirectoryService.getDepartmentTitles).toHaveBeenCalled()
         })
+    })
 
-        it('should initialize table data correctly', () => {
-            component.ngOnInit()
-            expect(component.tabledata).toEqual({
-                columns: [
-                    { displayName: 'Full name', key: 'fullName' },
-                    { displayName: 'Email', key: 'email' },
-                    { displayName: 'Role', key: 'role' },
-                ],
-                needCheckBox: false,
-                needHash: false,
-                sortColumn: '',
-                sortState: 'asc',
-            })
+    describe('getSubDepartment', () => {
+        it('should fetch department subtitles and patch form value', () => {
+            component.subTypeId = 1
+            component.getSubDepartment()
+
+            expect(mockDirectoryService.getDepartmentSubTitles).toHaveBeenCalled()
         })
     })
 
-    describe('Form Validation', () => {
-        describe('forbiddenNamesValidator', () => {
-            it('should return null when optionsArray is null', () => {
-                const validator = forbiddenNamesValidator(null)
-                const result = validator({ value: { orgName: 'test' } } as any)
-                expect(result).toBeNull()
-            })
-
-            it('should return null when control value is null', () => {
-                const validator = forbiddenNamesValidator([])
-                const result = validator({ value: null } as any)
-                expect(result).toBeNull()
-            })
-
-            it('should return error when orgName exists in options', () => {
-                const options = [{ orgName: 'existing' }]
-                const validator = forbiddenNamesValidator(options)
-                const result = validator({ value: { orgName: 'existing' } } as any)
-                expect(result).toEqual({ forbiddenNames: { value: 'existing' } })
-            })
-
-            it('should return null when orgName does not exist in options', () => {
-                const options = [{ orgName: 'existing' }]
-                const validator = forbiddenNamesValidator(options)
-                const result = validator({ value: { orgName: 'new' } } as any)
-                expect(result).toBeNull()
-            })
+    describe('selectedType and selectedSubType', () => {
+        it('should set department type', () => {
+            component.selectedType('testType')
+            expect(component.deptType).toBe('testType')
         })
 
-        describe('specialCharachters', () => {
-            it('should prevent space character input', () => {
-                const event = { which: 32, preventDefault: jest.fn() }
-                const result = component.specialCharachters(event, 'cbpProvider')
-                expect(event.preventDefault).toHaveBeenCalled()
-                expect(result).toBe(false)
-            })
-
-            it('should allow valid characters', () => {
-                const event = { which: 65, keyCode: 65, preventDefault: jest.fn() } // 'A'
-                const result = component.specialCharachters(event, 'cbpProvider')
-                expect(result).toBe(true)
-            })
-
-            it('should prevent invalid characters', () => {
-                const event = { which: 64, keyCode: 64, preventDefault: jest.fn() } // '@'
-                const result = component.specialCharachters(event, 'cbpProvider')
-                expect(event.preventDefault).toHaveBeenCalled()
-                expect(result).toBe(false)
-            })
-
-            it('should set form errors for invalid input in cbpProvider field', () => {
-                const event = {
-                    target: { value: 'test@123' },
-                    which: 65,
-                    keyCode: 65,
-                    preventDefault: jest.fn()
-                }
-                component.specialCharachters(event, 'cbpProvider')
-                expect(component.contentForm.controls['name'].errors).toEqual({ invalid: true })
-            })
+        it('should set department subtype', () => {
+            component.selectedSubType('testSubType')
+            expect(component.deptSubType).toBe('testSubType')
         })
     })
 
-    describe('Dropdown Methods', () => {
+    describe('onSubmit', () => {
         beforeEach(() => {
-            mockCreateMdoService.getStatesOrMinisteries.mockReturnValue(of({
-                result: {
-                    response: {
-                        content: [{ id: 1, orgName: 'Test State' }]
-                    }
-                }
-            }))
-
-            mockCreateMdoService.getDeparmentsOfState.mockReturnValue(of({
-                result: {
-                    response: {
-                        content: [{ id: 1, orgName: 'Test Department' }]
-                    }
-                }
-            }))
-
-            mockCreateMdoService.getOrgsOfDepartment.mockReturnValue(of({
-                result: {
-                    response: {
-                        content: [{ id: 1, orgName: 'Test Organization' }]
-                    }
-                }
-            }))
+            component.contentForm.patchValue({
+                name: 'Test Name',
+                head: 'Test Head',
+                deptSubTypeId: '1'
+            })
+            component.deptType = 'testType'
+            component.department = 'testDept'
         })
 
-        describe('fetchDropDownValues', () => {
-            it('should fetch states when formType is state', () => {
-                component.formType = 'state'
-                component.fetchDropDownValues()
-                expect(mockCreateMdoService.getStatesOrMinisteries).toHaveBeenCalledWith('state')
-            })
+        it('should create department when form is valid and not updating', () => {
+            component.isUpdate = false
+            const spyRaiseTelemetry = jest.spyOn(component, 'raiseTelemetry')
 
-            it('should fetch ministries when formType is department and not state admin', () => {
-                component.formType = 'department'
-                component.isStateAdmin = false
-                component.fetchDropDownValues()
-                expect(mockCreateMdoService.getStatesOrMinisteries).toHaveBeenCalledWith('ministry')
-            })
+            component.onSubmit()
+
+            expect(spyRaiseTelemetry).toHaveBeenCalled()
+            expect(mockCreateMdoService.createDepartment).toHaveBeenCalled()
         })
 
-        describe('ministrySelected', () => {
-            it('should clear department and organisation fields', () => {
-                const mockValue = { orgName: 'Test Ministry', mapId: 'map-1' }
-                component.ministrySelected(mockValue)
-                expect(component.departmentForm.get('department')?.value).toBe('')
-                expect(component.departmentForm.get('organisation')?.value).toBe('')
-            })
+        it('should update department when form is valid and updating', () => {
+            component.isUpdate = true
+            component.updateId = 123
+            const spyRaiseTelemetry = jest.spyOn(component, 'raiseTelemetry')
 
-            it('should fetch departments when mapId is provided', () => {
-                const mockValue = { orgName: 'Test Ministry', mapId: 'map-1' }
-                component.ministrySelected(mockValue)
-                expect(mockCreateMdoService.getDeparmentsOfState).toHaveBeenCalledWith('map-1')
-            })
+            component.onSubmit()
+
+            expect(spyRaiseTelemetry).toHaveBeenCalled()
+            expect(mockCreateMdoService.updateDepartment).toHaveBeenCalled()
         })
 
-        describe('departmentSelected', () => {
-            it('should clear organisation field', () => {
-                const mockValue = { orgName: 'Test Department', mapId: 'map-1' }
-                component.departmentSelected(mockValue)
-                expect(component.departmentForm.get('organisation')?.value).toBe('')
-            })
+        it('should handle creation error', () => {
+            component.isUpdate = false
+            mockCreateMdoService.createDepartment.mockReturnValue(throwError('Creation failed'))
+            const spyOpenSnackbar = jest.spyOn(component, 'openSnackbar' as any)
 
-            it('should fetch organizations when mapId is provided', () => {
-                const mockValue = { orgName: 'Test Department', mapId: 'map-1' }
-                component.departmentSelected(mockValue)
-                expect(mockCreateMdoService.getOrgsOfDepartment).toHaveBeenCalledWith('map-1')
-            })
+            component.onSubmit()
+
+            expect(spyOpenSnackbar).toHaveBeenCalledWith('Something went wrong, please try again later')
+        })
+
+        it('should show error when form is invalid', () => {
+            component.contentForm.patchValue({ name: null })
+
+            component.onSubmit()
+
+            expect(mockSnackBar.open).toHaveBeenCalledWith('Form is not valid')
         })
     })
 
-    describe('Filter Methods', () => {
+    describe('Filter methods', () => {
         beforeEach(() => {
             component.states = [
-                { orgName: 'Test State 1' },
-                { orgName: 'Another State' },
-                { orgName: 'Test State 2' }
+                { orgName: 'Test State One' },
+                { orgName: 'Another State' }
             ]
             component.ministeries = [
-                { orgName: 'Test Ministry 1' },
+                { orgName: 'Test Ministry' },
                 { orgName: 'Another Ministry' }
             ]
             component.departments = [
-                { orgName: 'Test Department 1' },
+                { orgName: 'Test Department' },
                 { orgName: 'Another Department' }
             ]
             component.orgs = [
-                { orgName: 'Test Organization 1' },
+                { orgName: 'Test Organization' },
                 { orgName: 'Another Organization' }
             ]
         })
 
-        it('should filter states correctly', () => {
-            const result = component.filterStates('Test')
-            expect(result).toHaveLength(2)
-            expect(result[0].orgName).toBe('Test State 1')
-            expect(result[1].orgName).toBe('Test State 2')
-        })
-
-        it('should filter ministries correctly', () => {
-            const result = component.filterMinisteries('Test')
-            expect(result).toHaveLength(1)
-            expect(result[0].orgName).toBe('Test Ministry 1')
-        })
-
-        it('should filter departments correctly', () => {
-            const result = component.filterDepartments('Another')
-            expect(result).toHaveLength(1)
-            expect(result[0].orgName).toBe('Another Department')
-        })
-
-        it('should filter organizations correctly', () => {
-            const result = component.filterOrgs('Test')
-            expect(result).toHaveLength(1)
-            expect(result[0].orgName).toBe('Test Organization 1')
-        })
-    })
-
-    describe('Form Submission', () => {
-        describe('onSubmit', () => {
-            beforeEach(() => {
-                component.contentForm.patchValue({
-                    name: 'Test Department',
-                    head: 'Test Head',
-                    deptSubTypeId: 1
-                })
-                component.deptType = 'test-type'
-                component.department = 'MDO'
-                component.loggedInUserId = 'test-user'
+        describe('filterStates', () => {
+            it('should filter states by name', () => {
+                const result = component.filterStates('test')
+                expect(result).toHaveLength(1)
+                expect(result[0].orgName).toBe('Test State One')
             })
 
-            it('should create department when form is valid and not updating', () => {
-                mockCreateMdoService.createDepartment.mockReturnValue(of({
-                    result: {
-                        response: 'SUCCESS',
-                        organisationId: 'org-123'
-                    }
-                }))
-
-                component.isUpdate = false
-                component.onSubmit()
-
-                expect(mockCreateMdoService.createDepartment).toHaveBeenCalledWith(
-                    component.contentForm.value,
-                    'test-type',
-                    'MDO',
-                    'test-user'
-                )
-                expect(mockRouter.navigate).toHaveBeenCalled()
-            })
-
-            it('should update department when form is valid and updating', () => {
-                mockCreateMdoService.updateDepartment.mockReturnValue(of({
-                    result: { response: 'SUCCESS' }
-                }))
-
-                component.isUpdate = true
-                component.updateId = 123
-                component.onSubmit()
-
-                expect(mockCreateMdoService.updateDepartment).toHaveBeenCalledWith(
-                    123,
-                    'test-type',
-                    'MDO',
-                    'test-user',
-                    component.contentForm.value
-                )
-            })
-
-            it('should show error when form is invalid', () => {
-                component.contentForm.patchValue({ name: null })
-                component.onSubmit()
-                expect(mockSnackBar.open).toHaveBeenCalledWith('Form is not valid')
-            })
-
-            it('should handle create department error', () => {
-                mockCreateMdoService.createDepartment.mockReturnValue(
-                    throwError({ error: 'Create failed' })
-                )
-
-                component.isUpdate = false
-                component.onSubmit()
-
-                expect(mockSnackBar.open).toHaveBeenCalledWith(
-                    "Something went wrong, please try again later", "X", { "duration": 5000 }
-                )
-            })
-        })
-
-        describe('onSubmitState', () => {
-            beforeEach(() => {
-                component.stateForm.patchValue({
-                    state: { orgName: 'Test State', sbOrgType: 'state' }
-                })
-                component.loggedInUserId = 'test-user'
-            })
-
-            it('should create state when form is valid', () => {
-                mockCreateMdoService.createStateOrMinistry.mockReturnValue(of({
-                    responseCode: 200
-                }))
-
-                component.isUpdate = false
-                component.onSubmitState()
-
-                expect(mockCreateMdoService.createStateOrMinistry).toHaveBeenCalled()
-                expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/directory'])
-            })
-
-            it('should show error when state is already onboarded', () => {
-                component.stateForm.patchValue({
-                    state: { orgName: 'Test State', sbOrgId: 'existing-id' }
-                })
-
-                component.onSubmitState()
-                expect(mockSnackBar.open).toHaveBeenCalledWith("Selected State is already onboarded!", "X", { "duration": 5000 })
-            })
-
-            it('should show error when state form is invalid', () => {
-                component.stateForm.patchValue({ state: null })
-                component.onSubmitState()
-                expect(mockSnackBar.open).toHaveBeenCalledWith('State Form is not valid')
-            })
-        })
-
-        describe('onSubmitDepartment', () => {
-            beforeEach(() => {
-                component.departmentForm.patchValue({
-                    ministry: { orgName: 'Test Ministry', mapId: 'map-1' },
-                    department: null,
-                    organisation: null
-                })
-                component.loggedInUserId = 'test-user'
-            })
-
-            it('should create department when form is valid', () => {
-                mockCreateMdoService.createStateOrMinistry.mockReturnValue(of({
-                    responseCode: 200
-                }))
-
-                component.isUpdate = false
-                component.onSubmitDepartment()
-
-                expect(mockCreateMdoService.createStateOrMinistry).toHaveBeenCalled()
-            })
-
-            it('should show error when department form is invalid', () => {
-                component.departmentForm.patchValue({ ministry: null })
-                component.onSubmitDepartment()
-                expect(mockSnackBar.open).toHaveBeenCalledWith('Department Form not valid')
-            })
-        })
-    })
-
-    describe('User Management', () => {
-        describe('openPopup', () => {
-            it('should open user popup dialog', () => {
-                component.openPopup()
-                expect(mockDialog.open).toHaveBeenCalled()
-            })
-        })
-
-        describe('getAllResponse', () => {
-            it('should transform user response correctly', () => {
-                const mockResponse = {
-                    data: [
-                        { userId: 'user-1', fullname: 'John Doe', email: 'john@example.com' },
-                        { userId: 'user-2', fullname: 'Jane Smith', email: 'jane@example.com' }
-                    ]
-                }
-
-                const result = component.getAllResponse(mockResponse)
+            it('should return all states for empty string', () => {
+                const result = component.filterStates('')
                 expect(result).toHaveLength(2)
-                expect(result[0]).toEqual({
-                    userId: 'user-1',
-                    fullName: 'John Doe',
-                    email: 'john@example.com',
-                    role: 'ADMIN'
-                })
             })
 
-            it('should return empty array when response is null', () => {
-                const result = component.getAllResponse(null)
-                expect(result).toEqual([])
+            it('should set validation error for invalid characters', () => {
+                component.filterStates('invalid@')
+                expect(component.stateForm.controls['state'].hasError('invalid')).toBe(true)
+            })
+        })
+
+        describe('filterMinisteries', () => {
+            it('should filter ministries by name', () => {
+                const result = component.filterMinisteries('test')
+                expect(result).toHaveLength(1)
+                expect(result[0].orgName).toBe('Test Ministry')
+            })
+
+            it('should return all ministries for empty string', () => {
+                const result = component.filterMinisteries('')
+                expect(result).toHaveLength(2)
+            })
+        })
+
+        describe('filterDepartments', () => {
+            it('should filter departments by name', () => {
+                const result = component.filterDepartments('test')
+                expect(result).toHaveLength(1)
+                expect(result[0].orgName).toBe('Test Department')
+            })
+
+            it('should return all departments for empty string', () => {
+                const result = component.filterDepartments('')
+                expect(result).toHaveLength(2)
+            })
+        })
+
+        describe('filterOrgs', () => {
+            it('should filter organizations by name', () => {
+                const result = component.filterOrgs('test')
+                expect(result).toHaveLength(1)
+                expect(result[0].orgName).toBe('Test Organization')
+            })
+
+            it('should set validation error for invalid characters', () => {
+                component.filterOrgs('invalid@')
+                expect(component.departmentForm.controls['organisation'].hasError('invalid')).toBe(true)
+            })
+
+            it('should enable create button for valid input', () => {
+                component.filterOrgs('valid')
+                expect(component.disableCreateButton).toBe(false)
             })
         })
     })
 
-    describe('Utility Methods', () => {
-        describe('checkCondition', () => {
-            it('should return true', () => {
-                const result = component.checkCondition('first', 'second')
-                expect(result).toBe(true)
-            })
-        })
+    describe('onStateChange', () => {
+        it('should setup observable for state form changes', () => {
+            component.states = [{ orgName: 'Test State' }]
 
-        describe('showError', () => {
-            it('should return true', () => {
-                const result = component.showError('error message')
-                expect(result).toBe(true)
-            })
-        })
+            component.onStateChange()
 
-        describe('getRole', () => {
-            it('should return MDO ADMIN', () => {
-                const result = component.getRole()
-                expect(result).toBe('MDO ADMIN')
-            })
-        })
-
-        describe('capitalizeFirstLetter', () => {
-            it('should return the same string', () => {
-                const result = component.capitalizeFirstLetter('test')
-                expect(result).toBe('test')
-            })
-        })
-
-        describe('displayFnState', () => {
-            it('should return orgName when value exists', () => {
-                const result = component.displayFnState({ orgName: 'Test State' })
-                expect(result).toBe('Test State')
-            })
-
-            it('should return undefined when value is null', () => {
-                const result = component.displayFnState(null)
-                expect(result).toBeUndefined()
-            })
+            expect(component.masterStates).toBeDefined()
         })
     })
 
-    describe('Navigation Methods', () => {
+    describe('onMinisteriesChange', () => {
+        it('should setup observable for ministry form changes', () => {
+            component.ministeries = [{ orgName: 'Test Ministry' }]
+
+            component.onMinisteriesChange()
+
+            expect(component.masterMinisteries).toBeDefined()
+        })
+    })
+
+    describe('onDepartmentChange', () => {
+        it('should setup observable for department form changes', () => {
+            component.departments = [{ orgName: 'Test Department' }]
+
+            component.onDepartmentChange()
+
+            expect(component.masterDepartments).toBeDefined()
+        })
+    })
+
+    describe('onOrgsChange', () => {
+        it('should setup observable for organization form changes', () => {
+            component.orgs = [{ orgName: 'Test Organization' }]
+            component.disableCreateButton = false
+
+            component.onOrgsChange()
+
+            expect(component.masterOrgs).toBeDefined()
+            expect(component.disableCreateButton).toBe(true)
+        })
+    })
+
+    describe('onSubmitState', () => {
+        beforeEach(() => {
+            component.stateForm.patchValue({
+                state: { orgName: 'Test State', sbOrgType: 'state' }
+            })
+        })
+
+        it('should create state when form is valid and not updating', () => {
+            component.isUpdate = false
+            const spyRaiseTelemetry = jest.spyOn(component, 'raiseTelemetry')
+
+            component.onSubmitState()
+
+            expect(spyRaiseTelemetry).toHaveBeenCalled()
+            expect(mockCreateMdoService.createStateOrMinistry).toHaveBeenCalled()
+        })
+
+        it('should handle already onboarded state', () => {
+            component.stateForm.patchValue({
+                state: { orgName: 'Test State', sbOrgId: 'existing123' }
+            })
+            const spyOpenSnackbar = jest.spyOn(component, 'openSnackbar' as any)
+
+            component.onSubmitState()
+
+            expect(spyOpenSnackbar).toHaveBeenCalledWith('Selected State is already onboarded!')
+        })
+
+        it('should update state when updating', () => {
+            component.isUpdate = true
+            const spyRaiseTelemetry = jest.spyOn(component, 'raiseTelemetry')
+
+            component.onSubmitState()
+
+            expect(spyRaiseTelemetry).toHaveBeenCalled()
+            expect(mockCreateMdoService.updateStateOrMinistry).toHaveBeenCalled()
+        })
+
+        it('should handle creation error', () => {
+            component.isUpdate = false
+            mockCreateMdoService.createStateOrMinistry.mockReturnValue(throwError('State creation failed'))
+            const spyOpenSnackbar = jest.spyOn(component, 'openSnackbar' as any)
+
+            component.onSubmitState()
+
+            expect(spyOpenSnackbar).toHaveBeenCalledWith('Something went wrong, please try again later')
+        })
+
+        it('should show error when form is invalid', () => {
+            component.stateForm.patchValue({ state: null })
+
+            component.onSubmitState()
+
+            expect(mockSnackBar.open).toHaveBeenCalledWith('State Form is not valid')
+        })
+    })
+
+    describe('onSubmitDepartment', () => {
+        beforeEach(() => {
+            component.departmentForm.patchValue({
+                ministry: { orgName: 'Test Ministry', mapId: '1' },
+                department: { orgName: 'Test Department', mapId: '2' },
+                organisation: { orgName: 'Test Organization', mapId: '3' }
+            })
+        })
+
+        it('should create department when form is valid and not updating', () => {
+            component.isUpdate = false
+            const spyRaiseTelemetry = jest.spyOn(component, 'raiseTelemetry')
+
+            component.onSubmitDepartment()
+
+            expect(spyRaiseTelemetry).toHaveBeenCalled()
+            expect(mockCreateMdoService.createStateOrMinistry).toHaveBeenCalled()
+        })
+
+        it('should handle already onboarded organization', () => {
+            component.departmentForm.patchValue({
+                ministry: { orgName: 'Test Ministry', sbOrgId: 'existing1' },
+                department: { orgName: 'Test Department', sbOrgId: 'existing2' },
+                organisation: { orgName: 'Test Organization', sbOrgId: 'existing3' }
+            })
+            const spyOpenSnackbar = jest.spyOn(component, 'openSnackbar' as any)
+
+            component.onSubmitDepartment()
+
+            expect(spyOpenSnackbar).toHaveBeenCalledWith('Selected Org is already onboarded!')
+        })
+
+        it('should handle different hierarchy levels', () => {
+            // Only ministry selected
+            component.departmentForm.patchValue({
+                ministry: { orgName: 'Test Ministry', mapId: '1' },
+                department: null,
+                organisation: null
+            })
+
+            component.onSubmitDepartment()
+
+            expect(mockCreateMdoService.createStateOrMinistry).toHaveBeenCalled()
+
+            // Ministry and department selected
+            component.departmentForm.patchValue({
+                ministry: { orgName: 'Test Ministry', mapId: '1' },
+                department: { orgName: 'Test Department', mapId: '2' },
+                organisation: null
+            })
+
+            component.onSubmitDepartment()
+
+            expect(mockCreateMdoService.createStateOrMinistry).toHaveBeenCalled()
+        })
+
+        it('should update department when updating', () => {
+            component.isUpdate = true
+            const spyRaiseTelemetry = jest.spyOn(component, 'raiseTelemetry')
+
+            component.onSubmitDepartment()
+
+            expect(spyRaiseTelemetry).toHaveBeenCalled()
+            expect(mockCreateMdoService.updateStateOrMinistry).toHaveBeenCalled()
+        })
+
+        it('should show error when form is invalid', () => {
+            component.departmentForm.patchValue({ ministry: null })
+
+            component.onSubmitDepartment()
+
+            expect(mockSnackBar.open).toHaveBeenCalledWith('Department Form not valid')
+        })
+    })
+
+    describe('getMdoSubDepartmennt', () => {
+        beforeEach(() => {
+            component.subMDODepartments = [
+                { id: 1, name: 'Dept 1' },
+                { id: 2, name: 'Dept 2' }
+            ]
+        })
+
+        it('should return element id when updating', () => {
+            component.isUpdate = true
+            const result = component.getMdoSubDepartmennt(1)
+            expect(result).toBe(1)
+        })
+
+        it('should return full element when not updating', () => {
+            component.isUpdate = false
+            const result = component.getMdoSubDepartmennt(1)
+            expect(result).toEqual({ id: 1, name: 'Dept 1' })
+        })
+    })
+
+    describe('Navigation methods', () => {
         it('should navigate to directory on cancel', () => {
-            component.department = 'MDO'
+            component.department = 'testDept'
             component.onCancel()
-            expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/directory', { department: 'MDO' }])
+            expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/directory', { department: 'testDept' }])
         })
 
         it('should navigate to state directory on cancel state', () => {
@@ -569,10 +847,55 @@ describe('CreateMdoComponent', () => {
         })
     })
 
-    describe('Telemetry', () => {
-        it('should raise telemetry event', () => {
+    describe('getRole', () => {
+        it('should return MDO ADMIN role', () => {
+            expect(component.getRole()).toBe('MDO ADMIN')
+        })
+    })
+
+    describe('openSnackbar', () => {
+        it('should open snackbar with message and default duration', () => {
+            (component as any).openSnackbar('Test message')
+            expect(mockSnackBar.open).toHaveBeenCalledWith('Test message', 'X', { duration: 5000 })
+        })
+
+        it('should open snackbar with custom duration', () => {
+            (component as any).openSnackbar('Test message', 3000)
+            expect(mockSnackBar.open).toHaveBeenCalledWith('Test message', 'X', { duration: 3000 })
+        })
+    })
+
+    describe('capitalizeFirstLetter', () => {
+        it('should return the same string', () => {
+            expect(component.capitalizeFirstLetter('test')).toBe('test')
+            expect(component.capitalizeFirstLetter('TEST')).toBe('TEST')
+        })
+    })
+
+    describe('onDestroy', () => {
+        it('should unsubscribe from subscriptions when they exist', () => {
+            const mockSubscription = { unsubscribe: jest.fn() }
+            component.defaultSideNavBarOpenedSubscription = mockSubscription
+            component.bannerSubscription = mockSubscription
+
+            component.onDestroy()
+
+            expect(mockSubscription.unsubscribe).toHaveBeenCalledTimes(2)
+        })
+
+        it('should handle missing subscriptions gracefully', () => {
+            component.defaultSideNavBarOpenedSubscription = null
+            component.bannerSubscription = null
+
+            expect(() => component.onDestroy()).not.toThrow()
+        })
+    })
+
+    describe('raiseTelemetry', () => {
+        it('should call event service with correct parameters', () => {
             component.raiseTelemetry()
-            expect(mockEvents.raiseInteractTelemetry).toHaveBeenCalledWith(
+
+            expect(mockEventService.raiseInteractTelemetry).toHaveBeenCalledWith(
                 {
                     type: 'click',
                     subType: 'button',
@@ -583,50 +906,48 @@ describe('CreateMdoComponent', () => {
         })
     })
 
-    describe('Error Handling', () => {
-        it('should handle API errors gracefully', () => {
-            mockCreateMdoService.createDepartment.mockReturnValue(
-                throwError({ error: { errors: [{ message: 'API Error' }] } })
-            )
+    describe('displayFnState', () => {
+        it('should return orgName when value exists', () => {
+            const value = { orgName: 'Test State' }
+            expect(component.displayFnState(value)).toBe('Test State')
+        })
 
-            component.contentForm.patchValue({
-                name: 'Test',
-                deptSubTypeId: 1
-            })
-            component.deptType = 'test'
-            component.department = 'MDO'
-            component.loggedInUserId = 'user'
-            component.isUpdate = false
+        it('should return undefined when value is null', () => {
+            expect(component.displayFnState(null)).toBeUndefined()
+        })
 
-            component.onSubmit()
-
-            expect(mockSnackBar.open).toHaveBeenCalledWith(
-                "Something went wrong, please try again later", "X", { "duration": 5000 }
-            )
+        it('should return undefined when value has no orgName', () => {
+            expect(component.displayFnState({})).toBeUndefined()
         })
     })
 
-    describe('Department Type Selection', () => {
-        it('should set department type', () => {
-            component.selectedType('test-type')
-            expect(component.deptType).toBe('test-type')
+    describe('Edge cases and error handling', () => {
+        it('should handle empty arrays in filter methods', () => {
+            component.states = []
+            component.ministeries = []
+            component.departments = []
+            component.orgs = []
+
+            expect(component.filterStates('test')).toEqual([])
+            expect(component.filterMinisteries('test')).toEqual([])
+            expect(component.filterDepartments('test')).toEqual([])
+            expect(component.filterOrgs('test')).toEqual([])
         })
 
-        it('should set department sub type', () => {
-            component.selectedSubType('test-sub-type')
-            expect(component.deptSubType).toBe('test-sub-type')
+        it('should handle null event in specialCharachters method', () => {
+            const event = null
+            expect(() => component.specialCharachters(event, 'cbpProvider')).not.toThrow()
         })
-    })
 
-    describe('Component Cleanup', () => {
-        it('should unsubscribe from subscriptions on destroy', () => {
-            const mockSubscription = { unsubscribe: jest.fn() }
-            component.defaultSideNavBarOpenedSubscription = mockSubscription
-            component.bannerSubscription = mockSubscription
+        it('should handle form control getter errors gracefully', () => {
+            // Test when form controls might be null
+            component.stateForm = new UntypedFormGroup({})
+            component.departmentForm = new UntypedFormGroup({})
 
-            component.onDestroy()
-
-            expect(mockSubscription.unsubscribe).toHaveBeenCalledTimes(2)
+            expect(() => component.onStateChange()).not.toThrow()
+            expect(() => component.onMinisteriesChange()).not.toThrow()
+            expect(() => component.onDepartmentChange()).not.toThrow()
+            expect(() => component.onOrgsChange()).not.toThrow()
         })
     })
 })

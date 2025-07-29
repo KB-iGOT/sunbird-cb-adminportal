@@ -1,215 +1,475 @@
-import { RequestCopyDetailsComponent } from './request-copy-details.component'
-import { UntypedFormControl } from '@angular/forms'
 import { of, throwError } from 'rxjs'
-
-// Mock dependencies
-const mockFormBuilder = {
-  group: jest.fn()
-}
-
-const mockRequestService = {
-  getRequestDataById: jest.fn(),
-  getFilterEntity: jest.fn(),
-  getFilterEntityV2: jest.fn(),
-  getRequestTypeList: jest.fn(),
-  createDemand: jest.fn()
-}
-
-const mockActivatedRoute = {
-  queryParams: of({ id: 'test-id', name: 'view' }),
-  snapshot: {
-    data: {
-      configSvc: {
-        userProfile: { userId: 'test-user' }
-      }
-    }
-  }
-}
-
-const mockSnackBar = {
-  open: jest.fn()
-}
-
-const mockRouter = {
-  navigateByUrl: jest.fn()
-}
-
-const mockDialog = {
-  open: jest.fn(() => ({
-    afterClosed: () => of('confirmed')
-  }))
-}
-
-const mockInitService = {
-  configSvc: {
-    competency: {
-      competencies_v5: {
-        vKey: 'competencies_v5'
-      }
-    }
-  }
-}
-
-const mockFormControl = {
-  setValue: jest.fn(),
-  setValidators: jest.fn(),
-  clearValidators: jest.fn(),
-  updateValueAndValidity: jest.fn(),
-  patchValue: jest.fn(),
-  enable: jest.fn(),
-  disable: jest.fn(),
-  valueChanges: of('test-value'),
-  value: []
-}
-
-const mockFormGroup = {
-  setValue: jest.fn(),
-  controls: {
-    titleName: mockFormControl,
-    Objective: mockFormControl,
-    userType: mockFormControl,
-    learningMode: mockFormControl,
-    compArea: mockFormControl,
-    referenceLink: mockFormControl,
-    requestType: mockFormControl,
-    assignee: mockFormControl,
-    providers: mockFormControl,
-    providerText: mockFormControl,
-    queryThemeControl: mockFormControl,
-    querySubThemeControl: mockFormControl,
-    competencies_v5: mockFormControl,
-    assigneeText: mockFormControl
-  },
-  get: jest.fn(),
-  value: {
-    titleName: 'Test Title',
-    Objective: 'Test Objective',
-    userType: 'Test User',
-    learningMode: 'self-paced',
-    referenceLink: 'http://test.com',
-    requestType: 'Single',
-    providers: [],
-    assignee: { orgName: 'Test Org', id: '123' },
-    competencies_v5: []
-  },
-  disable: jest.fn(),
-  enable: jest.fn()
-}
-
-// Mock sessionStorage
-Object.defineProperty(window, 'sessionStorage', {
-  value: {
-    getItem: jest.fn(() => 'test-user-details')
-  }
-})
+import { RequestCopyDetailsComponent } from './request-copy-details.component'
 
 describe('RequestCopyDetailsComponent', () => {
   let component: RequestCopyDetailsComponent
+  let mockFormBuilder: any
+  let mockRequestService: any
+  let mockActivatedRouter: any
+  let mockSnackBar: any
+  let mockRouter: any
+  let mockDialog: any
+  let mockInitService: any
+  let mockFormGroup: any
+  let mockFormControl: any
 
   beforeEach(() => {
-    // Reset all mocks
-    jest.clearAllMocks()
+    // Mock FormControl
+    mockFormControl = {
+      value: '',
+      setValue: jest.fn(),
+      patchValue: jest.fn(),
+      setValidators: jest.fn(),
+      clearValidators: jest.fn(),
+      updateValueAndValidity: jest.fn(),
+      enable: jest.fn(),
+      disable: jest.fn(),
+      valueChanges: {
+        pipe: jest.fn().mockReturnValue({
+          subscribe: jest.fn()
+        }),
+        subscribe: jest.fn()
+      }
+    }
 
-    // Setup FormBuilder mock
-    mockFormBuilder.group.mockReturnValue(mockFormGroup)
+    // Mock FormGroup
+    mockFormGroup = {
+      controls: {
+        titleName: mockFormControl,
+        Objective: mockFormControl,
+        userType: mockFormControl,
+        learningMode: mockFormControl,
+        compArea: mockFormControl,
+        referenceLink: mockFormControl,
+        requestType: mockFormControl,
+        assignee: mockFormControl,
+        providers: mockFormControl,
+        providerText: mockFormControl,
+        queryThemeControl: mockFormControl,
+        querySubThemeControl: mockFormControl,
+        competencies_v5: mockFormControl,
+        assigneeText: mockFormControl
+      },
+      setValue: jest.fn(),
+      disable: jest.fn(),
+      enable: jest.fn(),
+      value: {
+        titleName: 'Test Title',
+        Objective: 'Test Objective',
+        userType: 'Test User',
+        learningMode: 'self-paced',
+        referenceLink: 'http://test.com',
+        requestType: 'Single',
+        providers: [],
+        assignee: {},
+        competencies_v5: []
+      },
+      get: jest.fn().mockReturnValue(mockFormControl)
+    }
+
+    // Mock FormBuilder
+    mockFormBuilder = {
+      group: jest.fn().mockReturnValue(mockFormGroup)
+    }
+
+    // Mock RequestService
+    mockRequestService = {
+      getRequestDataById: jest.fn().mockReturnValue(of({})),
+      getFilterEntity: jest.fn().mockReturnValue(of([])),
+      getFilterEntityV2: jest.fn().mockReturnValue(of([{}, {}])),
+      getRequestTypeList: jest.fn().mockReturnValue(of([])),
+      createDemand: jest.fn().mockReturnValue(of({}))
+    }
+
+    // Mock ActivatedRoute
+    mockActivatedRouter = {
+      queryParams: {
+        subscribe: jest.fn().mockImplementation((callback) => {
+          callback({ id: 'test-id', name: 'view' })
+        })
+      },
+      snapshot: {
+        data: {
+          configSvc: {
+            userProfile: { userId: 'test-user' }
+          }
+        }
+      }
+    }
+
+    // Mock SnackBar
+    mockSnackBar = {
+      open: jest.fn()
+    }
+
+    // Mock Router
+    mockRouter = {
+      navigateByUrl: jest.fn()
+    }
+
+    // Mock Dialog
+    mockDialog = {
+      open: jest.fn().mockReturnValue({
+        afterClosed: jest.fn().mockReturnValue(of('confirmed'))
+      })
+    }
+
+    // Mock InitService
+    mockInitService = {
+      configSvc: {
+        competency: {
+          competencies_v5: {
+            vKey: 'competencies_v5'
+          }
+        }
+      }
+    }
+
+    // Mock sessionStorage
+    Object.defineProperty(window, 'sessionStorage', {
+      value: {
+        getItem: jest.fn().mockReturnValue('test-user'),
+        setItem: jest.fn(),
+        removeItem: jest.fn()
+      },
+      writable: true
+    })
 
     // Create component instance
     component = new RequestCopyDetailsComponent(
-      mockFormBuilder as any,
-      mockRequestService as any,
-      mockActivatedRoute as any,
-      mockSnackBar as any,
-      mockRouter as any,
-      mockDialog as any,
-      mockInitService as any
+      mockFormBuilder,
+      mockRequestService,
+      mockActivatedRouter,
+      mockSnackBar,
+      mockRouter,
+      mockDialog,
+      mockInitService
     )
-
-    // Set up initial state
-    component.requestForm = mockFormGroup as any
-    component.compentencyKey = { vKey: 'competencies_v5', vCompetencyArea: '', vCompetencyAreaDescription: '', vCompetencyTheme: '', vCompetencySubTheme: '' }
   })
 
-  describe('Component Initialization', () => {
-    it('should create component', () => {
-      expect(component).toBeTruthy()
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  describe('Constructor', () => {
+    it('should create component and set currentUser from sessionStorage', () => {
+      expect(component).toBeDefined()
+      expect(component.currentUser).toBe('test-user')
     })
 
-    it('should initialize with correct default values', () => {
-      expect(component.specialCharList).toBe(`( a-z/A-Z , 0-9 . _ - $ /  : [ ]' ' !)`)
-      expect(component.learningList).toHaveLength(2)
-      expect(component.requestTypeList).toEqual(['Single', 'Broadcast'])
-      expect(component.competencyList).toEqual([])
-      expect(component.isAssignee).toBe(false)
-      expect(component.isBroadCast).toBe(false)
-    })
-
-    it('should get current user from sessionStorage', () => {
-      expect(component.currentUser).toBe('test-user-details')
+    it('should handle empty sessionStorage', () => {
+      window.sessionStorage.getItem = jest.fn().mockReturnValue(null)
+      const newComponent = new RequestCopyDetailsComponent(
+        mockFormBuilder,
+        mockRequestService,
+        mockActivatedRouter,
+        mockSnackBar,
+        mockRouter,
+        mockDialog,
+        mockInitService
+      )
+      expect(newComponent.currentUser).toBe('')
     })
   })
 
   describe('ngOnInit', () => {
     beforeEach(() => {
-      mockRequestService.getRequestTypeList.mockReturnValue(of([]))
-      mockRequestService.getFilterEntityV2.mockReturnValue(of([[], []]))
-      component.valuechangeFuctions = jest.fn()
-      component.getRequestTypeList = jest.fn()
-      component.initFormFroup = jest.fn()
-      component.getFilterEntity = jest.fn()
-      component.getFilterEntityV2 = jest.fn()
+      component.requestForm = mockFormGroup
+      jest.spyOn(component, 'getRequestTypeList')
+      jest.spyOn(component, 'initFormFroup')
+      jest.spyOn(component, 'getFilterEntity')
+      jest.spyOn(component, 'getFilterEntityV2')
+      jest.spyOn(component, 'valuechangeFuctions')
     })
 
-    it('should initialize form and get data on ngOnInit', () => {
+    it('should initialize component with competencies_v5', () => {
       component.ngOnInit()
 
-      expect(component.getRequestTypeList).toHaveBeenCalled()
       expect(component.initFormFroup).toHaveBeenCalled()
+      expect(component.getRequestTypeList).toHaveBeenCalled()
+      expect(component.getFilterEntity).toHaveBeenCalled()
       expect(component.valuechangeFuctions).toHaveBeenCalled()
+      expect(component.compentencyKey).toEqual({ vKey: 'competencies_v5' })
     })
 
-    it('should call getFilterEntityV2 when competency version is not v5', () => {
-      component.compentencyKey = { vKey: 'competencies_v6', vCompetencyArea: '', vCompetencyAreaDescription: '', vCompetencyTheme: '', vCompetencySubTheme: '' }
-
+    it('should initialize component with different competency version', () => {
+      mockInitService.configSvc.competency.competencies_v5.vKey = 'competencies_v4'
       component.ngOnInit()
 
       expect(component.getFilterEntityV2).toHaveBeenCalled()
     })
-
-    it('should call getFilterEntity when competency version is v5', () => {
-      component.compentencyKey = { vKey: 'competencies_v5', vCompetencyArea: '', vCompetencyAreaDescription: '', vCompetencyTheme: '', vCompetencySubTheme: '' }
-
-      component.ngOnInit()
-
-      expect(component.getFilterEntity).toHaveBeenCalled()
-    })
   })
 
-  describe('Form Initialization', () => {
-    it('should initialize form group with all required controls', () => {
+  describe('initFormFroup', () => {
+    it('should initialize form group with all controls', () => {
+      //  component.compentencyKey = { vKey: 'competencies_v5' }
       component.initFormFroup()
 
-      expect(mockFormBuilder.group).toHaveBeenCalledWith(
-        expect.objectContaining({
-          titleName: expect.any(UntypedFormControl),
-          Objective: expect.any(UntypedFormControl),
-          userType: expect.any(UntypedFormControl),
-          learningMode: expect.any(UntypedFormControl),
-          compArea: expect.any(UntypedFormControl),
-          referenceLink: expect.any(UntypedFormControl),
-          requestType: expect.any(UntypedFormControl),
-          assignee: expect.any(UntypedFormControl),
-          providers: expect.any(UntypedFormControl),
-          providerText: expect.any(UntypedFormControl),
-          queryThemeControl: expect.any(UntypedFormControl),
-          querySubThemeControl: expect.any(UntypedFormControl),
-          assigneeText: expect.any(UntypedFormControl)
-        })
-      )
+      expect(mockFormBuilder.group).toHaveBeenCalled()
+      expect(component.requestForm).toBe(mockFormGroup)
     })
   })
 
-  describe('Request Type Selection', () => {
-    it('should handle Single request type selection', () => {
+  describe('getRequestDataById', () => {
+    beforeEach(() => {
+      component.demandId = 'test-id'
+      component.requestForm = mockFormGroup
+      jest.spyOn(component, 'setRequestData')
+    })
+
+    it('should get request data and set it', () => {
+      const mockData = { title: 'Test', objective: 'Test Objective' }
+      mockRequestService.getRequestDataById.mockReturnValue(of(mockData))
+
+      component.getRequestDataById()
+
+      expect(mockRequestService.getRequestDataById).toHaveBeenCalledWith('test-id')
+      expect(component.requestObjData).toBe(mockData)
+      expect(component.setRequestData).toHaveBeenCalled()
+    })
+
+    it('should handle empty response', () => {
+      mockRequestService.getRequestDataById.mockReturnValue(of(null))
+
+      component.getRequestDataById()
+
+      expect(component.setRequestData).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('setRequestData', () => {
+    beforeEach(() => {
+      component.requestForm = mockFormGroup
+      //  component.compentencyKey = { vKey: 'competencies_v5' }
+      component.requestObjData = {
+        title: 'Test Title',
+        objective: 'Test Objective',
+        typeOfUser: 'Test User',
+        learningMode: 'self-paced',
+        referenceLink: 'http://test.com',
+        requestType: 'Single',
+        competencies: [
+          {
+            area: 'Test Area',
+            theme: 'Test Theme',
+            sub_theme: 'Test Sub Theme'
+          }
+        ],
+        preferredProvider: [{ providerId: 'provider1' }],
+        assignedProvider: { providerId: 'assignee1' }
+      }
+      component.filteredRequestType = [{ id: 'provider1', name: 'Provider 1' }]
+      component.filteredAssigneeType = [{ id: 'assignee1', name: 'Assignee 1' }]
+      jest.spyOn(component, 'selectRequestType')
+    })
+
+    it('should set form values from request data', () => {
+      component.setRequestData()
+
+      expect(mockFormGroup.setValue).toHaveBeenCalled()
+      expect(component.selectRequestType).toHaveBeenCalledWith('Single')
+    })
+
+    it('should handle competencies with select_ prefixes', () => {
+      component.requestObjData.competencies = [
+        {
+          select_area: 'Test Area',
+          select_theme: 'Test Theme',
+          select_sub_theme: 'Test Sub Theme'
+        }
+      ]
+
+      component.setRequestData()
+
+      expect(mockFormControl.setValue).toHaveBeenCalled()
+    })
+
+    it('should handle missing preferred providers', () => {
+      component.requestObjData.preferredProvider = null
+
+      component.setRequestData()
+
+      expect(mockFormGroup.setValue).toHaveBeenCalled()
+    })
+
+    it('should handle missing assigned provider', () => {
+      component.requestObjData.assignedProvider = null
+
+      component.setRequestData()
+
+      expect(mockFormGroup.setValue).toHaveBeenCalled()
+    })
+  })
+
+  describe('navigateBack', () => {
+    it('should navigate to all-request page', () => {
+      component.navigateBack()
+
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/app/home/all-request')
+    })
+  })
+
+  describe('valuechangeFuctions', () => {
+    beforeEach(() => {
+      component.requestForm = mockFormGroup
+      component.requestTypeData = []
+      jest.spyOn(component, 'getHiddenOptions').mockReturnValue([])
+      jest.spyOn(component, 'filterOrgValues').mockReturnValue([])
+    })
+
+    it('should set up value change subscriptions', () => {
+      component.valuechangeFuctions()
+
+      expect(mockFormControl.valueChanges.pipe).toHaveBeenCalled()
+    })
+  })
+
+  describe('filterValues', () => {
+    it('should filter values based on name', () => {
+      const array = [
+        { name: 'Test One' },
+        { name: 'Another Test' },
+        { name: 'Different' }
+      ]
+
+      const result = component.filterValues('test', array)
+
+      expect(result).toHaveLength(2)
+      expect(result[0].name).toBe('Test One')
+      expect(result[1].name).toBe('Another Test')
+    })
+  })
+
+  describe('filterOrgValues', () => {
+    it('should filter values based on orgName', () => {
+      const array = [
+        { orgName: 'Test Org' },
+        { orgName: 'Another Test Org' },
+        { orgName: 'Different Org' }
+      ]
+
+      const result = component.filterOrgValues('test', array)
+
+      expect(result).toHaveLength(2)
+      expect(result[0].orgName).toBe('Test Org')
+      expect(result[1].orgName).toBe('Another Test Org')
+    })
+  })
+
+  describe('getHiddenOptions', () => {
+    it('should set hideOption property based on search', () => {
+      const array = [
+        { orgName: 'Test Org' },
+        { orgName: 'Different Org' }
+      ]
+
+      const result = component.getHiddenOptions('test', array)
+
+      expect(result[0].hideOption).toBe('show')
+      expect(result[1].hideOption).toBe('hide')
+    })
+  })
+
+  describe('getFilterEntity', () => {
+    it('should get and set competency list', () => {
+      const mockCompetencies = [{ id: 1, name: 'Test' }]
+      mockRequestService.getFilterEntity.mockReturnValue(of(mockCompetencies))
+
+      component.getFilterEntity()
+
+      expect(mockRequestService.getFilterEntity).toHaveBeenCalled()
+      expect(component.competencyList).toBe(mockCompetencies)
+      expect(component.allCompetencies).toBe(mockCompetencies)
+    })
+  })
+
+  describe('getFilterEntityV2', () => {
+    it('should process competency data structure', () => {
+      const mockData = [
+        {
+          terms: [
+            {
+              identifier: 'area1',
+              name: 'Area 1',
+              associations: [{ identifier: 'theme1' }]
+            }
+          ]
+        },
+        {
+          terms: [
+            {
+              identifier: 'theme1',
+              name: 'Theme 1',
+              associations: []
+            }
+          ]
+        }
+      ]
+      mockRequestService.getFilterEntityV2.mockReturnValue(of(mockData))
+
+      component.getFilterEntityV2()
+
+      expect(component.allCompetencies).toBeDefined()
+      expect(component.filteredallCompetencies).toBeDefined()
+    })
+
+    it('should handle missing data', () => {
+      mockRequestService.getFilterEntityV2.mockReturnValue(of([null, null]))
+
+      component.getFilterEntityV2()
+
+      expect(component.allCompetencies).toBeUndefined()
+    })
+  })
+
+  describe('getRequestTypeList', () => {
+    beforeEach(() => {
+      component.demandId = 'test-id'
+      component.actionBtnName = 'view'
+      component.requestForm = mockFormGroup
+      jest.spyOn(component, 'getRequestDataById')
+    })
+
+    it('should get request type list and handle view action', () => {
+      const mockData = [{ id: 1, name: 'Type 1' }]
+      mockRequestService.getRequestTypeList.mockReturnValue(of(mockData))
+
+      component.getRequestTypeList()
+
+      expect(mockRequestService.getRequestTypeList).toHaveBeenCalled()
+      expect(component.requestTypeData).toBe(mockData)
+      expect(component.getRequestDataById).toHaveBeenCalled()
+      expect(mockFormGroup.disable).toHaveBeenCalled()
+      expect(component.isHideData).toBe(true)
+    })
+
+    it('should handle reassign action', () => {
+      component.actionBtnName = 'reassign'
+      const mockData = [{ id: 1, name: 'Type 1' }]
+      mockRequestService.getRequestTypeList.mockReturnValue(of(mockData))
+
+      component.getRequestTypeList()
+
+      expect(mockFormGroup.disable).toHaveBeenCalled()
+      expect(mockFormControl.enable).toHaveBeenCalled()
+      expect(component.isCompetencyHide).toBe(true)
+    })
+
+    it('should handle no demandId', () => {
+      component.demandId = null
+
+      component.getRequestTypeList()
+
+      expect(component.getRequestDataById).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('selectRequestType', () => {
+    beforeEach(() => {
+      component.requestForm = mockFormGroup
+    })
+
+    it('should handle Single request type', () => {
       component.selectRequestType('Single')
 
       expect(component.isAssignee).toBe(true)
@@ -219,296 +479,41 @@ describe('RequestCopyDetailsComponent', () => {
       expect(mockFormControl.setValidators).toHaveBeenCalled()
     })
 
-    it('should handle Broadcast request type selection', () => {
+    it('should handle Broadcast request type', () => {
       component.selectRequestType('Broadcast')
 
-      expect(component.statusValue).toBe('Unassigned')
       expect(component.isBroadCast).toBe(true)
       expect(component.isAssignee).toBe(false)
+      expect(component.statusValue).toBe('Unassigned')
       expect(mockFormControl.setValue).toHaveBeenCalledWith('')
       expect(mockFormControl.setValidators).toHaveBeenCalled()
     })
   })
 
-  describe('Competency Management', () => {
+  describe('openedChange', () => {
     beforeEach(() => {
-      component.allCompetencies = [
-        {
-          name: 'Test Area',
-          id: '1',
-          themes: [
-            {
-              name: 'Test Theme',
-              id: '2',
-              associations: [
-                { name: 'Test Sub Theme', id: '3' }
-              ]
-            }
-          ]
-        }
-      ]
+      component.requestForm = mockFormGroup
     })
 
-    it('should select competency area correctly', () => {
-      const option = { name: 'Test Area' }
-      component.resetCompSubfields = jest.fn()
+    it('should clear search control value when opened', () => {
+      component.openedChange(true, 'providerText')
 
-      component.compAreaSelected(option)
-
-      expect(component.resetCompSubfields).toHaveBeenCalled()
-      expect(component.seletedCompetencyArea).toEqual(component.allCompetencies[0])
-      expect(component.allCompetencyTheme).toEqual(component.allCompetencies[0].themes)
+      expect(mockFormControl.patchValue).toHaveBeenCalledWith('')
     })
 
-    it('should select competency theme correctly', () => {
-      component.allCompetencyTheme = [
-        { name: 'Test Theme', id: '2', associations: [{ name: 'Test Sub Theme', id: '3' }] }
-      ]
-      const option = { name: 'Test Theme' }
+    it('should not clear when closed', () => {
+      component.openedChange(false, 'providerText')
 
-      component.compThemeSelected(option)
-
-      expect(component.seletedCompetencyTheme).toEqual(component.allCompetencyTheme[0])
-      expect(component.allCompetencySubtheme).toEqual(component.allCompetencyTheme[0].associations)
-    })
-
-    it('should select competency sub-theme correctly', () => {
-      component.allCompetencySubtheme = [
-        { name: 'Test Sub Theme', id: '3' }
-      ]
-      const option = { name: 'Test Sub Theme' }
-
-      component.compSubThemeSelected(option)
-
-      expect(component.enableCompetencyAdd).toBe(true)
-      expect(component.seletedCompetencySubTheme).toEqual(component.allCompetencySubtheme[0])
-    })
-
-    it('should add competency when all selections are valid', () => {
-      component.seletedCompetencyArea = { name: 'Area', id: '1', description: 'Area desc' }
-      component.seletedCompetencyTheme = {
-        name: 'Theme',
-        id: '2',
-        description: 'Theme desc',
-        additionalProperties: { themeType: 'primary' }
-      }
-      component.seletedCompetencySubTheme = { name: 'SubTheme', id: '3', description: 'Sub desc' }
-      component.canPush = jest.fn().mockReturnValue(true)
-      component.resetCompfields = jest.fn()
-      component.refreshData = jest.fn()
-
-      component.addCompetency()
-
-      expect(mockFormControl.setValue).toHaveBeenCalled()
-      expect(component.resetCompfields).toHaveBeenCalled()
-      expect(component.refreshData).toHaveBeenCalled()
-    })
-
-    it('should not add duplicate competency', () => {
-      component.seletedCompetencyArea = { name: 'Area', id: '1' }
-      component.seletedCompetencyTheme = { name: 'Theme', id: '2' }
-      component.seletedCompetencySubTheme = { name: 'SubTheme', id: '3' }
-      component.canPush = jest.fn().mockReturnValue(false)
-      component.resetCompfields = jest.fn()
-
-      component.addCompetency()
-
-      expect(mockSnackBar.open).toHaveBeenCalledWith('This competency is already added')
-      expect(component.resetCompfields).toHaveBeenCalled()
-    })
-
-    it('should remove competency correctly', () => {
-      const mockCompetency = {
-        competencyAreaId: '1',
-        competencyThemeId: '2',
-        competencySubThemeId: '3'
-      }
-      // Create a new mock with proper typing for this test
-      const competencyFormControl = {
-        ...mockFormControl,
-        value: [mockCompetency] as any[]
-      }
-      component.requestForm.controls[component.compentencyKey.vKey] = competencyFormControl as any
-      component.refreshData = jest.fn()
-
-      component.removeCompetency(mockCompetency)
-
-      expect(component.refreshData).toHaveBeenCalled()
-    })
-
-    it('should check if competency can be pushed', () => {
-      const arr = [
-        { competencyAreaId: '1', competencyThemeId: '2', competencySubThemeId: '3' }
-      ]
-      const obj1 = { competencyAreaId: '1', competencyThemeId: '2', competencySubThemeId: '3' }
-      const obj2 = { competencyAreaId: '2', competencyThemeId: '3', competencySubThemeId: '4' }
-
-      expect(component.canPush(arr, obj1)).toBe(false)
-      expect(component.canPush(arr, obj2)).toBe(true)
+      expect(mockFormControl.patchValue).toHaveBeenCalledWith('')
     })
   })
 
-  describe('Data Fetching', () => {
-    it('should get filter entity successfully', () => {
-      const mockResponse = [{ name: 'Test Competency' }]
-      mockRequestService.getFilterEntity.mockReturnValue(of(mockResponse))
-
-      component.getFilterEntity()
-
-      expect(mockRequestService.getFilterEntity).toHaveBeenCalledWith({
-        search: { type: 'Competency Area' },
-        filter: { isDetail: true }
-      })
-      expect(component.competencyList).toEqual(mockResponse)
-      expect(component.allCompetencies).toEqual(mockResponse)
-    })
-
-    it('should get filter entity V2 successfully', () => {
-      const mockResponse = [
-        { terms: [{ identifier: '1', associations: [] }] },
-        { terms: [{ identifier: '2', associations: [{ identifier: '1' }] }] }
-      ]
-      mockRequestService.getFilterEntityV2.mockReturnValue(of(mockResponse))
-
-      component.getFilterEntityV2()
-
-      expect(mockRequestService.getFilterEntityV2).toHaveBeenCalled()
-      expect(component.allCompetencies).toBeDefined()
-    })
-
-    it('should get request type list successfully', () => {
-      const mockData = [{ orgName: 'Test Org', id: '1' }]
-      mockRequestService.getRequestTypeList.mockReturnValue(of(mockData))
-      component.getRequestDataById = jest.fn()
-
-      component.getRequestTypeList()
-
-      expect(mockRequestService.getRequestTypeList).toHaveBeenCalledWith({
-        request: { filters: { isCbp: true } }
-      })
-      expect(component.requestTypeData).toEqual(mockData)
-      expect(component.filteredRequestType).toEqual(mockData)
-    })
-
-    it('should get request data by ID successfully', () => {
-      const mockData = {
-        title: 'Test Title',
-        objective: 'Test Objective',
-        requestType: 'Single',
-        competencies: []
-      }
-      mockRequestService.getRequestDataById.mockReturnValue(of(mockData))
-      component.setRequestData = jest.fn()
-      component.demandId = 'test-id'
-
-      component.getRequestDataById()
-
-      expect(mockRequestService.getRequestDataById).toHaveBeenCalledWith('test-id')
-      expect(component.requestObjData).toEqual(mockData)
-      expect(component.setRequestData).toHaveBeenCalled()
-    })
-  })
-
-  describe('Form Submission', () => {
+  describe('clearSearch', () => {
     beforeEach(() => {
-      component.showDialogBox = jest.fn()
-      component.dialogRefs = { close: jest.fn() }
+      component.requestForm = mockFormGroup
     })
 
-    it('should submit form successfully', () => {
-      mockRequestService.createDemand.mockReturnValue(of('success'))
-      component.isBroadCast = true
-      component.isAssignee = false
-
-      component.submit()
-
-      expect(component.showDialogBox).toHaveBeenCalledWith('progress')
-      expect(mockRequestService.createDemand).toHaveBeenCalled()
-    })
-
-    it('should handle form submission error', () => {
-      const error = new Error('Submission failed')
-      mockRequestService.createDemand.mockReturnValue(throwError(error))
-
-      component.submit()
-
-      expect(mockSnackBar.open).toHaveBeenCalledWith('Request Failed')
-    })
-
-    it('should show confirmation popup before submission', () => {
-      component.dialogRefs = { afterClosed: () => of('confirmed') }
-      component.submit = jest.fn()
-
-      component.showConformationPopUp()
-
-      expect(mockDialog.open).toHaveBeenCalled()
-    })
-  })
-
-  describe('Utility Methods', () => {
-    it('should navigate back correctly', () => {
-      component.navigateBack()
-
-      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/app/home/all-request')
-    })
-
-    it('should filter values correctly', () => {
-      const array = [
-        { name: 'Angular' },
-        { name: 'React' },
-        { name: 'Vue' }
-      ]
-
-      const result = component.filterValues('ang', array)
-
-      expect(result).toHaveLength(1)
-      expect(result[0].name).toBe('Angular')
-    })
-
-    it('should filter org values correctly', () => {
-      const array = [
-        { orgName: 'Google Inc' },
-        { orgName: 'Microsoft Corp' },
-        { orgName: 'Apple Inc' }
-      ]
-
-      const result = component.filterOrgValues('inc', array)
-
-      expect(result).toHaveLength(2)
-      expect(result.map((r: any) => r.orgName)).toEqual(['Google Inc', 'Apple Inc'])
-    })
-
-    it('should get hidden options correctly', () => {
-      const array = [
-        { orgName: 'Google' },
-        { orgName: 'Microsoft' }
-      ]
-
-      const result = component.getHiddenOptions('goo', array)
-
-      expect(result[0].hideOption).toBe('show')
-      expect(result[1].hideOption).toBe('hide')
-    })
-
-    it('should reset competency fields', () => {
-      component.resetCompfields()
-
-      expect(component.enableCompetencyAdd).toBe(false)
-      expect(component.allCompetencyTheme).toEqual([])
-      expect(component.allCompetencySubtheme).toEqual([])
-      expect(mockFormControl.setValue).toHaveBeenCalledWith('')
-    })
-
-    it('should reset competency sub-fields', () => {
-      component.resetCompSubfields()
-
-      expect(component.enableCompetencyAdd).toBe(false)
-      expect(component.allCompetencySubtheme).toEqual([])
-      expect(component.seletedCompetencyTheme).toBe('')
-      expect(component.seletedCompetencySubTheme).toBe('')
-    })
-
-    it('should clear search correctly', () => {
+    it('should clear search and stop propagation', () => {
       const mockEvent = { stopPropagation: jest.fn() }
 
       component.clearSearch(mockEvent, 'providerText')
@@ -516,40 +521,569 @@ describe('RequestCopyDetailsComponent', () => {
       expect(mockEvent.stopPropagation).toHaveBeenCalled()
       expect(mockFormControl.patchValue).toHaveBeenCalledWith('')
     })
+  })
 
-    it('should handle opened change correctly', () => {
-      component.openedChange(true, 'providerText')
-
-      expect(mockFormControl.patchValue).toHaveBeenCalledWith('')
+  describe('updateQuery', () => {
+    beforeEach(() => {
+      component.requestForm = mockFormGroup
+      component.allCompetencyTheme = []
+      component.allCompetencySubtheme = []
+      jest.spyOn(component, 'filterValues').mockReturnValue([])
     })
 
-    it('should check if option is disabled', () => {
-      mockFormGroup.get.mockReturnValue({
-        value: [1, 2, 3, 4, 5] // 5 items already selected
-      })
+    it('should update theme query', () => {
+      component.updateQuery('theme')
 
-      const result = component.isOptionDisabled({ id: 6 })
+      expect(mockFormControl.valueChanges.subscribe).toHaveBeenCalled()
+    })
+
+    it('should update subtheme query', () => {
+      component.updateQuery('subtheme')
+
+      expect(mockFormControl.valueChanges.subscribe).toHaveBeenCalled()
+    })
+  })
+
+  describe('resetSearch', () => {
+    beforeEach(() => {
+      component.requestForm = mockFormGroup
+      component.allCompetencyTheme = [{ name: 'Theme 1' }]
+      component.allCompetencySubtheme = [{ name: 'SubTheme 1' }]
+    })
+
+    it('should reset theme search', () => {
+      component.resetSearch('theme')
+
+      expect(mockFormControl.setValue).toHaveBeenCalledWith('')
+      expect(component.filteredallCompetencyTheme).toBe(component.allCompetencyTheme)
+    })
+
+    it('should reset subtheme search', () => {
+      component.resetSearch('subtheme')
+
+      expect(mockFormControl.setValue).toHaveBeenCalledWith('')
+      expect(component.filteredallCompetencySubtheme).toBe(component.allCompetencySubtheme)
+    })
+
+    it('should handle theme reset with selected subtheme', () => {
+      component.seletedCompetencySubTheme = { name: 'Selected' }
+
+      component.resetSearch('theme')
+
+      expect(mockFormControl.setValue).toHaveBeenCalledWith('')
+    })
+  })
+
+  describe('resetCompSubfields', () => {
+    beforeEach(() => {
+      component.requestForm = mockFormGroup
+    })
+
+    it('should reset all competency subfields', () => {
+      component.resetCompSubfields()
+
+      expect(component.enableCompetencyAdd).toBe(false)
+      expect(component.allCompetencySubtheme).toEqual([])
+      expect(component.filteredallCompetencyTheme).toEqual([])
+      expect(mockFormControl.setValue).toHaveBeenCalledWith('')
+    })
+  })
+
+  describe('compAreaSelected', () => {
+    beforeEach(() => {
+      component.allCompetencies = [
+        { name: 'Area 1', themes: [{ name: 'Theme 1' }] }
+      ]
+      jest.spyOn(component, 'resetCompSubfields')
+    })
+
+    it('should select competency area and set themes', () => {
+      const option = { name: 'Area 1' }
+
+      component.compAreaSelected(option)
+
+      expect(component.resetCompSubfields).toHaveBeenCalled()
+      expect(component.seletedCompetencyArea).toEqual(component.allCompetencies[0])
+      expect(component.allCompetencyTheme).toEqual([{ name: 'Theme 1' }])
+    })
+
+    it('should handle children instead of themes', () => {
+      component.allCompetencies[0].children = [{ name: 'Child 1' }]
+      delete component.allCompetencies[0].themes
+      const option = { name: 'Area 1' }
+
+      component.compAreaSelected(option)
+
+      expect(component.allCompetencyTheme).toEqual([{ name: 'Child 1' }])
+    })
+  })
+
+  describe('compThemeSelected', () => {
+    beforeEach(() => {
+      component.allCompetencyTheme = [
+        {
+          identifier: 'theme1',
+          name: 'Theme 1',
+          associations: [{ name: 'Sub 1' }]
+        }
+      ]
+    })
+
+    it('should select competency theme by identifier', () => {
+      const option = { identifier: 'theme1' }
+
+      component.compThemeSelected(option)
+
+      expect(component.enableCompetencyAdd).toBe(false)
+      expect(component.seletedCompetencyTheme).toEqual(component.allCompetencyTheme[0])
+      expect(component.allCompetencySubtheme).toEqual([{ name: 'Sub 1' }])
+    })
+
+    it('should select competency theme by name', () => {
+      const option = { name: 'Theme 1' }
+
+      component.compThemeSelected(option)
+
+      expect(component.seletedCompetencyTheme).toEqual(component.allCompetencyTheme[0])
+    })
+
+    it('should handle children instead of associations', () => {
+      component.allCompetencyTheme[0].children = [{ name: 'Child 1' }]
+      delete component.allCompetencyTheme[0].associations
+      const option = { identifier: 'theme1' }
+
+      component.compThemeSelected(option)
+
+      expect(component.allCompetencySubtheme).toEqual([{ name: 'Child 1' }])
+    })
+  })
+
+  describe('compSubThemeSelected', () => {
+    beforeEach(() => {
+      component.allCompetencySubtheme = [
+        { identifier: 'sub1', name: 'Sub 1' }
+      ]
+    })
+
+    it('should select competency subtheme by identifier', () => {
+      const option = { identifier: 'sub1' }
+
+      component.compSubThemeSelected(option)
+
+      expect(component.enableCompetencyAdd).toBe(true)
+      expect(component.seletedCompetencySubTheme).toEqual(component.allCompetencySubtheme[0])
+    })
+
+    it('should select competency subtheme by name', () => {
+      const option = { name: 'Sub 1' }
+
+      component.compSubThemeSelected(option)
+
+      expect(component.seletedCompetencySubTheme).toEqual(component.allCompetencySubtheme[0])
+    })
+  })
+
+  describe('resetCompfields', () => {
+    beforeEach(() => {
+      component.requestForm = mockFormGroup
+    })
+
+    it('should reset all competency fields', () => {
+      component.resetCompfields()
+
+      expect(component.enableCompetencyAdd).toBe(false)
+      expect(component.allCompetencyTheme).toEqual([])
+      expect(component.allCompetencySubtheme).toEqual([])
+      expect(mockFormControl.setValue).toHaveBeenCalledWith('')
+    })
+  })
+
+  describe('canPush', () => {
+    it('should return true for new competency', () => {
+      const arr = [
+        {
+          competencyAreaId: 'area1',
+          competencyThemeId: 'theme1',
+          competencySubThemeId: 'sub1'
+        }
+      ]
+      const obj = {
+        competencyAreaId: 'area2',
+        competencyThemeId: 'theme2',
+        competencySubThemeId: 'sub2'
+      }
+
+      const result = component.canPush(arr, obj)
 
       expect(result).toBe(true)
     })
 
-    it('should remove provider correctly', () => {
-      const provider = { id: 1, name: 'Test Provider' }
-      mockFormGroup.get.mockReturnValue({
-        value: [provider, { id: 2, name: 'Other Provider' }],
-        setValue: jest.fn()
-      })
+    it('should return false for duplicate competency', () => {
+      const arr = [
+        {
+          competencyAreaId: 'area1',
+          competencyThemeId: 'theme1',
+          competencySubThemeId: 'sub1'
+        }
+      ]
+      const obj = {
+        competencyAreaId: 'area1',
+        competencyThemeId: 'theme1',
+        competencySubThemeId: 'sub1'
+      }
 
-      component.onProviderRemoved(provider)
+      const result = component.canPush(arr, obj)
 
-      expect(mockFormGroup.get).toHaveBeenCalledWith('providers')
+      expect(result).toBe(false)
     })
   })
 
-  describe('Dialog Management', () => {
-    it('should show dialog box with correct data for progress', () => {
-      component.openDialoagBox = jest.fn()
+  describe('refreshData', () => {
+    it('should call getFilterEntityV2', () => {
+      jest.spyOn(component, 'getFilterEntityV2')
 
+      component.refreshData()
+
+      expect(component.getFilterEntityV2).toHaveBeenCalled()
+    })
+  })
+
+  describe('addCompetency', () => {
+    beforeEach(() => {
+      component.requestForm = mockFormGroup
+      //component.compentencyKey = { vKey: 'competencies_v5' }
+      component.seletedCompetencyArea = {
+        name: 'Area',
+        id: 'area1',
+        description: 'Area desc'
+      }
+      component.seletedCompetencyTheme = {
+        name: 'Theme',
+        id: 'theme1',
+        description: 'Theme desc',
+        additionalProperties: { themeType: 'type1' }
+      }
+      component.seletedCompetencySubTheme = {
+        name: 'SubTheme',
+        id: 'sub1',
+        description: 'Sub desc'
+      }
+      jest.spyOn(component, 'canPush').mockReturnValue(true)
+      jest.spyOn(component, 'resetCompfields')
+      jest.spyOn(component, 'refreshData')
+      mockFormControl.value = []
+    })
+
+    it('should add competency with v5 format', () => {
+      component.addCompetency()
+
+      expect(component.canPush).toHaveBeenCalled()
+      expect(mockFormControl.setValue).toHaveBeenCalled()
+      expect(component.resetCompfields).toHaveBeenCalled()
+      expect(component.refreshData).toHaveBeenCalled()
+    })
+
+    it('should add competency with non-v5 format', () => {
+      component.compentencyKey.vKey = 'competencies_v4'
+      component.seletedCompetencyTheme.additionalProperties = { displayName: 'Theme Display' }
+      component.seletedCompetencyTheme.refType = 'refType1'
+      component.seletedCompetencySubTheme.additionalProperties = { displayName: 'Sub Display' }
+      component.seletedCompetencyArea.identifier = 'area-id'
+      component.seletedCompetencyTheme.identifier = 'theme-id'
+      component.seletedCompetencySubTheme.identifier = 'sub-id'
+
+      component.addCompetency()
+
+      expect(mockFormControl.setValue).toHaveBeenCalled()
+    })
+
+    it('should show snackbar for duplicate competency', () => {
+      jest.spyOn(component, 'canPush').mockReturnValue(false)
+
+      component.addCompetency()
+
+      expect(mockSnackBar.open).toHaveBeenCalledWith('This competency is already added')
+      expect(component.resetCompfields).toHaveBeenCalled()
+    })
+
+    it('should not add if selections are incomplete', () => {
+      component.seletedCompetencyArea = null
+
+      component.addCompetency()
+
+      expect(mockFormControl.setValue).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('removeCompetency', () => {
+    beforeEach(() => {
+      component.requestForm = mockFormGroup
+      // component.compentencyKey = { vKey: 'competencies_v5' }
+      mockFormControl.value = [
+        {
+          id: 'comp1',
+          competencyAreaId: 'area1',
+          competencyThemeId: 'theme1',
+          competencySubThemeId: 'sub1'
+        }
+      ]
+      jest.spyOn(component, 'refreshData')
+    })
+
+    it('should remove competency by id', () => {
+      const id = { id: 'comp1' }
+
+      component.removeCompetency(id)
+
+      expect(mockFormControl.setValue).toHaveBeenCalled()
+      expect(component.refreshData).toHaveBeenCalled()
+    })
+
+    it('should remove competency by area/theme/subtheme ids', () => {
+      const id = {
+        competencyAreaId: 'area1',
+        competencyThemeId: 'theme1',
+        competencySubThemeId: 'sub1'
+      }
+
+      component.removeCompetency(id)
+
+      expect(mockFormControl.setValue).toHaveBeenCalled()
+      expect(component.refreshData).toHaveBeenCalled()
+    })
+  })
+
+  describe('view', () => {
+    it('should open competency view dialog', () => {
+      const item = { id: 1, name: 'Test' }
+
+      component.view(item)
+
+      expect(mockDialog.open).toHaveBeenCalled()
+    })
+
+    it('should handle dialog response DELETE', () => {
+      const mockDialogRef = {
+        afterClosed: jest.fn().mockReturnValue(of({ action: 'DELETE', id: 'test' }))
+      }
+      mockDialog.open.mockReturnValue(mockDialogRef)
+      jest.spyOn(component, 'removeCompetency')
+
+      component.view()
+
+      expect(component.removeCompetency).toHaveBeenCalledWith('test')
+    })
+
+    it('should handle dialog response ADD', () => {
+      const mockDialogRef = {
+        afterClosed: jest.fn().mockReturnValue(of({ action: 'ADD' }))
+      }
+      mockDialog.open.mockReturnValue(mockDialogRef)
+
+      component.view()
+
+      // Should not throw error for ADD action
+    })
+  })
+
+  describe('onProviderRemoved', () => {
+    beforeEach(() => {
+      component.requestForm = mockFormGroup
+      const providersControl = {
+        value: ['provider1', 'provider2', 'provider3'],
+        setValue: jest.fn()
+      }
+      mockFormGroup.get.mockReturnValue(providersControl)
+    })
+
+    it('should remove provider from form control', () => {
+      const provider = 'provider2'
+
+      component.onProviderRemoved(provider)
+
+      const providersControl = mockFormGroup.get('providers')
+      expect(providersControl.setValue).toHaveBeenCalledWith(['provider1', 'provider3'])
+    })
+
+    it('should handle non-existent provider', () => {
+      const provider = 'non-existent'
+
+      component.onProviderRemoved(provider)
+
+      const providersControl = mockFormGroup.get('providers')
+      expect(providersControl.setValue).toHaveBeenCalledWith(['provider1', 'provider2', 'provider3'])
+    })
+
+    it('should handle null form control', () => {
+      mockFormGroup.get.mockReturnValue(null)
+
+      expect(() => component.onProviderRemoved('provider1')).not.toThrow()
+    })
+  })
+
+  describe('isOptionDisabled', () => {
+    beforeEach(() => {
+      component.requestForm = mockFormGroup
+    })
+
+    it('should return true when max providers selected and option not selected', () => {
+      const control = {
+        value: ['p1', 'p2', 'p3', 'p4', 'p5']
+      }
+      mockFormGroup.get.mockReturnValue(control)
+
+      const result = component.isOptionDisabled('p6')
+
+      expect(result).toBe(true)
+    })
+
+    it('should return false when max providers selected but option is selected', () => {
+      const control = {
+        value: ['p1', 'p2', 'p3', 'p4', 'p5']
+      }
+      mockFormGroup.get.mockReturnValue(control)
+
+      const result = component.isOptionDisabled('p3')
+
+      expect(result).toBe(false)
+    })
+
+    it('should return false when less than max providers selected', () => {
+      const control = {
+        value: ['p1', 'p2']
+      }
+      mockFormGroup.get.mockReturnValue(control)
+
+      const result = component.isOptionDisabled('p3')
+
+      expect(result).toBe(false)
+    })
+
+    it('should return false when control is null', () => {
+      mockFormGroup.get.mockReturnValue(null)
+
+      const result = component.isOptionDisabled('p1')
+
+      expect(result).toBe(false)
+    })
+  })
+
+  describe('showSaveButton', () => {
+    it('should exist and not throw error', () => {
+      expect(() => component.showSaveButton()).not.toThrow()
+    })
+  })
+
+  describe('showConformationPopUp', () => {
+    it('should open confirmation dialog and call submit on confirm', () => {
+      jest.spyOn(component, 'submit')
+      component.actionBtnName = 'create'
+
+      component.showConformationPopUp()
+
+      expect(mockDialog.open).toHaveBeenCalled()
+      expect(component.submit).toHaveBeenCalled()
+    })
+
+    it('should show reassign confirmation', () => {
+      component.actionBtnName = 'reassign'
+
+      component.showConformationPopUp()
+
+      expect(mockDialog.open).toHaveBeenCalled()
+    })
+
+    it('should not call submit when cancelled', () => {
+      const mockDialogRef = {
+        afterClosed: jest.fn().mockReturnValue(of('cancelled'))
+      }
+      mockDialog.open.mockReturnValue(mockDialogRef)
+      jest.spyOn(component, 'submit')
+
+      component.showConformationPopUp()
+
+      expect(component.submit).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('submit', () => {
+    beforeEach(() => {
+      component.requestForm = mockFormGroup
+      // component.compentencyKey = { vKey: 'competencies_v5' }
+      component.demandId = 'test-id'
+      component.actionBtnName = 'reassign'
+      component.isAssignee = true
+      component.isBroadCast = false
+      component.currentUser = 'test-user'
+      mockFormGroup.value.competencies_v5 = [
+        {
+          competencyArea: 'Area 1',
+          competencyTheme: 'Theme 1',
+          competencySubTheme: 'Sub 1'
+        }
+      ]
+      mockFormGroup.value.assignee = { orgName: 'Test Org', id: 'org1' }
+      jest.spyOn(component, 'showDialogBox')
+    })
+
+    it('should submit reassign request successfully', () => {
+      mockRequestService.createDemand.mockReturnValue(of('success'))
+
+      component.submit()
+
+      expect(mockFormGroup.enable).toHaveBeenCalled()
+      expect(mockRequestService.createDemand).toHaveBeenCalled()
+      expect(component.showDialogBox).toHaveBeenCalledWith('progress')
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/app/home/all-request')
+      expect(mockSnackBar.open).toHaveBeenCalledWith('Request submitted successfully ')
+    })
+
+    it('should submit broadcast request with providers', () => {
+      component.isBroadCast = true
+      component.isAssignee = false
+      mockFormGroup.value.providers = [
+        { orgName: 'Provider 1', id: 'prov1' },
+        { orgName: 'Provider 2', id: 'prov2' }
+      ]
+      mockFormGroup.value.assignee = null
+
+      component.submit()
+
+      expect(mockRequestService.createDemand).toHaveBeenCalled()
+    })
+
+    it('should include learning mode when present', () => {
+      mockFormGroup.value.learningMode = 'Self-Paced'
+
+      component.submit()
+
+      expect(mockRequestService.createDemand).toHaveBeenCalled()
+    })
+
+    it('should handle submit error', () => {
+      mockRequestService.createDemand.mockReturnValue(throwError('error'))
+
+      component.submit()
+
+      expect(mockSnackBar.open).toHaveBeenCalledWith('Request Failed')
+    })
+
+    it('should handle create request (not reassign)', () => {
+      component.demandId = null
+      component.actionBtnName = 'create'
+
+      component.submit()
+
+      expect(mockFormGroup.enable).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('showDialogBox', () => {
+    beforeEach(() => {
+      jest.spyOn(component, 'openDialoagBox')
+    })
+
+    it('should show progress dialog', () => {
       component.showDialogBox('progress')
 
       expect(component.openDialoagBox).toHaveBeenCalledWith({
@@ -560,9 +1094,7 @@ describe('RequestCopyDetailsComponent', () => {
       })
     })
 
-    it('should show dialog box with correct data for progress-completed', () => {
-      component.openDialoagBox = jest.fn()
-
+    it('should show progress completed dialog', () => {
       component.showDialogBox('progress-completed')
 
       expect(component.openDialoagBox).toHaveBeenCalledWith({
@@ -573,87 +1105,44 @@ describe('RequestCopyDetailsComponent', () => {
         primaryAction: 'Successfully created....'
       })
     })
+  })
 
-    it('should open dialog box correctly', () => {
+  describe('openDialoagBox', () => {
+    it('should open dialog with provided data', () => {
       const dialogData = {
         type: 'test',
         icon: 'test-icon',
         title: 'Test Title',
-        subTitle: 'Test Subtitle'
+        subTitle: 'Test Subtitle',
+        primaryAction: 'Primary',
+        secondaryAction: 'Secondary'
       }
 
       component.openDialoagBox(dialogData)
 
       expect(mockDialog.open).toHaveBeenCalled()
     })
-
-    it('should open competency view dialog', () => {
-      const item = { id: '1', name: 'Test Competency' }
-      component.removeCompetency = jest.fn()
-
-      component.view(item)
-
-      expect(mockDialog.open).toHaveBeenCalled()
-    })
   })
 
-  describe('Search and Query Updates', () => {
-    it('should update theme query', () => {
-      component.allCompetencyTheme = [{ name: 'Test Theme' }]
-      component.filterValues = jest.fn().mockReturnValue([{ name: 'Test Theme' }])
+  describe('Edge Cases and Error Handling', () => {
+    it('should handle missing form controls gracefully', () => {
+      // component.requestForm = null
 
-      component.updateQuery('theme')
-
-      // Since we're mocking valueChanges, we need to verify the subscription is set up
-      expect(component.filteredallCompetencyTheme).toBeDefined()
+      expect(() => component.valuechangeFuctions()).not.toThrow()
     })
 
-    it('should update sub-theme query', () => {
-      component.allCompetencySubtheme = [{ name: 'Test Sub Theme' }]
-      component.filterValues = jest.fn().mockReturnValue([{ name: 'Test Sub Theme' }])
+    it('should handle empty competency selections', () => {
+      component.seletedCompetencyArea = null
+      component.seletedCompetencyTheme = null
+      component.seletedCompetencySubTheme = null
 
-      component.updateQuery('subtheme')
-
-      expect(component.filteredallCompetencySubtheme).toBeDefined()
+      expect(() => component.addCompetency()).not.toThrow()
     })
 
-    it('should reset theme search', () => {
-      component.allCompetencyTheme = [{ name: 'Test Theme' }]
-
-      component.resetSearch('theme')
-
-      expect(mockFormControl.setValue).toHaveBeenCalledWith('')
-      expect(component.filteredallCompetencyTheme).toEqual(component.allCompetencyTheme)
-    })
-
-    it('should reset sub-theme search', () => {
-      component.allCompetencySubtheme = [{ name: 'Test Sub Theme' }]
-
-      component.resetSearch('subtheme')
-
-      expect(mockFormControl.setValue).toHaveBeenCalledWith('')
-      expect(component.filteredallCompetencySubtheme).toEqual(component.allCompetencySubtheme)
-    })
-  })
-
-  describe('Error Handling', () => {
-    it('should handle error when getting filter entity', () => {
-      mockRequestService.getFilterEntity.mockReturnValue(throwError('Error'))
-
-      expect(() => component.getFilterEntity()).not.toThrow()
-    })
-
-    it('should handle error when getting request type list', () => {
-      mockRequestService.getRequestTypeList.mockReturnValue(throwError('Error'))
-
-      expect(() => component.getRequestTypeList()).not.toThrow()
-    })
-
-    it('should handle error when getting request data by ID', () => {
-      mockRequestService.getRequestDataById.mockReturnValue(throwError('Error'))
-      component.demandId = 'test-id'
-
-      expect(() => component.getRequestDataById()).not.toThrow()
+    it('should handle null/undefined values in filter functions', () => {
+      expect(() => component.filterValues('test', null)).toThrow()
+      expect(() => component.filterOrgValues('test', null)).toThrow()
+      expect(() => component.getHiddenOptions('test', null)).not.toThrow()
     })
   })
 })

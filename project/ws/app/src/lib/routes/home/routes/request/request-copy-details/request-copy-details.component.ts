@@ -101,7 +101,7 @@ export class RequestCopyDetailsComponent implements OnInit {
     this.competencyTheme = new UntypedFormControl('')
     this.competencySubtheme = new UntypedFormControl('')
 
-    if (this.compentencyKey && this.compentencyKey.vKey === 'competencies_v5') {
+    if (this.compentencyKey && this.compentencyKey?.vKey === 'competencies_v5') {
       this.getFilterEntity()
     } else {
       this.getFilterEntityV2()
@@ -130,7 +130,7 @@ export class RequestCopyDetailsComponent implements OnInit {
       providerText: new UntypedFormControl(''),
       queryThemeControl: new UntypedFormControl(''),
       querySubThemeControl: new UntypedFormControl(''),
-      [this.compentencyKey.vKey]: [],
+      [this.compentencyKey?.vKey]: [],
       assigneeText: new UntypedFormControl(''),
     })
   }
@@ -151,7 +151,7 @@ export class RequestCopyDetailsComponent implements OnInit {
       Objective: this.requestObjData.objective,
       userType: this.requestObjData.typeOfUser ? this.requestObjData.typeOfUser : '',
       learningMode: this.requestObjData.learningMode ? this.requestObjData.learningMode : '',
-      [this.compentencyKey.vKey]: [],
+      [this.compentencyKey?.vKey]: [],
       referenceLink: this.requestObjData.referenceLink ? this.requestObjData.referenceLink : '',
       providers: [],
       assignee: {},
@@ -162,7 +162,7 @@ export class RequestCopyDetailsComponent implements OnInit {
       querySubThemeControl: '',
       assigneeText: '',
     })
-    const value = this.requestForm.controls[this.compentencyKey.vKey].value || []
+    const value = this.requestForm.controls[this.compentencyKey?.vKey].value || []
     this.requestObjData.competencies.map((comp: any) => {
       const obj = {
         competencyArea: comp.area || comp.select_area,
@@ -172,7 +172,7 @@ export class RequestCopyDetailsComponent implements OnInit {
       value.push(obj)
     })
 
-    this.requestForm.controls[this.compentencyKey.vKey].setValue(value)
+    this.requestForm.controls[this.compentencyKey?.vKey].setValue(value)
 
     this.selectRequestType(this.requestObjData.requestType)
     if (this.filteredRequestType) {
@@ -493,7 +493,7 @@ export class RequestCopyDetailsComponent implements OnInit {
   addCompetency() {
     if (this.seletedCompetencyArea && this.seletedCompetencyTheme && this.seletedCompetencySubTheme) {
       let obj: any
-      if (this.compentencyKey && this.compentencyKey.vKey === 'competencies_v5') {
+      if (this.compentencyKey && this.compentencyKey?.vKey === 'competencies_v5') {
         obj = {
           competencyArea: this.seletedCompetencyArea.name,
           competencyAreaId: this.seletedCompetencyArea.id,
@@ -523,10 +523,10 @@ export class RequestCopyDetailsComponent implements OnInit {
         }
       }
 
-      const value = this.requestForm.controls[this.compentencyKey.vKey].value || []
+      const value = this.requestForm.controls[this.compentencyKey?.vKey].value || []
       if (this.canPush(value, obj)) {
         value.push(obj)
-        this.requestForm.controls[this.compentencyKey.vKey].setValue(value)
+        this.requestForm.controls[this.compentencyKey?.vKey].setValue(value)
         this.resetCompfields()
         this.refreshData()
       } else {
@@ -539,16 +539,16 @@ export class RequestCopyDetailsComponent implements OnInit {
 
   removeCompetency(id: any): void {
     if (id && !id.competencyArea) {
-      const index = _.findIndex(this.requestForm.controls[this.compentencyKey.vKey].value, { id })
-      this.requestForm.controls[this.compentencyKey.vKey].value.splice(index, 1)
-      this.requestForm.controls[this.compentencyKey.vKey].setValue(this.requestForm.controls[this.compentencyKey.vKey].value)
+      const index = _.findIndex(this.requestForm.controls[this.compentencyKey?.vKey].value, { id })
+      this.requestForm.controls[this.compentencyKey?.vKey].value.splice(index, 1)
+      this.requestForm.controls[this.compentencyKey?.vKey].setValue(this.requestForm.controls[this.compentencyKey?.vKey].value)
       this.refreshData()
     } else {
-      this.requestForm.controls[this.compentencyKey.vKey].value.forEach((item: any, index: any) => {
+      this.requestForm.controls[this.compentencyKey?.vKey].value.forEach((item: any, index: any) => {
         if (item.competencyAreaId === id.competencyAreaId && item.competencyThemeId === id.competencyThemeId
           && item.competencySubThemeId === id.competencySubThemeId) {
-          this.requestForm.controls[this.compentencyKey.vKey].value.splice(index, 1)
-          this.requestForm.controls[this.compentencyKey.vKey].setValue(this.requestForm.controls[this.compentencyKey.vKey].value)
+          this.requestForm.controls[this.compentencyKey?.vKey].value.splice(index, 1)
+          this.requestForm.controls[this.compentencyKey?.vKey].setValue(this.requestForm.controls[this.compentencyKey?.vKey].value)
           this.refreshData()
         }
       })
@@ -630,8 +630,8 @@ export class RequestCopyDetailsComponent implements OnInit {
       this.requestForm.enable()
     }
     let competencyDataList: any[] = []
-    if (this.requestForm.value[this.compentencyKey.vKey]) {
-      competencyDataList = this.requestForm.value[this.compentencyKey.vKey].map((item: any) => ({
+    if (this.requestForm.value[this.compentencyKey?.vKey]) {
+      competencyDataList = this.requestForm.value[this.compentencyKey?.vKey].map((item: any) => ({
         area: item.competencyArea,
         theme: item.competencyTheme,
         sub_theme: item.competencySubTheme,

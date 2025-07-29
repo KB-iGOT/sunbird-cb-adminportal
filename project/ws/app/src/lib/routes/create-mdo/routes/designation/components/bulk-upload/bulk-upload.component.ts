@@ -25,7 +25,7 @@ export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() closeComponent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   lastUploadList: IBulkUploadDesignationList[] = []
-  private destroySubject$ = new Subject()
+  public destroySubject$ = new Subject()
   rootOrgId: any
   bulkUploadFrameworkId = ''
   configSvc: any
