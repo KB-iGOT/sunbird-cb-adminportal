@@ -5,7 +5,7 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ConfigurationsService, EventService, WsEvents } from '@sunbird-cb/utils'
 /* tslint:disable */
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { UsersService } from '../../services/users.service'
 import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
 import { environment } from 'src/environments/environment'
@@ -61,7 +61,7 @@ export class UsersViewComponent implements OnInit {
     this.configSvc = this.route.parent && this.route.parent.snapshot.data.configService
     this.currentUser = this.configSvc?.userProfile?.userId || ''
     this.tabsData = this.route.parent && this.route.parent.snapshot.data.pageData.data.tabs || []
-    this.tabs = this.route.data.subscribe(data => {
+    this.tabs = this.route.data?.subscribe(data => {
       this.portalProfile = data.profile
         && data.profile.data
         && data.profile.data.length > 0
@@ -129,7 +129,7 @@ export class UsersViewComponent implements OnInit {
     const activeUsersData: any[] = []
     const status = this.currentFilter === 'active' ? 1 : 0
     this.currentOffset = this.limit * ((this.pageIndex + 1) - 1)
-    this.usersService.getAllKongUsersPaginated(this.rootOrgId, status, this.limit, this.currentOffset, query).subscribe((data: any) => {
+    this.usersService.getAllKongUsersPaginated(this.rootOrgId, status, this.limit, this.currentOffset, query)?.subscribe((data: any) => {
       this.userDataTotalCount = data.result.response.count
       this.usersData = data.result.response
       if (this.usersData && this.usersData.content && this.usersData.content.length && this.usersData.content.length > 0) {
@@ -158,7 +158,7 @@ export class UsersViewComponent implements OnInit {
     const inactiveUsersData: any[] = []
     const status = this.currentFilter === 'active' ? 1 : 0
     this.currentOffset = this.limit * ((this.pageIndex + 1) - 1)
-    this.usersService.getAllKongUsersPaginated(this.rootOrgId, status, this.limit, this.currentOffset, query).subscribe(
+    this.usersService.getAllKongUsersPaginated(this.rootOrgId, status, this.limit, this.currentOffset, query)?.subscribe(
       (data: any) => {
         this.userDataTotalCount = data.result.response.count
         this.usersData = data.result.response
@@ -204,7 +204,7 @@ export class UsersViewComponent implements OnInit {
         _.set(user, 'isBlocked', true)
         _.set(user, 'isDeleted', false)
         _.set(user, 'roles', _.map(_.get($event.row, 'role'), i => i))
-        this.usersService.blockUser(user).subscribe(response => {
+        this.usersService.blockUser(user)?.subscribe(response => {
           if (response) {
             // this.getAllKongUsers()
             this.filterData('')
@@ -215,7 +215,7 @@ export class UsersViewComponent implements OnInit {
       case 'unblock':
         _.set(user, 'isBlocked', false)
         _.set(user, 'roles', _.map(_.get($event.row, 'role'), i => i))
-        this.usersService.blockUser(user).subscribe(response => {
+        this.usersService.blockUser(user)?.subscribe(response => {
           if (response) {
             // this.getAllKongUsers()
             this.filterData('')
@@ -224,7 +224,7 @@ export class UsersViewComponent implements OnInit {
         })
         break
       case 'deactive':
-        this.usersService.newBlockUserKong(loggedInUserId, user.request.userId).subscribe(response => {
+        this.usersService.newBlockUserKong(loggedInUserId, user.request.userId)?.subscribe(response => {
           if (_.toUpper(response.params.status) === 'SUCCESS') {
             setTimeout(() => {
               // this.getAllKongUsers()
@@ -253,7 +253,7 @@ export class UsersViewComponent implements OnInit {
           _.set(user, 'isDeleted', false)
         }
         _.set(user, 'roles', _.map(_.get($event.row, 'role'), i => i))
-        this.usersService.newUnBlockUserKong(loggedInUserId, user.request.userId).subscribe((response: any) => {
+        this.usersService.newUnBlockUserKong(loggedInUserId, user.request.userId)?.subscribe((response: any) => {
           if (_.toUpper(response.params.status) === 'SUCCESS') {
             setTimeout(() => {
               // this.getAllKongUsers()

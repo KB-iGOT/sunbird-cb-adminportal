@@ -73,7 +73,7 @@ export class CreateUserComponent implements OnInit {
       this.editUserInfo = extraData.userData
       this.updateButton = extraData.updateButton
     }
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams?.subscribe(params => {
       this.queryParam = params['id']
       this.deptId = params['id']
       this.orgName = params['orgName']
@@ -172,7 +172,7 @@ export class CreateUserComponent implements OnInit {
   getAllDepartmentsHeaderAPI() {
     // const userOrgName = _.get(this.route, 'snapshot.parent.data.configService.unMappedUser.rootOrg')
     const roles: any[] = _.get(this.route, 'snapshot.parent.data.configService.unMappedUser.roles')
-    this.directoryService.getDepartmentTitles().subscribe(res => {
+    this.directoryService.getDepartmentTitles()?.subscribe(res => {
       const departmentHeaderArray = JSON.parse(res.result.response.value)
       departmentHeaderArray.orgTypeList.forEach((ele: { name: any, isHidden: any, roles: [] }) => {
         if (environment && environment.cbpProviderRoles && environment.cbpProviderRoles.includes(this.currentDept.toLowerCase())) {
@@ -283,7 +283,7 @@ export class CreateUserComponent implements OnInit {
       this.disableCreateButton = false
       this.displayLoader = false
     } else {
-      this.usersSvc.createUser(userreq).subscribe(
+      this.usersSvc.createUser(userreq)?.subscribe(
         userdata => {
 
           this.displayLoader = false
@@ -401,7 +401,7 @@ export class CreateUserComponent implements OnInit {
   }
 
   getMdoLeader() {
-    this.usersSvc.searchMDOLeaders(this.deptId).subscribe(
+    this.usersSvc.searchMDOLeaders(this.deptId)?.subscribe(
       userdata => {
         if (userdata.result && userdata.result.response) {
           this.mdoLeadersCount = userdata.result.response.count
