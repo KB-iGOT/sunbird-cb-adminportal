@@ -423,7 +423,7 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
       }
     } else {
       this.loadRoles()
-      this.mapRoles(user)
+      // this.mapRoles(user)
     }
   }
 
