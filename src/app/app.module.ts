@@ -129,6 +129,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { environment } from '../environments/environment'
 import { PublicLogoutModule } from './routes/public/public-logout/public-logout.module'
 import { PublicHomeComponent } from './routes/public/public-home/public-home.component'
+import { LoaderService } from '../../project/ws/app/src/lib/routes/home/services/loader.service'
+import { GlobalEventsService } from './services/global-events.service'
 
 /** Improt from Sunbird Collection */
 
@@ -381,6 +383,8 @@ const getBaseHref = (platformLocation: PlatformLocation): string => {
     { provide: OverlayContainer, useClass: FullscreenOverlayContainer },
     // { provide: HAMMER_GESTURE_CONFIG, useClass: HammerConfig },
     { provide: ErrorHandler, useClass: GlobalErrorHandlingService },
+    LoaderService,
+    GlobalEventsService
   ]
 })
 export class AppModule { }

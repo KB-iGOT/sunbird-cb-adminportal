@@ -18,7 +18,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatIconModule } from '@angular/material/icon'
 import { AppButtonModule } from '../app-button/app-button.module'
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu'
-import { DefaultThumbnailModule, PipeCountTransformModule, PipeDurationTransformModule, PipeHtmlTagRemovalModule, PipePartialContentModule } from '@sunbird-cb/utils-v2'
+import { DefaultThumbnailModule, PipeCountTransformModule, PipeDurationTransformModule, PipeHtmlTagRemovalModule, PipeOrderByModule, PipePartialContentModule } from '@sunbird-cb/utils-v2'
 import { BtnChannelAnalyticsModule } from '../btn-channel-analytics/btn-channel-analytics.module'
 import { BtnContentFeedbackV2Module } from '../btn-content-feedback-v2/btn-content-feedback-v2.module'
 // import { BtnContentLikeModule } from '../btn-content-like/btn-content-like.module'
@@ -42,6 +42,10 @@ import { ClipboardModule } from '@angular/cdk/clipboard'
 import { LoaderService } from '../../routes/home/services/loader.service'
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete'
 import { MAT_DATE_LOCALE } from '@angular/material/core'
+import { OrgHierarchyMappingComponent } from './org-hierarchy-mapping/org-hierarchy-mapping/org-hierarchy-mapping.component'
+import { TreeHierarchyModule } from '@sunbird-cb/tree-hierarchy'
+import { OrgHierarchyService } from './services/org-hierarchy.service'
+import { BulkUploadOrgComponent } from './bulk-upload-org/bulk-upload-org.component'
 @NgModule({
   declarations: [
     UIAdminUserTableComponent,
@@ -52,7 +56,9 @@ import { MAT_DATE_LOCALE } from '@angular/material/core'
     DialogTextProfanityComponent,
     ReverseDateFormatPipe,
     CreateOrganisationComponent,
-    CustomSelfRegistrationComponent
+    CustomSelfRegistrationComponent,
+    OrgHierarchyMappingComponent,
+    BulkUploadOrgComponent,
   ],
   imports: [
     AppButtonModule,
@@ -82,16 +88,22 @@ import { MAT_DATE_LOCALE } from '@angular/material/core'
     MatSnackBarModule,
     MatProgressBarModule,
     ClipboardModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
     // MatRadioButton, MatRadioGroup
+    TreeHierarchyModule,
+    PipeOrderByModule
   ],
   exports: [
     UIAdminUserTableComponent,
     UIDirectoryTableComponent,
     UIUserTablePopUpComponent,
     UIDiscussionPostComponent,
-    ReverseDateFormatPipe
+    ReverseDateFormatPipe,
+    OrgHierarchyMappingComponent
   ],
-  providers: [LoaderService, { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }]
+  providers: [
+    LoaderService,
+    OrgHierarchyService,
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }]
 })
 export class UIAdminTableModule { }

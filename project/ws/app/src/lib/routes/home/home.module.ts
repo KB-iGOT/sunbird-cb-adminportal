@@ -88,6 +88,7 @@ import { ConfirmationPopupComponent } from './routes/request/confirmation-popup/
 import { AssignListPopupComponent } from './routes/request/assign-list-popup/assign-list-popup.component'
 import { KCMMappingComponent } from './routes/kcm-mapping/kcm-mapping.component'
 import { TaxonomyEditorModule } from '@sunbird-cb/taxonomy-editor'
+import { TreeHierarchyModule } from '@sunbird-cb/tree-hierarchy'
 import { SingleAssignPopupComponent } from './routes/request/single-assign-popup/single-assign-popup.component'
 import { DemoVideoPopupComponent } from './components/demo-video-popup/demo-video-popup.component'
 import { PublicGcpUrlPipe } from './pipes/public-gcp-url.pipe'
@@ -211,6 +212,7 @@ import { FileProgressComponent } from './components/file-progress/file-progress.
         // ImageCropModule,
         NgMultiSelectDropDownModule.forRoot(),
         TaxonomyEditorModule,
+        TreeHierarchyModule
     ],
     providers: [
         // CKEditorService,

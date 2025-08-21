@@ -117,7 +117,7 @@
                                     *ngIf="createEventForm?.controls['eventTitle']?.touched && createEventForm?.controls['eventTitle']?.errors?.['pattern']"
                                     [hidden]="false">
                                     Invalid input! Please enter only letters, numbers, spaces, apostrophes ('), commas
-                                    (,), and colons (:)
+                                    (,), colons (:), Hyphen (-) and Double quotes (")
                                 </mat-error>
                                 <mat-hint>{{eventTitle.value.length}}/250 characters</mat-hint>
                             </mat-form-field>
