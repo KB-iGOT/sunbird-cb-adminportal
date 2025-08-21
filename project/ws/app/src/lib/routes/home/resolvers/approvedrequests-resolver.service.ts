@@ -3,12 +3,11 @@ import { Injectable } from '@angular/core'
 
 import { of } from 'rxjs'
 import { map, catchError } from 'rxjs/operators'
-// import { IResolveResponse } from '@sunbird-cb/utils'
+// import { IResolveResponse } from '@sunbird-cb/utils-v2'
 // import { RequestsService } from '../services/onboarding-requests.service'
 
 @Injectable()
-export class ApprovedRequestsResolve
-   {
+export class ApprovedRequestsResolve {
   requestType: any
   url: any
   pageLimit = 1000
@@ -42,6 +41,6 @@ export class ApprovedRequestsResolve
         })),
         catchError(error => of({ error, data: null })),
       )
-    },         1000)
+    }, 1000)
   }
 }

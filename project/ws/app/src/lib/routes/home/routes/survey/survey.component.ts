@@ -7,8 +7,8 @@ import { environment } from '../../../../../../../../../src/environments/environ
 import { ActivatedRoute } from '@angular/router'
 // import { ActivatedRoute, Router } from '@angular/router'
 
-// import { ConfigurationsService } from '@sunbird-cb/utils'
-// import { ConfigurationsService, EventService } from '@sunbird-cb/utils'
+// import { ConfigurationsService } from '@sunbird-cb/utils-v2'
+// import { ConfigurationsService, EventService } from '@sunbird-cb/utils-v2'
 // import * as moment from 'moment'
 /* tslint:disable */
 

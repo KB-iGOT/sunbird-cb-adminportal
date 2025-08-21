@@ -1,9 +1,9 @@
 import { PublicContactComponent } from './public-contact.component'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { ActivatedRoute } from '@angular/router'
 import { of } from 'rxjs'
 
-jest.mock('@sunbird-cb/utils', () => ({
+jest.mock('@sunbird-cb/utils-v2', () => ({
   ConfigurationsService: jest.fn().mockImplementation(() => ({
     instanceConfig: {
       mailIds: { contactUs: 'test@contact.com' }

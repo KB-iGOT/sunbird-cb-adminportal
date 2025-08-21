@@ -9,8 +9,8 @@ import {
   hasPermissions,
   hasUnitPermission,
   NsWidgetResolver,
-  WidgetResolverService,
-} from '@sunbird-cb/resolver'
+  SbUiResolverService,
+} from '@sunbird-cb/resolver-v2'
 import {
   // AuthKeycloakService,
   // AuthKeycloakService,
@@ -21,7 +21,7 @@ import {
   NsAppsConfig,
   NsInstanceConfig,
   UserPreferenceService,
-} from '@sunbird-cb/utils'
+} from '@sunbird-cb/utils-v2'
 import { environment } from '../../environments/environment'
 import { map } from 'rxjs/operators'
 import * as _ from 'lodash'
@@ -59,7 +59,7 @@ export class InitService {
     private logger: LoggerService,
     public configSvc: ConfigurationsService,
     // private authSvc: AuthKeycloakService,
-    private widgetResolverService: WidgetResolverService,
+    private SbUiResolverService: SbUiResolverService,
     private settingsSvc: BtnSettingsService,
     private userPreference: UserPreferenceService,
     private http: HttpClient,
@@ -150,7 +150,7 @@ export class InitService {
        */
       const widgetConfig = await widgetStatusPromise
       this.processWidgetStatus(widgetConfig)
-      this.widgetResolverService.initialize(
+      this.SbUiResolverService.initialize(
         this.configSvc.restrictedWidgets,
         this.configSvc.userRoles,
         this.configSvc.userGroups,
@@ -296,7 +296,7 @@ export class InitService {
             this.configSvc.restrictedFeatures,
           ),
         )
-        .map(u => WidgetResolverService.getWidgetKey(u)),
+        .map(u => SbUiResolverService.getWidgetKey(u)),
     )
     return this.configSvc.restrictedWidgets
   }

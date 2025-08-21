@@ -3,7 +3,7 @@ import { of, throwError } from 'rxjs'
 import { ActivatedRoute, Router } from '@angular/router'
 import { SectorsService } from '../sectors.service'
 import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { UntypedFormBuilder } from '@angular/forms'
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
 import { sectorConstants } from '../sectors-constats.model'
@@ -11,7 +11,7 @@ import { sectorConstants } from '../sectors-constats.model'
 jest.mock('@angular/router')
 jest.mock('../sectors.service')
 jest.mock('@angular/material/legacy-snack-bar')
-jest.mock('@sunbird-cb/utils')
+jest.mock('@sunbird-cb/utils-v2')
 jest.mock('@angular/material/legacy-dialog')
 
 describe('EditSectorComponent', () => {

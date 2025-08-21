@@ -1,6 +1,6 @@
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout'
 import { DomSanitizer, SafeResourceUrl, SafeStyle } from '@angular/platform-browser'
-import { ConfigurationsService, NsPage } from '@sunbird-cb/utils'
+import { ConfigurationsService, NsPage } from '@sunbird-cb/utils-v2'
 import { ActivatedRoute, Data } from '@angular/router'
 import { AboutHomeComponent } from './about-home.component'
 import { of } from 'rxjs'

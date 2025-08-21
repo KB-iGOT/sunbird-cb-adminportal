@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router'
 import { HomeComponent } from './routes/home/home.component'
 import { UsersComponent } from './routes/users/users.component'
 import { ConfigResolveService } from '../home/resolvers/config-resolver.service'
-import { PageResolve } from '@sunbird-cb/utils'
+import { PageResolve } from '@sunbird-cb/utils-v2'
 
 const routes: Routes = [
   {

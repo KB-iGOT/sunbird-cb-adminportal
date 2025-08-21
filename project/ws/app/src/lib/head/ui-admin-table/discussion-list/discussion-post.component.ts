@@ -18,7 +18,7 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
 import {
   LoggerService,
 
-} from '@sunbird-cb/utils'
+} from '@sunbird-cb/utils-v2'
 
 import { DialogTextProfanityComponent } from './discussion-post-popup.component'
 export interface IDialogData {

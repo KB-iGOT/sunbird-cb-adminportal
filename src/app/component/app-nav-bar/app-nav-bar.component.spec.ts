@@ -4,7 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser'
 import { Subject } from 'rxjs'
 
 import { AppNavBarComponent } from './app-nav-bar.component'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { CustomTourService } from '@sunbird-cb/collection'
 
 describe('AppNavBarComponent', () => {

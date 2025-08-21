@@ -1,12 +1,12 @@
 
 import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef, HostListener, ViewChild } from '@angular/core'
 import { Router, Event, NavigationEnd, NavigationError, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router'
-import { EventService, TelemetryService, UtilityService, ValueService } from '@sunbird-cb/utils'
+import { EventService, TelemetryService, UtilityService, ValueService } from '@sunbird-cb/utils-v2'
 import { map } from 'rxjs/operators'
 /* tslint:disable */
 import * as _ from 'lodash'
 import { ILeftMenu, LeftMenuService } from '@sunbird-cb/collection'
-import { NsWidgetResolver } from '@sunbird-cb/resolver'
+import { NsWidgetResolver } from '@sunbird-cb/resolver-v2'
 import { Subscription } from 'rxjs'
 /* tslint:enable */
 

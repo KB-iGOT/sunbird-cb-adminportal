@@ -1,6 +1,6 @@
 import { AcbpReportsComponent } from './acbp-reports.component'
 import { AcbpReportsService } from './acbp-reports.service'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { DatePipe } from '@angular/common'
 import { of, throwError } from 'rxjs'
 import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'

@@ -20,7 +20,7 @@ import {
   // AuthKeycloakService,
   ConfigurationsService,
   ValueService,
-} from '@sunbird-cb/utils'
+} from '@sunbird-cb/utils-v2'
 import { delay } from 'rxjs/operators'
 import { MobileAppsService } from '../../services/mobile-apps.service'
 import { RootService } from './root.service'

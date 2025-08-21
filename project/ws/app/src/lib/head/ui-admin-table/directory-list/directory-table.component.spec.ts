@@ -1,13 +1,13 @@
 import { UIDirectoryTableComponent } from './directory-table.component'
 import { Router } from '@angular/router'
-import { EventService } from '@sunbird-cb/utils'
+import { EventService } from '@sunbird-cb/utils-v2'
 import { MatDialog } from '@angular/material/dialog'
 import { CreateMDOService } from '../../../routes/home/services/create-mdo.services'
 import { DesignationsService } from '../../../routes/create-mdo/routes/designation/services/designations.service'
 import * as _ from 'lodash'
 
 jest.mock('@angular/router')
-jest.mock('@sunbird-cb/utils')
+jest.mock('@sunbird-cb/utils-v2')
 jest.mock('@angular/material/dialog')
 jest.mock('../../../routes/home/services/create-mdo.services')
 jest.mock('../../../routes/create-mdo/routes/designation/services/designations.service')

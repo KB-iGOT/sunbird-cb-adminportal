@@ -25,7 +25,7 @@ import { MatSidenavModule } from '@angular/material/sidenav'
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle'
 import { MatLegacyCardModule as MatCardModule } from '@angular/material/legacy-card'
 import { RolesAccessComponent } from '../access/routes/roles-access/roles-access.component'
-import { WidgetResolverModule } from '@sunbird-cb/resolver'
+import { SbUiResolverModule } from '@sunbird-cb/resolver-v2'
 import { UIAdminTableModule } from '../../head/ui-admin-table/ui-admin-table.module'
 import { MentorManageComponent } from './mentor-manage/mentor-manage.component'
 import { SearchComponent } from './search/search.component'
@@ -40,7 +40,7 @@ import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/
 
 @NgModule({
   declarations: [HomeComponent, UsersComponent, RolesAccessComponent, MentorManageComponent, SearchComponent, UserCardComponent, GradeSettingComponent],
-  imports: [CommonModule, CreateMDORoutingModule, BtnPageBackModuleAdmin, LeftMenuModule, WidgetResolverModule,
+  imports: [CommonModule, CreateMDORoutingModule, BtnPageBackModuleAdmin, LeftMenuModule, SbUiResolverModule,
     MatSidenavModule, MatIconModule, MatProgressSpinnerModule, GroupCheckboxModule, HomeModule, RouterModule, UIAdminTableModule, MatCardModule,
     ScrollspyLeftMenuModule, FormsModule, MatSelectModule, MatChipsModule, MatDatepickerModule, MatAutocompleteModule,
     MatExpansionModule, MatSlideToggleModule, MatOptionModule, MatFormFieldModule, MatPaginatorModule, MatListModule, MatRadioModule, MatDialogModule,

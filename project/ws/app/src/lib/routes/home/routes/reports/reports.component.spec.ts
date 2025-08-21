@@ -1,7 +1,7 @@
 import { ReportsComponent } from './reports.component'
 import { of } from 'rxjs'
 import { Router } from '@angular/router'
-import { ConfigurationsService, EventService } from '@sunbird-cb/utils'
+import { ConfigurationsService, EventService } from '@sunbird-cb/utils-v2'
 import { DirectoryService } from '../../services/directory.services'
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
 

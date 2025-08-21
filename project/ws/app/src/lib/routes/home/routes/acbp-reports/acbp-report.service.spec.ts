@@ -1,10 +1,10 @@
 import { AcbpReportsService } from './acbp-reports.service'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { HttpClient } from '@angular/common/http'
 import { of } from 'rxjs'
 
 // Mocking dependencies
-jest.mock('@sunbird-cb/utils', () => ({
+jest.mock('@sunbird-cb/utils-v2', () => ({
   ConfigurationsService: jest.fn().mockImplementation(() => ({
     baseUrl: 'http://mockBaseUrl',
   })),

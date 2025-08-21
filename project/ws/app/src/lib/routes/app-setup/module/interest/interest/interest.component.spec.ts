@@ -1,7 +1,7 @@
 import '@angular/compiler'
 import { ActivatedRoute, Router } from '@angular/router'
 import { WidgetContentService, BtnPlaylistService } from '@sunbird-cb/collection'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { InterestComponent } from './interest.component'
 

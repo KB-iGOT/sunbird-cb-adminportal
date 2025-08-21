@@ -1,6 +1,6 @@
 import { AppPublicNavBarComponent } from './app-public-nav-bar.component'
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser'
-import { ConfigurationsService, NsPage } from '@sunbird-cb/utils'
+import { ConfigurationsService, NsPage } from '@sunbird-cb/utils-v2'
 
 describe('AppPublicNavBarComponent', () => {
   let component: AppPublicNavBarComponent

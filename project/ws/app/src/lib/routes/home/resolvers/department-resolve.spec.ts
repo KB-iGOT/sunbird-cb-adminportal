@@ -1,7 +1,7 @@
 import { DepartmentResolve } from './department-resolve'
 import { ProfileV2Service } from '../services/home.servive'
 import { Router } from '@angular/router'
-import { AuthKeycloakService } from '@sunbird-cb/utils'
+import { AuthKeycloakService } from '@sunbird-cb/utils-v2'
 import { EMPTY } from 'rxjs'
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router'
 

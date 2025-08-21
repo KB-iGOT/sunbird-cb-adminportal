@@ -1,6 +1,6 @@
 import { FilterDisplayComponent } from './filter-display.component'
 import { SearchServService } from '../../services/search-serv.service'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { Router, ActivatedRoute } from '@angular/router'
 import { of } from 'rxjs'
 

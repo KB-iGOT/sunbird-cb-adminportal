@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-// import { NsWidgetResolver } from '@sunbird-cb/resolver'
+// import { NsWidgetResolver } from '@sunbird-cb/resolver-v2'
 // import { ILeftMenu } from '@sunbird-cb/collection'
-import { ValueService } from '@sunbird-cb/utils'
+import { ValueService } from '@sunbird-cb/utils-v2'
 import { map } from 'rxjs/operators'
 
 @Component({

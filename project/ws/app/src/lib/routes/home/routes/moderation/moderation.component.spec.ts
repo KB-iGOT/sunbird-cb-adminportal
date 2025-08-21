@@ -1,7 +1,7 @@
 import { ModerationViewComponent } from './moderation.component'
 import { of } from 'rxjs'
 import { Router } from '@angular/router'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { ModerationService } from '../../services/moderation.service'
 import { ActivatedRoute } from '@angular/router'
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
@@ -24,7 +24,7 @@ jest.mock('@angular/router', () => ({
     }))
 }))
 
-jest.mock('@sunbird-cb/utils', () => ({
+jest.mock('@sunbird-cb/utils-v2', () => ({
     ConfigurationsService: jest.fn().mockImplementation(() => ({
         userProfile: { userId: 'test-user' }
     }))

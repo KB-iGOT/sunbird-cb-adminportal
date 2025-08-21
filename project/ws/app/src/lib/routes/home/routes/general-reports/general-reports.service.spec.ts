@@ -1,10 +1,10 @@
 import { GeneralReportsService } from './general-reports.service'
 import { HttpClient } from '@angular/common/http'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { of } from 'rxjs'
 
 jest.mock('@angular/common/http')
-jest.mock('@sunbird-cb/utils')
+jest.mock('@sunbird-cb/utils-v2')
 
 describe('GeneralReportsService', () => {
   let service: GeneralReportsService

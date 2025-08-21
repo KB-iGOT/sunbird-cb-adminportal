@@ -23,7 +23,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
 // HAMMER_GESTURE_CONFIG
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { WidgetResolverModule } from '@sunbird-cb/resolver'
+import { SbUiResolverModule } from '@sunbird-cb/resolver-v2'
 import {
   StickyHeaderModule,
   TourModule,
@@ -98,8 +98,8 @@ import {
   BtnPageBackModuleAdmin,
   WIDGET_REGISTRATION_CONFIG,
 } from '@sunbird-cb/collection'
-// import { WidgetResolverModule } from '@sunbird-cb/resolver'
-import { LoggerService, PipeSafeSanitizerModule } from '@sunbird-cb/utils'
+// import { SbUiResolverModule } from '@sunbird-cb/resolver-v2'
+import { LoggerService, NPSGridService, PipeSafeSanitizerModule } from '@sunbird-cb/utils-v2'
 import { SearchModule } from '@ws/app/src/public-api'
 import 'hammerjs'
 // import { KeycloakAngularModule } from 'keycloak-angular'
@@ -313,7 +313,7 @@ const getBaseHref = (platformLocation: PlatformLocation): string => {
     BreadcrumbsOrgModule,
     BtnPageBackModuleAdmin,
     // ...WIDGET_REGISTERED_MODULES,
-    // WidgetResolverModule.forRoot(WIDGET_REGISTRATION_CONFIG),
+    // SbUiResolverModule.forRoot(WIDGET_REGISTRATION_CONFIG),
     StickyHeaderModule,
     ErrorResolverModule,
     // Material Imports
@@ -340,7 +340,7 @@ const getBaseHref = (platformLocation: PlatformLocation): string => {
     PublicLogoutModule,
     PipeSafeSanitizerModule,
     TourModule,
-    WidgetResolverModule.forRoot(WIDGET_REGISTRATION_CONFIG),
+    SbUiResolverModule.forRoot(WIDGET_REGISTRATION_CONFIG),
     // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   exports: [
@@ -371,6 +371,7 @@ const getBaseHref = (platformLocation: PlatformLocation): string => {
     TncAppResolverService,
     TncPublicResolverService,
     PipeContentRoutePipe,
+    NPSGridService,
     // AppTocResolverService,
     {
       provide: APP_BASE_HREF,

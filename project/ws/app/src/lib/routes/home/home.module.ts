@@ -1,11 +1,11 @@
 import { CommsComponent } from './routes/comms/comms.component'
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core'
 import { CommonModule, DatePipe } from '@angular/common'
-import { PipeFilterModule, PipeHtmlTagRemovalModule, PipeOrderByModule, PipeRelativeTimeModule } from '@sunbird-cb/utils'
+import { PipeFilterModule, PipeHtmlTagRemovalModule, PipeOrderByModule, PipeRelativeTimeModule } from '@sunbird-cb/utils-v2'
 import { MatGridListModule } from '@angular/material/grid-list'
 import { MatExpansionModule } from '@angular/material/expansion'
 import { MatDividerModule } from '@angular/material/divider'
-import { WidgetResolverModule } from '@sunbird-cb/resolver'
+import { SbUiResolverModule } from '@sunbird-cb/resolver-v2'
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete'
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button'
 import { MatButtonToggleModule } from '@angular/material/button-toggle'
@@ -157,7 +157,7 @@ import { FileProgressComponent } from './components/file-progress/file-progress.
     ],
     imports: [
         CommonModule,
-        WidgetResolverModule,
+        SbUiResolverModule,
         ReactiveFormsModule,
         HomeRoutingModule,
         PositionsModule,
@@ -192,7 +192,7 @@ import { FileProgressComponent } from './components/file-progress/file-progress.
         BreadcrumbsOrgModule,
         PipeOrderByModule,
         BtnPageBackModuleAdmin,
-        WidgetResolverModule,
+        SbUiResolverModule,
         UserAutocompleteModule,
         MatTooltipModule,
         // TO-DO need to enable for image crop
@@ -219,7 +219,8 @@ import { FileProgressComponent } from './components/file-progress/file-progress.
         { provide: MAT_DIALOG_DATA, useValue: {} },
         MatDatepickerModule, MatNativeDateModule,
         ConfirmationPopupComponent, PipePublicURL,
-        DatePipe
+        DatePipe,
+
     ],
     exports: [AddThumbnailComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

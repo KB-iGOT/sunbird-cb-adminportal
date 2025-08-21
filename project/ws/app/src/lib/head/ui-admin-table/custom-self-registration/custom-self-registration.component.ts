@@ -7,7 +7,7 @@ import { Clipboard } from '@angular/cdk/clipboard'
 import { MatDialog } from '@angular/material/dialog'
 import { InfoModalComponent } from '../../info-modal/info-modal.component'
 import * as fileSaver from 'file-saver'
-import { EventService } from '@sunbird-cb/utils'
+import { EventService } from '@sunbird-cb/utils-v2'
 
 @Component({
   selector: 'ws-app-custom-self-registration',
