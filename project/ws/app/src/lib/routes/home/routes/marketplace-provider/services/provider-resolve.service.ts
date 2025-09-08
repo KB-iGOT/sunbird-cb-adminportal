@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { MarketplaceService } from './marketplace.service'
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router'
-import { IResolveResponse } from '@sunbird-cb/utils'
+import { IResolveResponse } from '@sunbird-cb/utils-v2'
 // import { of } from 'rxjs'
 // import { HttpErrorResponse } from '@angular/common/http'
 import * as _ from 'lodash'

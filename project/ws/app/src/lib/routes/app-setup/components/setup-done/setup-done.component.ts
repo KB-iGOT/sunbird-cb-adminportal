@@ -4,7 +4,7 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
 import { AppTourDialogComponent } from '@sunbird-cb/collection'
 import { Router, ActivatedRoute } from '@angular/router'
 import { Globals } from '../../globals'
-import { ConfigurationsService, NsPage } from '@sunbird-cb/utils'
+import { ConfigurationsService, NsPage } from '@sunbird-cb/utils-v2'
 
 @Component({
   selector: 'ws-app-setup-done',

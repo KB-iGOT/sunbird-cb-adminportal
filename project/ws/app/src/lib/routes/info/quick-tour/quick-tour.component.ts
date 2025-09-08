@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
-import { NsWidgetResolver } from '@sunbird-cb/resolver'
+import { NsWidgetResolver } from '@sunbird-cb/resolver-v2'
 import { IWidgetsPlayerMediaData } from '@sunbird-cb/collection'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 
 @Component({
   selector: 'ws-app-quick-tour',

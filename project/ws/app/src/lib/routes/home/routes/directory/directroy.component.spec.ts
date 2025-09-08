@@ -4,7 +4,7 @@ import { DirectoryViewComponent } from './directroy.component'
 jest.mock('@angular/router')
 jest.mock('@angular/material/legacy-dialog')
 jest.mock('../../services/directory.services')
-jest.mock('@sunbird-cb/utils')
+jest.mock('@sunbird-cb/utils-v2')
 jest.mock('@angular/common')
 
 describe('DirectoryViewComponent', () => {

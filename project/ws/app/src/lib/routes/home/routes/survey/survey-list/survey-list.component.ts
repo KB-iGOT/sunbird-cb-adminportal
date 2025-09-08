@@ -12,7 +12,7 @@ import { ITableData, IColums, IAction } from './../interfaces/interfaces'
 // Router
 import { ActivatedRoute } from '@angular/router'
 import { MAT_DIALOG_DATA } from '@angular/material/dialog'
-// import { EventService } from '@sunbird-cb/utils'
+// import { EventService } from '@sunbird-cb/utils-v2'
 import { NsContent } from '@sunbird-cb/collection'
 // import * as moment from 'moment'
 import { environment } from '../../../../../../../../../../src/environments/environment'

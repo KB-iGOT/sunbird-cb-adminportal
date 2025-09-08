@@ -2,7 +2,7 @@ import { MobileAppHomeComponent } from './mobile-app-home.component'
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser'
 import { ActivatedRoute } from '@angular/router'
 import { MobileAppsService } from 'src/app/services/mobile-apps.service'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { Platform } from '@angular/cdk/platform'
 import { of } from 'rxjs'
 

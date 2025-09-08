@@ -1,5 +1,5 @@
 
-import { ConfigurationsService, ValueService } from '@sunbird-cb/utils'
+import { ConfigurationsService, ValueService } from '@sunbird-cb/utils-v2'
 import { MeetupComponent } from './meetup.component'
 
 describe('MeetupComponent', () => {

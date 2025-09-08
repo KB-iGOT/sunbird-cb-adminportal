@@ -1,6 +1,6 @@
 
 import { Router, ActivatedRoute } from '@angular/router'
-import { EventService, TelemetryService, UtilityService, ValueService } from '@sunbird-cb/utils'
+import { EventService, TelemetryService, UtilityService, ValueService } from '@sunbird-cb/utils-v2'
 import { LeftMenuService } from '@sunbird-cb/collection'
 import { HomeComponent } from './home.component'
 import { of } from 'rxjs'

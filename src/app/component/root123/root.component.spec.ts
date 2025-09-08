@@ -1,7 +1,7 @@
 import { ChangeDetectorRef } from '@angular/core'
 import { Router } from '@angular/router'
 import { BtnPageBackService } from '@sunbird-cb/collection'
-import { ConfigurationsService, ValueService } from '@sunbird-cb/utils'
+import { ConfigurationsService, ValueService } from '@sunbird-cb/utils-v2'
 import { MobileAppsService } from '../../services/mobile-apps.service'
 import { RootService } from './root.service'
 import { RootComponent } from './root.component'

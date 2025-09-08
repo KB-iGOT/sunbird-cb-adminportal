@@ -6,7 +6,7 @@ import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { LocaleTranslatorModule, BtnPageBackModule } from '@sunbird-cb/collection'
 import { RouterModule } from '@angular/router'
-import { WidgetResolverModule } from '@sunbird-cb/resolver'
+import { SbUiResolverModule } from '@sunbird-cb/resolver-v2'
 
 @NgModule({
   declarations: [AboutVideoComponent],
@@ -14,7 +14,7 @@ import { WidgetResolverModule } from '@sunbird-cb/resolver'
     CommonModule,
     MatRadioModule,
     RouterModule,
-    WidgetResolverModule,
+    SbUiResolverModule,
     LocaleTranslatorModule,
     MatButtonModule,
     BtnPageBackModule,

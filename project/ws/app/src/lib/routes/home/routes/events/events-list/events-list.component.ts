@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
 import { ActivatedRoute, Router } from '@angular/router'
-import { ConfigurationsService, EventService } from '@sunbird-cb/utils'
+import { ConfigurationsService, EventService } from '@sunbird-cb/utils-v2'
 import * as moment from 'moment'
 /* tslint:disable */
 import * as _ from 'lodash'

@@ -2,7 +2,7 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { BtnPageBackModule, GroupCheckboxModule, UIAdminTableModule } from '@sunbird-cb/collection'
-import { WidgetResolverModule } from '@sunbird-cb/resolver'
+import { SbUiResolverModule } from '@sunbird-cb/resolver-v2'
 import { HomeModule } from '../home/home.module'
 import { RouterModule } from '@angular/router'
 import { UsersService } from './services/users.service'
@@ -13,7 +13,7 @@ import { MatLegacyCardModule as MatCardModule } from '@angular/material/legacy-c
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner'
 
 @NgModule({
-  imports: [CommonModule, BtnPageBackModule, WidgetResolverModule, MatProgressSpinnerModule, MatProgressBarModule,
+  imports: [CommonModule, BtnPageBackModule, SbUiResolverModule, MatProgressSpinnerModule, MatProgressBarModule,
     MatSidenavModule, MatIconModule, GroupCheckboxModule, HomeModule, RouterModule, UIAdminTableModule, MatCardModule],
   providers: [UsersService],
 })

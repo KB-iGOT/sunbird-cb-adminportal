@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +10,7 @@ export class GeneralReportsService {
   GENERAL_REPORTS = '/apis/proxies/v8/storage/v1/spvReportInfo'
 
   constructor(private configSvc: ConfigurationsService,
-              private http: HttpClient) { }
+    private http: HttpClient) { }
 
   getContent() {
     return this.http.get<any>(`${this.configSvc.baseUrl}/feature/general-reports.json`)

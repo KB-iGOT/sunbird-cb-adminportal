@@ -9,8 +9,8 @@ import { LoaderService } from '../../services/loader.service'
 import { AuthInitService } from '../../services/init.service'
 import { ActivatedRoute, Router } from '@angular/router'
 import { CreateMDOService } from '../../services/create-mdo.services'
-import { EventService, ValueService } from '@sunbird-cb/utils'
-import { NsWidgetResolver } from '@sunbird-cb/resolver'
+import { EventService, ValueService } from '@sunbird-cb/utils-v2'
+import { NsWidgetResolver } from '@sunbird-cb/resolver-v2'
 import { ILeftMenu } from '@sunbird-cb/collection'
 import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators'
 import * as _ from 'lodash'
@@ -467,7 +467,7 @@ export class CreateMdoComponent implements OnInit {
 
               // this.router.navigate([`/app/home/directory`])
             }
-          },          (error: any) => {
+          }, (error: any) => {
             this.openSnackbar(`Something went wrong, please try again later`)
             this.disableStateCreateButton = false
             this.displayLoader = false

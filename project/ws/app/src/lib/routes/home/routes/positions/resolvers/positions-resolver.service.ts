@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core'
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router'
 import { Observable, of } from 'rxjs'
 import { map, catchError } from 'rxjs/operators'
-import { IResolveResponse } from '@sunbird-cb/utils'
+import { IResolveResponse } from '@sunbird-cb/utils-v2'
 import { IPosition } from '../models/positions.model'
 import { PositionsService } from '../services/position.service'
 
 @Injectable()
-export class PositionsResolve
-   {
+export class PositionsResolve {
   constructor(private positionsSvc: PositionsService) { }
   resolve(
     _route: ActivatedRouteSnapshot,

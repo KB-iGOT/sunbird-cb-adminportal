@@ -5,9 +5,9 @@ import { MatIconRegistry } from '@angular/material/icon'
 import { DomSanitizer } from '@angular/platform-browser'
 
 import { InitService } from './init.service'
-import { ConfigurationsService, LoggerService, UserPreferenceService } from '@sunbird-cb/utils'
+import { ConfigurationsService, LoggerService, UserPreferenceService } from '@sunbird-cb/utils-v2'
 import { BtnSettingsService } from '@sunbird-cb/collection'
-import { WidgetResolverService } from '@sunbird-cb/resolver'
+import { SbUiResolverService } from '@sunbird-cb/resolver-v2'
 import { environment } from '../../environments/environment'
 
 describe('InitService', () => {
@@ -15,7 +15,7 @@ describe('InitService', () => {
   let httpMock: HttpTestingController
   let configServiceMock: jest.Mocked<ConfigurationsService>
   // let loggerServiceMock: jest.Mocked<LoggerService>
-  // let widgetResolverServiceMock: jest.Mocked<WidgetResolverService>
+  // let SbUiResolverServiceMock: jest.Mocked<SbUiResolverService>
   // let btnSettingsServiceMock: jest.Mocked<BtnSettingsService>
   // let userPreferenceServiceMock: jest.Mocked<UserPreferenceService>
   // let domSanitizerMock: jest.Mocked<DomSanitizer>
@@ -66,7 +66,7 @@ describe('InitService', () => {
           }
         },
         {
-          provide: WidgetResolverService,
+          provide: SbUiResolverService,
           useValue: {
             initialize: jest.fn(),
             getWidgetKey: jest.fn()
@@ -103,7 +103,7 @@ describe('InitService', () => {
     httpMock = TestBed.inject(HttpTestingController)
     configServiceMock = TestBed.inject(ConfigurationsService) as jest.Mocked<ConfigurationsService>
     // loggerServiceMock = TestBed.inject(LoggerService) as jest.Mocked<LoggerService>
-    // widgetResolverServiceMock = TestBed.inject(WidgetResolverService) as jest.Mocked<WidgetResolverService>
+    // SbUiResolverServiceMock = TestBed.inject(SbUiResolverService) as jest.Mocked<SbUiResolverService>
     // btnSettingsServiceMock = TestBed.inject(BtnSettingsService) as jest.Mocked<BtnSettingsService>
     // userPreferenceServiceMock = TestBed.inject(UserPreferenceService) as jest.Mocked<UserPreferenceService>
     // domSanitizerMock = TestBed.inject(DomSanitizer) as jest.Mocked<DomSanitizer>

@@ -6,7 +6,7 @@ import { of } from 'rxjs'
 jest.mock('@angular/material/dialog')
 jest.mock('@angular/material/legacy-snack-bar')
 jest.mock('@angular/router')
-jest.mock('@sunbird-cb/utils')
+jest.mock('@sunbird-cb/utils-v2')
 jest.mock('../services/events.service')
 
 describe('EventsListComponent', () => {

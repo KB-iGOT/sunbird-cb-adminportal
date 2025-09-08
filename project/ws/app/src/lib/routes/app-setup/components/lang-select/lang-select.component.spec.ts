@@ -1,5 +1,5 @@
 import { Router } from '@angular/router'
-import { ConfigurationsService, UserPreferenceService } from '@sunbird-cb/utils'
+import { ConfigurationsService, UserPreferenceService } from '@sunbird-cb/utils-v2'
 import { LangSelectComponent } from './lang-select.component'
 
 describe('LangSelectComponent', () => {

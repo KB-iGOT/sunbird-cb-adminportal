@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http'
 import { SearchApiService } from './search-api.service'
-import { ConfigurationsService, EventService } from '@sunbird-cb/utils'
+import { ConfigurationsService, EventService } from '@sunbird-cb/utils-v2'
 import { SearchServService } from './search-serv.service'
 
 // Define the mock searchConfig type structure

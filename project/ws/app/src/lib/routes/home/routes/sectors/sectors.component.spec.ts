@@ -1,5 +1,5 @@
 import { SectorsComponent } from './sectors.component'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { SectorsService } from './sectors.service'
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
 import { of, throwError } from 'rxjs'

@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { SearchServService } from '../../services/search-serv.service'
 import { SearchInputComponent } from './search-input.component'
 import { of } from 'rxjs'

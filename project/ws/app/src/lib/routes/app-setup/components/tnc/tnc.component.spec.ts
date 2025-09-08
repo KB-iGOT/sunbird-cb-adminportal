@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http'
 import { TncAppResolverService } from '../../../../../../../../../src/app/services/tnc-app-resolver.service'
 import { TncPublicResolverService } from '../../../../../../../../../src/app/services/tnc-public-resolver.service'
 import { Globals } from '../../globals'
-import { ConfigurationsService, LoggerService } from '@sunbird-cb/utils'
+import { ConfigurationsService, LoggerService } from '@sunbird-cb/utils-v2'
 import { TncComponent } from './tnc.component'
 
 describe('TncComponent', () => {

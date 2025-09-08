@@ -1,5 +1,5 @@
 
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { ConfigResolveService } from './config-resolver.service'
 
 describe('ConfigResolveService', () => {

@@ -6,7 +6,7 @@ import { RolesService } from '../../../routes/home/services/roles.service'
 import { ActivatedRoute } from '@angular/router'
 import { UserCardComponent } from './user-card.component'
 import { of } from 'rxjs'
-import { EventService } from '@sunbird-cb/utils'
+import { EventService } from '@sunbird-cb/utils-v2'
 import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips'
 
 describe('UserCardComponent', () => {

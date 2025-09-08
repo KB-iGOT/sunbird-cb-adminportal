@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
-import { NsWidgetResolver } from '@sunbird-cb/resolver'
+import { NsWidgetResolver } from '@sunbird-cb/resolver-v2'
 import { IWidgetsPlayerMediaData } from '@sunbird-cb/collection'
-import { ConfigurationsService, NsPage } from '@sunbird-cb/utils'
+import { ConfigurationsService, NsPage } from '@sunbird-cb/utils-v2'
 
 @Component({
   selector: 'ws-app-about-video',

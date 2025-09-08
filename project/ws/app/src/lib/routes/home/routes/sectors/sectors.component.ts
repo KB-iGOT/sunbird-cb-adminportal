@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import * as _ from 'lodash'
 import { SectorsService } from './sectors.service'
 
@@ -53,7 +53,7 @@ export class SectorsComponent implements OnInit {
         })
       }
       this.isLoading = false
-    },                                            error => {
+    }, error => {
       this.isLoading = false
       // tslint:disable-next-line: no-console
       console.log(error)

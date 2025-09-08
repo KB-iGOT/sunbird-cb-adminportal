@@ -26,7 +26,7 @@ jest.mock('@angular/material/dialog', () => ({
   MAT_DIALOG_DATA: 'MAT_DIALOG_DATA'
 }))
 
-jest.mock('@sunbird-cb/utils', () => ({
+jest.mock('@sunbird-cb/utils-v2', () => ({
   EventService: jest.fn().mockImplementation(() => ({
     raiseInteractTelemetry: jest.fn()
   }))

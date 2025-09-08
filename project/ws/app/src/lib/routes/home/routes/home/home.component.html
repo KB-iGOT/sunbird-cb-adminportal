@@ -1,7 +1,7 @@
 <mat-sidenav-container autosize name="discuss-menu" [ngClass]="{'custom-odcs':containerCustomCls}">
   <mat-sidenav [mode]="mode$ | async" [(opened)]="sideNavBarOpened">
     <div #stickyMenu>
-      <ng-container [wsResolverWidget]="widgetData"></ng-container>
+      <ng-container [sbUiResolverWidget]="widgetData"></ng-container>
       <!-- <ws-widget-left-menu [widgetData]="widgetData"></ws-widget-left-menu> -->
     </div>
   </mat-sidenav>

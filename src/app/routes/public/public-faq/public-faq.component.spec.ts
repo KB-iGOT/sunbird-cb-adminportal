@@ -1,6 +1,6 @@
 import { PublicFaqComponent } from './public-faq.component'
 import { ActivatedRoute, ParamMap } from '@angular/router'
-import { ValueService, ConfigurationsService, EFeatures } from '@sunbird-cb/utils'
+import { ValueService, ConfigurationsService, EFeatures } from '@sunbird-cb/utils-v2'
 import { of, Subject } from 'rxjs'
 
 describe('PublicFaqComponent', () => {

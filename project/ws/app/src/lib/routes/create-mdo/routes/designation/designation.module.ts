@@ -14,7 +14,7 @@ import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@ang
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select'
 import { MatTableModule } from '@angular/material/table'
 import { UIORGTableModule } from '@sunbird-cb/collection'
-import { PageResolve, PipeOrderByModule } from '@sunbird-cb/utils'
+import { PageResolve, PipeOrderByModule } from '@sunbird-cb/utils-v2'
 import { BulkUploadComponent } from './components/bulk-upload/bulk-upload.component'
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip'
 import { ConfigResolveService } from '../../../home/resolvers/config-resolver.service'

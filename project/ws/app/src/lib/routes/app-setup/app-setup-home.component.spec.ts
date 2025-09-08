@@ -1,8 +1,8 @@
 import { AppSetupHomeComponent } from './app-setup-home.component'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
 
-jest.mock('@sunbird-cb/utils', () => ({
+jest.mock('@sunbird-cb/utils-v2', () => ({
     ConfigurationsService: jest.fn().mockImplementation(() => ({
         activeLocale: { path: 'en' },
         instanceConfig: { introVideo: { en: 'https://example.com/intro-video' } },

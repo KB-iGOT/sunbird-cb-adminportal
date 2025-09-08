@@ -1,5 +1,5 @@
 import { HomeComponent } from './home.component'
-import { ValueService } from '@sunbird-cb/utils'
+import { ValueService } from '@sunbird-cb/utils-v2'
 import { ActivatedRoute } from '@angular/router'
 import { of } from 'rxjs'
 

@@ -1,6 +1,6 @@
 import { CommsComponent } from './comms.component'
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { CommsService } from './comms.service'
 import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
 import { DatePipe } from '@angular/common'

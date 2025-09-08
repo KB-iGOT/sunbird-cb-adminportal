@@ -1,11 +1,11 @@
 import { SearchServService } from './search-serv.service'
 import { SearchApiService } from '../apis/search-api.service'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { HttpClient } from '@angular/common/http'
 import { of } from 'rxjs'
 
 jest.mock('../apis/search-api.service')
-jest.mock('@sunbird-cb/utils')
+jest.mock('@sunbird-cb/utils-v2')
 jest.mock('@angular/common/http')
 
 describe('SearchServService', () => {
