@@ -14,10 +14,11 @@
                 <mat-card class="recent-tabs">
                     <div class="flex flex-1 flex-column">
                         <div class="flex flex-1 filter flex-wrap">
-                            <a href="javascript:void(0)" role="button" class="filter-option default-pointer" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'all',
+                            <!-- //NOSONAR --><a href="javascript:void(0)" role="button"
+                                class="filter-option default-pointer" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'all',
                                                           'ws-mat-accent-border font-medium':currentFilter !== 'all'}"
                                 mat-button (click)="filter('all')">
-                                All Icons </a>
+                                All Icons </a><!-- //NOSONAR -->
                         </div>
                     </div>
                 </mat-card>

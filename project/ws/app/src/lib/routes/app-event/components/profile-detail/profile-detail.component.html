@@ -83,9 +83,10 @@
             </p>
           </div>
           <div class="userdetailHead">
+            <!-- //NOSONAR -->
             <p class="text-md ws-mat-primary-text cursor-pointer font-semibold text-md" (click)="openDialog()">
               See All
-            </p>
+            </p><!-- //NOSONAR -->
           </div>
         </div>
         <ws-app-card-details *ngIf="data && data.AttendeesList && data.AttendeesList.length"

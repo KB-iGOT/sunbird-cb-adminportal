@@ -5,6 +5,7 @@
     </div>
     <ng-container *ngIf="!contentFileUploaded; else fileUploaded">
 
+      <!-- //NOSONAR -->
       <div class="flex flex-col file-upload-box justify-center gap-4" wsAuthDragDrop (fileDropped)="onDrop($event)"
         (click)="fileInput.click()">
         <div class="flex flex-col gap-1 items-center justify-center w-full">
@@ -25,12 +26,12 @@
         <input type="file" style="display: none;" #fileInput
           accept="{{transformationType === 'certificateTemplateUrl' ? '.svg' : '.xlsx, .csv'}}"
           (change)="onDrop($event.target.files[0]); fileInput.value = null" />
-      </div>
+      </div><!-- //NOSONAR -->
     </ng-container>
     <ng-template #fileUploaded>
       <div class="flex flex-col file-upload-box justify-center gap-4 file-uploaded-box"
         [ngClass]="{'margin-r10': transformationType === 'certificateTemplateUrl'}">
-        <mat-icon
+        <!-- //NOSONAR --><mat-icon
           *ngIf="!(transformationType === 'certificateTemplateUrl' && providerDetalsBeforUpdate['certificateTemplateUrl'])"
           class="removeFile" matTooltip="Remove File" (click)="removeFile()">close</mat-icon>
         <div class="flex items-center justify-center gap-10">

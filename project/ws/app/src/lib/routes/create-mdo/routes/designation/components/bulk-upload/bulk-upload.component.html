@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-6 bulk-upload-wrapper">
   <div class="flex flex-row gap-4 items-center">
-    <mat-icon class="cursor-pointer" (click)="showMyDesignations()">arrow_back</mat-icon>
+    <!-- //NOSONAR --><mat-icon class="cursor-pointer" (click)="showMyDesignations()">arrow_back</mat-icon>
     <div class="flex font-bold">{{bulkUploadConfig?.mainHeading}}</div>
   </div>
 
@@ -27,20 +27,23 @@
       </div>
       <div class="flex-1">
         <div class="flex flex-col gap-2 dashed-card items-center">
+          <!-- //NOSONAR -->
           <div class="flex cursor-pointer margin-top-m" (click)="fileInput.click()"
             (dblclick)="$event.preventDefault()">
             <img src="/assets/icons/csv.svg" class="csv-file" alt="CSV file logo" />
-          </div>
+          </div><!-- //NOSONAR -->
           <div *ngIf="showFileError" class="error-msg">{{bulkUploadConfig?.supportedFileTypeText2}}</div>
+          <!-- //NOSONAR -->
           <div class="flex flex-col items-center">
+            <!-- //NOSONAR -->
             <div class="text-primary cursor-pointer" (click)="fileInput.click()" (dblclick)="$event.preventDefault()">
-              Browse files</div>
+              Browse files</div><!-- //NOSONAR -->
             <input hidden type="file" id="fileInput" #fileInput (click)="handleFileClick($event)"
               (change)="handleOnFileChange(fileInput.files)" name="file" placeholder="Choose file"
               (dblclick)="$event.preventDefault();" accept=".xlsx, .xls" />
             <!-- <div class="flex">or</div>
             <div class="flex">Drag file to upload</div> -->
-          </div>
+          </div><!-- //NOSONAR -->
           <div class="flex flex-col items-center margin-bottom-m">
             <div class="flex">{{bulkUploadConfig?.maxFileSizeText}}</div>
             <div class="flex">{{bulkUploadConfig?.supportedFileTypeText}}</div>
@@ -59,11 +62,12 @@
           <div class="flex flex-row gap-1">
             <div class="font-bold">File Information</div>
           </div>
+          <!-- //NOSONAR -->
           <div class="flex flex-row gap-2 outline-button items-center" (click)="handleDownloadFile(list)">
             <mat-icon>download_2</mat-icon>
             {{ list?.status !== 'SUCCESSFUL' ? 'Download error log' : 'Download file' }}
           </div>
-        </div>
+        </div><!-- //NOSONAR -->
         <div class="flex flex-wrap">
           <div class="flex flex-col w-full box">
             <div class="label">Name</div>

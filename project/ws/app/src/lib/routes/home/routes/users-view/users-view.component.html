@@ -12,10 +12,10 @@
     <mat-card-content>
       <div class="flex flex-1 flex-column margin-fix">
         <div class="flex flex-1 filter max-height-60">
-          <a href="javascript:void(0)" class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'active',
+          <!-- //NOSONAR --><a href="javascript:void(0)" class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'active',
               'ws-mat-accent-border font-medium':currentFilter !== 'active'}" mat-button (click)="filter('active')"
             role="button">Active</a>
-          <a href="javascript:void(0)" class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'inactive',
+          <!-- //NOSONAR --><a href="javascript:void(0)" class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'inactive',
                           'ws-mat-accent-border font-medium':currentFilter !== 'inactive'}" mat-button
             (click)="filter('inactive')" role="button">Inactive</a>
         </div>

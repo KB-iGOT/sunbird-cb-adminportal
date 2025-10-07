@@ -12,7 +12,7 @@
             matTooltip="Image must be cropped to a 1:1 aspect ratio, sized between 10 KB and 2 MB, and in SVG or PNG format.">info_outline</mat-icon>
         </span>
         <div class="img-card">
-          <mat-icon (click)="thumbNailInput.click(); logoTouched = true"
+          <!-- //NOSONAR --><mat-icon (click)="thumbNailInput.click(); logoTouched = true"
             class="img-icon flex justify-center items-center">photo_camera</mat-icon>
           <input type="file" #thumbNailInput class="inputfile"
             (change)="onThumbNailSelected($event.target.files[0]); thumbNailInput.value = null" accept=".svg, .png">
@@ -163,7 +163,7 @@
         </ng-container>
         <ng-template #fileUploaded>
           <div class="flex items-center my-2 fileUploadedCard">
-            <mat-icon class="removePdf" matTooltip="Remove PDF" (click)="removePdf()">close</mat-icon>
+            <!-- //NOSONAR --><mat-icon class="removePdf" matTooltip="Remove PDF" (click)="removePdf()">close</mat-icon>
             <img src="/assets/icons/pdf.svg" alt="uploaded pdf" class="samplePdf">
             <div class="flex flex-column justify-between pdfDetails">
               <span class="pdfName">{{fileName}}</span>

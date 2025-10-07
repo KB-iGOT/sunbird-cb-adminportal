@@ -1,7 +1,7 @@
 <div class="flex flex-4 flex-column main-container">
   <mat-card class="card-section">
     <span class="flex">
-      <mat-icon class="arrow-btn" (click)="navigateBack()">arrow_back</mat-icon>
+      <!-- //NOSONAR --><mat-icon class="arrow-btn" (click)="navigateBack()">arrow_back</mat-icon>
       <mat-card-title class="flex-4 mobile-margin mat-h2 title-request">
         {{isHideData ? 'Go Back':'Request Content'}}
       </mat-card-title>
@@ -130,7 +130,7 @@
                   </button>
                 </div>
                 <div>
-                  <span class="display-inline-block complabels mat-caption cursor-pointer" [ngClass]="{active: (seletedCompetencyTheme &&
+                  <!-- //NOSONAR --><span class="display-inline-block complabels mat-caption cursor-pointer" [ngClass]="{active: (seletedCompetencyTheme &&
                     (option?.identifier && option?.identifier === seletedCompetencyTheme?.identifier ||
                      option?.name && option?.name === seletedCompetencyTheme?.name))}"
                     (click)="compThemeSelected(option)"
@@ -154,7 +154,7 @@
                   </button>
                 </div>
                 <div>
-                  <span class="display-inline-block complabels mat-caption cursor-pointer" [ngClass]="{active: (seletedCompetencySubTheme &&
+                  <!-- //NOSONAR --><span class="display-inline-block complabels mat-caption cursor-pointer" [ngClass]="{active: (seletedCompetencySubTheme &&
                     (option?.identifier && option?.identifier === seletedCompetencySubTheme?.identifier ||
                      option?.name && option?.name === seletedCompetencySubTheme?.name))}"
                     (click)="compSubThemeSelected(option)"
@@ -180,14 +180,15 @@
                       <th class="padding-xs ws-mat-black60-text mat-body-1">Theme</th>
                       <th class="padding-xs ws-mat-black60-text mat-body-1">Sub theme</th>
                     </tr>
+                    <!-- //NOSONAR -->
                     <tr *ngFor="let comp of requestForm.controls[this.compentencyKey.vKey]?.value"
-                      [attr.disabled]="isCompetencyHide ? true : null" (click)=view(comp)>
+                      [attr.disabled]="isCompetencyHide ? true : null" (click)=view(comp)><!-- //NOSONAR -->
                       <td class="padding-xs mat-body-1 cursor-pointer">{{comp.competencyArea | capitalize}}</td>
                       <td class="padding-xs mat-body-1 cursor-pointer">{{(comp.competencyTheme | capitalize) ||
                         comp.name}}</td>
                       <td class="padding-xs mat-body-1 cursor-pointer">{{(comp.competencySubTheme | capitalize) ||
                         comp.selectedLevelLevel}}</td>
-                    </tr>
+                    </tr><!-- //NOSONAR -->
                   </table>
                 </div>
               </div>

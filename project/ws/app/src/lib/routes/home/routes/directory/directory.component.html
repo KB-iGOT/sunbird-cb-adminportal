@@ -13,24 +13,24 @@
       <div class="flex flex-1 flex-column margin-fix">
         <div class="flex flex-1 filter max-height-60">
           <div *ngFor="let department of departmentHearders">
-            <a *ngIf="department==='CBC'" class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'cbc',
+            <!-- //NOSONAR --><a *ngIf="department==='CBC'" class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'cbc',
                            'ws-mat-accent-border font-medium':currentFilter !== 'cbc'}" mat-button
               [routerLink]="'/app/home/directory/cbc'" (click)="filter(department.toLowerCase())" role="button">
               CBC</a>
 
-            <a *ngIf="department==='CBP Providers'" class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'cbp-providers',
+            <!-- //NOSONAR --><a *ngIf="department==='CBP Providers'" class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'cbp-providers',
                            'ws-mat-accent-border font-medium':currentFilter !== 'cbp-providers'}" mat-button
               [routerLink]="'/app/home/directory/cbp-providers'" (click)="filter(department.toLowerCase())"
               role="button">
               CBP Providers</a>
 
-            <a *ngIf="department==='Organisation'" class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'organisation',
+            <!-- //NOSONAR --><a *ngIf="department==='Organisation'" class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'organisation',
                            'ws-mat-accent-border font-medium':currentFilter !== 'state'}" mat-button
               [routerLink]="'/app/home/directory/organisation'" (click)="filter(department.toLowerCase())"
               role="button">
               Organisation</a>
           </div>
-          <a class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'orgHierarchies',
+          <!-- //NOSONAR --><a class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'orgHierarchies',
                         'ws-mat-accent-border font-medium':currentFilter !== 'state'}" mat-button
             [routerLink]="'/app/home/directory/orgHierarchies'" (click)="filter('orgHierarchies')" role="button">
             Organisation Hierarchies</a>

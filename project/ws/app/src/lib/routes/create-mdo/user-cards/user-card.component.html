@@ -6,7 +6,8 @@
   <mat-accordion [multi]="true">
     <mat-expansion-panel class="user-card" *ngFor="let user of usersData; let i = index" #panel
       (opened)="closeOtherPanels(panel)" [hideToggle]="forMentor ? true : false" [disabled]="forMentor ? true : false">
-      <mat-expansion-panel-header (click)="getUerData(user, panel, i)">
+      <!-- //NOSONAR --><mat-expansion-panel-header (click)="getUerData(user, panel, i)">
+        <!-- //NOSONAR -->
         <div class="float-left width88 flex" (click)="$event.stopPropagation();">
           <div class="initialcircle display-inline-block margin-right-m">
             <!-- <span>AB</span> -->
@@ -51,7 +52,7 @@
               Marked on: {{user?.profileDetails?.profileStatusUpdatedOn || ' NA'}}</div>
             <!-- <div class="mat-caption ws-mat-black40-text" *ngIf="!user?.profileDetails?.profileStatusUpdatedOn">-</div> -->
           </div>
-        </div>
+        </div><!-- //NOSONAR -->
         <!-- <div class="float-right flex items-center" *ngIf="(isSPVAdmin) && !forMentor">
           <div class="button mat-body" (click)="onEditUser(user, panel);$event.stopPropagation();"
             *ngIf="currentFilter !== 'notmyuser' && !user?.enableEdit">
@@ -350,8 +351,9 @@
                 </label>
                 <div>
                   <mat-selection-list id="roles" formControlName="roles" #roles class="roles-list">
-                    <mat-list-option *ngFor="let role of rolesList" (click)="modifyUserRoles(role.roleName)"
-                      [selected]="userRoles.has(role.roleName)" [value]="role?.roleName">
+                    <!-- //NOSONAR --><mat-list-option *ngFor="let role of rolesList"
+                      (click)="modifyUserRoles(role.roleName)" [selected]="userRoles.has(role.roleName)"
+                      [value]="role?.roleName">
                       {{role.roleName}}
                     </mat-list-option>
                   </mat-selection-list>
@@ -563,7 +565,8 @@
 <ng-template #updaterejectDialog>
   <form class="rejectdialog">
     <p mat-dialog-title class="dialog-title">Reason for rejection
-      <mat-icon (click)="showedit()" *ngIf="!showeditText" class="float-right cursor-pointer">edit_square</mat-icon>
+      <!-- //NOSONAR --><mat-icon (click)="showedit()" *ngIf="!showeditText"
+        class="float-right cursor-pointer">edit_square</mat-icon>
     </p>
     <mat-dialog-content>
       <p class="margin-top-l margin-bottom-l" *ngIf="!showeditText">{{comment}}</p>

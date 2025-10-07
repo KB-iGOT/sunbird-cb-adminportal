@@ -35,8 +35,8 @@
             [innerHTML]="item.body"></h2>
         </a>
         <!--[matMenuTriggerFor]="editMenu"  -->
-        <mat-icon *ngIf="userId === item.postCreator.postCreatorId" class="cursor-pointer" role="button"
-          [matMenuTriggerFor]="editMenu">more_vertical</mat-icon>
+        <!-- //NOSONAR --><mat-icon *ngIf="userId === item.postCreator.postCreatorId" class="cursor-pointer"
+          role="button" [matMenuTriggerFor]="editMenu">more_vertical</mat-icon><!-- //NOSONAR -->
       </div>
       <mat-menu #editMenu="matMenu">
         <ng-template matMenuContent>

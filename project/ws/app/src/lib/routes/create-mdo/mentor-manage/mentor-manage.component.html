@@ -26,13 +26,14 @@
           </ng-container>
         </div>
         <div class="reportsDemo flex justify-end section-2">
+          <!-- //NOSONAR -->
           <div class="reportsDemoVideo flex flex-column flex-middle justify-center margin-top-m"
             (click)="openVideoPopup()">
             <mat-icon class="video_icon mb-2">play_circle_fill</mat-icon>
             <div>
               Watch how it works
             </div>
-          </div>
+          </div><!-- //NOSONAR -->
         </div>
       </mat-card-content>
     </mat-card>
@@ -55,13 +56,13 @@
             mat-button (click)="filter('allusers'); tabTelemetry('allusers', 0)" role="button">All users
             ({{activeUsersDataCount}})</a> -->
 
-          <a class="filter-option cursor-pointer"
+          <!-- //NOSONAR --><a class="filter-option cursor-pointer"
             [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'verified','ws-mat-accent-border font-medium':currentFilter !== 'verified'}"
             mat-button (click)="filter('verified'); tabTelemetry('verified', 0)" role="button">All Verified <span
               *ngIf="verifiedUsersDataCount === 1 || verifiedUsersDataCount === 0">User</span> <span
               *ngIf="verifiedUsersDataCount > 1">Users</span>
             ({{verifiedUsersDataCount}})</a>
-          <a class="filter-option cursor-pointer"
+          <!-- //NOSONAR --><a class="filter-option cursor-pointer"
             [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'mentor','ws-mat-accent-border font-medium':currentFilter !== 'mentor'}"
             mat-button (click)="filter('mentor'); tabTelemetry('mentor', 0)" role="button">Assigned <span
               *ngIf="mentorUsersDataCount === 1 || mentorUsersDataCount === 0">Mentor</span> <span

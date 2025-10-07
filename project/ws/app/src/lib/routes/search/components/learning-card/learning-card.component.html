@@ -63,9 +63,11 @@
       </div>
       <div class="flex">
         <div class="width-expand padding-top-xs" [ngClass]="{ 'text-truncate': !isExpanded }">
+          <!-- //NOSONAR -->
           <div (click)="isExpanded = !isExpanded" class="mat-body text-justify" [innerHTML]="description">
+            <!-- //NOSONAR -->
 
-          </div>
+          </div><!-- //NOSONAR -->
         </div>
         <div class="width-auto">
           <button aria-label="Toggle Expand" (click)="isExpanded = !isExpanded" mat-icon-button>

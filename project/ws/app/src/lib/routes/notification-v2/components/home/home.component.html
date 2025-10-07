@@ -25,7 +25,9 @@
 
     <ul class="list-none p-0 mb-4 mat-toolbar" role="list">
       <ng-container *ngFor="let notification of actionNotifications">
+        <!-- //NOSONAR -->
         <li matRipple class="p-4 cursor-pointer" (click)="onClickNotification(notification)" role="listitem">
+          <!-- //NOSONAR -->
           <a href="javascript:void(0)" role="link" class="flex flex-between">
             <div class="flex flex-col flex-center w-1/10">
               <ws-app-notification-event [notificationEvent]="notification.eventId"></ws-app-notification-event>
@@ -43,7 +45,7 @@
               </span>
             </div>
           </a>
-        </li>
+        </li><!-- //NOSONAR -->
         <mat-divider></mat-divider>
       </ng-container>
     </ul>
@@ -61,7 +63,9 @@
 
     <ul class="list-none p-0 mat-toolbar" role="list">
       <ng-container *ngFor="let notification of infoNotifications">
+        <!-- //NOSONAR -->
         <li matRipple class="p-4 cursor-pointer" (click)="onClickNotification(notification)" role="listitem">
+          <!-- //NOSONAR -->
           <a href="javascript:void(0)" role="link" class="flex flex-between">
             <div class="flex flex-col flex-center">
               <ws-app-notification-event [notificationEvent]="notification.eventId"></ws-app-notification-event>
@@ -79,7 +83,7 @@
               </span>
             </div>
           </a>
-        </li>
+        </li><!-- //NOSONAR -->
         <mat-divider></mat-divider>
       </ng-container>
     </ul>

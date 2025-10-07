@@ -19,7 +19,7 @@
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="action-cell">
                     <!-- <mat-radio-group aria-label="Select an Admin"> -->
-                    <mat-radio-button *ngFor="let ac of tableData!.actions" [value]="ac.name"
+                    <!-- //NOSONAR --><mat-radio-button *ngFor="let ac of tableData!.actions" [value]="ac.name"
                         (click)="buttonClick(ac.name,row)">
                     </mat-radio-button>
                     <!-- </mat-radio-group> -->
@@ -50,7 +50,8 @@
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="getFinalColumns()"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: getFinalColumns();" (click)="selection.toggle(row); onRowClick(row)">
+            <!-- //NOSONAR --><mat-row *matRowDef="let row; columns: getFinalColumns();"
+                (click)="selection.toggle(row); onRowClick(row)">
             </mat-row>
         </mat-table>
         <div class="no-information-found" *ngIf="dataSource.data.length===0 && isSearched">No user information

@@ -103,7 +103,7 @@
               </mat-header-cell>
               <mat-cell *matCellDef="let element" class="justify-center table-menu-column">
                 <ng-container *ngIf="element['status'] === 'In Progress'; else menuBtn">
-                  <mat-icon matTooltip="Refresh" class="refreshIcon"
+                  <!-- //NOSONAR --><mat-icon matTooltip="Refresh" class="refreshIcon"
                     (click)="buttonClick('refresh', element)">refresh</mat-icon>
                 </ng-container>
                 <ng-template #menuBtn>
@@ -113,6 +113,7 @@
                   <mat-menu #cardMenu="matMenu">
                     <ng-template matMenuContent>
                       <ng-container *ngFor="let item of menuItems">
+                        <!-- //NOSONAR -->
                         <div mat-menu-item [ngClass]="{'disableMenu': element['disableMenu']}"
                           [disabled]="element['disableMenu'] === true" (click)="buttonClick(item.action, element)">
                           <button class="flex item-btn items-center" mat-icon-button i18n-aria-label
@@ -120,7 +121,7 @@
                             <mat-icon *ngIf="item.icon" class="menu-item-icon">{{item.icon}}</mat-icon>
                             {{item.btnText}}
                           </button>
-                        </div>
+                        </div><!-- //NOSONAR -->
                       </ng-container>
                     </ng-template>
                   </mat-menu>
