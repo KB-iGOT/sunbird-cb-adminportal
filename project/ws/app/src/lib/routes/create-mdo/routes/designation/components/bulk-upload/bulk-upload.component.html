@@ -66,7 +66,8 @@
             <div class="font-bold">File Information</div>
           </div>
           <!-- //NOSONAR -->
-          <div class="flex flex-row gap-2 outline-button items-center" (click)="handleDownloadFile(list)">
+          <div class="flex flex-row gap-2 outline-button items-center" (click)="handleDownloadFile(list)"
+            (keydown)="$event.preventDefault()">
             <!-- //NOSONAR -->
             <mat-icon>download_2</mat-icon>
             {{ list?.status !== 'SUCCESSFUL' ? 'Download error log' : 'Download file' }}
