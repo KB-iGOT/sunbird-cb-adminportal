@@ -60,7 +60,8 @@
         <ng-container *ngFor="let designation of igotDesignationsList let i = index">
           <!-- //NOSONAR -->
           <div class="flex flex-4 custom-user-card items-center" [ngClass]="{'active-card': (designation?.selected && !designation?.isOrgDesignation),
-              'disableCard': designation?.isOrgDesignation}" (click)="selectDesignation(i)"><!-- //NOSONAR -->
+              'disableCard': designation?.isOrgDesignation}" (click)="selectDesignation(i)"
+            (keydown)="selectDesignation(i)"><!-- //NOSONAR -->
             <div class="custom-user-desc">
               <p [matTooltip]="designation?.designation" matTooltipPosition="above">{{designation?.designation |
                 titlecase}}</p>

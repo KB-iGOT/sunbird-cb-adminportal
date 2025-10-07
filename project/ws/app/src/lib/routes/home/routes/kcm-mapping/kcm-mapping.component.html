@@ -21,7 +21,8 @@
             <div class="">
               <div class="videoDemo flex justify-end section-2">
                 <!-- //NOSONAR -->
-                <div class="videoDemoVideo flex flex-column flex-middle justify-center" (click)="openVideoPopup()">
+                <div class="videoDemoVideo flex flex-column flex-middle justify-center" (click)="openVideoPopup()"
+                  (keydown)="openVideoPopup()">
                   <!-- //NOSONAR -->
                   <mat-icon class="video_icon mb-2">play_arrow</mat-icon>
                   <div>

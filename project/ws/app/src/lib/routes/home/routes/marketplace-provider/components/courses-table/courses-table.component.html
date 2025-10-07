@@ -115,7 +115,8 @@
                       <ng-container *ngFor="let item of menuItems">
                         <!-- //NOSONAR -->
                         <div mat-menu-item [ngClass]="{'disableMenu': element['disableMenu']}"
-                          [disabled]="element['disableMenu'] === true" (click)="buttonClick(item.action, element)">
+                          [disabled]="element['disableMenu'] === true" (click)="buttonClick(item.action, element)"
+                          (keydown)="buttonClick(item.action, element)">
                           <!-- //NOSONAR -->
                           <button class="flex item-btn items-center" mat-icon-button i18n-aria-label
                             aria-label="Analytics">

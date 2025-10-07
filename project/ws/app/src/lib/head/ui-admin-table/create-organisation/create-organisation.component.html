@@ -155,7 +155,8 @@
                       <div class="flex flex-column justify-center gap-2">
                         <!-- //NOSONAR -->
                         <div class="file-upload-header hover:underline cursor-pointer"
-                          onclick="document.getElementById('upload-logo').click()"> <!-- //NOSONAR -->
+                          onclick="document.getElementById('upload-logo').click()" (keydown)="$event.preventDefault()">
+                          <!-- //NOSONAR -->
                           Click here to upload file
                         </div><!-- //NOSONAR -->
                         <div class="upload-description">
