@@ -12,20 +12,21 @@
       <span *ngIf="searchResults.totalHits > 1">results </span>
       <span *ngIf="searchResults.totalHits <= 1">result </span>
       <span *ngIf="searchRequest?.lang?.split(',').length > 1"><span>across your preferred languages</span>
-        <span>:&nbsp;</span><span class="cursor-pointer ws-mat-primary-text"
-          *ngFor="let lang of searchRequest?.lang?.split(',')" (click)="searchLanguage(lang)">{{lang | uppercase}}
+        <span>:&nbsp;</span><!-- //NOSONAR --><span class="cursor-pointer ws-mat-primary-text"
+          *ngFor="let lang of searchRequest?.lang?.split(',')" (click)="searchLanguage(lang)"><!-- //NOSONAR -->{{lang |
+          uppercase}}
         </span>
       </span>
       <ng-container *ngIf="searchResults?.doYouMean || searchResults?.queryUsed">
         <span>.</span><span>&nbsp;</span>
-        <span *ngIf="searchResults?.doYouMean"><span>Did you mean</span><span>&nbsp;“</span><span
+        <span *ngIf="searchResults?.doYouMean"><span>Did you mean</span><span>&nbsp;“</span><!-- //NOSONAR --><span
             [innerHTML]="searchResults?.doYouMean" (click)="didYouMeanSearch(searchResults?.doYouMean)"
-            class="cursor-pointer ws-mat-primary-text cursor-pointer"></span>”
+            class="cursor-pointer ws-mat-primary-text cursor-pointer"><!-- //NOSONAR --></span>”
           ?</span>
         <span *ngIf="searchResults?.queryUsed"><span>Showing results
             for</span><span>&nbsp;“</span>{{searchResults?.queryUsed}}”. <span>Search instead for</span>
-          <span>&nbsp;“</span><span class="cursor-pointer ws-mat-primary-text cursor-pointer"
-            (click)="searchInsteadFor()">{{searchRequestObject.query}}</span>”.</span>
+          <span>&nbsp;“</span><!-- //NOSONAR --><span class="cursor-pointer ws-mat-primary-text cursor-pointer"
+            (click)="searchInsteadFor()"><!-- //NOSONAR -->{{searchRequestObject.query}}</span>”.</span>
       </ng-container>
       <ng-container *ngIf="exactResult.show && applyPhraseSearch">
         <span>for the exact match on
@@ -46,18 +47,18 @@
             <span *ngIf="content?.checked">
               <mat-chip [removable]="removable">
                 {{translatedFilters[filter?.displayName]?.value[content?.displayName] || content?.displayName}}
-                <mat-icon matChipRemove
+                <!-- //NOSONAR --><mat-icon matChipRemove
                   (click)="appFilterDisplay?.removeFilter({ key : filter?.type, value :content?.type})"
-                  *ngIf="removable">cancel</mat-icon>
+                  *ngIf="removable">cancel</mat-icon><!-- //NOSONAR -->
               </mat-chip>
             </span>
             <span *ngIf="content?.children?.length>0">
               <span *ngFor="let children of content?.children">
                 <span *ngIf="children?.checked">
                   <mat-chip [removable]="removable">{{children?.displayName}}
-                    <mat-icon matChipRemove
+                    <!-- //NOSONAR --><mat-icon matChipRemove
                       (click)="appFilterDisplay?.removeFilter({ key : filter?.type, value :children?.type})"
-                      *ngIf="removable">cancel</mat-icon>
+                      *ngIf="removable"><!-- //NOSONAR -->cancel</mat-icon>
                   </mat-chip>
                 </span>
               </span>

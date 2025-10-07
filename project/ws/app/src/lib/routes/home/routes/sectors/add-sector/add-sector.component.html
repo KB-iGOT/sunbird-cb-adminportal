@@ -48,7 +48,7 @@
                   </label>
                   <div>Icons will be cropped to 24x24 pixels</div>
                   <!-- //NOSONAR -->
-                  <div class="image-thumb margin-top-m" (click)="openDialog()"
+                  <div class="image-thumb margin-top-m" (click)="openDialog()" (keydown)="openDialog()"
                     [ngClass]="{'seleted-image': addSectorForm.controls.imgUrl.value}"><!-- //NOSONAR -->
                     <div class="camera">
                       <mat-icon class="cam-icon">photo_camera</mat-icon>

@@ -182,7 +182,8 @@
                     </tr>
                     <!-- //NOSONAR -->
                     <tr *ngFor="let comp of requestForm.controls[this.compentencyKey.vKey]?.value"
-                      [attr.disabled]="isCompetencyHide ? true : null" (click)=view(comp)><!-- //NOSONAR -->
+                      [attr.disabled]="isCompetencyHide ? true : null" (click)="view(comp)" (keydown)="view(comp)">
+                      <!-- //NOSONAR -->
                       <td class="padding-xs mat-body-1 cursor-pointer">{{comp.competencyArea | capitalize}}</td>
                       <td class="padding-xs mat-body-1 cursor-pointer">{{(comp.competencyTheme | capitalize) ||
                         comp.name}}</td>

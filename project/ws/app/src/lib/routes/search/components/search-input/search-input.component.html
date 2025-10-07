@@ -27,7 +27,8 @@
     </form>
   </div>
   <!-- //NOSONAR -->
-  <div (click)="updateQuery(queryControl.value)" class="flex items-center justify-center w-8 sm:w-16 cursor-pointer">
+  <div (click)="updateQuery(queryControl.value)" (keydown)="updateQuery(queryControl.value)"
+    class="flex items-center justify-center w-8 sm:w-16 cursor-pointer">
     <!-- //NOSONAR -->
     <mat-icon>search</mat-icon>
   </div><!-- //NOSONAR -->

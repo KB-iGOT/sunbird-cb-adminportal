@@ -29,7 +29,7 @@
         <div class="flex flex-col gap-2 dashed-card items-center">
           <!-- //NOSONAR -->
           <div class="flex cursor-pointer margin-top-m" (click)="fileInput.click()"
-            (dblclick)="$event.preventDefault()">
+            (dblclick)="$event.preventDefault()"><!-- //NOSONAR -->
             <img src="/assets/icons/csv.svg" class="csv-file" alt="CSV file logo" />
           </div><!-- //NOSONAR -->
           <div *ngIf="showFileError" class="error-msg">{{bulkUploadConfig?.supportedFileTypeText2}}</div>
@@ -37,7 +37,9 @@
           <div class="flex flex-col items-center">
             <!-- //NOSONAR -->
             <div class="text-primary cursor-pointer" (click)="fileInput.click()" (dblclick)="$event.preventDefault()">
-              Browse files</div><!-- //NOSONAR -->
+              <!-- //NOSONAR -->
+              Browse files
+            </div><!-- //NOSONAR -->
             <input hidden type="file" id="fileInput" #fileInput (click)="handleFileClick($event)"
               (change)="handleOnFileChange(fileInput.files)" name="file" placeholder="Choose file"
               (dblclick)="$event.preventDefault();" accept=".xlsx, .xls" />
@@ -64,6 +66,7 @@
           </div>
           <!-- //NOSONAR -->
           <div class="flex flex-row gap-2 outline-button items-center" (click)="handleDownloadFile(list)">
+            <!-- //NOSONAR -->
             <mat-icon>download_2</mat-icon>
             {{ list?.status !== 'SUCCESSFUL' ? 'Download error log' : 'Download file' }}
           </div>

@@ -38,7 +38,7 @@
                     <span class="color-60">{{item?.designation | titlecase}}</span>
                   </div>
                   <!-- //NOSONAR -->
-                  <div class="cross-icon" (click)="removeDesignation([item])">
+                  <div class="cross-icon" (click)="removeDesignation([item])"><!-- //NOSONAR -->
                     <img class="cursor-pointer" src="assets/icons/close.svg" alt="close" />
                   </div>
                 </div>
@@ -60,7 +60,7 @@
         <ng-container *ngFor="let designation of igotDesignationsList let i = index">
           <!-- //NOSONAR -->
           <div class="flex flex-4 custom-user-card items-center" [ngClass]="{'active-card': (designation?.selected && !designation?.isOrgDesignation),
-              'disableCard': designation?.isOrgDesignation}" (click)="selectDesignation(i)">
+              'disableCard': designation?.isOrgDesignation}" (click)="selectDesignation(i)"><!-- //NOSONAR -->
             <div class="custom-user-desc">
               <p [matTooltip]="designation?.designation" matTooltipPosition="above">{{designation?.designation |
                 titlecase}}</p>

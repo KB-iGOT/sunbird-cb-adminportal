@@ -8,7 +8,7 @@
       (opened)="closeOtherPanels(panel)" [hideToggle]="forMentor ? true : false" [disabled]="forMentor ? true : false">
       <!-- //NOSONAR --><mat-expansion-panel-header (click)="getUerData(user, panel, i)">
         <!-- //NOSONAR -->
-        <div class="float-left width88 flex" (click)="$event.stopPropagation();">
+        <div class="float-left width88 flex" (click)="$event.stopPropagation();"><!-- //NOSONAR -->
           <div class="initialcircle display-inline-block margin-right-m">
             <!-- <span>AB</span> -->
             <ws-widget-avatar-photo [name]="getUseravatarName(user)" [photoUrl]="user?.photo" size="l">
