@@ -1,3 +1,4 @@
+import '@angular/compiler'
 import { TncComponent } from './tnc.component'
 import { NsTnc } from '../../../../../../../../../src/app/models/tnc.model'
 import { of, throwError, Subscription } from 'rxjs'

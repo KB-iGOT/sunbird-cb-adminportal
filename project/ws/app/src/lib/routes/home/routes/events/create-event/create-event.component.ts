@@ -10,7 +10,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { ParticipantsComponent } from '../participants/participants.component'
 import { SuccessComponent } from '../success/success.component'
 import { Router, ActivatedRoute } from '@angular/router'
-import { ConfigurationsService, EventService } from '@sunbird-cb/utils'
+import { ConfigurationsService, EventService } from '@sunbird-cb/utils-v2'
 import * as moment from 'moment'
 import { MomentDateAdapter } from '@angular/material-moment-adapter'
 /* tslint:disable */
@@ -67,7 +67,9 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   toastSuccess: any
   pictureObj: any
   myreg = /^(https?|http):\/\/[^\s/$.?#].[^\s]*$/
-  eventTitleRegex = /^[a-zA-Z0-9\s'",:-]*$/
+  eventTitleRegex = new RegExp(
+    /^[\u0900-\u097F\u0980-\u09FF\u0C00-\u0C7F\u0B80-\u0BFF\u0C80-\u0CFF\u0D00-\u0D7F\u0A80-\u0AFF\u0B00-\u0B7F\u0A00-\u0A7Fa-zA-Z0-9\(\)\$\[\]\.\-,:!'\" _\/]*$/ // NOSONAR
+  )
   eventTypeCertification: any = {}
   defaultCertification: any = {}
   // myreg = /^(http|https:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/

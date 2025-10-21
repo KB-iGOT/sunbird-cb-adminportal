@@ -9,7 +9,7 @@ jest.mock('@angular/router', () => ({
 jest.mock('../../services/event.service', () => ({
     EventService: jest.fn(),
 }))
-jest.mock('@sunbird-cb/utils', () => ({
+jest.mock('@sunbird-cb/utils-v2', () => ({
     ValueService: jest.fn(),
 }))
 jest.mock('@angular/material/legacy-dialog', () => ({

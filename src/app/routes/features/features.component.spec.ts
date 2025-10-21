@@ -1,7 +1,7 @@
 import { FeaturesComponent } from './features.component'
 import { of, Subject } from 'rxjs'
 import { ActivatedRoute, Router, ParamMap } from '@angular/router'
-import { ConfigurationsService, SubapplicationRespondService, ValueService } from '@sunbird-cb/utils'
+import { ConfigurationsService, SubapplicationRespondService, ValueService } from '@sunbird-cb/utils-v2'
 import { CustomTourService } from '@sunbird-cb/collection'
 import { UntypedFormControl } from '@angular/forms'
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core'
 import { NsTnc } from '../../../../../../../../../src/app/models/tnc.model'
 import { Subscription } from 'rxjs'
-import { NsWidgetResolver } from '@sunbird-cb/resolver'
+import { NsWidgetResolver } from '@sunbird-cb/resolver-v2'
 import {
   NsError,
   ROOT_WIDGET_CONFIG,
@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http'
 import { TncAppResolverService } from '../../../../../../../../../src/app/services/tnc-app-resolver.service'
 import { TncPublicResolverService } from '../../../../../../../../../src/app/services/tnc-public-resolver.service'
 import { Globals } from '../../globals'
-import { ConfigurationsService, LoggerService, NsPage } from '@sunbird-cb/utils'
+import { ConfigurationsService, LoggerService, NsPage } from '@sunbird-cb/utils-v2'
 
 @Component({
   selector: 'ws-app-tnc',

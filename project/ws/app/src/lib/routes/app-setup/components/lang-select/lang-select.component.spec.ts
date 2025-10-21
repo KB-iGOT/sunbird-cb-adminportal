@@ -1,6 +1,6 @@
-import { LangSelectComponent } from './lang-select.component'
 import { Router } from '@angular/router'
-import { ConfigurationsService, UserPreferenceService, NsInstanceConfig } from '@sunbird-cb/utils'
+import { ConfigurationsService, UserPreferenceService, NsInstanceConfig } from '@sunbird-cb/utils-v2'
+import { LangSelectComponent } from './lang-select.component'
 
 // Mock the dependencies
 const mockRouter = {

@@ -30,12 +30,12 @@ import { HomeComponent } from './components/home/home.component'
 import { LangSelectComponent } from './components/lang-select/lang-select.component'
 import { TncComponent } from './components/tnc/tnc.component'
 import { TncRendererComponent } from './components/tnc-renderer/tnc-renderer.component'
-import { PipeSafeSanitizerModule } from '@sunbird-cb/utils'
+import { PipeSafeSanitizerModule } from '@sunbird-cb/utils-v2'
 import { TncAppResolverService } from '../../../../../../../src/app/services/tnc-app-resolver.service'
 import { SetupDoneComponent } from './components/setup-done/setup-done.component'
 import { InterestModules } from './module/interest/interest.module'
 import { Globals } from './globals'
-import { WidgetResolverModule } from '@sunbird-cb/resolver'
+import { SbUiResolverModule } from '@sunbird-cb/resolver-v2'
 // import { InterestModule } from '../profile/routes/interest/interest.module'
 
 @NgModule({
@@ -71,7 +71,7 @@ import { WidgetResolverModule } from '@sunbird-cb/resolver'
 
     // SettingsModule,
     AboutVideoModule,
-    WidgetResolverModule,
+    SbUiResolverModule,
     LocaleTranslatorModule,
     InterestModules,
     LanguageSelectorModule,

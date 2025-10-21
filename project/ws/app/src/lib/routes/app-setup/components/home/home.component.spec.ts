@@ -1,5 +1,6 @@
 import { HomeComponent } from './home.component'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { DomSanitizer } from '@angular/platform-browser'
 import { Router, NavigationEnd } from '@angular/router'
 import { Subject } from 'rxjs'

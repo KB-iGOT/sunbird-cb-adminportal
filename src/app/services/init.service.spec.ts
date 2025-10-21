@@ -3,12 +3,12 @@ import { HttpClient } from '@angular/common/http'
 import { MatIconRegistry } from '@angular/material/icon'
 import { DomSanitizer } from '@angular/platform-browser'
 import { BtnSettingsService } from '@sunbird-cb/collection'
-import { NsWidgetResolver, WidgetResolverService } from '@sunbird-cb/resolver'
+import { NsWidgetResolver } from '@sunbird-cb/resolver-v2'
 import {
   ConfigurationsService,
   LoggerService,
   UserPreferenceService,
-} from '@sunbird-cb/utils'
+} from '@sunbird-cb/utils-v2'
 import { of, throwError } from 'rxjs'
 
 // Mock the environment
@@ -44,7 +44,7 @@ describe('InitService', () => {
   let service: InitService
   let mockLoggerService: jest.Mocked<LoggerService>
   let mockConfigSvc: jest.Mocked<ConfigurationsService>
-  let mockWidgetResolverService: jest.Mocked<WidgetResolverService>
+  let mockWidgetResolverService: jest.Mocked<any>
   let mockSettingsSvc: jest.Mocked<BtnSettingsService>
   let mockUserPreference: jest.Mocked<UserPreferenceService>
   let mockHttpClient: jest.Mocked<HttpClient>
@@ -603,10 +603,10 @@ describe('InitService', () => {
 
         mockConfigSvc.userRoles = new Set(['public'])
         mockConfigSvc.userGroups = new Set()
-        mockConfigSvc.restrictedFeatures = new Set();
+        mockConfigSvc.restrictedFeatures = new Set()
 
         // Mock the static method
-        (WidgetResolverService.getWidgetKey as jest.Mock) = jest.fn().mockReturnValue('test-widget-key')
+        //  (WidgetResolverService.getWidgetKey as jest.Mock) = jest.fn().mockReturnValue('test-widget-key')
 
         const result = service['processWidgetStatus'](mockWidgetConfigs)
 

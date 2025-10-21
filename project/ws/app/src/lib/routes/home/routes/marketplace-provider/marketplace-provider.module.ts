@@ -11,7 +11,7 @@ import { ConformationPopupComponent } from './dialogs/conformation-popup/conform
 import { ContentUploadComponent } from './components/content-upload/content-upload.component'
 import { CoursesTableComponent } from './components/courses-table/courses-table.component'
 import { DragDropDirective } from './directives/drag-drop.directive'
-import { PageResolve } from '@sunbird-cb/utils'
+import { PageResolve } from '@sunbird-cb/utils-v2'
 import { NgJsonEditorModule } from 'ang-jsoneditor'
 import { MatLegacyInputModule } from '@angular/material/legacy-input'
 import { MatLegacyCardModule as MatCardModule } from '@angular/material/legacy-card'

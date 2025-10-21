@@ -1,5 +1,5 @@
 import { CreateUserComponent } from './create-user.component'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { CreateUserService } from './create-user.service'
 import { SystemRolesManagementService } from '../../../services/system-roles-management.service'
 import { Router, ActivatedRoute } from '@angular/router'
@@ -11,7 +11,7 @@ jest.mock('@angular/material/legacy-snack-bar', () => ({
     })),
 }))
 
-jest.mock('@sunbird-cb/utils', () => ({
+jest.mock('@sunbird-cb/utils-v2', () => ({
     ConfigurationsService: jest.fn().mockImplementation(() => ({
         org: ['org1'],
     })),

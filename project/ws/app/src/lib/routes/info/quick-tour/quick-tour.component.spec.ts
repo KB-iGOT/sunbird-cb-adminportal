@@ -1,5 +1,5 @@
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { QuickTourComponent } from './quick-tour.component'
-import { ConfigurationsService } from '@sunbird-cb/utils'
 
 // Mock the external dependencies
 jest.mock('@sunbird-cb/resolver')

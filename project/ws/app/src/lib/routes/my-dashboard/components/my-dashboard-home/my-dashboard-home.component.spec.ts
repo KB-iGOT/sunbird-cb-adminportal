@@ -1,6 +1,6 @@
 import { MyDashboardHomeComponent } from './my-dashboard-home.component'
 import { Router } from '@angular/router'
-import { ConfigurationsService, NsPage } from '@sunbird-cb/utils'
+import { ConfigurationsService, NsPage } from '@sunbird-cb/utils-v2'
 import { mapFilePath, dashboardEmptyData } from '../../../../../../../../../src/dashboard-assets/data/data'
 
 // Mocks for Router and ConfigurationsService
@@ -10,7 +10,7 @@ jest.mock('@angular/router', () => ({
     })),
 }))
 
-jest.mock('@sunbird-cb/utils', () => ({
+jest.mock('@sunbird-cb/utils-v2', () => ({
     ConfigurationsService: jest.fn().mockImplementation(() => ({
         pageNavBar: {} as NsPage.INavBackground,
     })),

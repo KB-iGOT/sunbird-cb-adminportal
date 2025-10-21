@@ -1,6 +1,6 @@
-import { SearchRootComponent } from './search-root.component'
 import { Router, ActivatedRoute, UrlTree, UrlSegmentGroup, UrlSegment } from '@angular/router'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
+import { SearchRootComponent } from './search-root.component'
 import { of } from 'rxjs'
 
 // Mock implementations

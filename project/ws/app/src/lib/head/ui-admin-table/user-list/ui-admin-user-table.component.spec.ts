@@ -97,6 +97,12 @@ const mockXHR = {
 
 global.XMLHttpRequest = jest.fn(() => mockXHR) as any
 
+jest.mock('@angular/router')
+jest.mock('@angular/material/legacy-dialog')
+jest.mock('@angular/material/legacy-snack-bar')
+jest.mock('../../../routes/home/services/create-mdo.services')
+jest.mock('@sunbird-cb/utils-v2')
+
 describe('UIAdminUserTableComponent', () => {
     let component: UIAdminUserTableComponent
 

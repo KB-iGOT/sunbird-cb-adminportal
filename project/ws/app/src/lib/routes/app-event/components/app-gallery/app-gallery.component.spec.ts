@@ -1,7 +1,8 @@
-import { AppGalleryComponent } from './app-gallery.component'
+
 import { ActivatedRoute } from '@angular/router'
-import { ValueService } from '@sunbird-cb/utils'
 import { of, Subject } from 'rxjs'
+import { ValueService } from '@sunbird-cb/utils-v2'
+import { AppGalleryComponent } from './app-gallery.component'
 
 describe('AppGalleryComponent', () => {
     let component: AppGalleryComponent

@@ -1,5 +1,5 @@
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { AboutVideoComponent } from './about-video.component'
-import { ConfigurationsService } from '@sunbird-cb/utils'
 
 // Create a mock ConfigurationsService that matches the interface expectations
 const createMockConfigService = () => ({

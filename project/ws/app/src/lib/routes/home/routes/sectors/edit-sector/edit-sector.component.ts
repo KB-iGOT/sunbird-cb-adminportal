@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
 import { ActivatedRoute, Router } from '@angular/router'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import * as _ from 'lodash'
 import { SectorsService } from '../sectors.service'
 import { DomSanitizer } from '@angular/platform-browser'
@@ -80,7 +80,7 @@ export class EditSectorComponent implements OnInit {
               })
             }
           }
-        },                                                error => {
+        }, error => {
           this.snackBar.open(error, 'X', { duration: sectorConstants.duration })
         })
       }
@@ -110,7 +110,7 @@ export class EditSectorComponent implements OnInit {
         this.router.navigate([`/app/home/sectors`])
       }
       this.loading = false
-    },                                                          eResp => {
+    }, eResp => {
       if (eResp && eResp.error && eResp.error.responseCode === 'BAD_REQUEST') {
         this.snackBar.open(eResp.error.params.errmsg)
       }

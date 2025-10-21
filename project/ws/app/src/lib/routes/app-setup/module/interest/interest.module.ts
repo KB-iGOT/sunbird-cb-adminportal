@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { BtnPageBackModule } from '@sunbird-cb/collection'
-import { HorizontalScrollerModule } from '@sunbird-cb/utils'
+import { HorizontalScrollerModule } from '@sunbird-cb/utils-v2'
 // import { InterestService } from '../../../profile/routes/interest/services/interest.service'
 
 @NgModule({

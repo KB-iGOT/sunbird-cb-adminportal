@@ -10,7 +10,7 @@ import * as _ from 'lodash'
 
 // import {IColums } from '../interface/interfaces'
 import { Router } from '@angular/router'
-import { EventService } from '@sunbird-cb/utils'
+import { EventService } from '@sunbird-cb/utils-v2'
 import { environment } from '../../../../../../../../src/environments/environment'
 import { MatDialog } from '@angular/material/dialog'
 import { InfoModalComponent } from '../../info-modal/info-modal.component'

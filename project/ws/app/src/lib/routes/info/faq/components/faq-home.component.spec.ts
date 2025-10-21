@@ -1,6 +1,6 @@
-import { FaqHomeComponent } from './faq-home.component'
 import { ActivatedRoute } from '@angular/router'
-import { ValueService, ConfigurationsService, EFeatures } from '@sunbird-cb/utils'
+import { ValueService, ConfigurationsService, EFeatures } from '@sunbird-cb/utils-v2'
+import { FaqHomeComponent } from './faq-home.component'
 import { of, BehaviorSubject } from 'rxjs'
 import { IFAQ, IContent } from '../faq.model'
 

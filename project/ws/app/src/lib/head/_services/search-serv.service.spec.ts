@@ -1,7 +1,7 @@
+import { HttpClient } from '@angular/common/http'
+import { SearchApiService } from './search-api.service'
 import { SearchServService } from './search-serv.service'
 import { EventService, ConfigurationsService, WsEvents } from '@sunbird-cb/utils'
-import { SearchApiService } from './search-api.service'
-import { HttpClient } from '@angular/common/http'
 import { of, Observable } from 'rxjs'
 import { NSSearch } from './widget-search.model'
 

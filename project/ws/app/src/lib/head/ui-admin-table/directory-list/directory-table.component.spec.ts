@@ -3,7 +3,7 @@ import { SelectionModel } from '@angular/cdk/collections'
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
 import { BehaviorSubject, of, throwError } from 'rxjs'
 import { SimpleChanges } from '@angular/core'
-
+import * as _ from 'lodash'
 // Mock dependencies
 const mockRouter = {
     navigate: jest.fn()
@@ -70,6 +70,13 @@ jest.mock('lodash', () => ({
         })
     })
 }))
+
+
+jest.mock('@angular/router')
+jest.mock('@sunbird-cb/utils-v2')
+jest.mock('@angular/material/dialog')
+jest.mock('../../../routes/home/services/create-mdo.services')
+jest.mock('../../../routes/create-mdo/routes/designation/services/designations.service')
 
 describe('UIDirectoryTableComponent', () => {
     let component: UIDirectoryTableComponent

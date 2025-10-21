@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core'
 import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router'
 import { EMPTY, Observable } from 'rxjs'
 import { map, catchError } from 'rxjs/operators'
-import { AuthKeycloakService, IResolveResponse } from '@sunbird-cb/utils'
+import { AuthKeycloakService, IResolveResponse } from '@sunbird-cb/utils-v2'
 import { NSProfileDataV2 } from '../../home/models/profile-v2.model'
 import { ProfileV2Service } from '../services/home.servive'
 
 @Injectable()
-export class DepartmentResolve
-   {
+export class DepartmentResolve {
   constructor(private profileService: ProfileV2Service, private router: Router, private authSvc: AuthKeycloakService) { }
 
   async resolve(
