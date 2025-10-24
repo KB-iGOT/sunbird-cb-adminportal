@@ -197,7 +197,7 @@ export class DirectoryViewComponent implements OnInit {
         tab: role.type,
         // subOrgType: !this.isAllowed(this.allowedCreateRoles) ? 'ministry' : role.data.type ? role.data.type : 'cbp-providers'
         // subOrgType: !this.isAllowed(this.allowedCreateRoles) ? 'ministry' : role.data.type ? role.data.type : 'ministry'
-        subOrgType: this.getSubOrgType(role.data.type)
+        subOrgType: this.getSubOrgType(role?.data?.type, role?.data)
       }
     })
   }
@@ -406,6 +406,7 @@ export class DirectoryViewComponent implements OnInit {
               registrationLink: element?.registrationLink || null,
               startDateRegistration: element?.startDateRegistration || null,
               endDateRegistration: element?.endDateRegistration || null,
+              isState: element?.isState || false,
               stateOrMinistry: element?.ministryOrStateName || element?.ministryorstatename || null,
 
             }
@@ -437,6 +438,7 @@ export class DirectoryViewComponent implements OnInit {
             logo: dept.logo,
             description: dept.description,
             qrRegistrationLink: dept.qrRegistrationLink,
+            isState: dept.isState,
             registrationLink: dept.registrationLink,
             startDateRegistration: dept.startDateRegistration,
             endDateRegistration: dept.endDateRegistration,
@@ -480,9 +482,9 @@ export class DirectoryViewComponent implements OnInit {
     return false
   }
 
-  getSubOrgType(type: string) {
+  getSubOrgType(type: string, orgData: any) {
     if (this.currentFilter === 'organisation') {
-      return 'ministry'
+      return orgData?.isState ? 'state' : 'ministry'
     } else if (this.currentFilter === 'orgHierarchies') {
       return 'orgHierarchies'
     } else if (type === 'cbp-providers') {
