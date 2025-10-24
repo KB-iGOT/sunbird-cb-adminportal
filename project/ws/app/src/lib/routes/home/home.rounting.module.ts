@@ -426,6 +426,10 @@ const routes: Routes = [
         path: 'marketplace-providers',
         loadChildren: () => import('./routes/marketplace-provider/marketplace-provider.module').then(u => u.MarketplaceProviderModule),
       },
+      {
+        path: 'topics',
+        loadChildren: () => import('./routes/topics/topics.module').then(u => u.TopicsModule),
+      },
 
     ],
   },

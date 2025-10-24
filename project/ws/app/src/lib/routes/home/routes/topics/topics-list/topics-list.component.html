@@ -1,0 +1,73 @@
+<div class="topics-container">
+  <!-- Header -->
+  <div class="header-section">
+    <h2>Topics Management</h2>
+    <button mat-raised-button color="primary" class="add-button" (click)="addTopic()">
+      <mat-icon>add</mat-icon>
+      Add Topic
+    </button>
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search Topics</mat-label>
+      <input matInput [formControl]="searchControl" placeholder="Search by topic name...">
+      <mat-icon matSuffix>search</mat-icon>
+      <button mat-icon-button matSuffix *ngIf="searchControl.value" (click)="clearSearch()">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div class="loading-section" *ngIf="isLoading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <span>Loading topics...</span>
+  </div>
+
+  <!-- Table Section -->
+  <div class="table-section" *ngIf="!isLoading">
+    <mat-table [dataSource]="dataSource" class="topics-table">
+
+      <!-- Category ID Column -->
+      <ng-container matColumnDef="categoryId">
+        <mat-header-cell *matHeaderCellDef>Category ID</mat-header-cell>
+        <mat-cell *matCellDef="let topic">{{ topic.categoryId }}</mat-cell>
+      </ng-container>
+
+      <!-- Category Name Column -->
+      <ng-container matColumnDef="categoryName">
+        <mat-header-cell *matHeaderCellDef>Category Name</mat-header-cell>
+        <mat-cell *matCellDef="let topic">{{ topic.categoryName }}</mat-cell>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+        <mat-cell *matCellDef="let topic">
+          <button mat-icon-button color="primary" (click)="editTopic(topic)" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteTopic(topic)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <!-- No Data Message -->
+    <div class="no-data" *ngIf="dataSource.data.length === 0">
+      <mat-icon>info</mat-icon>
+      <p>No topics found</p>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <mat-paginator *ngIf="!isLoading && totalCount > 0" [length]="totalCount" [pageSize]="pageSize"
+    [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)" showFirstLastButtons>
+  </mat-paginator>
+</div>
