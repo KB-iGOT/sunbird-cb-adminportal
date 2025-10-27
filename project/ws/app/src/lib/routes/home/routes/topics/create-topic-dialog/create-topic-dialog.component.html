@@ -1,0 +1,52 @@
+<div class="create-topic-dialog">
+  <h2 mat-dialog-title>
+    {{ isEditMode ? 'Edit Topic' : 'Create New Topic' }}
+  </h2>
+
+  <form [formGroup]="topicForm" (ngSubmit)="onSubmit()">
+    <div mat-dialog-content class="dialog-content">
+
+      <!-- Category Name Field -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Category Name</mat-label>
+        <input matInput formControlName="categoryName" placeholder="Enter category name" maxlength="100">
+        <mat-hint>Enter a descriptive name for the topic category</mat-hint>
+        <mat-error *ngIf="topicForm.get('categoryName')?.touched && topicForm.get('categoryName')?.errors">
+          {{ getErrorMessage('categoryName') }}
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Description Field -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" placeholder="Enter detailed description" rows="4"
+          maxlength="500">
+        </textarea>
+        <mat-hint>Provide a comprehensive description of the topic (10-500 characters)</mat-hint>
+        <mat-error *ngIf="topicForm.get('description')?.touched && topicForm.get('description')?.errors">
+          {{ getErrorMessage('description') }}
+        </mat-error>
+      </mat-form-field>
+
+    </div>
+
+    <div mat-dialog-actions class="dialog-actions">
+      <button mat-button type="button" (click)="onCancel()" [disabled]="isLoading">
+        Cancel
+      </button>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="isLoading || topicForm.invalid">
+
+        <mat-spinner *ngIf="isLoading" diameter="20" class="button-spinner">
+        </mat-spinner>
+
+        <span *ngIf="!isLoading">
+          {{ isEditMode ? 'Update Topic' : 'Create Topic' }}
+        </span>
+        <span *ngIf="isLoading">
+          {{ isEditMode ? 'Updating...' : 'Creating...' }}
+        </span>
+      </button>
+    </div>
+  </form>
+</div>

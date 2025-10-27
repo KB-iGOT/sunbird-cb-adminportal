@@ -1,0 +1,97 @@
+.create-topic-dialog {
+  min-width: 500px;
+  max-width: 600px;
+
+  .dialog-content {
+    padding: 20px 0;
+    min-height: 200px;
+
+    .full-width {
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    mat-form-field {
+      mat-hint {
+        font-size: 12px;
+        color: #666;
+      }
+
+      mat-error {
+        font-size: 12px;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+  }
+
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 0 0 0;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 20px;
+
+    button {
+      min-width: 100px;
+      position: relative;
+
+      .button-spinner {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    .mat-mdc-raised-button[disabled] {
+      background-color: #e0e0e0;
+      color: #999;
+    }
+  }
+
+  h2 {
+    margin: 0 0 16px 0;
+    color: #333;
+    font-weight: 500;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .create-topic-dialog {
+    min-width: 90vw;
+    max-width: 95vw;
+
+    .dialog-content {
+      padding: 16px 0;
+
+      .full-width {
+        margin-bottom: 12px;
+      }
+    }
+
+    .dialog-actions {
+      flex-direction: column-reverse;
+      gap: 8px;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Animation for loading state
+.button-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}

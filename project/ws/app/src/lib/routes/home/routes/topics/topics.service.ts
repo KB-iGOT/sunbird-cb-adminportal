@@ -25,6 +25,20 @@ export interface TopicsSearchResponse {
   }
 }
 
+export interface CreateTopicRequest {
+  categoryName: string
+  description: string
+}
+
+export interface CreateTopicResponse {
+  result: {
+    categoryId: string
+    categoryName: string
+    description: string
+    status: string
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -36,6 +50,13 @@ export class TopicsService {
     return this.http.post<TopicsSearchResponse>(
       '/apis/proxies/v8/community/v1/topic/search',
       searchRequest
+    )
+  }
+
+  createTopic(topicData: CreateTopicRequest): Observable<CreateTopicResponse> {
+    return this.http.post<CreateTopicResponse>(
+      '/apis/proxies/v8/community/v1/category/create',
+      topicData
     )
   }
 }
