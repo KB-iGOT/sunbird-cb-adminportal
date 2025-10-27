@@ -152,6 +152,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
       this.userId = this.configSvc.userProfile.userId
       this.username = this.configSvc.userProfile.userName
       this.department = this.configSvc.userProfile.departmentName
+      this.departmentID = this.configSvc.userProfile.rootOrgId
     } else {
       if (_.get(this.activeRoute, 'snapshot.data.configService.userProfile.rootOrgId')) {
         this.departmentID = _.get(this.activeRoute, 'snapshot.data.configService.userProfile.rootOrgId')
