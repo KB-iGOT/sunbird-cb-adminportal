@@ -16,7 +16,7 @@
 
         <div class="search">
             <div class="rsearch flex-row">
-                <div class="sinput mat-field-rounded">
+                <div class="sinput diractory-input mat-field-rounded">
                     <span class="material-icons"> search </span>
                     <input type="Standard" id="search" label="" #searchInput (input)="applyFilter($event.target.value)"
                         [(ngModel)]="searchValue" (keydown.enter)="onSearchEnter($event.target.value)"
