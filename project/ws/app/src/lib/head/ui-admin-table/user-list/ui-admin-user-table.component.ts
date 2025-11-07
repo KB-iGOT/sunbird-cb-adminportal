@@ -208,7 +208,7 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
                 })
               }
             })
-            if (this.departmentRole === 'state') {
+            if (this.subOrgType === 'state') {
               this.userRoleDetails.push('STATE_ADMIN')
             } else {
               this.userRoleDetails.push('MDO_ADMIN')
@@ -217,8 +217,11 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
             if (this.departmentId !== undefined) {
               this.createMDOService2.assignAdminToDepartment(user.userId, this.departmentId, this.userRoleDetails).subscribe(res => {
                 if (res) {
+                  setTimeout(() => {
+                    this.searchByEnterKey.emit('')
+                  }, 1000)
                   this.snackBar.open('Admin assigned Successfully')
-                  this.router.navigate(['/app/home/directory', { department: this.departmentRole }])
+                  // this.router.navigate(['/app/home/directory', { department: this.departmentRole }])
                 }
               },
                 // tslint:disable-next-line:align
