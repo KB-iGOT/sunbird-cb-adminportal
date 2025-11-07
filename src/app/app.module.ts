@@ -1,6 +1,6 @@
 import { FullscreenOverlayContainer, OverlayContainer } from '@angular/cdk/overlay'
 import { APP_BASE_HREF, PlatformLocation } from '@angular/common'
-import { HttpClientJsonpModule, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
+import { HttpClientJsonpModule, HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http'
 // Injectable
 import { APP_INITIALIZER, NgModule, ErrorHandler } from '@angular/core'
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button'
@@ -131,7 +131,9 @@ import { PublicLogoutModule } from './routes/public/public-logout/public-logout.
 import { PublicHomeComponent } from './routes/public/public-home/public-home.component'
 import { LoaderService } from '../../project/ws/app/src/lib/routes/home/services/loader.service'
 import { GlobalEventsService } from './services/global-events.service'
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 
+import { TranslateHttpLoader } from '@ngx-translate/http-loader'
 /** Improt from Sunbird Collection */
 
 // import { AvatarPhotoModule } from '@sunbird-cb/collection'
@@ -216,6 +218,12 @@ const appInitializer = (initSvc: InitService, logger: LoggerService) => async ()
     logger.error('ERROR DURING APP INITIALIZATION >', error)
   }
 }
+
+export function HttpLoaderFactory(http: HttpClient) {
+  // @ts-ignore - Version compatibility issue between core and http-loader
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json')
+}
+
 
 const getBaseHref = (platformLocation: PlatformLocation): string => {
   return platformLocation.getBaseHrefFromDOM()
@@ -342,6 +350,13 @@ const getBaseHref = (platformLocation: PlatformLocation): string => {
     PublicLogoutModule,
     PipeSafeSanitizerModule,
     TourModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+      },
+    }),
     SbUiResolverModule.forRoot(WIDGET_REGISTRATION_CONFIG),
     // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
