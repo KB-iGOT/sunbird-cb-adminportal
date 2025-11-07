@@ -44,6 +44,7 @@
     "@babel/core": "7.22.0",
     "@babel/preset-env": "7.25.4",
     "@ngx-translate/core": "^15.0.0",
+    "@ngx-translate/http-loader": "8.0.0",
     "@project-sunbird/telemetry-sdk": "0.0.26",
     "@sunbird-cb/collection": "1.0.56-cbrelease-4.8.28",
     "@sunbird-cb/rain-dashboards": "0.0.36-ang-13-16",
