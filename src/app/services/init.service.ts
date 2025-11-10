@@ -4,6 +4,7 @@ import { Inject, Injectable } from '@angular/core'
 import { MatIconRegistry } from '@angular/material/icon'
 import { DomSanitizer } from '@angular/platform-browser'
 import { BtnSettingsService } from '@sunbird-cb/collection'
+import { TranslateService } from '@ngx-translate/core'
 import { v4 as uuid } from 'uuid'
 import {
   hasPermissions,
@@ -63,6 +64,7 @@ export class InitService {
     private settingsSvc: BtnSettingsService,
     private userPreference: UserPreferenceService,
     private http: HttpClient,
+    private translate: TranslateService,
     // private router: Router, private authSvc: AuthKeycloakService,
     @Inject(APP_BASE_HREF) private baseHref: string,
     // private router: Router,
@@ -72,6 +74,9 @@ export class InitService {
     // private authSvc: AuthKeycloakService,
   ) {
     this.configSvc.isProduction = environment.production
+
+    // Initialize translation service
+    this.initializeTranslations()
 
     // Register pin icon for use in Knowledge Board
     // Usage: <mat-icon svgIcon="pin"></mat-icon>
@@ -99,6 +104,17 @@ export class InitService {
       'hubs',
       domSanitizer.bypassSecurityTrustResourceUrl('spv-assets/icons/hubs.svg'),
     )
+  }
+
+  private initializeTranslations(): void {
+    // Set default language
+    this.translate.setDefaultLang('en')
+
+    // Get the locale from baseHref or use 'en' as default
+    const currentLang = this.locale || 'en'
+
+    // Set and use the current language
+    this.translate.use(currentLang)
   }
 
   async init() {
