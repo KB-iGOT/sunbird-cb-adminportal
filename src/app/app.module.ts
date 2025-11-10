@@ -220,8 +220,13 @@ const appInitializer = (initSvc: InitService, logger: LoggerService) => async ()
 }
 
 export function HttpLoaderFactory(http: HttpClient) {
+  // Use assets path for translation files
+  // This will work in both local and deployed environments
+  const prefix = './assets/i18n/'
+  const suffix = '.json'
+
   // @ts-ignore - Version compatibility issue between core and http-loader
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json')
+  return new TranslateHttpLoader(http, prefix, suffix)
 }
 
 
