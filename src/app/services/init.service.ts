@@ -111,7 +111,7 @@ export class InitService {
     this.translate.setDefaultLang('en')
 
     // Get the locale from baseHref or use 'en' as default
-    const currentLang = this.locale || 'en'
+    const currentLang = 'en'
 
     // Set and use the current language
     this.translate.use(currentLang)
