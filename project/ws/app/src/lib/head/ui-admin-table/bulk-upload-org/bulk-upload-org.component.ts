@@ -10,10 +10,11 @@ import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack
   styleUrls: ['./bulk-upload-org.component.scss']
 })
 export class BulkUploadOrgComponent implements OnInit {
-
+  showFileError = false
   bulkUploadConfig!: any
   lastUploadList!: any[]
-
+  startIndex = 0
+  lastIndex = 20
   constructor(
     public dialogRef: MatDialogRef<BulkUploadOrgComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
