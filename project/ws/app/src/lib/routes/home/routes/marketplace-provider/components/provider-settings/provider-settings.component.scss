@@ -1,0 +1,25 @@
+.provider-form-controls {
+  border: 1px solid #1b4ca1;
+  padding: 16px 24px;
+  border-radius: 12px;
+  background: #fff;
+
+  .label {
+    font-family: Lato;
+    font-weight: 700;
+    font-size: 14px;
+    color: #212529;
+  }
+  .field-meta {
+    font-family: Lato;
+    font-weight: 400;
+    font-size: 14px;
+    color: #00000099;
+  }
+  .mat-icon {
+    font-size: 9px;
+    height: 15px !important;
+    width: 15px !important;
+    margin-left: 2px;
+  }
+}

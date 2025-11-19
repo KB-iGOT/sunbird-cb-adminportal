@@ -104,6 +104,10 @@ export class InitService {
       'hubs',
       domSanitizer.bypassSecurityTrustResourceUrl('spv-assets/icons/hubs.svg'),
     )
+    iconRegistry.addSvgIcon(
+      'field_i',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/field-i-icon.svg'),
+    )
   }
 
   private initializeTranslations(): void {

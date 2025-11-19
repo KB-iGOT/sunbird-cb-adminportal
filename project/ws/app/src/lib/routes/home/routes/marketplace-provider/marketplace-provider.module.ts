@@ -36,6 +36,10 @@ import { ViaApiComponent } from './components/via-api/via-api.component'
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio'
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle'
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field'
+import { ConfigureProviderComponent } from './components/configure-provider/configure-provider.component'
+import { MatSidenavModule } from '@angular/material/sidenav'
+import { ConfigureProviderMenuComponent } from './components/configure-provider-menu/configure-provider-menu.component'
+import { ProviderSettingsComponent } from './components/provider-settings/provider-settings.component'
 
 
 const routes: Routes = [
@@ -73,6 +77,21 @@ const routes: Routes = [
       pageData: PageResolve,
     },
   },
+  {
+    path: 'configure-provider',
+    pathMatch: 'full',
+    component: ConfigureProviderComponent,
+    data: {
+      pageId: 'app/home/marketplace-providers/onboard-partner',
+      module: 'marketplace-providers',
+      pageType: 'feature',
+      pageKey: 'marcket_place',
+    },
+    resolve: {
+      pageData: PageResolve,
+    },
+  },
+
 ]
 
 @NgModule({
@@ -88,6 +107,10 @@ const routes: Routes = [
     TransformationsComponent,
     ViaApiParamsTableComponent,
     ViaApiComponent,
+    ConfigureProviderComponent,
+    ConfigureProviderMenuComponent,
+    ProviderSettingsComponent,
+    ProviderSettingsComponent
   ],
   imports: [
     CommonModule,
@@ -114,7 +137,8 @@ const routes: Routes = [
     MatSelectModule,
     MatRadioModule,
     MatSlideToggleModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatSidenavModule
   ],
   providers: [DatePipe, LoaderService],
   exports: [RouterModule],

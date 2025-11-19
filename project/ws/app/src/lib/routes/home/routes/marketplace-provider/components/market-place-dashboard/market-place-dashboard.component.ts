@@ -156,7 +156,7 @@ export class MarketPlaceDashboardComponent implements OnInit {
           isAuthenticated: _.get(event, 'rows.isAuthenticate', false),
           partnerCode: _.get(event, 'rows.partnerCode', false),
         }
-        this.navigateToConfiguration(providerDetails)
+        this.navigateToConfigurationV2(providerDetails)
         break
       case 'deactivate':
         this.openConformationPopup(event.row)
@@ -169,6 +169,16 @@ export class MarketPlaceDashboardComponent implements OnInit {
       this.router.navigate([`/app/home/marketplace-providers/onboard-partner/${providerDetails.id}`])
     } else {
       this.router.navigate([`/app/home/marketplace-providers/onboard-partner`])
+    }
+  }
+
+  navigateToConfigurationV2(providerDetails?: any) {
+    if (providerDetails) {
+      this.router.navigate([`/app/home/marketplace-providers/configure-provider`], {
+        queryParams: { id: providerDetails.id }
+      })
+    } else {
+      this.router.navigate([`/app/home/marketplace-providers/configure-provider`])
     }
   }
 
@@ -224,7 +234,7 @@ export class MarketPlaceDashboardComponent implements OnInit {
         if (res) {
           setTimeout(() => {
             this.getProviders()
-          },         2000)
+          }, 2000)
         } else {
           this.displayLoader = false
         }
