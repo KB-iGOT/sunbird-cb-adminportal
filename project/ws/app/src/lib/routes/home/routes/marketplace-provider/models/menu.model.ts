@@ -25,3 +25,11 @@ export const MARKETPLACE_CONFIGURE_PROVIDERS_MENU = [
     slug: 'provider_settings',
   },
 ]
+
+export enum ProviderMenuItems {
+  ProviderDetails = 'provider_details',
+  SSOIntegration = 'sso_integration',
+  ActiveCourses = 'active_courses',
+  ConfigureCertificate = 'configure_certificate',
+  ProviderSettings = 'provider_settings',
+}

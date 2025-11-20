@@ -40,7 +40,9 @@ import { ConfigureProviderComponent } from './components/configure-provider/conf
 import { MatSidenavModule } from '@angular/material/sidenav'
 import { ConfigureProviderMenuComponent } from './components/configure-provider-menu/configure-provider-menu.component'
 import { ProviderSettingsComponent } from './components/provider-settings/provider-settings.component'
-
+import { ProviderDetailsV2Component } from './components/provider-details-v2/provider-details-v2.component'
+import { MatRippleModule } from '@angular/material/core'
+import { HelpCenterGuideComponentV2 } from './components/help-center-guide-v2/help-center-guide-v2.component'
 
 const routes: Routes = [
   {
@@ -110,7 +112,9 @@ const routes: Routes = [
     ConfigureProviderComponent,
     ConfigureProviderMenuComponent,
     ProviderSettingsComponent,
-    ProviderSettingsComponent
+    ProviderSettingsComponent,
+    ProviderDetailsV2Component,
+    HelpCenterGuideComponentV2
   ],
   imports: [
     CommonModule,
@@ -138,7 +142,8 @@ const routes: Routes = [
     MatRadioModule,
     MatSlideToggleModule,
     MatFormFieldModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatRippleModule
   ],
   providers: [DatePipe, LoaderService],
   exports: [RouterModule],

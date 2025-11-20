@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
-import { MARKETPLACE_CONFIGURE_PROVIDERS_MENU } from '../../constants/menu.constants'
+import { MARKETPLACE_CONFIGURE_PROVIDERS_MENU } from '../../models/menu.model'
 // import { MarketplaceService } from '../../services/marketplace.service'
 
 @Component({
@@ -14,7 +14,7 @@ export class ConfigureProviderMenuComponent implements OnInit {
   MENU_ITEMS = MARKETPLACE_CONFIGURE_PROVIDERS_MENU
 
   constructor() {
-    this.activeItem = this.MENU_ITEMS[4]
+    this.activeItem = this.MENU_ITEMS[0]
   }
 
 

@@ -1,0 +1,175 @@
+<div class="wrapper-form">
+  <form [formGroup]="providerDetailsForm" class="provider-form-controls">
+    <p class="page-title">Provider Details</p>
+    <div class="flex flex-column gap-1 provider-logo mb-3">
+      <div class="logo-container">
+        <input #logoInput type="file" accept="image/*" hidden (change)="onLogoSelected($event)" />
+
+        <div class="empty-logo relative" *ngIf="!logoPreviewUrl">
+          <div class="edit-icon" (click)="triggerLogoSelect()" role="button" tabindex="0">
+            <mat-icon>edit</mat-icon>
+          </div>
+        </div>
+
+        <div class="logo-preview" *ngIf="logoPreviewUrl">
+          <img [src]="logoPreviewUrl" alt="logo preview" class="logo-img" />
+          <div class="close-icon" (click)="removeLogo()" role="button" tabindex="0">
+            <mat-icon>close</mat-icon>
+          </div>
+        </div>
+
+        <mat-error *ngIf="logoError" class="mt-1">{{ logoError }}</mat-error>
+
+        <div class="logo-filename mt-2" *ngIf="logoFile || controls['providerLogo'].value">
+          {{ logoFile?.name || controls['providerLogo'].value }}
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-column gap-1 mat-field-rounded">
+      <div class="flex items-center gap-1 required">
+        <span class="label">Content Partner Name</span>
+      </div>
+      <mat-form-field class="w-full">
+        <input
+          formControlName="contentPartnerName"
+          matInput
+          placeholder="Enter Content Partner Name"
+        />
+        <mat-error
+          *ngIf="controls['contentPartnerName'].touched && controls['contentPartnerName'].errors?.['required']"
+          >Content Partner Name is required.</mat-error
+        >
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-column gap-1 mat-field-rounded">
+      <div class="flex items-center gap-1 required">
+        <span class="label">Partner Code</span>
+      </div>
+      <mat-form-field class="w-full">
+        <input matInput formControlName="partnerCode" placeholder="Partner Code" />
+        <mat-error
+          *ngIf="controls['partnerCode'].touched && controls['partnerCode'].errors?.['required']"
+          >Partner Code is required.</mat-error
+        >
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-column gap-1 mat-field-rounded">
+      <div class="flex items-center gap-1 required">
+        <span class="label">Website URL</span>
+      </div>
+      <mat-form-field class="w-full">
+        <input matInput formControlName="websiteUrl" placeholder="https://example.com" />
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-column gap-1">
+      <div class="flex items-center gap-1 required">
+        <span class="label">Description</span>
+      </div>
+      <mat-form-field class="w-full">
+        <textarea
+          matInput
+          formControlName="description"
+          placeholder="Add description"
+          rows="4"
+        ></textarea>
+        <mat-hint>Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-column gap-2 mt-3">
+      <div class="flex items-center gap-1 required">
+        <span class="label">Provider Specific Tips</span>
+      </div>
+
+      <a (click)="addTips()" class="addtips-btn" matRipple>
+        <mat-icon class="addtips-icon">add</mat-icon>
+        <span class="addtips-text">Add tips</span>
+      </a>
+
+      <div class="flex flex-column gap-2" formArrayName="providerTips">
+        <ng-container *ngFor="let tip of getTipsList.controls; let i = index">
+          <div class="flex gap-0 mat-field-rounded">
+            <div class="tips-form-control flex items-center">
+              <mat-form-field class="w-full">
+                <input [id]="'item-' + i" [formControlName]="i" matInput placeholder="Type here" />
+              </mat-form-field>
+            </div>
+            <button
+              type="button"
+              mat-button
+              (click)="removeTipAtIndex(i)"
+              class="removeTipBox flex justify-center items-center"
+            >
+              <mat-icon class="removeIcon">close</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="flex flex-column gap-1 mat-field-rounded mt-2">
+      <div class="flex items-center gap-1 required">
+        <span class="label">Partnership Agreement</span>
+      </div>
+      <ng-container *ngIf="!pdfUploaded; else fileUploaded">
+        <div
+          class="parnter-ship-agreement p-4"
+          wsAuthDragDrop
+          (fileDropped)="onDrop($event)"
+          (click)="fileInput?.nativeElement.click()"
+        >
+          <div class="flex flex-col gap-1 items-center">
+            <div class="icon">
+              <mat-icon svgIcon="upload_upward_arrow"></mat-icon>
+            </div>
+            <div class="meta-text-1" onclick="document.getElementById('fileInput')?.click()">
+              Select File to upload
+            </div>
+            <div class="meta-text-2 text-center">or drag and drop here Max Size - 1GB</div>
+          </div>
+          <input
+            type="file"
+            id="fileInput"
+            hidden
+            accept=".pdf"
+            (change)="onDrop($event.target.files[0]); fileInput.value = null"
+          />
+        </div>
+      </ng-container>
+      <ng-template #fileUploaded>
+        <div class="flex items-center my-2 fileUploadedCard">
+          <mat-icon class="removePdf" matTooltip="Remove PDF" (click)="removePdf()">close</mat-icon>
+          <img src="/assets/icons/pdf.svg" alt="uploaded pdf" class="samplePdf" />
+          <div class="flex flex-column justify-between pdfDetails">
+            <span class="pdfName">{{ fileName }}</span>
+            <ng-container *ngIf="fileUploadedDate">
+              <span class="fileUplaodedDate">File uploaded : {{ fileUploadedDate }}</span>
+            </ng-container>
+            <span class="documentAttached flex items-center">
+              <mat-icon class="greenTick">check_circle</mat-icon>
+              Document attached
+            </span>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="action-buttons flex items-center gap-3 justify-center mt-4">
+      <button
+        mat-flat-button
+        class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline font-bold text-sm"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat"
+      >
+        Update
+      </button>
+    </div>
+  </form>
+</div>

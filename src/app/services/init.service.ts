@@ -108,6 +108,10 @@ export class InitService {
       'field_i',
       domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/field-i-icon.svg'),
     )
+    iconRegistry.addSvgIcon(
+      'upload_upward_arrow',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/upload-colored.svg'),
+    )
   }
 
   private initializeTranslations(): void {
