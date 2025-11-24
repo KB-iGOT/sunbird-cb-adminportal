@@ -2,15 +2,16 @@
   <div class="flex items-center justify-between mb-5">
     <span class="page-title">{{ 'Provider Settings' }}</span>
     <div class="action-buttons flex items-center gap-3">
-      <button
+      <!-- <button
         mat-flat-button
         class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline font-bold text-sm"
       >
         Cancel
-      </button>
+      </button> -->
       <button
         mat-flat-button
         class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat"
+        (click)="submit()"
       >
         Save
       </button>
@@ -29,7 +30,7 @@
         Partner.
       </div>
       <mat-form-field class="w-full">
-        <input formControlName="overAllLimit" matInput placeholder="Set Limit" />
+        <input formControlName="overAllLimit" matInput placeholder="Set Limit" type="number" />
       </mat-form-field>
     </div>
 
@@ -45,10 +46,10 @@
           Set here the maximum Course enrolment limit possible for any learner of this iGOT
           Marketplace Partner.
         </div>
-        <mat-slide-toggle> </mat-slide-toggle>
+        <mat-slide-toggle formControlName="isUserWiseLimitEnabled"> </mat-slide-toggle>
       </div>
       <mat-form-field class="w-full">
-        <input formControlName="userWiseLimit" matInput placeholder="Set Limit" />
+        <input formControlName="userWiseLimit" matInput placeholder="Set Limit" type="number" />
       </mat-form-field>
     </div>
 
@@ -64,10 +65,10 @@
           Set here the maximum concurrent/parallel Course enrolment limit possible for any learner
           of this iGOT Marketplace Partner.
         </div>
-        <mat-slide-toggle> </mat-slide-toggle>
+        <mat-slide-toggle formControlName="isConcurrentLimitEnabled"> </mat-slide-toggle>
       </div>
       <mat-form-field class="w-full">
-        <input formControlName="concurrentLimit" matInput placeholder="Set Limit" />
+        <input formControlName="concurrentLimit" matInput placeholder="Set Limit" type="number" />
       </mat-form-field>
     </div>
 
@@ -82,10 +83,11 @@
         <div class="field-meta">
           Require Karma Points for enrolment. You need to add Karma points below.
         </div>
-        <mat-slide-toggle> </mat-slide-toggle>
+        <mat-slide-toggle formControlName="addKarmaPointEnabled"> </mat-slide-toggle>
       </div>
-      <mat-form-field class="w-full">
-        <input formControlName="addKarmaPoint" matInput placeholder="Set Limit" />
+      <mat-form-field class="w-full relative karma-point-control">
+        <input formControlName="karmaPoints" matInput placeholder="Set Limit" type="number" />
+        <mat-icon svgIcon="karma_points" class="karma-points"></mat-icon>
       </mat-form-field>
     </div>
   </form>

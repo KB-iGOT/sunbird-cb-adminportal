@@ -16,7 +16,7 @@
     font-size: 14px;
     color: #00000099;
   }
-  .mat-icon {
+  .mat-icon:not(.karma-points) {
     font-size: 9px;
     height: 15px !important;
     width: 15px !important;
@@ -29,4 +29,19 @@
   font-weight: 600;
   font-size: 20px;
   color: #000000;
+}
+
+mat-icon.karma-points {
+  font-size: 40px !important;
+  height: 40px !important;
+  width: 40px !important;
+  position: absolute;
+  left: 4px;
+  top: 5px;
+}
+
+::ng-deep .karma-point-control {
+  .mat-form-field-infix {
+    padding-left: 3rem !important;
+  }
 }
