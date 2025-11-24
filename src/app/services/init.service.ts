@@ -112,6 +112,10 @@ export class InitService {
       'upload_upward_arrow',
       domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/upload-colored.svg'),
     )
+    iconRegistry.addSvgIcon(
+      'karma_points',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/karma-points.svg'),
+    )
   }
 
   private initializeTranslations(): void {

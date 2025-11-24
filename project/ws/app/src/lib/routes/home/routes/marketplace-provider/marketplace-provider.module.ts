@@ -40,9 +40,9 @@ import { ConfigureProviderComponent } from './components/configure-provider/conf
 import { MatSidenavModule } from '@angular/material/sidenav'
 import { ConfigureProviderMenuComponent } from './components/configure-provider-menu/configure-provider-menu.component'
 import { ProviderSettingsComponent } from './components/provider-settings/provider-settings.component'
-import { ProviderDetailsV2Component } from './components/provider-details-v2/provider-details-v2.component'
 import { MatRippleModule } from '@angular/material/core'
 import { HelpCenterGuideComponentV2 } from './components/help-center-guide-v2/help-center-guide-v2.component'
+import { ProviderDetailsV2Component } from './components/provider-details-v2/provider-details-v2.component'
 
 const routes: Routes = [
   {

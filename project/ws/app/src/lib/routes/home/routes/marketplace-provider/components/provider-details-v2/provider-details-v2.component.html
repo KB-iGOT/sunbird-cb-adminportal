@@ -4,6 +4,7 @@
     <div class="flex flex-column gap-1 provider-logo mb-3">
       <div class="logo-container">
         <input #logoInput type="file" accept="image/*" hidden (change)="onLogoSelected($event)" />
+        <canvas #canvas class="canvas-inputfile"></canvas>
 
         <div class="empty-logo relative" *ngIf="!logoPreviewUrl">
           <div class="edit-icon" (click)="triggerLogoSelect()" role="button" tabindex="0">
@@ -35,10 +36,24 @@
           matInput
           placeholder="Enter Content Partner Name"
         />
-        <mat-error
-          *ngIf="controls['contentPartnerName'].touched && controls['contentPartnerName'].errors?.['required']"
-          >Content Partner Name is required.</mat-error
+        <mat-hint class="flex items-center justify-end w-full">
+          <span class="hint-text-style"
+            >{{ getTextLength('contentPartnerName') }}/70</span
+          ></mat-hint
         >
+        <mat-error>
+          <div class="flex gap-4">
+            <span *ngIf="getControlValidation('contentPartnerName', 'required')">
+              Content Partner Name is required.
+            </span>
+            <span *ngIf="getControlValidation('contentPartnerName', 'pattern')">
+              Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported.
+            </span>
+            <span *ngIf="getControlValidation('contentPartnerName', 'maxlength')">
+              Maximum 70 characters allowed.
+            </span>
+          </div>
+        </mat-error>
       </mat-form-field>
     </div>
 
@@ -48,10 +63,23 @@
       </div>
       <mat-form-field class="w-full">
         <input matInput formControlName="partnerCode" placeholder="Partner Code" />
-        <mat-error
-          *ngIf="controls['partnerCode'].touched && controls['partnerCode'].errors?.['required']"
-          >Partner Code is required.</mat-error
-        >
+        <mat-hint class="flex items-center justify-end w-full">
+          <span class="hint-text-style">{{ getTextLength('partnerCode') }}/6</span>
+        </mat-hint>
+
+        <mat-error>
+          <div class="flex gap-4">
+            <span *ngIf="getControlValidation('partnerCode', 'required')">
+              Partner Code is required.
+            </span>
+            <span *ngIf="getControlValidation('partnerCode', 'pattern')">
+              Only alphanumeric characters allowed
+            </span>
+            <span *ngIf="getControlValidation('partnerCode', 'maxlength')">
+              Maximum 6 characters allowed
+            </span>
+          </div>
+        </mat-error>
       </mat-form-field>
     </div>
 
@@ -61,6 +89,23 @@
       </div>
       <mat-form-field class="w-full">
         <input matInput formControlName="websiteUrl" placeholder="https://example.com" />
+        <mat-hint class="flex items-center justify-end w-full">
+          <span class="hint-text-style">{{ getTextLength('websiteUrl') }}/1024</span>
+        </mat-hint>
+
+        <mat-error>
+          <div class="flex gap-4">
+            <span *ngIf="getControlValidation('websiteUrl', 'required')">
+              Website URL is required.
+            </span>
+            <span *ngIf="getControlValidation('websiteUrl', 'pattern')">
+              Please enter a valid URL (http/https)
+            </span>
+            <span *ngIf="getControlValidation('websiteUrl', 'maxlength')">
+              Maximum 1024 characters allowed
+            </span>
+          </div>
+        </mat-error>
       </mat-form-field>
     </div>
 
@@ -75,7 +120,26 @@
           placeholder="Add description"
           rows="4"
         ></textarea>
-        <mat-hint>Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported</mat-hint>
+        <mat-hint class="flex items-center justify-between w-full">
+          <span class="hint-text-style"
+            >Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported</span
+          >
+          <span class="hint-text-style">{{ getTextLength('description') }}/500</span>
+        </mat-hint>
+
+        <mat-error>
+          <div class="flex gap-4">
+            <span *ngIf="getControlValidation('description', 'required')">
+              Description is required.
+            </span>
+            <span *ngIf="getControlValidation('description', 'pattern')">
+              Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported
+            </span>
+            <span *ngIf="getControlValidation('description', 'maxlength')">
+              Maximum 500 characters allowed
+            </span>
+          </div>
+        </mat-error>
       </mat-form-field>
     </div>
 
@@ -159,16 +223,17 @@
 
     <div class="action-buttons flex items-center gap-3 justify-center mt-4">
       <button
+        (click)="navigateToProvidersDashboard()"
         mat-flat-button
         class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline font-bold text-sm"
       >
         Cancel
       </button>
-      <button
+      <button (click)="submit()"
         mat-flat-button
         class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat"
       >
-        Update
+        {{ providerDetailsBeforeUpdate ? 'Update' : 'Save' }}
       </button>
     </div>
   </form>
