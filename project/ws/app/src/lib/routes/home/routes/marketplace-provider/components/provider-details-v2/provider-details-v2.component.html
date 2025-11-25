@@ -154,7 +154,7 @@
       </a>
 
       <div class="flex flex-column gap-2" formArrayName="providerTips">
-        <ng-container *ngFor="let tip of getTipsList.controls; let i = index">
+        <ng-container *ngFor="let tip of getTipsList?.controls; let i = index">
           <div class="flex gap-0 mat-field-rounded">
             <div class="tips-form-control flex items-center">
               <mat-form-field class="w-full">
