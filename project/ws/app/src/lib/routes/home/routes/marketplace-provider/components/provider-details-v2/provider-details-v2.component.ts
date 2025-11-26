@@ -7,7 +7,7 @@ import * as _ from 'lodash'
 import { forkJoin, of } from 'rxjs'
 import { mergeMap } from 'rxjs/operators'
 import { Router } from '@angular/router'
-import { SnackbarComponent } from '../../../../../../head/snackbar/snackbar.component'
+import { SnackbarComponent } from '@sunbird-cb/consumption'
 @Component({
   selector: 'ws-app-provider-details-v2',
   templateUrl: './provider-details-v2.component.html',
@@ -416,7 +416,7 @@ export class ProviderDetailsV2Component {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: {
         message: message, type: type,
-      }, duration: 500000, panelClass: type,
+      }, duration: 5000, panelClass: type,
     })
   }
 
