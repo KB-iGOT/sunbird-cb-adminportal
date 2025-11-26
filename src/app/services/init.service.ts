@@ -104,6 +104,18 @@ export class InitService {
       'hubs',
       domSanitizer.bypassSecurityTrustResourceUrl('spv-assets/icons/hubs.svg'),
     )
+    iconRegistry.addSvgIcon(
+      'field_i',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/field-i-icon.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'upload_upward_arrow',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/upload-colored.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'karma_points',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/karma-points.svg'),
+    )
   }
 
   private initializeTranslations(): void {

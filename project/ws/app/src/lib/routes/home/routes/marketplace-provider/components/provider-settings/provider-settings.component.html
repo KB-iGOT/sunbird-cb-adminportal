@@ -1,0 +1,97 @@
+<div class="wrapper-form">
+  <div class="flex items-center justify-between mb-5">
+    <span class="page-title">{{ 'Provider Settings' }}</span>
+    <div class="action-buttons flex items-center gap-3">
+      <!-- <button
+        mat-flat-button
+        class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline font-bold text-sm"
+      >
+        Cancel
+      </button> -->
+      <button
+        mat-flat-button
+        class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat"
+        (click)="submit()"
+      >
+        Save
+      </button>
+    </div>
+  </div>
+  <form [formGroup]="providerSettingsForm" class="provider-form-controls">
+    <div class="flex flex-column gap-1 mat-field-rounded">
+      <div class="flex items-center gap-1 required">
+        <span class="label"
+          >Over All Limit
+          <mat-icon svgIcon="field_i" matTooltip="Maximum overall Course enrolment limit possible for this iGOT Marketplace
+        Partner"></mat-icon>
+        </span>
+      </div>
+      <div class="field-meta">
+        Set here the maximum overall Course enrolment limit possible for this iGOT Marketplace
+        Partner.
+      </div>
+      <mat-form-field class="w-full">
+        <input formControlName="overAllLimit" matInput placeholder="Set Limit" type="number" min="0" />
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-column gap-1 mat-field-rounded">
+      <div class="flex items-center gap-1 required">
+        <span class="label"
+          >User Wise Limit
+          <mat-icon svgIcon="field_i" matTooltip="Maximum overall Course enrolment limit possible for this iGOT Marketplace
+        Partner"></mat-icon>
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <div class="field-meta">
+          Set here the maximum Course enrolment limit possible for any learner of this iGOT
+          Marketplace Partner.
+        </div>
+        <mat-slide-toggle formControlName="isUserWiseLimitEnabled"> </mat-slide-toggle>
+      </div>
+      <mat-form-field class="w-full">
+        <input formControlName="userWiseLimit" matInput placeholder="Set Limit" type="number" min="0" />
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-column gap-1 mat-field-rounded">
+      <div class="flex items-center gap-1 required">
+        <span class="label"
+          >Concurrent Limit
+          <mat-icon svgIcon="field_i" matTooltip="Maximum concurrent/parallel Course enrolment limit possible for any learner
+          of this iGOT Marketplace Partner"></mat-icon>
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <div class="field-meta">
+          Set here the maximum concurrent/parallel Course enrolment limit possible for any learner
+          of this iGOT Marketplace Partner.
+        </div>
+        <mat-slide-toggle formControlName="isConcurrentLimitEnabled"> </mat-slide-toggle>
+      </div>
+      <mat-form-field class="w-full">
+        <input formControlName="concurrentLimit" matInput placeholder="Set Limit" type="number" min="0" />
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-column gap-1 mat-field-rounded">
+      <div class="flex items-center gap-1 required">
+        <span class="label"
+          >Add Karma Point
+          <mat-icon svgIcon="field_i" matTooltip="Minimum Karma Point balance a learner must have to access any content within the Marketplace"></mat-icon>
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <div class="field-meta">
+          Require Karma Points for enrolment. You need to add Karma points below.
+        </div>
+        <mat-slide-toggle formControlName="addKarmaPointEnabled"> </mat-slide-toggle>
+      </div>
+      <mat-form-field class="w-full relative karma-point-control">
+        <input formControlName="karmaPoints" matInput placeholder="Set Limit" type="number" min="0" />
+        <mat-icon svgIcon="karma_points" class="karma-points"></mat-icon>
+      </mat-form-field>
+    </div>
+  </form>
+</div>

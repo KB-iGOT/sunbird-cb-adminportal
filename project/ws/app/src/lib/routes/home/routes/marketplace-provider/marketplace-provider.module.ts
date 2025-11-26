@@ -36,7 +36,13 @@ import { ViaApiComponent } from './components/via-api/via-api.component'
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio'
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle'
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field'
-
+import { ConfigureProviderComponent } from './components/configure-provider/configure-provider.component'
+import { MatSidenavModule } from '@angular/material/sidenav'
+import { ConfigureProviderMenuComponent } from './components/configure-provider-menu/configure-provider-menu.component'
+import { ProviderSettingsComponent } from './components/provider-settings/provider-settings.component'
+import { MatRippleModule } from '@angular/material/core'
+import { HelpCenterGuideComponentV2 } from './components/help-center-guide-v2/help-center-guide-v2.component'
+import { ProviderDetailsV2Component } from './components/provider-details-v2/provider-details-v2.component'
 
 const routes: Routes = [
   {
@@ -73,6 +79,21 @@ const routes: Routes = [
       pageData: PageResolve,
     },
   },
+  {
+    path: 'configure-provider',
+    pathMatch: 'full',
+    component: ConfigureProviderComponent,
+    data: {
+      pageId: 'app/home/marketplace-providers/onboard-partner',
+      module: 'marketplace-providers',
+      pageType: 'feature',
+      pageKey: 'marcket_place',
+    },
+    resolve: {
+      pageData: PageResolve,
+    },
+  },
+
 ]
 
 @NgModule({
@@ -88,6 +109,12 @@ const routes: Routes = [
     TransformationsComponent,
     ViaApiParamsTableComponent,
     ViaApiComponent,
+    ConfigureProviderComponent,
+    ConfigureProviderMenuComponent,
+    ProviderSettingsComponent,
+    ProviderSettingsComponent,
+    ProviderDetailsV2Component,
+    HelpCenterGuideComponentV2
   ],
   imports: [
     CommonModule,
@@ -114,7 +141,9 @@ const routes: Routes = [
     MatSelectModule,
     MatRadioModule,
     MatSlideToggleModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatSidenavModule,
+    MatRippleModule
   ],
   providers: [DatePipe, LoaderService],
   exports: [RouterModule],
