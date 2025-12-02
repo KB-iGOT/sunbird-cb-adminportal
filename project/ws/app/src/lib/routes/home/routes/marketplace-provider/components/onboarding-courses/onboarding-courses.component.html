@@ -1,0 +1,38 @@
+<div class="onboarding-courses-wrapper">
+  <ng-container *ngIf="!addCoursesFlag">
+    <div class="flex justify-between items-center">
+      <p class="page-title">Courses</p>
+      <button
+        (click)="addCourses()"
+        mat-flat-button
+        class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat"
+      >
+        Add Course
+      </button>
+    </div>
+    <div class="grouped-tabs-courses">
+      <mat-tab-group>
+        <mat-tab label="Upload Status">
+          <div class="courses-table">
+            <ws-app-courses-list-table
+              [coursesList]="DUMMY_PLACEHOLDER_CONTENT"
+            ></ws-app-courses-list-table>
+          </div>
+        </mat-tab>
+        <mat-tab label="Published Courses">
+          <div class="courses-table">
+            <ws-app-courses-list-table></ws-app-courses-list-table></div
+        ></mat-tab>
+        <mat-tab label="Not Published Courses">
+          <div class="courses-table">
+            <ws-app-courses-list-table></ws-app-courses-list-table>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="addCoursesFlag">
+    <ws-app-add-provider-courses (action)="actionHandler($event)"></ws-app-add-provider-courses>
+  </ng-container>
+</div>

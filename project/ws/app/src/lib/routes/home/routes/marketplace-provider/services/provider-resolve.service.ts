@@ -20,7 +20,7 @@ export class ProviderResolveService implements Resolve<IResolveResponse<any>> {
     _route: ActivatedRouteSnapshot,
     _state: RouterStateSnapshot
   ): Promise<IResolveResponse<any>> {
-    const partnerId = _route.paramMap.get('id')
+    const partnerId = _route.paramMap.get('id') || _route.queryParamMap.get('id')
     if (partnerId) {
       try {
         const response = await this.marketPlaceSvc.getProviderDetails(partnerId).toPromise()

@@ -12,7 +12,7 @@ import { LoaderService } from '../../../../services/loader.service'
   styleUrls: ['./provider-settings.component.scss']
 })
 export class ProviderSettingsComponent implements OnChanges {
-  providerSettingsForm: FormGroup
+  providerSettingsForm!: FormGroup
   @Input() providerDetails?: any
   @Output() loadProviderDetails = new EventEmitter<Boolean>()
 
@@ -24,6 +24,17 @@ export class ProviderSettingsComponent implements OnChanges {
     private snackBar: MatSnackBar,
     private loaderService: LoaderService
   ) {
+    this.initializeForm()
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.providerDetails && changes.providerDetails.currentValue) {
+      this.providerDetailsBeforeUpdate = JSON.parse(JSON.stringify(changes.providerDetails.currentValue))
+      this.patchProviderSettings(changes.providerDetails.currentValue)
+    }
+  }
+
+  initializeForm() {
     this.providerSettingsForm = this.fb.group({
       overAllLimit: [null, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
       userWiseLimit: [null, [Validators.pattern(/^[0-9]*$/)]],
@@ -33,13 +44,45 @@ export class ProviderSettingsComponent implements OnChanges {
       karmaPoints: [null, [Validators.pattern(/^[0-9]*$/)]],
       addKarmaPointEnabled: [false],
     })
-  }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.providerDetails && changes.providerDetails.currentValue) {
-      this.providerDetailsBeforeUpdate = JSON.parse(JSON.stringify(changes.providerDetails.currentValue))
-      this.patchProviderSettings(changes.providerDetails.currentValue)
-    }
+    this.controls['isUserWiseLimitEnabled'].valueChanges.subscribe((value) => {
+      if (value) {
+        this.controls['userWiseLimit'].setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)])
+        this.controls['userWiseLimit'].enable()
+
+      } else {
+        this.controls['userWiseLimit'].clearValidators()
+        this.controls['userWiseLimit'].disable()
+
+      }
+      this.controls['userWiseLimit'].updateValueAndValidity()
+    })
+
+    this.controls['isConcurrentLimitEnabled'].valueChanges.subscribe((value) => {
+      if (value) {
+        this.controls['concurrentLimit'].setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)])
+        this.controls['concurrentLimit'].enable()
+
+      } else {
+        this.controls['concurrentLimit'].clearValidators()
+        this.controls['concurrentLimit'].disable()
+
+      }
+      this.controls['concurrentLimit'].updateValueAndValidity()
+    })
+
+    this.controls['addKarmaPointEnabled'].valueChanges.subscribe((value) => {
+      if (value) {
+        this.controls['karmaPoints'].setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)])
+        this.controls['karmaPoints'].enable()
+
+      } else {
+        this.controls['karmaPoints'].clearValidators()
+        this.controls['karmaPoints'].disable()
+
+      }
+      this.controls['karmaPoints'].updateValueAndValidity()
+    })
   }
 
   patchProviderSettings(providerDetails: any) {
@@ -72,7 +115,7 @@ export class ProviderSettingsComponent implements OnChanges {
 
   createProviderSettings() {
     this.loaderService.changeLoad.next(true)
-    const formDetails = this.providerSettingsForm.value
+    const formDetails = this.providerSettingsForm.getRawValue()
     const formBody: any = {
       overAllLimit: formDetails.overAllLimit,
       userWiseLimit: formDetails.isUserWiseLimitEnabled ? formDetails.userWiseLimit : null,
@@ -102,7 +145,7 @@ export class ProviderSettingsComponent implements OnChanges {
 
   updateProviderSettings() {
     this.loaderService.changeLoad.next(true)
-    const formDetails = this.providerSettingsForm.value
+    const formDetails = this.providerSettingsForm.getRawValue()
 
     this.providerDetailsBeforeUpdate['data']['overAllLimit'] = formDetails.overAllLimit
     this.providerDetailsBeforeUpdate['data']['userWiseLimit'] = formDetails.userWiseLimit

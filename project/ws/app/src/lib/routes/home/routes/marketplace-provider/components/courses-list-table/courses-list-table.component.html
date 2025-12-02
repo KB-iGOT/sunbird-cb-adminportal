@@ -1,0 +1,299 @@
+<div class="courses-content-container">
+  <!-- Search and Filter Section -->
+  <div class="content-body-filter mt-4 flex items-center justify-between">
+    <div class="content-search w-full">
+      <div class="search-wrapper w-1/2">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input
+          type="text"
+          #searchInput
+          placeholder="Type here to search..."
+          class="search-input"
+          (input)="onSearchInput()"
+          [(ngModel)]="searchQuery"
+        />
+      </div>
+    </div>
+    <div class="content-filter" (click)="openFilterSidebar()">
+      <mat-icon class="filter-icon">filter_list</mat-icon>
+      <span>Filter</span>
+    </div>
+  </div>
+
+  <!-- Selected Filters Display -->
+  <div
+    class="flex flex-wrapped margin-top-m filter-chip-list flex-between margin-bottom-m flex-middle"
+    *ngIf="filters && filters.length"
+  >
+    <div class="flex flex-middle w-full">
+      <span class="selected-filter-lbl mr-2">Selected items -</span>
+      <mat-chip-list #chipList aria-label="Filter" class="mat-clip-filter w-85">
+        <mat-chip
+          *ngFor="let item of filters; let i = index"
+          [selectable]="true"
+          [removable]="true"
+          (removed)="filterApplyEvent(item, $event, true)"
+        >
+          <div class="flex flex-middle">
+            <span
+              >{{ item.displayName }}&nbsp; <span *ngIf="item.count">({{ item.count }})</span></span
+            >
+            <mat-icon [color]="'primary'" class="filter-close" matChipRemove>close</mat-icon>
+          </div>
+        </mat-chip>
+      </mat-chip-list>
+      <div class="clear-block" (click)="clearAllFilters()">
+        <span class="clear-all">Clear All</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="mat-elevation-z8 seperate-tab-table">
+    <table mat-table [dataSource]="dataSource" class="table-container w-full mt-4">
+      <!-- Course Name Column -->
+      <ng-container matColumnDef="courseName">
+        <th
+          class="table-header-spacing sortable-header"
+          mat-header-cell
+          *matHeaderCellDef
+          [style.width.px]="400"
+          (click)="onSortChange('courseName')"
+        >
+          Course Name
+          <mat-icon class="sort-icon" *ngIf="sortField === 'courseName'; else defaultIcon">
+            {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+          </mat-icon>
+          <ng-template #defaultIcon>
+            <mat-icon class="sort-icon default-icon">arrow_upward</mat-icon>
+          </ng-template>
+        </th>
+        <td
+          class="table-cell-spacing px-4"
+          mat-cell
+          *matCellDef="let element"
+          [style.width.px]="300"
+        >
+          <div class="content-name-block flex flex-start items-center gap-3">
+            <div
+              class="content-name-container pt-2 pb-2 cursor-pointer rounded-sm"
+              (click)="takeAction('view', element)"
+            >
+              <img [src]="element?.appIcon" alt="Course Image" />
+            </div>
+            <div class="content-name flex-grow pt-2">
+              <span class="line-clamp-2">{{ element?.name }}</span>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Initiated On Column -->
+      <ng-container matColumnDef="initiatedOn">
+        <th
+          class="table-header-spacing sortable-header"
+          mat-header-cell
+          *matHeaderCellDef
+          [style.width.px]="150"
+          (click)="onSortChange('initiatedOn')"
+        >
+          Initiated On
+          <mat-icon class="sort-icon" *ngIf="sortField === 'initiatedOn'; else defaultIcon">
+            {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+          </mat-icon>
+          <ng-template #defaultIcon>
+            <mat-icon class="sort-icon default-icon">arrow_upward</mat-icon>
+          </ng-template>
+        </th>
+        <td class="table-cell-spacing" mat-cell *matCellDef="let element" [style.width.px]="150">
+          {{ element?.createdDate | date : 'dd MMM, yyyy' }}
+        </td>
+      </ng-container>
+
+      <!-- Complete On Column -->
+      <ng-container matColumnDef="completeOn">
+        <th
+          class="table-header-spacing sortable-header"
+          mat-header-cell
+          *matHeaderCellDef
+          [style.width.px]="150"
+          (click)="onSortChange('completeOn')"
+        >
+          Complete On
+          <mat-icon class="sort-icon" *ngIf="sortField === 'completeOn'; else defaultIcon">
+            {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+          </mat-icon>
+          <ng-template #defaultIcon>
+            <mat-icon class="sort-icon default-icon">arrow_upward</mat-icon>
+          </ng-template>
+        </th>
+        <td class="table-cell-spacing" mat-cell *matCellDef="let element" [style.width.px]="150">
+          {{ element?.updatedDate | date : 'dd MMM, yyyy' }}
+        </td>
+      </ng-container>
+
+      <!-- File Status Column -->
+      <ng-container matColumnDef="fileStatus">
+        <th
+          class="table-header-spacing sortable-header"
+          mat-header-cell
+          *matHeaderCellDef
+          [style.width.px]="150"
+          (click)="onSortChange('fileStatus')"
+        >
+          File Status
+          <mat-icon class="sort-icon" *ngIf="sortField === 'fileStatus'; else defaultIcon">
+            {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+          </mat-icon>
+          <ng-template #defaultIcon>
+            <mat-icon class="sort-icon default-icon">arrow_upward</mat-icon>
+          </ng-template>
+        </th>
+        <td
+          class="table-cell-spacing padding-10"
+          mat-cell
+          *matCellDef="let element"
+          [style.width.px]="150"
+        >
+          <div class="status-badge">
+            <span class="{{ element?.status?.toLowerCase() }}">
+              {{ capitalizeText(element?.status) }}
+            </span>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th class="table-header-spacing" mat-header-cell *matHeaderCellDef [style.width.px]="80">
+          Actions
+        </th>
+        <td class="table-cell-spacing" mat-cell *matCellDef="let element" [style.width.px]="80">
+          <mat-icon
+            class="cursor-pointer"
+            [matMenuTriggerFor]="moreMenu"
+            [matMenuTriggerData]="{ data: element }"
+          >
+            more_horiz
+          </mat-icon>
+        </td>
+      </ng-container>
+
+      <!-- No Data Row -->
+      <tr class="mat-row" *matNoDataRow>
+        <td
+          class="table-cell-spacing mat-cell no-data-cell"
+          [attr.colspan]="displayedColumns?.length"
+        >
+          No data available
+        </td>
+      </tr>
+
+      <!-- Header and Data Rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" class="element-row new-row"></tr>
+    </table>
+
+    <!-- Paginator -->
+    <ws-widget-pagination
+      [defaultPaginationSize]="paginationSize"
+      [defaultPaginationSizeOptions]="paginationSizeOptions"
+      [totalItemsCount]="totalItemsCount"
+      [currentPage]="currentPage"
+      (pageChange)="onPageChange($event)"
+    ></ws-widget-pagination>
+  </div>
+
+  <!-- Filter Sidebar -->
+  <ng-container *ngIf="sideNavBarOpened">
+    <div class="filter-overlay-12">
+      <div class="filter-12">
+        <h4 class="ws-mat-primary-text font-weight-bold margin-remove">
+          <div class="flex flex-between flex-baseline">
+            <span class="mat-h2 font-weight-500 margin-remove">Filters</span>
+            <button
+              mat-icon-button
+              color="primary"
+              class="text-middle close-button margin-remove"
+              (click)="closeFilterSidebar()"
+            >
+              <mat-icon>clear</mat-icon>
+            </button>
+          </div>
+        </h4>
+        <mat-tree class="" [dataSource]="treeDataSource" [treeControl]="filterMenuTreeControl">
+          <mat-tree-node *matTreeNodeDef="let node">
+            <ng-container>
+              <mat-checkbox
+                [value]="node?.displayName"
+                [(ngModel)]="node.checked"
+                [disabled]="node?.isDisabled"
+                (change)="filterApplyEvent(node, $event)"
+              >
+                {{ node?.displayName + ' (' + node?.count + ')' }}
+              </mat-checkbox>
+            </ng-container>
+          </mat-tree-node>
+          <mat-tree-node
+            class="border-bottom"
+            *matTreeNodeDef="let node; when: hasChild"
+            matTreeNodePadding
+          >
+            <div class="grid-tree">
+              <h5
+                class="font-size-m margin-top-xs margin-remove-bottom hand"
+                tabindex="0"
+                matTreeNodeToggle
+              >
+                {{ node?.displayName }}
+              </h5>
+              <button
+                mat-icon-button
+                matTreeNodeToggle
+                [attr.aria-label]="'toggle ' + node?.displayName"
+              >
+                <mat-icon class="mat-icon-rtl-mirror">
+                  {{ filterMenuTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+                </mat-icon>
+              </button>
+            </div>
+          </mat-tree-node>
+        </mat-tree>
+        <div class="flex mt-5 flex-middle flex-center gap-5">
+          <button
+            mat-button
+            *ngIf="selectedfilter?.length"
+            class="clear_btn flex flex-middle ws-mat-default-text ws-mat-accent-border-active mr-2"
+            (click)="clearAllFilters()"
+          >
+            Clear All
+          </button>
+          <button
+            mat-button
+            class="text-white apply-filter-btn"
+            [disabled]="selectedfilter?.length === 0"
+            [ngClass]="{
+              'disable-filter': selectedfilter?.length === 0,
+              'ws-mat-primary-background': selectedfilter?.length
+            }"
+            (click)="applyNewFilter(true)"
+          >
+            Apply Filter
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<!-- Actions Menu -->
+<mat-menu #moreMenu="matMenu">
+  <ng-template matMenuContent let-rowData="data">
+    <a mat-menu-item (click)="takeAction('download', rowData)">
+      <span>Download Logs</span>
+    </a>
+    <a mat-menu-item (click)="takeAction('delete', rowData)">
+      <span>Delete</span>
+    </a>
+  </ng-template>
+</mat-menu>

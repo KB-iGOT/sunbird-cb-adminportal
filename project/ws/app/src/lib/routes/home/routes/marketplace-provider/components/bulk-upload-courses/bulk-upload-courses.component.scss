@@ -1,0 +1,60 @@
+.page-title {
+  /* stylelint-disable */
+  font-family: Montserrat;
+  /* stylelint-enable */
+  font-weight: 600;
+  font-size: 20px;
+  color: #000000;
+}
+
+.bulk-upload-provider-content {
+  border: 1px solid #00000029;
+
+  .bulk-upload-meta-wrapper {
+    border: 1px solid #00000014;
+  }
+
+  .meta-info-download {
+    border: 1px dashed #00000029;
+
+    p,
+    ol > li {
+      color: #000000de;
+      /* stylelint-disable */
+      font-family: Lato;
+      /* stylelint-enable */
+      font-weight: 400;
+      font-size: 14px;
+    }
+  }
+
+  .browse_link {
+    /* stylelint-disable */
+    font-family: Lato;
+    /* stylelint-enable */
+    font-weight: 700;
+    font-size: 14px;
+    color: #1b4ca1;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .max-file-size {
+    color: #000000de;
+  }
+
+  .upload-bulk-content {
+    border: 1px dashed #00000029;
+  }
+}
+
+.mb-7 {
+  margin-bottom: 1.75rem !important;
+}
+
+mat-icon.csv-icon {
+  height: 50px;
+  width: 50px;
+  font-size: 50px;
+}

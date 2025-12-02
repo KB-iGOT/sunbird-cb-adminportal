@@ -1,0 +1,26 @@
+<div class="add-provider-conte">
+  <div class="back-route-block flex items-center gap-2">
+    <div class="back-courses flex items-center gap-2 cursor-pointer" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      <div class="breadcrumb-item">Courses</div>
+    </div>
+    <div class="flex gap-2 items-center">
+      <mat-icon class="breadcrumb-icon active">keyboard_arrow_right</mat-icon>
+      <div class="breadcrumb-item active">Add Courses</div>
+    </div>
+  </div>
+</div>
+
+<div class="grouped-tabs-courses mt-4">
+  <mat-tab-group>
+    <mat-tab label="Bulk Upload">
+      <div class="mt-4">
+        <ws-app-bulk-upload-courses></ws-app-bulk-upload-courses>
+      </div>
+    </mat-tab>
+    <mat-tab label="API Integration">
+      <div class="mt-4">
+        <ws-app-providers-api-integrations></ws-app-providers-api-integrations></div
+    ></mat-tab>
+  </mat-tab-group>
+</div>
