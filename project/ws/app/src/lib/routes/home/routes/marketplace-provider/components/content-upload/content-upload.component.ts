@@ -92,7 +92,7 @@ export class ContentUploadComponent implements OnInit, OnChanges {
       this.tableDataInitialzation()
     }
 
-    if (changes.selectedTabIndex && changes.selectedTabIndex.currentValue === 1) {
+    if (changes.selectedTabIndex && changes.selectedTabIndex.currentValue === 2) {
       this.delayTabLoad = false
     }
   }
