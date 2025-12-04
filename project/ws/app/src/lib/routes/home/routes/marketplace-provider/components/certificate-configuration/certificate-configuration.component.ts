@@ -44,7 +44,6 @@ export class CertificateConfigurationComponent {
 
   private handleFileUpload(file: File, uploadType: 'logo' | 'certificate'): void {
     if (!this.isValidFile(file)) {
-      console.error('Invalid file type. Only .jpg, .jpeg, and .png are allowed.')
       return
     }
 

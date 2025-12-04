@@ -1,16 +1,21 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, Input, OnInit, SimpleChanges, OnChanges, ViewChild } from '@angular/core'
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatSnackBar } from '@angular/material/snack-bar'
+import { ActivatedRoute } from '@angular/router'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
-import { JsonEditorOptions } from 'ang-jsoneditor'
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor'
 import * as _ from 'lodash'
+import { MarketplaceService } from '../../services/marketplace.service'
 
 @Component({
   selector: 'ws-app-providers-api-integrations',
   templateUrl: './providers-api-integrations.component.html',
   styleUrls: ['./providers-api-integrations.component.scss']
 })
-export class ProvidersApiIntegrationsComponent implements OnInit {
+export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
+  @ViewChild('jsonEditor') jsonEditor: JsonEditorComponent | undefined
+  @Input() providerDetails: any
+
   // Form Groups
   servicesFormGroup!: FormGroup
   viaApiFormGroup!: FormGroup
@@ -42,16 +47,41 @@ export class ProvidersApiIntegrationsComponent implements OnInit {
   executed = false
   availableHeadrsList: string[] = []
   transFormContentKeysAndControls: any[] = []
+  providerConfiguration: any
+  transformationType = 'transformContentViaApi'
 
   constructor(
     private formBuilder: FormBuilder,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private activateRoute: ActivatedRoute,
+    private marketPlaceSvc: MarketplaceService
   ) { }
 
   ngOnInit(): void {
+    this.activateRoute.data.subscribe(data => {
+      if (data.pageData.data) {
+        this.providerConfiguration = data.pageData.data
+      }
+    })
+
     this.initializeFormGroups()
     this.setupValueChangeListeners()
     this.delayTabLoad = false
+
+    // Load configuration after forms are initialized
+    if (this.providerDetails) {
+      this.getCoursesConfiguration()
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Ensure forms are initialized before attempting to patch data
+    if (changes.providerDetails &&
+      changes.providerDetails.previousValue === undefined &&
+      this.providerDetails &&
+      this.transformationSpecForm) {
+      this.getCoursesConfiguration()
+    }
   }
 
   private initializeFormGroups(): void {
@@ -125,6 +155,84 @@ export class ProvidersApiIntegrationsComponent implements OnInit {
         this.constructParamsFormArray()
       }
     })
+  }
+
+  getCoursesConfiguration(): void {
+    // Ensure forms are initialized
+    if (!this.transformationSpecForm) {
+      return
+    }
+    const contentApisId = _.get(this.providerDetails, 'serviceRegistryDetails.contentApisId', null)
+    if (contentApisId) {
+      this.marketPlaceSvc.getConfiguraionDetails(contentApisId).subscribe((responce: any) => {
+        this.patchFormData(responce)
+      })
+    } else {
+      const transformContent = _.get(this.providerConfiguration, this.transformationType)
+      if (transformContent) {
+        this.transformationSpecForm.patchValue(transformContent)
+      }
+    }
+  }
+
+  patchFormData(configurationDetails: any): void {
+    const urlSplit = _.get(configurationDetails, 'url')
+    const headerMap = _.get(configurationDetails, 'requestPayload.headerMap')
+    const requestMap = _.get(configurationDetails, 'requestPayload.requestMap')
+    const authPayload = _.get(configurationDetails, 'authPayload', {})
+
+    this.servicesFormGroup.setValue({
+      serviceName: _.get(configurationDetails, 'serviceName'),
+      serviceCode: _.get(configurationDetails, 'serviceCode'),
+      serviceDescription: _.get(configurationDetails, 'serviceDescription'),
+      strictCache: _.get(configurationDetails, 'requestPayload.strictCache', false),
+      strictCacheTimeInMinutes: _.get(configurationDetails, 'requestPayload.strictCacheTimeInMinutes', 0),
+      isAuthenticated: false
+    })
+
+    this.onToggleChange()
+    this.servicesFormGroup.controls.serviceCode.disable()
+
+    this.viaApiFormGroup.setValue({
+      apiType: _.get(configurationDetails, 'requestMethod'),
+      apiUrl: urlSplit
+    })
+
+    if (headerMap) {
+      this.pushObjectToFormArray(this.headersFormGroup.controls.tableListFormArray as FormArray, headerMap)
+    }
+
+    if (requestMap) {
+      if (configurationDetails.isFormData) {
+        this.bodyFormGroup.controls.bodyType.patchValue('urlencoded')
+        this.pushObjectToFormArray(this.bodyFormGroup.controls.tableListFormArray as FormArray, requestMap)
+      } else {
+        this.bodyFormGroup.controls.bodyType.patchValue('raw')
+        this.bodyFormGroup.controls.rawData.patchValue(requestMap)
+      }
+    }
+
+    if (JSON.stringify(authPayload) !== '{}') {
+      this.servicesFormGroup.controls.isAuthenticated.patchValue(true)
+      this.authenticationFormGroup.controls.rawData.patchValue(authPayload)
+    }
+
+    const transformContent = _.get(this.providerDetails, this.transformationType, _.get(this.providerConfiguration, this.transformationType))
+    this.transformationSpecForm.patchValue(transformContent)
+  }
+
+  pushObjectToFormArray(formArray: FormArray, object: any): void {
+    if (formArray && object) {
+      for (const key in object) {
+        if (object.hasOwnProperty(key)) {
+          const formGroup = this.formBuilder.group({
+            key: new FormControl(key),
+            value: new FormControl(object[key])
+          })
+          formArray.insert(formArray.length - 1, formGroup)
+        }
+      }
+    }
   }
 
   get paramsFormArray(): FormArray {
@@ -245,11 +353,6 @@ export class ProvidersApiIntegrationsComponent implements OnInit {
 
   configure(): void {
     if (this.servicesFormGroup.valid && this.viaApiFormGroup.valid && this.transformationsUpdated) {
-      console.log('Configuration:', {
-        services: this.servicesFormGroup.value,
-        api: this.viaApiFormGroup.value,
-        transformation: this.transforamtionType === 'viaForm' ? this.transforamtionForm.value : this.transformationSpecForm.value
-      })
       this.showSnackBar('API Configuration saved successfully', 'success')
     } else {
       this.showSnackBar('Please fill all required fields and add transformation', 'error')
