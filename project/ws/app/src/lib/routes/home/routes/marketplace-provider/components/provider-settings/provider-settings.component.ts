@@ -36,7 +36,7 @@ export class ProviderSettingsComponent implements OnChanges {
 
   initializeForm() {
     this.providerSettingsForm = this.fb.group({
-      overAllLimit: [null, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
+      overAllLimit: [null, [Validators.pattern(/^[0-9]*$/)]],
       userWiseLimit: [null, [Validators.pattern(/^[0-9]*$/)]],
       isUserWiseLimitEnabled: [false],
       concurrentLimit: [null, [Validators.pattern(/^[0-9]*$/)]],

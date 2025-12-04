@@ -22,16 +22,14 @@
       <div class="flex items-center gap-1 required">
         <span class="label"
           >Over All Limit
-          <mat-icon svgIcon="field_i" matTooltip="Maximum overall Course enrolment limit possible for this iGOT Marketplace
-        Partner"></mat-icon>
         </span>
       </div>
       <div class="field-meta">
-        Set here the maximum overall Course enrolment limit possible for this iGOT Marketplace
-        Partner.
+        Maximum total course enrolments allowed across all learners for this provider.
       </div>
       <mat-form-field class="w-full">
         <input formControlName="overAllLimit" matInput placeholder="Set Limit" type="number" min="0" />
+        <mat-error *ngIf="providerSettingsForm?.controls['overAllLimit'].hasError('pattern')">Only positive value allowed.</mat-error>
       </mat-form-field>
     </div>
 
@@ -39,19 +37,18 @@
       <div class="flex items-center gap-1 required">
         <span class="label"
           >User Wise Limit
-          <mat-icon svgIcon="field_i" matTooltip="Maximum overall Course enrolment limit possible for this iGOT Marketplace
-        Partner"></mat-icon>
         </span>
       </div>
       <div class="flex items-center justify-between">
         <div class="field-meta">
-          Set here the maximum Course enrolment limit possible for any learner of this iGOT
-          Marketplace Partner.
+          Maximum number of courses an individual learner can enrol in from this provider.
         </div>
         <mat-slide-toggle formControlName="isUserWiseLimitEnabled"> </mat-slide-toggle>
       </div>
       <mat-form-field class="w-full">
         <input formControlName="userWiseLimit" matInput placeholder="Set Limit" type="number" min="0" />
+        <mat-error *ngIf="providerSettingsForm?.controls['userWiseLimit'].hasError('pattern')">Only positive value allowed.</mat-error>
+
       </mat-form-field>
     </div>
 
@@ -59,19 +56,17 @@
       <div class="flex items-center gap-1 required">
         <span class="label"
           >Concurrent Limit
-          <mat-icon svgIcon="field_i" matTooltip="Maximum concurrent/parallel Course enrolment limit possible for any learner
-          of this iGOT Marketplace Partner"></mat-icon>
         </span>
       </div>
       <div class="flex items-center justify-between">
         <div class="field-meta">
-          Set here the maximum concurrent/parallel Course enrolment limit possible for any learner
-          of this iGOT Marketplace Partner.
+          Maximum number of courses a learner can take simultaneously from this provider.
         </div>
         <mat-slide-toggle formControlName="isConcurrentLimitEnabled"> </mat-slide-toggle>
       </div>
       <mat-form-field class="w-full">
         <input formControlName="concurrentLimit" matInput placeholder="Set Limit" type="number" min="0" />
+        <mat-error *ngIf="providerSettingsForm?.controls['concurrentLimit'].hasError('pattern')">Only positive value allowed.</mat-error>
       </mat-form-field>
     </div>
 
@@ -79,17 +74,17 @@
       <div class="flex items-center gap-1 required">
         <span class="label"
           >Add Karma Point
-          <mat-icon svgIcon="field_i" matTooltip="Minimum Karma Point balance a learner must have to access any content within the Marketplace"></mat-icon>
         </span>
       </div>
       <div class="flex items-center justify-between">
         <div class="field-meta">
-          Require Karma Points for enrolment. You need to add Karma points below.
+          Minimum Karma Points required for a learner to enrol in a course from this provider (Group A and B users exempt).
         </div>
         <mat-slide-toggle formControlName="addKarmaPointEnabled"> </mat-slide-toggle>
       </div>
       <mat-form-field class="w-full relative karma-point-control">
         <input formControlName="karmaPoints" matInput placeholder="Set Limit" type="number" min="0" />
+        <mat-error *ngIf="providerSettingsForm?.controls['karmaPoints'].hasError('pattern')">Only positive value allowed.</mat-error>
         <mat-icon svgIcon="karma_points" class="karma-points"></mat-icon>
       </mat-form-field>
     </div>
