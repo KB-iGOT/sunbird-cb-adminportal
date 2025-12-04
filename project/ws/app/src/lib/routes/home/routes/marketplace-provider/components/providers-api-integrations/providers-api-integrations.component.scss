@@ -1,0 +1,66 @@
+.providers-api-integrations {
+  border: 1px solid #00000029;
+
+  .page-title {
+    /* stylelint-disable */
+    font-family: Lato;
+    /* stylelint-enable */
+    font-weight: 700;
+    font-size: 14px;
+    color: #1b2133;
+  }
+
+  .mat-icon:not(.karma-points) {
+    font-size: 9px;
+    height: 15px !important;
+    width: 15px !important;
+    margin-left: 2px;
+  }
+
+  .chips-headers {
+    /* stylelint-disable */
+    font-family: Lato;
+    /* stylelint-enable */
+    font-weight: 700;
+    font-size: 12px;
+    border: 1px solid #1b4ca1;
+    border-radius: 27px;
+    &.active {
+      background: #1b4ca1;
+      color: #ffffff;
+    }
+  }
+
+  .api-params-table {
+    table th {
+      /* stylelint-disable */
+      font-family: Montserrat;
+      /* stylelint-enable */
+      font-weight: 600;
+      font-size: 14px;
+      color: #1b2133;
+      border: 1px solid #00000029;
+      padding: 10px;
+    }
+    table td {
+      /* stylelint-disable */
+      font-family: Lato;
+      /* stylelint-enable */
+      font-weight: 400;
+      font-size: 12px;
+      color: #666666;
+      border: 1px solid #00000014;
+      padding: 10px;
+    }
+  }
+
+  ::ng-deep {
+    .jsoneditor-text {
+      min-height: 500px;
+    }
+    .jsoneditor {
+      border: 1px solid #00000029;
+      border-radius: 8px;
+    }
+  }
+}

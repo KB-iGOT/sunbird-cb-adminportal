@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core'
+import { Component, ViewChild, ElementRef, Output, Input, EventEmitter, SimpleChanges, OnChanges } from '@angular/core'
 import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { DatePipe } from '@angular/common'
@@ -13,7 +13,10 @@ import { SnackbarComponent } from '@sunbird-cb/consumption'
   templateUrl: './provider-details-v2.component.html',
   styleUrls: ['./provider-details-v2.component.scss']
 })
-export class ProviderDetailsV2Component {
+export class ProviderDetailsV2Component implements OnChanges {
+  @Input() providerDetails: any
+  @Output() loadProviderDetails = new EventEmitter<Boolean>()
+
   providerDetailsForm: FormGroup
   @ViewChild('logoInput') logoInput?: ElementRef<HTMLInputElement>
   @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>
@@ -53,6 +56,13 @@ export class ProviderDetailsV2Component {
     })
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.providerDetails && changes.providerDetails.currentValue) {
+      this.providerDetailsBeforeUpdate = JSON.parse(JSON.stringify(changes.providerDetails.currentValue))
+      this.patchProviderDetails(changes.providerDetails.currentValue)
+    }
+  }
+
   get controls() {
     return this.providerDetailsForm.controls
   }
@@ -86,37 +96,22 @@ export class ProviderDetailsV2Component {
     this.getTipsList.removeAt(index)
   }
   //#endregion
-
-  //#region Load & Patch Details
-  loadProviderDetails(id: string) {
-    this.loading = true
-    this.marketplaceSvc.getProviderDetails(id).subscribe({
-      next: (data: any) => {
-        this.providerDetailsBeforeUpdate = JSON.parse(JSON.stringify(data))
-        this.patchProviderDetails(data)
-        this.providerId = id
-      },
-      error: () => this.showSnackBar('Failed to load provider details', 'error'),
-      complete: () => { this.loading = false }
-    })
-  }
-
   patchProviderDetails(providerDetails: any) {
     this.providerDetailsForm.patchValue({
-      contentPartnerName: _.get(providerDetails, 'contentPartnerName', ''),
-      partnerCode: _.get(providerDetails, 'partnerCode', ''),
-      websiteUrl: _.get(providerDetails, 'websiteUrl', ''),
-      description: _.get(providerDetails, 'description', ''),
+      contentPartnerName: _.get(providerDetails, 'data.contentPartnerName', ''),
+      partnerCode: _.get(providerDetails, 'data.partnerCode', ''),
+      websiteUrl: _.get(providerDetails, 'data.websiteUrl', ''),
+      description: _.get(providerDetails, 'data.description', ''),
     })
     this.getTipsList.clear()
-    this.logoPreviewUrl = _.get(providerDetails, 'link', '')
-    this.uploadedPdfUrl = _.get(providerDetails, 'documentUrl', '')
-    this.fileUploadedDate = _.get(providerDetails, 'documentUploadedDate', '')
+    this.logoPreviewUrl = _.get(providerDetails, 'data.link', '')
+    this.uploadedPdfUrl = _.get(providerDetails, 'data.documentUrl', '')
+    this.fileUploadedDate = _.get(providerDetails, 'data.documentUploadedDate', '')
     if (this.uploadedPdfUrl) {
       this.pdfUploaded = true
       this.fileName = this.getFileName
     }
-    _.get(providerDetails, 'providerTips', []).forEach((tip: string) => {
+    _.get(providerDetails, 'data.providerTips', []).forEach((tip: string) => {
       this.addTips(tip)
     })
   }
@@ -395,6 +390,7 @@ export class ProviderDetailsV2Component {
           this.loading = false
           if (response) {
             setTimeout(() => {
+              this.sendDetailsUpdateEvent()
               const successMsg = 'Provider details updated successfully.'
               this.showSnackBar(successMsg, 'success')
             }, 1000)
@@ -412,7 +408,6 @@ export class ProviderDetailsV2Component {
   //#endregion
 
   showSnackBar(message: string, type: 'error' | 'success') {
-
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: {
         message: message, type: type,
@@ -423,4 +418,9 @@ export class ProviderDetailsV2Component {
   navigateToProvidersDashboard() {
     this.router.navigateByUrl('/app/home/marketplace-providers')
   }
+
+  sendDetailsUpdateEvent() {
+    this.loadProviderDetails.emit(true)
+  }
+
 }

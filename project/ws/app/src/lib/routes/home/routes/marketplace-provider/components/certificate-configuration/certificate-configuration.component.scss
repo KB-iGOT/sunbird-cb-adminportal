@@ -1,0 +1,97 @@
+.wrapper-certificate-configuration {
+  .page-title {
+    /* stylelint-disable */
+    font-family: Montserrat;
+    /* stylelint-enable */
+    font-weight: 600;
+    font-size: 20px;
+    color: #000000;
+  }
+
+  .configuration-block {
+    border: 1px solid #00000029;
+    .page-title {
+      font-size: 14px;
+      color: #1b2133;
+    }
+  }
+
+  .parnter-ship-agreement {
+    background: #edf7ff;
+    border: 2px dashed #1b4ca1;
+    height: 109px;
+    width: 465px;
+    border-radius: 12px;
+    .meta-text-1 {
+      font-family: Lato;
+      font-weight: 700;
+      font-size: 14px;
+      color: #1b4ca1;
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    .meta-text-2 {
+      font-family: Lato;
+      font-weight: 400;
+      font-size: 12px;
+      color: #666666;
+      width: 114px;
+      line-height: 18px;
+    }
+  }
+
+  .label {
+    /* stylelint-disable */
+    font-family: Lato;
+    /* stylelint-enable */
+    font-weight: 700;
+    font-size: 14px;
+    color: #212529;
+  }
+
+  .uploaded-logo-image {
+    width: 200px;
+  }
+
+  .remove-logo-image-icon {
+    position: absolute;
+    right: -14px;
+    top: -14px;
+    padding: 4px;
+    border: 1px solid #1b4ca1;
+    border-radius: 30px;
+    background-color: #fff;
+    color: #ff0000;
+
+    &:hover {
+      background-color: #1b4ca1;
+      color: #fff;
+    }
+  }
+
+  .certificate-preview {
+    min-height: 300px;
+    width: 95%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .uploaded-certificate {
+    width: 300px;
+  }
+
+  .actions-on-certificate button {
+    /* stylelint-disable */
+    font-family: Lato;
+    /* stylelint-enable */
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px !important;
+  }
+}

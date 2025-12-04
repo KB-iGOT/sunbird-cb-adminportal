@@ -116,6 +116,22 @@ export class InitService {
       'karma_points',
       domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/karma-points.svg'),
     )
+    iconRegistry.addSvgIcon(
+      'excel_sheet',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/csv.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'archieve_color',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/archieve-colored.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'certificate_color',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/certificate-colored.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'download_color',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/download-colored.svg'),
+    )
   }
 
   private initializeTranslations(): void {

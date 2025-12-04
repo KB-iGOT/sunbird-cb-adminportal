@@ -6,13 +6,29 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <div class="provider-content-main p-4">
-      <ng-container *ngIf="activeMenuItem !== 'provider_details'">
+      <ng-container *ngIf="activeMenuItem === 'active_courses'">
+        <ws-app-onboarding-courses
+          [providerDetails]="providerDetails"
+          (loadProviderDetails)="getProviderDetails($event)"
+        ></ws-app-onboarding-courses>
       </ng-container>
       <ng-container *ngIf="activeMenuItem === 'provider_settings'">
-        <ws-app-provider-settings></ws-app-provider-settings>
+        <ws-app-provider-settings
+          [providerDetails]="providerDetails"
+          (loadProviderDetails)="getProviderDetails($event)"
+        ></ws-app-provider-settings>
       </ng-container>
       <ng-container *ngIf="activeMenuItem === 'provider_details'">
-        <ws-app-provider-details-v2></ws-app-provider-details-v2>
+        <ws-app-provider-details-v2
+          [providerDetails]="providerDetails"
+          (loadProviderDetails)="getProviderDetails($event)"
+        ></ws-app-provider-details-v2>
+      </ng-container>
+      <ng-container *ngIf="activeMenuItem === 'configure_certificate'">
+        <ws-app-certificate-configuration
+          [providerDetails]="providerDetails"
+          (loadProviderDetails)="getProviderDetails($event)"
+        ></ws-app-certificate-configuration>
       </ng-container>
     </div>
   </mat-sidenav-content>

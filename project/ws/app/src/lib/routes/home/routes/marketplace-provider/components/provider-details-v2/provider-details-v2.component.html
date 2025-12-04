@@ -14,7 +14,7 @@
 
         <div class="logo-preview" *ngIf="logoPreviewUrl">
           <img [src]="logoPreviewUrl" alt="logo preview" class="logo-img" />
-          <div class="close-icon" (click)="removeLogo()" role="button" tabindex="0">
+          <div class="close-icon" (click)="removeLogo()" role="button" tabindex="0" aria-label="remove-logo-button">
             <mat-icon>close</mat-icon>
           </div>
         </div>
@@ -225,7 +225,7 @@
       <button
         (click)="navigateToProvidersDashboard()"
         mat-flat-button
-        class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline font-bold text-sm"
+        class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline"
       >
         Cancel
       </button>

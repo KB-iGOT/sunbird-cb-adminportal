@@ -1,103 +1,80 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core'
+import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges, ViewChild, ElementRef } from '@angular/core'
 import { MarketplaceService } from '../../services/marketplace.service'
 import { map } from 'rxjs/operators'
 import * as _ from 'lodash'
 import { DatePipe } from '@angular/common'
 import { HttpErrorResponse } from '@angular/common/http'
 import { MatSnackBar } from '@angular/material/snack-bar'
+import { SnackbarComponent } from '@sunbird-cb/consumption'
 
 @Component({
-  selector: 'ws-app-content-upload',
-  templateUrl: './content-upload.component.html',
-  styleUrls: ['./content-upload.component.scss'],
+  selector: 'ws-app-onboarding-courses',
+  templateUrl: './onboarding-courses.component.html',
+  styleUrls: ['./onboarding-courses.component.scss'],
   providers: [DatePipe],
 })
-export class ContentUploadComponent implements OnInit, OnChanges {
-  //#region (global variables)
-  //#region (view chaild, input and output)
+export class OnboardingCoursesComponent implements OnInit, OnChanges {
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef<HTMLInputElement>
 
-  @Input() providerDetails?: any
-  @Input() selectedTabIndex = 0
+  @Input() providerDetails: any
+  @Output() loadProviderDetails = new EventEmitter<any>()
 
-  @Output() loadProviderDetails = new EventEmitter<Boolean>()
-  //#endregion
+  addCoursesFlag: boolean = false
 
-  helpCenterGuide = {
-    header: 'Content Upload Details: Video Guides and Tips',
-    guideNotes: [
-      'While uploading the course catalog, ensure to define key properties such as Content Details, Certificate Configuration, and Progress Transform Settings. These are essential for accurate tracking and effective learner engagement. you will have the provision to update the properties later also.',
-      'Upload the course catalog using a CSV or XLSX file. Once uploaded, the system will indicate whether the courses are live. Non-published courses and published courses will be displayed in separate tabs for better organization. Additionally, you can download detailed logs for reference and troubleshooting.',
-    ],
-    helpVideoLink: `/assets/public/content/guide-videos/CIOS_Updated_demo.mp4`,
-  }
-
+  // Upload Status Tab
   contentTableData: any
-  uploadedContentList = []
+  uploadedContentList: any[] = []
   showUploadedStatusLoader = false
-  contenetMenuItems: {
-    icon: string,
-    btnText: string,
-    action: string
-  }[] = []
-  contentSearchKey = ''
-  contentTablePaginationDetails: any
+  contenetMenuItems: { icon: string; btnText: string; action: string }[] = []
 
+  // Published Courses Tab
   publishedCoursesTableData: any
-  publishedCoursesList: any = []
+  publishedCoursesList: any[] = []
   showPublishedCoursesLoader = false
   publishedCoursesSerachKey = ''
   publishedCoursesTablePaginationDetails: any
 
+  // Not Published Courses Tab
   unPublishedCoursesTableData: any
-  unPublishedCoursesList: any = [
-  ]
+  unPublishedCoursesList: any[] = []
   showUnpublishedCoursesLoader = false
-  unpublishedCoursesMenuItems: {
-    icon: string,
-    btnText: string,
-    action: string
-  }[] = []
+  unpublishedCoursesMenuItems: { icon: string; btnText: string; action: string }[] = []
   unPublishedCoursesSearchKey = ''
   unPublishedCoursesTablePaginationDetails: any
 
-
   defaultPagination = {
-    startIndex: 0,
-    lastIndes: 20,
+    currentPage: 1,
     pageSize: 20,
-    pageIndex: 0,
     totalCount: 20,
+    paginationSize: 10,
+    paginationSizeOptions: [10, 20, 50, 100]
+
   }
 
   delayTabLoad = true
-  viaApiTabIndex = 0
   openedTab = ''
-  //#endregion
 
-  //#region (constructor: contains Intialization of TransforamtionControls from routes data)
   constructor(
     private marketPlaceSvc: MarketplaceService,
     private datePipe: DatePipe,
     private snackBar: MatSnackBar
-  ) {
-  }
+  ) { }
 
-  //#endregion
+  ngOnInit(): void {
+    this.tableDataInitialization()
+    if (this.providerDetails) {
+      this.getTablesData()
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (
-      changes.providerDetails &&
-      changes.providerDetails.currentValue) {
-      this.tableDataInitialzation()
-    }
-
-    if (changes.selectedTabIndex && changes.selectedTabIndex.currentValue === 2) {
-      this.delayTabLoad = false
+    if (changes.providerDetails && changes.providerDetails.currentValue) {
+      this.tableDataInitialization()
+      this.getTablesData()
     }
   }
 
-  tableDataInitialzation() { // All tables data Initialzation
+  tableDataInitialization(): void {
     this.contentTableData = {
       columns: [
         { displayName: 'File Name', key: 'name', cellType: 'text' },
@@ -123,7 +100,6 @@ export class ContentUploadComponent implements OnInit, OnChanges {
         { displayName: 'Course name', key: 'courseName', cellType: 'text', imageKey: 'courseImg', cellClass: 'text-overflow-elipse' },
         { displayName: 'Source', key: 'source', cellType: 'text' },
         { displayName: 'Listed On', key: 'listedOn', cellType: 'text' },
-
       ],
       needCheckBox: true,
       showDeleteAll: true,
@@ -141,36 +117,29 @@ export class ContentUploadComponent implements OnInit, OnChanges {
       columns: [
         { displayName: 'Course name', key: 'courseName', cellType: 'text', imageKey: 'courseImg', cellClass: 'text-overflow-elipse' },
         { displayName: 'Source', key: 'source', cellType: 'text' },
-        { displayName: 'Publised On', key: 'publishedOn', cellType: 'text' },
+        { displayName: 'Published On', key: 'publishedOn', cellType: 'text' },
         { displayName: 'Listed On', key: 'listedOn', cellType: 'text' },
-
       ],
       needCheckBox: false,
       showDeleteAll: false,
     }
     this.setPagination('published', this.defaultPagination)
+
+    this.delayTabLoad = false
   }
 
-  //#region (ng Onint: contains Initialing api calls to get all 3 tables data)
-  ngOnInit() {
-    if (this.providerDetails.trasformContentJson) {
-      this.getTablesData()
-    }
-  }
-
-  //#region (get data for tables)
-  getTablesData() {
+  getTablesData(): void {
     this.getContentList()
     this.getPublishedCoursesList()
     this.getUnPublishedCoursesList()
   }
 
-  getContentList() {
+  getContentList(): void {
     if (this.providerDetails && this.providerDetails.id) {
       this.showUploadedStatusLoader = true
       this.marketPlaceSvc.getContentList(this.providerDetails.id)
-        .pipe(map((responce: any) => {
-          return this.formateContentList(responce)
+        .pipe(map((response: any) => {
+          return this.formateContentList(response)
         }))
         .subscribe({
           next: (result: any) => {
@@ -179,17 +148,17 @@ export class ContentUploadComponent implements OnInit, OnChanges {
           },
           error: (error: HttpErrorResponse) => {
             this.showUploadedStatusLoader = false
-            const errmsg = _.get(error, 'error.params.errMsg', 'Some thing went wrong please try again')
-            this.showSnackBar(errmsg)
+            const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong please try again')
+            this.showSnackBar(errmsg, 'error')
           },
         })
     }
   }
 
-  formateContentList(responce: any) {
+  formateContentList(response: any): any {
     let formatedList: any = []
-    if (responce) {
-      formatedList = responce
+    if (response) {
+      formatedList = response
         .sort((a: any, b: any) => {
           const dateA = new Date(a.initiatedOn)
           const dateB = new Date(b.initiatedOn)
@@ -209,7 +178,7 @@ export class ContentUploadComponent implements OnInit, OnChanges {
     return formatedList
   }
 
-  getPublishedCoursesList() {
+  getPublishedCoursesList(): void {
     if (_.get(this.providerDetails, 'data.partnerCode')) {
       this.showPublishedCoursesLoader = true
       this.publishedCoursesList = []
@@ -218,17 +187,15 @@ export class ContentUploadComponent implements OnInit, OnChanges {
           partnerCode: _.get(this.providerDetails, 'data.partnerCode'),
           status: ['live'],
         },
-        pageNumber: this.publishedCoursesTablePaginationDetails.pageIndex,
+        pageNumber: this.publishedCoursesTablePaginationDetails.currentPage - 1,
         pageSize: this.publishedCoursesTablePaginationDetails.pageSize,
-        // "orderBy": "duration",
-        // "orderDirection": "desc",
         searchString: this.publishedCoursesSerachKey,
       }
       this.marketPlaceSvc.getCoursesList(formBody)
-        .pipe(map((responce: any) => {
+        .pipe(map((response: any) => {
           const formatedData = {
-            totalCount: _.get(responce, 'totalCount', 0),
-            formatedList: this.formateCoursesList(_.get(responce, 'data', [])),
+            totalCount: _.get(response, 'totalCount', 0),
+            formatedList: this.formateCoursesList(_.get(response, 'data', [])),
           }
           return formatedData
         }))
@@ -239,18 +206,18 @@ export class ContentUploadComponent implements OnInit, OnChanges {
             this.showPublishedCoursesLoader = false
           },
           error: (error: HttpErrorResponse) => {
-            const errmsg = _.get(error, 'error.params.errMsg', 'Some thing went wrong please try again')
+            const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong please try again')
             this.showPublishedCoursesLoader = false
             const message = _.get(error, 'error.message')
             if (!(error.status === 400 && message.includes('index_not_found_exception'))) {
-              this.showSnackBar(errmsg)
+              this.showSnackBar(errmsg, 'error')
             }
           },
         })
     }
   }
 
-  getUnPublishedCoursesList() {
+  getUnPublishedCoursesList(): void {
     if (_.get(this.providerDetails, 'data.partnerCode')) {
       this.showUnpublishedCoursesLoader = true
       this.unPublishedCoursesList = []
@@ -259,17 +226,15 @@ export class ContentUploadComponent implements OnInit, OnChanges {
           status: ['draft', 'notInitiated'],
           partnerCode: _.get(this.providerDetails, 'data.partnerCode'),
         },
-        pageNumber: this.unPublishedCoursesTablePaginationDetails.pageIndex,
+        pageNumber: this.unPublishedCoursesTablePaginationDetails.currentPage - 1,
         pageSize: this.unPublishedCoursesTablePaginationDetails.pageSize,
-        // "orderBy": "duration",
-        // "orderDirection": "desc",
         searchString: this.unPublishedCoursesSearchKey,
       }
       this.marketPlaceSvc.getCoursesList(formBody)
-        .pipe(map((responce: any) => {
+        .pipe(map((response: any) => {
           const formatedData = {
-            totalCount: _.get(responce, 'totalCount', 0),
-            formatedList: this.formateCoursesList(_.get(responce, 'data', [])),
+            totalCount: _.get(response, 'totalCount', 0),
+            formatedList: this.formateCoursesList(_.get(response, 'data', [])),
           }
           return formatedData
         }))
@@ -280,20 +245,20 @@ export class ContentUploadComponent implements OnInit, OnChanges {
             this.showUnpublishedCoursesLoader = false
           },
           error: (error: HttpErrorResponse) => {
-            const errmsg = _.get(error, 'error.params.errMsg', 'Some thing went wrong please try again')
-            this.showPublishedCoursesLoader = false
+            const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong please try again')
+            this.showUnpublishedCoursesLoader = false
             const message = _.get(error, 'error.message')
             if (!(error.status === 400 && message.includes('index_not_found_exception'))) {
-              this.showSnackBar(errmsg)
+              this.showSnackBar(errmsg, 'error')
             }
           },
         })
     }
   }
 
-  formateCoursesList(responce: any[]) {
+  formateCoursesList(response: any[]): any {
     const formatedList: any = []
-    responce.forEach((course: any) => {
+    response.forEach((course: any) => {
       const publishedOnDate = new Date(_.get(course, 'publishedOn'))
       const formateCourse = {
         id: _.get(course, 'externalId', ''),
@@ -311,10 +276,8 @@ export class ContentUploadComponent implements OnInit, OnChanges {
     })
     return formatedList
   }
-  //#endregion
-  //#endregion
 
-  setPagination(tableType: string, pagination: any) {
+  setPagination(tableType: string, pagination: any): void {
     switch (tableType) {
       case 'published':
         this.publishedCoursesTablePaginationDetails = JSON.parse(JSON.stringify(pagination))
@@ -324,14 +287,8 @@ export class ContentUploadComponent implements OnInit, OnChanges {
         break
     }
   }
-  //#endregion
 
-  sendDetailsUpdateEvent() { // send event to parrent to get updated data so that chailds get updated detail
-    this.loadProviderDetails.emit(true)
-  }
-
-  //#region (table event: All table click events and search events)
-  searchCourses(publishedCourses: boolean, searchKey: string) {
+  searchCourses(publishedCourses: boolean, searchKey: string): void {
     if (publishedCourses) {
       this.publishedCoursesSerachKey = searchKey
       this.setPagination('published', this.defaultPagination)
@@ -343,7 +300,7 @@ export class ContentUploadComponent implements OnInit, OnChanges {
     }
   }
 
-  pageChange(event: any, courseType: string) {
+  pageChange(event: any, courseType: string): void {
     if (courseType === 'published') {
       this.publishedCoursesTablePaginationDetails = event
       this.getPublishedCoursesList()
@@ -353,19 +310,40 @@ export class ContentUploadComponent implements OnInit, OnChanges {
     }
   }
 
-  contentEvents(event: any) {
-    switch (event.action) {
-      case 'delete':
-        this.deletedSelectedCourses(event)
-        break
-      case 'downloadLog':
-        if (event.rows.gcpfileName) {
-          this.downloadLog(event.rows.gcpfileName, event.rows.name)
-        }
-        break
-      case 'refresh':
-        this.getTablesData()
-        break
+  contentEvents(event: any): void {
+    if (event && event.action) {
+      switch (event.action) {
+        case 'delete':
+          this.deletedSelectedCourses(event)
+          break
+        case 'downloadLog':
+          if (event.rows.gcpfileName) {
+            this.downloadLog(event.rows.gcpfileName, event.rows.name)
+          }
+          break
+        case 'refresh':
+          this.getTablesData()
+          break
+      }
+    }
+  }
+
+  showSnackBar(message: string, type: 'error' | 'success') {
+    this.snackBar.openFromComponent(SnackbarComponent, {
+      data: {
+        message: message, type: type,
+      }, duration: 5000, panelClass: type,
+    })
+  }
+
+  addCourses(): void {
+    this.addCoursesFlag = true
+  }
+
+  actionHandler(event: any): void {
+    if (event.action === 'goBack') {
+      this.addCoursesFlag = false
+      this.getTablesData()
     }
   }
 
@@ -380,7 +358,7 @@ export class ContentUploadComponent implements OnInit, OnChanges {
           if (res) {
             const msg = event.rows.length && event.rows.length > 1
               ? 'Selected courses are deleted successfully' : 'Selected course is deleted successfully'
-            this.showSnackBar(msg)
+            this.showSnackBar(msg, 'success')
             setTimeout(() => {
               this.getUnPublishedCoursesList()
             }, 2000)
@@ -388,11 +366,11 @@ export class ContentUploadComponent implements OnInit, OnChanges {
         },
         error: (error: HttpErrorResponse) => {
           const errmsg = _.get(error, 'error.params.errMsg', 'Some thing went wrong please try again')
-          this.showSnackBar(errmsg)
+          this.showSnackBar(errmsg, 'error')
         },
       })
     } else {
-      this.showSnackBar('Please select course to delete.')
+      this.showSnackBar('Please select course to delete.', 'error')
     }
   }
 
@@ -406,7 +384,7 @@ export class ContentUploadComponent implements OnInit, OnChanges {
         },
         error: (error: HttpErrorResponse) => {
           const errmsg = _.get(error, 'error.params.errMsg', 'Some thing went wrong please try again')
-          this.showSnackBar(errmsg)
+          this.showSnackBar(errmsg, 'error')
         },
       })
   }
@@ -421,13 +399,6 @@ export class ContentUploadComponent implements OnInit, OnChanges {
     link.download = `${fileName}`.replace('xlsx', 'csv')
     link.click()
     window.URL.revokeObjectURL(blobUrl)
-    const message = 'Logs Downloaded Successfully.'
-    this.showSnackBar(message)
+    this.showSnackBar('Logs Downloaded Successfully.', 'success')
   }
-  //#endregion
-
-  showSnackBar(message: string) {
-    this.snackBar.open(message)
-  }
-
 }

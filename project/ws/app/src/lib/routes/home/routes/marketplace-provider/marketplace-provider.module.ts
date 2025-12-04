@@ -36,13 +36,20 @@ import { ViaApiComponent } from './components/via-api/via-api.component'
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio'
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle'
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field'
-import { ConfigureProviderComponent } from './components/configure-provider/configure-provider.component'
 import { MatSidenavModule } from '@angular/material/sidenav'
+import { MatRippleModule } from '@angular/material/core'
+import { PaginationModule } from '@sunbird-cb/consumption'
+import { ConfigureProviderComponent } from './components/configure-provider/configure-provider.component'
 import { ConfigureProviderMenuComponent } from './components/configure-provider-menu/configure-provider-menu.component'
 import { ProviderSettingsComponent } from './components/provider-settings/provider-settings.component'
-import { MatRippleModule } from '@angular/material/core'
 import { HelpCenterGuideComponentV2 } from './components/help-center-guide-v2/help-center-guide-v2.component'
 import { ProviderDetailsV2Component } from './components/provider-details-v2/provider-details-v2.component'
+import { OnboardingCoursesComponent } from './components/onboarding-courses/onboarding-courses.component'
+import { CoursesListTableComponent } from './components/courses-list-table/courses-list-table.component'
+import { AddProviderCoursesComponent } from './components/add-provider-courses/add-provider-courses.component'
+import { BulkUploadCoursesComponent } from './components/bulk-upload-courses/bulk-upload-courses.component'
+import { ProvidersApiIntegrationsComponent } from './components/providers-api-integrations/providers-api-integrations.component';
+import { CertificateConfigurationComponent } from './components/certificate-configuration/certificate-configuration.component'
 
 const routes: Routes = [
   {
@@ -91,6 +98,8 @@ const routes: Routes = [
     },
     resolve: {
       pageData: PageResolve,
+      providerDetails: ProviderResolveService,
+
     },
   },
 
@@ -114,7 +123,14 @@ const routes: Routes = [
     ProviderSettingsComponent,
     ProviderSettingsComponent,
     ProviderDetailsV2Component,
-    HelpCenterGuideComponentV2
+    HelpCenterGuideComponentV2,
+    OnboardingCoursesComponent,
+    CoursesListTableComponent,
+    AddProviderCoursesComponent,
+    BulkUploadCoursesComponent,
+    ProvidersApiIntegrationsComponent,
+    CertificateConfigurationComponent,
+
   ],
   imports: [
     CommonModule,
@@ -143,7 +159,8 @@ const routes: Routes = [
     MatSlideToggleModule,
     MatFormFieldModule,
     MatSidenavModule,
-    MatRippleModule
+    MatRippleModule,
+    PaginationModule
   ],
   providers: [DatePipe, LoaderService],
   exports: [RouterModule],

@@ -156,7 +156,7 @@ export class MarketPlaceDashboardComponent implements OnInit {
           isAuthenticated: _.get(event, 'rows.isAuthenticate', false),
           partnerCode: _.get(event, 'rows.partnerCode', false),
         }
-        this.navigateToConfiguration(providerDetails)
+        this.navigateToConfigurationV2(providerDetails)
         break
       case 'deactivate':
         this.openConformationPopup(event.row)
