@@ -1,19 +1,19 @@
 <div class="bulk-upload-provider-content rounded-xl p-4 bg-white">
   <p class="page-title">Add Bulk Upload Courses</p>
-  <div class="bulk-upload-meta-wrapper flex gap-3 p-4">
-    <div class="meta-info-download flex-1 p-4">
-      <p class="mb-7">Open & follow these instruction</p>
-      <ol class="pl-4">
-        <li class="pb-4">Keep the row of the items you wish to process.</li>
-        <li class="pb-4">Keep the row of the items you wish to process.</li>
-        <li class="pb-4">Save the file in CSV format.</li>
-        <li class="pb-4">Delete the entire row you donot intend to process.</li>
-      </ol>
+  <div class="meta-info-download p-4">
+    <p class="mb-7">Open & follow these instruction</p>
+    <ol class="pl-4">
+      <li class="pb-4">Keep the row of the items you wish to process.</li>
+      <li class="pb-4">Keep the row of the items you wish to process.</li>
+      <li class="pb-4">Save the file in CSV format.</li>
+      <li class="pb-4">Delete the entire row you donot intend to process.</li>
+    </ol>
 
-      <button mat-flat-button class="flex rounded-full px-4 py-2 font-bold mat-btn-outline text-sm">
-        Download Sample File
-      </button>
-    </div>
+    <button mat-flat-button class="flex rounded-full px-4 py-2 font-bold mat-btn-outline text-sm">
+      Download Sample File
+    </button>
+  </div>
+  <div class="bulk-upload-meta-wrapper flex gap-3 p-4">
     <div class="upload-bulk-content flex-1 flex items-center justify-center">
       <div
         class="right-upload-inner flex flex-col items-center justify-center"
@@ -40,13 +40,13 @@
           (change)="onDropHandler($event.target.files[0]); fileInput.value = null"
         />
         <div
-          *ngIf="uploadedFile"
+          *ngIf="contentFileUploaded"
           class="flex flex-middle justify-center flex-column position-relative pt-5 px-5"
         >
           <mat-icon class="csv-icon" svgIcon="excel_sheet"> </mat-icon>
           <p class="margin-left-xs mat-h3 font-weight-500 margin-remove-bottom break">
-            <ng-container *ngIf="uploadedFile; else elseBlock">
-              <span class="flex-wrap"> {{ uploadedFile?.name }}</span>
+            <ng-container *ngIf="contentFileUploaded; else elseBlock">
+              <span class="flex-wrap"> {{ fileName }}</span>
             </ng-container>
             <ng-template #elseBlock>
               <span i18n>No file uploaded</span>
@@ -55,5 +55,66 @@
         </div>
       </div>
     </div>
+
+    <div class="form-spec-content flex w-full flex-col gap-1 flex-1 p-4">
+      <div>
+        <span class="header">Transform Content</span>
+      </div>
+      <div
+        class="flex flex-col gap-4 transformation-box"
+        [ngClass]="{ 'transformation-required': !transformationsUpdated && executed }"
+      >
+        <form [formGroup]="transforamtionForm">
+          <div class="flex flex-col gap-2">
+            <ng-container *ngFor="let transFormControl of transFormContentKeysAndControls">
+              <div class="flex flex-column gap-1 mat-field-rounded">
+                <div class="flex items-center gap-1 required">
+                  <span class="label"
+                    >{{ transFormControl.lable }}
+                    <mat-icon
+                      svgIcon="field_i"
+                      matTooltip="{{ transFormControl.lable }}"
+                    ></mat-icon>
+                  </span>
+                </div>
+                <mat-form-field class="w-full" appearance="outline">
+                  <mat-select
+                    formControlName="{{ transFormControl.controlName }}"
+                    (selectionChange)="onSelectChange()"
+                    placeholder="Select"
+                  >
+                    <ng-container *ngFor="let header of availableHeadrsList">
+                      <mat-option [value]="header">
+                        {{ header }}
+                      </mat-option>
+                    </ng-container>
+                    <ng-container *ngIf="transforamtionForm.value[transFormControl.controlName]">
+                      <mat-option [value]="transforamtionForm.value[transFormControl.controlName]">
+                        {{ transforamtionForm.value[transFormControl.controlName] }}
+                      </mat-option>
+                    </ng-container>
+                    <mat-option value=""> select </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </ng-container>
+          </div>
+        </form>
+        <div class="flex w-full justify-end mt-4">
+          <button
+            mat-flat-button
+            class="flex items-center rounded-full px-4 py-2 font-bold text-sm mat-btn-flat"
+            (click)="upDateTransforamtionDetails()"
+          >
+            {{ getUpdateBtnText }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex w-full justify-center mt-8">
+    <button mat-flat-button
+        class="flex items-center rounded-full px-4 py-2 font-bold text-sm mat-btn-flat" (click)="uploadFile()">Execute</button>
   </div>
 </div>
