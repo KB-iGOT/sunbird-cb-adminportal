@@ -44,7 +44,8 @@
     color: #000000de;
   }
 
-  .upload-bulk-content, .form-spec-content {
+  .upload-bulk-content,
+  .form-spec-content {
     border: 1px dashed #00000029;
   }
 }
@@ -57,4 +58,11 @@ mat-icon.csv-icon {
   height: 50px;
   width: 50px;
   font-size: 50px;
+}
+
+.form-spec-content mat-icon {
+  font-size: 9px;
+  height: 15px !important;
+  width: 15px !important;
+  margin-left: 2px;
 }
