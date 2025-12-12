@@ -132,6 +132,18 @@ export class InitService {
       'download_color',
       domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/download-colored.svg'),
     )
+    iconRegistry.addSvgIcon(
+      'content_copy',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/content_copy.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'alert_i',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/alert-i-icon.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'verified_tick',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/verified-tick.svg'),
+    )
   }
 
   private initializeTranslations(): void {

@@ -1,0 +1,257 @@
+<div class="sso-provider-settings flex gap-4 mt-4 lg:flex-row flex-col">
+  <ng-container *ngIf="false">
+    <div class="wrapper-border p-4 bg-white rounded-lg flex-1">
+      <p class="page-title">SSO Provider Settings</p>
+      <p class="text-sm section-title mb-6 mt-2">
+        Configure Single Sign-ON Seamless partner LMS connectivity
+      </p>
+
+      <div class="sso-form-settings">
+        <div class="pb-4 b-seperator">
+          <div class="flex flex-column gap-1 mat-field-rounded">
+            <div class="flex items-center gap-1 required">
+              <span class="label">SSO Protocol</span>
+            </div>
+            <mat-form-field class="w-full">
+              <mat-select placeholder="Select">
+                <ng-container *ngFor="let type of ['OpenID Connect']">
+                  <mat-option [value]="type">{{ type }}</mat-option>
+                </ng-container>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="flex flex-column gap-1 mat-field-rounded">
+            <div class="flex items-center gap-1 required">
+              <span class="label">Partner Name</span>
+            </div>
+            <mat-form-field class="w-full">
+              <input matInput placeholder="Type here" />
+            </mat-form-field>
+          </div>
+
+          <div class="flex flex-column gap-1 mat-field-rounded">
+            <div class="flex items-center gap-1 required">
+              <span class="label">Entity ID / Client ID</span>
+            </div>
+            <mat-form-field class="w-full">
+              <input matInput placeholder="Type here" />
+            </mat-form-field>
+          </div>
+
+          <div class="flex flex-column gap-1 mat-field-rounded">
+            <div class="flex items-center gap-1 required">
+              <span class="label">SSO URL / Authorisation Endpoint</span>
+            </div>
+            <mat-form-field class="w-full">
+              <input matInput placeholder="Type here" />
+            </mat-form-field>
+          </div>
+
+          <div class="flex flex-column gap-1 mat-field-rounded">
+            <div class="flex items-center gap-1 required">
+              <span class="label">Certificate / Client Secret</span>
+            </div>
+            <mat-form-field class="w-full">
+              <input matInput placeholder="Paste certificate or secret key" />
+              <mat-hint class="section-title"
+                >Your certificate or secret is encrypted and stored securely</mat-hint
+              >
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="second-section mt-4">
+          <p class="page-title">Attribute Mapping</p>
+          <p class="text-sm section-title mb-6 mt-2">Map SSO attributes to user profile fields</p>
+        </div>
+
+        <div>
+          <div class="flex flex-column gap-1 mat-field-rounded">
+            <div class="flex items-center gap-1 required">
+              <span class="label">Email Attribute</span>
+            </div>
+            <mat-form-field class="w-full">
+              <input matInput placeholder="Type here" />
+            </mat-form-field>
+          </div>
+
+          <div class="flex flex-column gap-1 mat-field-rounded">
+            <div class="flex items-center gap-1 required">
+              <span class="label">User ID Attribute</span>
+            </div>
+            <mat-form-field class="w-full">
+              <input matInput placeholder="Type here" />
+            </mat-form-field>
+          </div>
+
+          <div class="flex flex-column gap-1 mat-field-rounded">
+            <div class="flex items-center gap-1 required">
+              <span class="label">First Name Attribute</span>
+            </div>
+            <mat-form-field class="w-full">
+              <input matInput placeholder="Type here" />
+            </mat-form-field>
+          </div>
+
+          <div class="flex flex-column gap-1 mat-field-rounded">
+            <div class="flex items-center gap-1 required">
+              <span class="label">Last Name Attribute</span>
+            </div>
+            <mat-form-field class="w-full">
+              <input matInput placeholder="Type here" />
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="true">
+    <div class="test-sso-connection wrapper-border p-4 bg-white rounded-lg flex-1">
+      <p class="page-title">Test SSO Connections</p>
+      <p class="text-sm section-title mb-6 mt-2">Verify your SSO configuration before going live</p>
+
+      <div class="email-failed-box p-4 rounded-lg">
+        <div class="flex gap-2">
+          <mat-icon svgIcon="alert_i"></mat-icon>
+          <div class="info">
+            <p class="info-title">Email List100.xlsx</p>
+            <p class="text-sm section-title mt-2 mb-0">
+              There's an error occurred while uploading this file.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Test SSO Button  -->
+      <button
+        mat-flat-button
+        class="flex items-center rounded-full px-4 py-2 mat-btn-flat mat-btn-height-32 w-full my-8"
+      >
+        Test SSO Connection
+      </button>
+
+      <!-- Success SSO Message  -->
+      <div class="success-sso-message p-4 rounded-lg">
+        <div class="flex gap-3">
+          <mat-icon svgIcon="verified_tick"></mat-icon>
+          <div class="info">
+            <div class="mb-3">
+              <p class="info-title">Test Successful!</p>
+              <p class="text-sm section-title mt-2 mb-0">
+                SSO authentication completed successfully. User attributes received and mapped
+                correctly.
+              </p>
+            </div>
+            <div class="received-attributes">
+              <p class="info-title">Received Attributes:</p>
+              <ol type="1">
+                <li>Email: test.user@partner.com</li>
+                <li>User ID: usr_12345</li>
+                <li>Name: John Doe</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="meta-info-section">
+    <div class="sso-provider-meta wrapper-border p-4 bg-white rounded-lg">
+      <p class="sub-heading-title mb-4">Service Provider Info</p>
+
+      <div class="flex flex-column gap-1 mat-field-rounded">
+        <div class="flex items-center gap-1">
+          <span class="meta-label">Callback URL</span>
+        </div>
+        <mat-form-field class="w-full">
+          <input
+            class="input-ellipse"
+            #callbackUrl
+            value="https://msp-marketplace.com/sso/callback/techlearn-academy"
+            matInput
+            placeholder="Type here"
+          />
+          <mat-icon
+            matSuffix
+            (click)="copy('callback', callbackUrl.value)"
+            matTooltipPosition="above"
+            [matTooltip]="callbackUrlCopied ? 'Copied' : 'Copy'"
+            [svgIcon]="'content_copy'"
+          ></mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="flex flex-column gap-1 mat-field-rounded">
+        <div class="flex items-center gap-1">
+          <span class="meta-label">Metadata URL</span>
+        </div>
+        <mat-form-field class="w-full">
+          <input
+            class="input-ellipse"
+            #metadataUrl
+            value="https://msp-marketplace.com/sso/callback/techlearn-academy"
+            matInput
+            placeholder="Type here"
+          />
+          <mat-icon
+            matSuffix
+            (click)="copy('metadata', metadataUrl.value)"
+            matTooltipPosition="above"
+            [matTooltip]="metadataUrlCopied ? 'Copied' : 'Copy'"
+            [svgIcon]="'content_copy'"
+          ></mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="flex flex-column gap-1 mat-field-rounded">
+        <div class="flex items-center gap-1">
+          <span class="meta-label">Entity ID</span>
+        </div>
+        <mat-form-field class="w-full">
+          <input
+            class="input-ellipse"
+            #entityId
+            value="https://msp-marketplace.com/sso/callback/techlearn-academy"
+            matInput
+            placeholder="Type here"
+          />
+          <mat-icon
+            matSuffix
+            (click)="copy('entityId', entityId.value)"
+            [matTooltip]="entityIdCopied ? 'Copied' : 'Copy'"
+            [svgIcon]="'content_copy'"
+            matTooltipPosition="above"
+          ></mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="mt-4 wrapper-border p-4 bg-white rounded-lg">
+      <div class="sso-status">
+        <div class="mb-3">
+          <span class="label"> Status </span>
+          <div class="flex items-center justify-between mt-2">
+            <div class="badge success">Enabled</div>
+            <mat-slide-toggle></mat-slide-toggle>
+          </div>
+        </div>
+        <div class="mb-3">
+          <span class="label"> Configuration </span>
+          <div class="flex items-center justify-between mt-2">
+            <div class="badge incomplete">Incomplete</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <span class="label"> Active </span>
+          <div class="flex items-center justify-between mt-2">
+            <div class="badge not-tested">Not Tested</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

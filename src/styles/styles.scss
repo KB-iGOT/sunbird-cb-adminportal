@@ -751,3 +751,10 @@ h3.shepherd-title {
 .remove-body-padding {
   padding: 0 !important;
 }
+
+.mat-btn-height-32 {
+  &.mat-btn-outline,
+  &.mat-btn-flat {
+    height: 32px !important;
+  }
+}

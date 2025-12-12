@@ -30,6 +30,12 @@
           (loadProviderDetails)="getProviderDetails($event)"
         ></ws-app-certificate-configuration>
       </ng-container>
+      <ng-container *ngIf="activeMenuItem === 'sso_integration'">
+        <ws-app-sso-integration
+          [providerDetails]="providerDetails"
+          (loadProviderDetails)="getProviderDetails($event)"
+        ></ws-app-sso-integration>
+      </ng-container>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

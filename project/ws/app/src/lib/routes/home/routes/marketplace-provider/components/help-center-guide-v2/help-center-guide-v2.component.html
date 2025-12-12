@@ -1,31 +1,33 @@
-<mat-card class="mb-4 helpCenterCard">
-  <div class="flex">
-    <span class="mat-body-1 font-bold-imp flex-1">{{helpCenterGuide?.header}}</span>
-    <mat-icon class="cursor-pointer mat-icon mr-4" *ngIf="showTopSection"
-      (click)="showTopSection = !showTopSection; callResizeEvent($event)">keyboard_arrow_up</mat-icon>
-    <mat-icon class="cursor-pointer mat-icon mr-4" *ngIf="!showTopSection"
-      (click)="showTopSection = !showTopSection; callResizeEvent($event)">keyboard_arrow_down</mat-icon>
-  </div>
-  <div class="pt-5" *ngIf="showTopSection">
-    <div class="flex gap-20 items-center justify-between">
-      <div class="flex flex-column gap-4">
-        <ng-container *ngFor="let note of helpCenterGuide?.guideNotes">
-          <div class="flex w-full gap-3">
-            <div><mat-icon class="mat-icon mr-4">error_outline</mat-icon></div>
-            <div>{{note}}</div>
-          </div>
-        </ng-container>
-      </div>
-      <div class="pb-3">
-        <div class="helpCenterDemo flex justify-end section-2">
-          <div class="helpCenterDemoVideo flex flex-column flex-middle justify-center" (click)="openVideoPopup()">
-            <mat-icon class="video_icon mb-2">play_arrow</mat-icon>
-            <div>
-              Watch how it works
-            </div>
-          </div>
-        </div>
+<div class="flex justify-between mb-3 flex-column info-pill">
+  <div class="flex flex-row justify-between">
+    <div class="flex items-center justify-center">
+      <div class="flex gap-1 items-center justify-center">
+        <img src="assets/icons/i-icon.svg" alt="icon" width="35" />
+        <span class="bold-text ml-4">Note:- Content Upload Details: Video Guides and Tips.</span>
       </div>
     </div>
+    <div>
+      <img
+        class="cursor-pointer"
+        *ngIf="!showDetailToggle"
+        (click)="showDetailToggle = !showDetailToggle"
+        src="assets/icons/arrow-down.svg"
+        alt="icon"
+      />
+      <img
+        class="cursor-pointer rotate-icon"
+        *ngIf="showDetailToggle"
+        (click)="showDetailToggle = !showDetailToggle"
+        src="assets/icons/arrow-down.svg"
+        alt="icon"
+      />
+    </div>
   </div>
-</mat-card>
+  <ng-container *ngIf="showDetailToggle">
+    <div class="content-help">
+      <ul>
+        <li>Text-one</li>
+      </ul>
+    </div>
+  </ng-container>
+</div>

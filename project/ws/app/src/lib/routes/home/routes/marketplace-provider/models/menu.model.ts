@@ -4,11 +4,11 @@ export const MARKETPLACE_CONFIGURE_PROVIDERS_MENU = [
     label: 'Provider Details',
     slug: 'provider_details',
   },
-  // {
-  //   id: 2,
-  //   label: 'SSO Integration',
-  //   slug: 'sso_integration',
-  // },
+  {
+    id: 2,
+    label: 'SSO Integration',
+    slug: 'sso_integration',
+  },
   {
     id: 3,
     label: 'Course Onboarding',
