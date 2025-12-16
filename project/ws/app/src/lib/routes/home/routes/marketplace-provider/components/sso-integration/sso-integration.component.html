@@ -21,6 +21,7 @@
         </div>
       </button>
       <button
+        (click)="updateCreateSSO()"
         mat-flat-button
         class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat mat-btn-height-32"
       >
@@ -31,9 +32,66 @@
 
   <mat-tab-group>
     <mat-tab label="Configure">
-      <ws-app-sso-configure-settings></ws-app-sso-configure-settings>
+      <ws-app-sso-configure-settings
+        #ssoConfigurationSettings
+        [providerDetails]="providerDetails"
+        (loadSSODetails)="loadSSODetails($event)"
+      ></ws-app-sso-configure-settings>
     </mat-tab>
-    <mat-tab label="Test & Preview"> Content 2 </mat-tab>
+    <mat-tab label="Test & Preview">
+      <ng-container>
+        <div class="test-sso-connection wrapper-border p-4 bg-white rounded-lg flex-1 mt-4">
+          <p class="page-title">Test SSO Connections</p>
+          <p class="text-sm section-title mb-6 mt-2">
+            Verify your SSO configuration before going live
+          </p>
+
+          <div class="email-failed-box p-4 rounded-lg">
+            <div class="flex gap-2">
+              <mat-icon svgIcon="alert_i"></mat-icon>
+              <div class="info">
+                <p class="info-title">Email List100.xlsx</p>
+                <p class="text-sm section-title mt-2 mb-0">
+                  There's an error occurred while uploading this file.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Test SSO Button  -->
+          <button [disabled]="!ssoConfigurations?.ssoTestUrl" (click)="testSsoUrl()"
+            mat-flat-button
+            class="flex items-center rounded-full px-4 py-2 mat-btn-flat mat-btn-height-32 w-full my-8"
+          >
+            Test SSO Connection
+          </button>
+
+          <!-- Success SSO Message  -->
+          <!-- <div class="success-sso-message p-4 rounded-lg">
+        <div class="flex gap-3">
+          <mat-icon svgIcon="verified_tick"></mat-icon>
+          <div class="info">
+            <div class="mb-3">
+              <p class="info-title">Test Successful!</p>
+              <p class="text-sm section-title mt-2 mb-0">
+                SSO authentication completed successfully. User attributes received and mapped
+                correctly.
+              </p>
+            </div>
+            <div class="received-attributes">
+              <p class="info-title">Received Attributes:</p>
+              <ol type="1">
+                <li>Email: test.user@partner.com</li>
+                <li>User ID: usr_12345</li>
+                <li>Name: John Doe</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div> -->
+        </div>
+      </ng-container>
+    </mat-tab>
     <mat-tab label="Documentation"> Content 3 </mat-tab>
   </mat-tab-group>
 </div>

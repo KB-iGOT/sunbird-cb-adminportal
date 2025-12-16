@@ -1,6 +1,6 @@
 <div class="sso-provider-settings flex gap-4 mt-4 lg:flex-row flex-col">
-  <ng-container *ngIf="false">
-    <div class="wrapper-border p-4 bg-white rounded-lg flex-1">
+  <ng-container *ngIf="!testSSOConnectionVisible">
+    <div class="wrapper-border p-4 bg-white rounded-lg flex-1" [formGroup]="ssoSettingsForm">
       <p class="page-title">SSO Provider Settings</p>
       <p class="text-sm section-title mb-6 mt-2">
         Configure Single Sign-ON Seamless partner LMS connectivity
@@ -13,11 +13,20 @@
               <span class="label">SSO Protocol</span>
             </div>
             <mat-form-field class="w-full">
-              <mat-select placeholder="Select">
-                <ng-container *ngFor="let type of ['OpenID Connect']">
-                  <mat-option [value]="type">{{ type }}</mat-option>
+              <mat-select placeholder="Select" formControlName="ssoProtocol">
+                <ng-container *ngFor="let type of ssoProtocolsList">
+                  <mat-option [value]="type.value">{{ type.name }}</mat-option>
                 </ng-container>
               </mat-select>
+              <mat-error
+                class="m-1"
+                *ngIf="
+                  ssoSettingsForm.get('ssoProtocol').hasError('required') &&
+                  (ssoSettingsForm.get('ssoProtocol').dirty ||
+                    ssoSettingsForm.get('ssoProtocol').touched)
+                "
+                >This field is required</mat-error
+              >
             </mat-form-field>
           </div>
 
@@ -26,7 +35,16 @@
               <span class="label">Partner Name</span>
             </div>
             <mat-form-field class="w-full">
-              <input matInput placeholder="Type here" />
+              <input matInput placeholder="Type here" formControlName="partnerName" />
+              <mat-error
+                class="m-1"
+                *ngIf="
+                  ssoSettingsForm.get('partnerName').hasError('required') &&
+                  (ssoSettingsForm.get('partnerName').dirty ||
+                    ssoSettingsForm.get('partnerName').touched)
+                "
+                >This field is required</mat-error
+              >
             </mat-form-field>
           </div>
 
@@ -35,7 +53,15 @@
               <span class="label">Entity ID / Client ID</span>
             </div>
             <mat-form-field class="w-full">
-              <input matInput placeholder="Type here" />
+              <input matInput placeholder="Type here" formControlName="clientId" />
+              <mat-error
+                class="m-1"
+                *ngIf="
+                  ssoSettingsForm.get('clientId').hasError('required') &&
+                  (ssoSettingsForm.get('clientId').dirty || ssoSettingsForm.get('clientId').touched)
+                "
+                >This field is required</mat-error
+              >
             </mat-form-field>
           </div>
 
@@ -44,18 +70,14 @@
               <span class="label">SSO URL / Authorisation Endpoint</span>
             </div>
             <mat-form-field class="w-full">
-              <input matInput placeholder="Type here" />
-            </mat-form-field>
-          </div>
-
-          <div class="flex flex-column gap-1 mat-field-rounded">
-            <div class="flex items-center gap-1 required">
-              <span class="label">Certificate / Client Secret</span>
-            </div>
-            <mat-form-field class="w-full">
-              <input matInput placeholder="Paste certificate or secret key" />
-              <mat-hint class="section-title"
-                >Your certificate or secret is encrypted and stored securely</mat-hint
+              <input matInput placeholder="Type here" formControlName="ssoUrl" />
+              <mat-error
+                class="m-1"
+                *ngIf="
+                  ssoSettingsForm.get('ssoUrl').hasError('required') &&
+                  (ssoSettingsForm.get('ssoUrl').dirty || ssoSettingsForm.get('ssoUrl').touched)
+                "
+                >This field is required</mat-error
               >
             </mat-form-field>
           </div>
@@ -72,7 +94,16 @@
               <span class="label">Email Attribute</span>
             </div>
             <mat-form-field class="w-full">
-              <input matInput placeholder="Type here" />
+              <input matInput placeholder="Type here" formControlName="emailAttribute" />
+              <mat-error
+                class="m-1"
+                *ngIf="
+                  ssoSettingsForm.get('emailAttribute').hasError('required') &&
+                  (ssoSettingsForm.get('emailAttribute').dirty ||
+                    ssoSettingsForm.get('emailAttribute').touched)
+                "
+                >This field is required</mat-error
+              >
             </mat-form-field>
           </div>
 
@@ -81,7 +112,16 @@
               <span class="label">User ID Attribute</span>
             </div>
             <mat-form-field class="w-full">
-              <input matInput placeholder="Type here" />
+              <input matInput placeholder="Type here" formControlName="userIdAttribute" />
+              <mat-error
+                class="m-1"
+                *ngIf="
+                  ssoSettingsForm.get('userIdAttribute').hasError('required') &&
+                  (ssoSettingsForm.get('userIdAttribute').dirty ||
+                    ssoSettingsForm.get('userIdAttribute').touched)
+                "
+                >This field is required</mat-error
+              >
             </mat-form-field>
           </div>
 
@@ -90,7 +130,16 @@
               <span class="label">First Name Attribute</span>
             </div>
             <mat-form-field class="w-full">
-              <input matInput placeholder="Type here" />
+              <input matInput placeholder="Type here" formControlName="firstNameAttribute" />
+              <mat-error
+                class="m-1"
+                *ngIf="
+                  ssoSettingsForm.get('firstNameAttribute').hasError('required') &&
+                  (ssoSettingsForm.get('firstNameAttribute').dirty ||
+                    ssoSettingsForm.get('firstNameAttribute').touched)
+                "
+                >This field is required</mat-error
+              >
             </mat-form-field>
           </div>
 
@@ -99,61 +148,35 @@
               <span class="label">Last Name Attribute</span>
             </div>
             <mat-form-field class="w-full">
-              <input matInput placeholder="Type here" />
+              <input matInput placeholder="Type here" formControlName="lastNameAttribute" />
+              <mat-error
+                class="m-1"
+                *ngIf="
+                  ssoSettingsForm.get('lastNameAttribute').hasError('required') &&
+                  (ssoSettingsForm.get('lastNameAttribute').dirty ||
+                    ssoSettingsForm.get('lastNameAttribute').touched)
+                "
+                >This field is required</mat-error
+              >
             </mat-form-field>
           </div>
         </div>
       </div>
-    </div>
-  </ng-container>
 
-  <ng-container *ngIf="true">
-    <div class="test-sso-connection wrapper-border p-4 bg-white rounded-lg flex-1">
-      <p class="page-title">Test SSO Connections</p>
-      <p class="text-sm section-title mb-6 mt-2">Verify your SSO configuration before going live</p>
-
-      <div class="email-failed-box p-4 rounded-lg">
-        <div class="flex gap-2">
-          <mat-icon svgIcon="alert_i"></mat-icon>
-          <div class="info">
-            <p class="info-title">Email List100.xlsx</p>
-            <p class="text-sm section-title mt-2 mb-0">
-              There's an error occurred while uploading this file.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Test SSO Button  -->
-      <button
-        mat-flat-button
-        class="flex items-center rounded-full px-4 py-2 mat-btn-flat mat-btn-height-32 w-full my-8"
-      >
-        Test SSO Connection
-      </button>
-
-      <!-- Success SSO Message  -->
-      <div class="success-sso-message p-4 rounded-lg">
-        <div class="flex gap-3">
-          <mat-icon svgIcon="verified_tick"></mat-icon>
-          <div class="info">
-            <div class="mb-3">
-              <p class="info-title">Test Successful!</p>
-              <p class="text-sm section-title mt-2 mb-0">
-                SSO authentication completed successfully. User attributes received and mapped
-                correctly.
-              </p>
-            </div>
-            <div class="received-attributes">
-              <p class="info-title">Received Attributes:</p>
-              <ol type="1">
-                <li>Email: test.user@partner.com</li>
-                <li>User ID: usr_12345</li>
-                <li>Name: John Doe</li>
-              </ol>
-            </div>
-          </div>
-        </div>
+      <div class="flex gap-4 items-center justify-center mt-6">
+        <button
+          mat-flat-button
+          class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline mat-btn-height-32"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="updateCreateSSO()"
+          mat-flat-button
+          class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat mat-btn-height-32"
+        >
+          {{ SSOConfigurationData ? 'Update' : 'Save' }}
+        </button>
       </div>
     </div>
   </ng-container>
@@ -164,15 +187,15 @@
 
       <div class="flex flex-column gap-1 mat-field-rounded">
         <div class="flex items-center gap-1">
-          <span class="meta-label">Callback URL</span>
+          <span class="meta-label">ACS URL</span>
         </div>
         <mat-form-field class="w-full">
           <input
             class="input-ellipse"
             #callbackUrl
-            value="https://msp-marketplace.com/sso/callback/techlearn-academy"
             matInput
             placeholder="Type here"
+            [formControl]="acsUrl"
           />
           <mat-icon
             matSuffix
@@ -186,44 +209,22 @@
 
       <div class="flex flex-column gap-1 mat-field-rounded">
         <div class="flex items-center gap-1">
-          <span class="meta-label">Metadata URL</span>
+          <span class="meta-label">Redirect URL</span>
         </div>
         <mat-form-field class="w-full">
           <input
             class="input-ellipse"
-            #metadataUrl
-            value="https://msp-marketplace.com/sso/callback/techlearn-academy"
+            #redirectUrl
             matInput
             placeholder="Type here"
+            [formControl]="ssoTestUrl"
           />
           <mat-icon
             matSuffix
-            (click)="copy('metadata', metadataUrl.value)"
+            (click)="copy('redirect', redirectUrl.value)"
             matTooltipPosition="above"
-            [matTooltip]="metadataUrlCopied ? 'Copied' : 'Copy'"
+            [matTooltip]="redirectUrlCopied ? 'Copied' : 'Copy'"
             [svgIcon]="'content_copy'"
-          ></mat-icon>
-        </mat-form-field>
-      </div>
-
-      <div class="flex flex-column gap-1 mat-field-rounded">
-        <div class="flex items-center gap-1">
-          <span class="meta-label">Entity ID</span>
-        </div>
-        <mat-form-field class="w-full">
-          <input
-            class="input-ellipse"
-            #entityId
-            value="https://msp-marketplace.com/sso/callback/techlearn-academy"
-            matInput
-            placeholder="Type here"
-          />
-          <mat-icon
-            matSuffix
-            (click)="copy('entityId', entityId.value)"
-            [matTooltip]="entityIdCopied ? 'Copied' : 'Copy'"
-            [svgIcon]="'content_copy'"
-            matTooltipPosition="above"
           ></mat-icon>
         </mat-form-field>
       </div>
@@ -235,20 +236,32 @@
           <span class="label"> Status </span>
           <div class="flex items-center justify-between mt-2">
             <div class="badge success">Enabled</div>
-            <mat-slide-toggle></mat-slide-toggle>
+            <mat-slide-toggle [formControl]="status"></mat-slide-toggle>
           </div>
         </div>
         <div class="mb-3">
           <span class="label"> Configuration </span>
           <div class="flex items-center justify-between mt-2">
-            <div class="badge incomplete">Incomplete</div>
+            <div
+              class="badge"
+              [ngClass]="
+                SSOConfigurationData?.configuration === 'complete' ? 'success' : 'incomplete'
+              "
+            >
+              {{ SSOConfigurationData?.configuration || 'incomplete' }}
+            </div>
           </div>
         </div>
 
         <div class="mb-3">
           <span class="label"> Active </span>
           <div class="flex items-center justify-between mt-2">
-            <div class="badge not-tested">Not Tested</div>
+            <div
+              class="badge"
+              [ngClass]="SSOConfigurationData?.ssoTested ? 'success' : 'not-tested'"
+            >
+              {{ SSOConfigurationData?.ssoTested ? 'Tested' : 'Not Tested' }}
+            </div>
           </div>
         </div>
       </div>
