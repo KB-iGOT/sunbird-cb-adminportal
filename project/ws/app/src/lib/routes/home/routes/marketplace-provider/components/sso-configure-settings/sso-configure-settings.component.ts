@@ -72,6 +72,8 @@ export class SsoConfigureSettingsComponent implements OnInit {
   fetchSSOSettings() {
     if (this.providerDetails && this.providerDetails.id) {
       this.loaderService.setLoaderState(true)
+      this.ssoSettingsForm.controls['partnerName'].setValue(this.providerDetails?.data?.contentPartnerName || '')
+      this.ssoSettingsForm.controls['partnerName'].disable()
 
       this.marketplaceService.getSSOConfiguration(this.providerDetails.id).subscribe({
         next: (response: any) => {
@@ -80,7 +82,6 @@ export class SsoConfigureSettingsComponent implements OnInit {
             this.loadSSODetails.emit(this.SSOConfigurationData)
             this.ssoSettingsForm.patchValue({
               clientId: this.SSOConfigurationData?.clientId,
-              partnerName: this.SSOConfigurationData?.partnerName,
               ssoProtocol: this.SSOConfigurationData?.ssoProtocol,
               ssoUrl: this.SSOConfigurationData?.ssoUrl,
               emailAttribute: this.SSOConfigurationData?.emailAttribute,
@@ -104,11 +105,13 @@ export class SsoConfigureSettingsComponent implements OnInit {
 
   createSSOConfigurations() {
     if (this.ssoSettingsForm.invalid) {
+      this.ssoSettingsForm.markAllAsTouched()
       return
     }
     this.loaderService.setLoaderState(true)
+    const formValues = this.ssoSettingsForm.getRawValue()
     const payload = {
-      ...this.ssoSettingsForm.value,
+      ...formValues,
       status: this.status.value,
       acsUrl: this.acsUrl.value,
       ssoTestUrl: this.ssoTestUrl.value
@@ -123,7 +126,8 @@ export class SsoConfigureSettingsComponent implements OnInit {
           this.showSnackBar(response?.params?.errmsg || 'Failed to create SSO Configuration', 'error')
         }
         this.loaderService.setLoaderState(false)
-      }, error: () => {
+      }, error: (error: any) => {
+        this.showSnackBar(this.extractErrorMessage(error?.error?.message), 'error')
         this.loaderService.setLoaderState(false)
       }
     })
@@ -131,12 +135,14 @@ export class SsoConfigureSettingsComponent implements OnInit {
 
   updateSSOConfigurations() {
     if (this.ssoSettingsForm.invalid) {
+      this.ssoSettingsForm.markAllAsTouched()
       return
     }
     this.loaderService.setLoaderState(true)
 
+    const formValues = this.ssoSettingsForm.getRawValue()
     const payload = {
-      ...this.ssoSettingsForm.value,
+      ...formValues,
       status: this.status.value,
       acsUrl: this.acsUrl.value,
       ssoTestUrl: this.ssoTestUrl.value,
@@ -150,11 +156,12 @@ export class SsoConfigureSettingsComponent implements OnInit {
           this.fetchSSOSettings()
           this.showSnackBar('SSO Configuration updated successfully', 'success')
         } else {
-          this.showSnackBar(response?.params?.errmsg || 'Failed to create SSO Configuration', 'error')
+          this.showSnackBar(response?.params?.errmsg || 'Failed to update SSO Configuration', 'error')
         }
         this.loaderService.setLoaderState(false)
 
-      }, error: () => {
+      }, error: (error: any) => {
+        this.showSnackBar(this.extractErrorMessage(error?.error?.message), 'error')
         this.loaderService.setLoaderState(false)
       }
     })
@@ -175,4 +182,29 @@ export class SsoConfigureSettingsComponent implements OnInit {
       }, duration: 5000, panelClass: type,
     })
   }
+
+  extractErrorMessage(error: any): string {
+    if (!error) {
+      return 'Something went wrong'
+    }
+
+    if (typeof error === 'object' && error.errorMessage) {
+      return error.errorMessage
+    }
+
+    if (typeof error === 'string') {
+      try {
+        const jsonMatch = error.match(/{.*}/)
+        if (jsonMatch) {
+          const parsed = JSON.parse(jsonMatch[0])
+          return parsed.errorMessage || error
+        }
+      } catch {
+        return error
+      }
+    }
+
+    return 'Something went wrong'
+  }
+
 }
