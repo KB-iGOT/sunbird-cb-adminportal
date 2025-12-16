@@ -20,6 +20,10 @@ const API_END_POINTS = {
   CREATE_CONFIGURATION: `apis/proxies/v8/serviceregistry/config/create`,
   UPDATE_CONFIGURATION: `apis/proxies/v8/serviceregistry/config/update`,
   GET_CONFIGURATION: (configurationId: string) => `apis/proxies/v8/serviceregistry/config/read/${configurationId}`,
+
+  GET_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/read/${partnerId}`,
+  CREATE_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/create/${partnerId}`,
+  UPDATE_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/update/${partnerId}`,
 }
 
 @Injectable({
@@ -144,4 +148,16 @@ export class MarketplaceService {
     return this.http.get(`${API_END_POINTS.GET_CONFIGURATION(configurationId)}`)
   }
   //#endregion
+
+  getSSOConfiguration(partnerId: string): Observable<any> {
+    return this.http.get(`${API_END_POINTS.GET_SSO_CONFIGURATION(partnerId)}`)
+  }
+
+  createSSOConfiguration(partnerId: string, formBody: any) {
+    return this.http.post(`${API_END_POINTS.CREATE_SSO_CONFIGURATION(partnerId)}`, formBody)
+  }
+
+  updateSSOConfiguration(partnerId: string, formBody: any) {
+    return this.http.post(`${API_END_POINTS.UPDATE_SSO_CONFIGURATION(partnerId)}`, formBody)
+  }
 }

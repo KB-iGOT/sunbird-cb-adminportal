@@ -49,7 +49,9 @@ import { CoursesListTableComponent } from './components/courses-list-table/cours
 import { AddProviderCoursesComponent } from './components/add-provider-courses/add-provider-courses.component'
 import { BulkUploadCoursesComponent } from './components/bulk-upload-courses/bulk-upload-courses.component'
 import { ProvidersApiIntegrationsComponent } from './components/providers-api-integrations/providers-api-integrations.component';
-import { CertificateConfigurationComponent } from './components/certificate-configuration/certificate-configuration.component'
+import { CertificateConfigurationComponent } from './components/certificate-configuration/certificate-configuration.component';
+import { SsoIntegrationComponent } from './components/sso-integration/sso-integration.component';
+import { SsoConfigureSettingsComponent } from './components/sso-configure-settings/sso-configure-settings.component'
 
 const routes: Routes = [
   {
@@ -130,6 +132,8 @@ const routes: Routes = [
     BulkUploadCoursesComponent,
     ProvidersApiIntegrationsComponent,
     CertificateConfigurationComponent,
+    SsoIntegrationComponent,
+    SsoConfigureSettingsComponent,
 
   ],
   imports: [

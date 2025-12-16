@@ -85,7 +85,7 @@
       <mat-form-field class="w-full relative karma-point-control">
         <input formControlName="karmaPoints" matInput placeholder="Set Limit" type="number" min="0" />
         <mat-error *ngIf="providerSettingsForm?.controls['karmaPoints'].hasError('pattern')">Only positive value allowed.</mat-error>
-        <mat-icon svgIcon="karma_points" class="karma-points"></mat-icon>
+        <img src="assets/icons/karma-points.svg" alt="karma-points" class="karma-points">
       </mat-form-field>
     </div>
   </form>

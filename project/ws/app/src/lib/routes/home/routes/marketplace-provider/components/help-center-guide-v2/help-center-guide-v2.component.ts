@@ -15,6 +15,8 @@ export class HelpCenterGuideComponentV2 implements OnInit {
 
   showTopSection = false
   playVideo = false
+  showDetailToggle = false
+
 
   constructor(
     private dialog: MatDialog
