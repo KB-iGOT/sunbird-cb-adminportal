@@ -36,12 +36,12 @@ export class ProviderSettingsComponent implements OnChanges {
 
   initializeForm() {
     this.providerSettingsForm = this.fb.group({
-      overAllLimit: [null, [Validators.pattern(/^[0-9]*$/), Validators.min(0), Validators.max(100000000)]],
-      userWiseLimit: [null, [Validators.pattern(/^[0-9]*$/)]],
+      overAllLimit: [null, [Validators.min(0), Validators.max(100000000)]],
+      userWiseLimit: [null,],
       isUserWiseLimitEnabled: [false],
-      concurrentLimit: [null, [Validators.pattern(/^[0-9]*$/)]],
+      concurrentLimit: [null,],
       isConcurrentLimitEnabled: [false],
-      karmaPoints: [null, [Validators.pattern(/^[0-9]*$/)]],
+      karmaPoints: [null,],
       addKarmaPointEnabled: [false],
     })
 
@@ -49,11 +49,11 @@ export class ProviderSettingsComponent implements OnChanges {
       if (value) {
         if (this.controls['userWiseLimit'].enabled) {
           this.controls['concurrentLimit'].setValidators(
-            [Validators.required, Validators.pattern(/^[0-9]*$/), Validators.min(1), Validators.max(this.controls['userWiseLimit'].value)]
+            [Validators.required, Validators.min(1), Validators.max(this.controls['userWiseLimit'].value)]
           )
         } else {
           this.controls['concurrentLimit'].setValidators(
-            [Validators.required, Validators.pattern(/^[0-9]*$/), Validators.min(1), Validators.max(this.controls['overAllLimit'].value)]
+            [Validators.required, Validators.min(1), Validators.max(this.controls['overAllLimit'].value)]
           )
         }
         this.controls['concurrentLimit'].enable()
@@ -68,9 +68,10 @@ export class ProviderSettingsComponent implements OnChanges {
 
     this.controls['overAllLimit'].valueChanges.subscribe((value) => {
       if (value) {
+        console.log('overAllLimit changed', this.controls['overAllLimit'])
         if (!this.controls['userWiseLimit'].enabled && this.controls['concurrentLimit'].enabled) {
           this.controls['concurrentLimit'].setValidators(
-            [Validators.required, Validators.pattern(/^[0-9]*$/), Validators.min(1), Validators.max(this.controls['overAllLimit'].value)]
+            [Validators.required, Validators.min(1), Validators.max(this.controls['overAllLimit'].value)]
           )
           this.controls['concurrentLimit'].updateValueAndValidity()
 
@@ -81,7 +82,7 @@ export class ProviderSettingsComponent implements OnChanges {
 
     this.controls['isUserWiseLimitEnabled'].valueChanges.subscribe((value) => {
       if (value) {
-        this.controls['userWiseLimit'].setValidators([Validators.required, Validators.pattern(/^[0-9]*$/), Validators.min(1), Validators.max(100000000)])
+        this.controls['userWiseLimit'].setValidators([Validators.required, Validators.min(1), Validators.max(100000000)])
         this.controls['userWiseLimit'].enable()
         this.controls['userWiseLimit'].updateValueAndValidity()
 
@@ -93,7 +94,7 @@ export class ProviderSettingsComponent implements OnChanges {
         // Reset concurrent limit validators to use  when user wise limit is disabled
         if (!this.controls['userWiseLimit'].enabled && this.controls['concurrentLimit'].enabled) {
           this.controls['concurrentLimit'].setValidators(
-            [Validators.required, Validators.pattern(/^[0-9]*$/), Validators.min(1), Validators.max(this.controls['overAllLimit'].value)]
+            [Validators.required, Validators.min(1), Validators.max(this.controls['overAllLimit'].value)]
           )
           this.controls['concurrentLimit'].updateValueAndValidity()
         }
@@ -103,7 +104,7 @@ export class ProviderSettingsComponent implements OnChanges {
     this.controls['userWiseLimit'].valueChanges.subscribe((value) => {
       if (value) {
         this.controls['concurrentLimit'].setValidators(
-          [Validators.required, Validators.pattern(/^[0-9]*$/), Validators.min(1), Validators.max(this.controls['userWiseLimit'].value)]
+          [Validators.required, Validators.min(1), Validators.max(this.controls['userWiseLimit'].value)]
         )
         this.controls['concurrentLimit'].updateValueAndValidity()
       }
@@ -112,7 +113,7 @@ export class ProviderSettingsComponent implements OnChanges {
     this.controls['addKarmaPointEnabled'].valueChanges.subscribe((value) => {
       if (value) {
         this.controls['karmaPoints'].setValidators(
-          [Validators.required, Validators.pattern(/^[0-9]*$/), Validators.min(2), Validators.max(10000)]
+          [Validators.required, Validators.min(2), Validators.max(10000)]
         )
         this.controls['karmaPoints'].enable()
 
