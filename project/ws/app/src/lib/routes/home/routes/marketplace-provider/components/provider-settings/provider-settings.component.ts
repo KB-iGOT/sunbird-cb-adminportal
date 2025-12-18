@@ -68,13 +68,11 @@ export class ProviderSettingsComponent implements OnChanges {
 
     this.controls['overAllLimit'].valueChanges.subscribe((value) => {
       if (value) {
-        console.log('overAllLimit changed', this.controls['overAllLimit'])
         if (!this.controls['userWiseLimit'].enabled && this.controls['concurrentLimit'].enabled) {
           this.controls['concurrentLimit'].setValidators(
             [Validators.required, Validators.min(1), Validators.max(this.controls['overAllLimit'].value)]
           )
           this.controls['concurrentLimit'].updateValueAndValidity()
-
         }
       }
     })
