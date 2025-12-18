@@ -28,7 +28,7 @@
         Maximum total course enrolments allowed across all learners for this provider.
       </div>
       <mat-form-field class="w-full">
-        <input formControlName="overAllLimit" matInput placeholder="Set Limit" type="number" min="0" max="100000000" (input)="onInput($event, 'overAllLimit')" />
+        <input formControlName="overAllLimit" matInput placeholder="Set Limit" type="number" min="0" max="100000000" appMaxLengthNumber="10" />
         <mat-error *ngIf="providerSettingsForm?.controls['overAllLimit'].hasError('max')">Maximum value allowed upto 1,00,000,000.</mat-error>
         <mat-error *ngIf="providerSettingsForm?.controls['overAllLimit'].hasError('min')">Negetive value not allowed.</mat-error>
       </mat-form-field>
@@ -47,7 +47,7 @@
         <mat-slide-toggle formControlName="isUserWiseLimitEnabled"> </mat-slide-toggle>
       </div>
       <mat-form-field class="w-full">
-        <input formControlName="userWiseLimit" matInput placeholder="Set Limit" type="number" min="1" max="100000000" (input)="onInput($event, 'userWiseLimit')" />
+        <input formControlName="userWiseLimit" matInput placeholder="Set Limit" type="number" min="1" max="100000000" appMaxLengthNumber="10" />
         <mat-error *ngIf="providerSettingsForm?.controls['userWiseLimit'].hasError('max')">Maximum value allowed upto 1,00,000,000.</mat-error>
         <mat-error *ngIf="providerSettingsForm?.controls['userWiseLimit'].hasError('min')">Minimum value allowed is 1.</mat-error>
       </mat-form-field>
@@ -66,7 +66,7 @@
         <mat-slide-toggle formControlName="isConcurrentLimitEnabled"> </mat-slide-toggle>
       </div>
       <mat-form-field class="w-full">
-        <input formControlName="concurrentLimit" matInput placeholder="Set Limit" type="number" min="1" max="100000000" (input)="onInput($event, 'concurrentLimit')" />
+        <input formControlName="concurrentLimit" matInput placeholder="Set Limit" type="number" min="1" max="100000000" appMaxLengthNumber="10" />
         <mat-error *ngIf="providerSettingsForm?.controls['concurrentLimit'].hasError('max')">
           Maximum value allowed upto
           {{providerSettingsForm?.controls['userWiseLimit']?.enabled ? providerSettingsForm?.controls['userWiseLimit']?.value : providerSettingsForm?.controls['overAllLimit']?.value }}.
@@ -88,7 +88,7 @@
         <mat-slide-toggle formControlName="addKarmaPointEnabled"> </mat-slide-toggle>
       </div>
       <mat-form-field class="w-full relative karma-point-control">
-        <input formControlName="karmaPoints" matInput placeholder="Set Limit" type="number" min="2" max="10000" (input)="onInput($event, 'karmaPoints')" />
+        <input formControlName="karmaPoints" matInput placeholder="Set Limit" type="number" min="2" max="10000" appMaxLengthNumber="10"/>
         <mat-error *ngIf="providerSettingsForm?.controls['karmaPoints'].hasError('max')">Maximum value allowed upto 10,000.</mat-error>
         <mat-error *ngIf="providerSettingsForm?.controls['karmaPoints'].hasError('min')">Minimum value allowed is 2.</mat-error>
         <img src="assets/icons/karma-points.svg" alt="karma-points" class="karma-points">

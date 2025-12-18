@@ -141,28 +141,6 @@ export class ProviderSettingsComponent implements OnChanges {
     return this.providerSettingsForm.controls
   }
 
-  onInput(event: any, controlName: string) {
-    const input = event.target
-    const value = input.value
-    let max: number
-    switch (controlName) {
-      case 'overAllLimit':
-      case 'userWiseLimit':
-      case 'concurrentLimit':
-        max = 10000000000
-        break
-      case 'karmaPoints':
-        max = 10000
-        break
-      default:
-        return
-    }
-    const numValue = parseInt(value, 10)
-    if (!isNaN(numValue) && numValue > max) {
-      input.value = max.toString()
-      this.controls[controlName].setValue(max)
-    }
-  }
 
   submit() {
     if (this.providerFormGroup.valid) {
