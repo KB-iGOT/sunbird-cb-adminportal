@@ -43,6 +43,7 @@ import { ProviderSettingsComponent } from './components/provider-settings/provid
 import { MatRippleModule } from '@angular/material/core'
 import { HelpCenterGuideComponentV2 } from './components/help-center-guide-v2/help-center-guide-v2.component'
 import { ProviderDetailsV2Component } from './components/provider-details-v2/provider-details-v2.component'
+import { MaxLengthNumberDirective } from './directives/max-length-number.directive'
 
 const routes: Routes = [
   {
@@ -114,7 +115,8 @@ const routes: Routes = [
     ProviderSettingsComponent,
     ProviderSettingsComponent,
     ProviderDetailsV2Component,
-    HelpCenterGuideComponentV2
+    HelpCenterGuideComponentV2,
+    MaxLengthNumberDirective
   ],
   imports: [
     CommonModule,
