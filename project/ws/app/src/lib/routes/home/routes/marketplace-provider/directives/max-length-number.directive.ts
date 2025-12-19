@@ -6,26 +6,50 @@ import { Directive, HostListener, Input, ElementRef } from '@angular/core'
 export class MaxLengthNumberDirective {
   @Input() appMaxLengthNumber!: number
 
-  private lastValidValue = '';
+  private lastValidValue = ''
 
   constructor(private el: ElementRef<HTMLInputElement>) { }
 
-  @HostListener('input', ['$event'])
-  onInput(_event: Event) {
+  @HostListener('keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent) {
+    const forbiddenKeys = ['.', 'e', 'E', '-', '+']
+
+    if (forbiddenKeys.includes(event.key)) {
+      event.preventDefault()
+      return
+    }
+
+    const input = this.el.nativeElement
+    if (
+      /^\d$/.test(event.key) &&
+      input.value.length >= this.appMaxLengthNumber
+    ) {
+      event.preventDefault()
+    }
+  }
+
+  // Handle paste
+  @HostListener('paste', ['$event'])
+  onPaste(event: ClipboardEvent) {
+    const pastedValue = event.clipboardData?.getData('text') ?? ''
+
+    if (!/^\d+$/.test(pastedValue)) {
+      event.preventDefault()
+      return
+    }
+
+    const input = this.el.nativeElement
+    if (input.value.length + pastedValue.length > this.appMaxLengthNumber) {
+      event.preventDefault()
+    }
+  }
+
+  @HostListener('input')
+  onInput() {
     const input = this.el.nativeElement
     const value = input.value
 
-    if (!value) {
-      this.lastValidValue = ''
-      return
-    }
-
-    if (!/^\d+$/.test(value)) {
-      input.value = this.lastValidValue
-      return
-    }
-
-    if (value.length > this.appMaxLengthNumber) {
+    if (!/^\d*$/.test(value) || value.length > this.appMaxLengthNumber) {
       input.value = this.lastValidValue
       return
     }
