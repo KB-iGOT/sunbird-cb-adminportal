@@ -158,12 +158,21 @@ export class ProviderSettingsComponent implements OnChanges {
     const formDetails = this.providerSettingsForm.getRawValue()
     const formBody: any = {
       overAllLimit: formDetails.overAllLimit,
-      userWiseLimit: formDetails.isUserWiseLimitEnabled ? formDetails.userWiseLimit : null,
       isUserWiseLimitEnabled: formDetails.isUserWiseLimitEnabled,
-      concurrentLimit: formDetails.isConcurrentLimitEnabled ? formDetails.concurrentLimit : null,
       isConcurrentLimitEnabled: formDetails.isConcurrentLimitEnabled,
-      karmaPoints: formDetails.addKarmaPointEnabled ? formDetails.karmaPoints : null,
       addKarmaPointEnabled: formDetails.addKarmaPointEnabled,
+    }
+
+    if (formDetails.isUserWiseLimitEnabled && (formDetails.userWiseLimit || formDetails.userWiseLimit === 0)) {
+      formBody.userWiseLimit = formDetails.userWiseLimit
+    }
+
+    if (formDetails.isConcurrentLimitEnabled && (formDetails.concurrentLimit || formDetails.userWiseLimit === 0)) {
+      formBody.concurrentLimit = formDetails.concurrentLimit
+    }
+
+    if (formDetails.addKarmaPointEnabled && (formDetails.karmaPoints || formDetails.userWiseLimit === 0)) {
+      formBody.karmaPoints = formDetails.karmaPoints
     }
 
     this.marketPlaceSvc.createProvider(formBody).subscribe({
@@ -188,12 +197,21 @@ export class ProviderSettingsComponent implements OnChanges {
     const formDetails = this.providerSettingsForm.getRawValue()
 
     this.providerDetailsBeforeUpdate['data']['overAllLimit'] = formDetails.overAllLimit
-    this.providerDetailsBeforeUpdate['data']['userWiseLimit'] = formDetails.userWiseLimit
     this.providerDetailsBeforeUpdate['data']['isUserWiseLimitEnabled'] = formDetails.isUserWiseLimitEnabled
-    this.providerDetailsBeforeUpdate['data']['concurrentLimit'] = formDetails.concurrentLimit
     this.providerDetailsBeforeUpdate['data']['isConcurrentLimitEnabled'] = formDetails.isConcurrentLimitEnabled
-    this.providerDetailsBeforeUpdate['data']['karmaPoints'] = formDetails.karmaPoints
     this.providerDetailsBeforeUpdate['data']['addKarmaPointEnabled'] = formDetails.addKarmaPointEnabled
+
+    if (formDetails.userWiseLimit || formDetails.userWiseLimit === 0) {
+      this.providerDetailsBeforeUpdate['data']['userWiseLimit'] = formDetails.userWiseLimit
+    }
+
+    if (formDetails.concurrentLimit || formDetails.concurrentLimit === 0) {
+      this.providerDetailsBeforeUpdate['data']['concurrentLimit'] = formDetails.concurrentLimit
+    }
+
+    if (formDetails.karmaPoints || formDetails.karmaPoints === 0) {
+      this.providerDetailsBeforeUpdate['data']['karmaPoints'] = formDetails.karmaPoints
+    }
 
     this.marketPlaceSvc.updateProvider(this.providerDetailsBeforeUpdate).subscribe({
       next: (response: any) => {
