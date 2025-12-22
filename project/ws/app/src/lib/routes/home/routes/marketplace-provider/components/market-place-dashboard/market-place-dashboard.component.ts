@@ -90,6 +90,8 @@ export class MarketPlaceDashboardComponent implements OnInit {
     const formBody: any = {
       filterCriteriaMap: {
         isActive: true,
+        providerType: ["external"]
+
       },
       pageNumber: this.paginationDetails.pageIndex,
       pageSize: this.paginationDetails.pageSize,
