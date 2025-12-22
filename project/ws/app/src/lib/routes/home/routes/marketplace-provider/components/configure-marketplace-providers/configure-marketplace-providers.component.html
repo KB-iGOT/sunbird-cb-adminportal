@@ -14,6 +14,12 @@
             (loadProviderDetails)="getProviderDetails($event)"></ws-app-provider-details>
         </div>
       </mat-tab>
+      <mat-tab data-id="provider-settings" label="Provider Settings" [disabled]="disableCourseCatalog">
+        <div class="w-full mt-4">
+          <ws-app-provider-settings [providerDetails]="providerDetails"
+            (loadProviderDetails)="getProviderDetails($event)"></ws-app-provider-settings>
+        </div>
+      </mat-tab>
       <mat-tab data-id="contentUpload" label="Configure Course Catalog" [disabled]="disableCourseCatalog">
         <ng-container *ngIf="!disableCourseCatalog">
           <div class="w-full mt-4">

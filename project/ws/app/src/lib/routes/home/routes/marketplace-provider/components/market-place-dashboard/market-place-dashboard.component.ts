@@ -172,6 +172,16 @@ export class MarketPlaceDashboardComponent implements OnInit {
     }
   }
 
+  navigateToConfigurationV2(providerDetails?: any) {
+    if (providerDetails) {
+      this.router.navigate([`/app/home/marketplace-providers/configure-provider`], {
+        queryParams: { id: providerDetails.id }
+      })
+    } else {
+      this.router.navigate([`/app/home/marketplace-providers/configure-provider`])
+    }
+  }
+
   openConformationPopup(provider: any) {
     const dialogData = {
       dialogType: 'warning',
@@ -224,7 +234,7 @@ export class MarketPlaceDashboardComponent implements OnInit {
         if (res) {
           setTimeout(() => {
             this.getProviders()
-          },         2000)
+          }, 2000)
         } else {
           this.displayLoader = false
         }

@@ -28,6 +28,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   ]
   private destroy$ = new Subject<void>();
   bulkUploadRefresh: boolean = false
+  showTreeView: boolean = false
   orgSearchData: any
   orgReadData: any
   allOrganizations = [];
@@ -97,6 +98,11 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
         this.getCentenrOrStateList(this.selectedOrgType, '')
       }
     }
+
+    // Listen for organization selection changes to recreate tree view
+    this.organizationCtrl.valueChanges.subscribe(() => {
+      this.recreateTreeView()
+    })
   }
 
   ngOnDestroy() {
@@ -377,7 +383,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   }
 
   checkIfStateAdmin() {
-    return this.userRoles && this.userRoles.has('state_admin')
+    return this.userRoles && this.userRoles.has('state_admin') && !this.userRoles.has('spv_admin')
   }
 
   getOrgReadAndDetails() {
@@ -402,7 +408,13 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
                 }
               }
             }
-            this.organizationCtrl.setValue(this.orgReadData.ministryOrStateId)
+            if (!secondRequestBody?.request?.filters?.ministryOrStateType) {
+              delete secondRequestBody?.request?.filters?.ministryOrStateType
+            }
+            if (!secondRequestBody?.request?.filters?.ministryOrStateId) {
+              delete secondRequestBody?.request?.filters?.ministryOrStateId
+            }
+            this.organizationCtrl.setValue(this.orgReadData.ministryOrStateId || this.orgReadData.rootOrgId)
             return this.orgHieService.getOrganizationDetails(secondRequestBody)
           }
         }
@@ -465,6 +477,15 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
       this.bulkUploadRefresh = false
       console.log('The dialog was closed', result)
     })
+  }
+
+  recreateTreeView() {
+    // Destroy the tree view component
+    this.showTreeView = false
+    // Recreate the tree view component in the next change detection cycle
+    setTimeout(() => {
+      this.showTreeView = true
+    }, 0)
   }
 
 }

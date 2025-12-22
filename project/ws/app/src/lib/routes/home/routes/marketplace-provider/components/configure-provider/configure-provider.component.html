@@ -1,0 +1,19 @@
+<mat-sidenav-container class="provider-configs-sidenav-container">
+  <mat-sidenav #sidenav mode="side" [(opened)]="opened">
+    <ws-app-configure-provider-menu
+      (activeMenu)="activeMenuItemEvent($event)"
+    ></ws-app-configure-provider-menu>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="provider-content-main p-4">
+      <ng-container *ngIf="activeMenuItem !== 'provider_details'">
+      </ng-container>
+      <ng-container *ngIf="activeMenuItem === 'provider_settings'">
+        <ws-app-provider-settings></ws-app-provider-settings>
+      </ng-container>
+      <ng-container *ngIf="activeMenuItem === 'provider_details'">
+        <ws-app-provider-details-v2></ws-app-provider-details-v2>
+      </ng-container>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { Observable } from 'rxjs'
+import { BehaviorSubject, Observable } from 'rxjs'
 
 const API_END_POINTS = {
   CREATE_CONTENTPARTNER: `/apis/proxies/v8/contentpartner/v1/create`,
@@ -26,6 +26,8 @@ const API_END_POINTS = {
   providedIn: 'root',
 })
 export class MarketplaceService {
+  currentMenuItem: BehaviorSubject<any> = new BehaviorSubject<number>(0);
+
 
   constructor(
     private http: HttpClient,
