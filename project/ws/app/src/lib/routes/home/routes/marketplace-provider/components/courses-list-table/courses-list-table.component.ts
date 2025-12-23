@@ -15,6 +15,7 @@ export class CoursesListTableComponent implements OnInit, OnChanges {
   @Input() tableData: any = {}
   @Input() paginationDetails: any
   @Input() menuItems: any[] = []
+  @Input() showDefaultMenu: boolean = false
   @Output() actionTriggered = new EventEmitter<{ action: string; rows: any }>()
   @Output() searchKey = new EventEmitter<string>()
   @Output() pageChange = new EventEmitter<any>()
@@ -50,6 +51,7 @@ export class CoursesListTableComponent implements OnInit, OnChanges {
   allSelected = false
   selectedRowData: any[] = []
   showLoader = false
+  showAcceptRejectMenu = false
 
   constructor() {
     this.dataSource = new MatTableDataSource<any>([])
@@ -74,12 +76,13 @@ export class CoursesListTableComponent implements OnInit, OnChanges {
 
   private initializeTable(): void {
     if (this.tableData && this.tableData.columns) {
-      this.getColumnConfiguration()
       this.showSearchBox = _.get(this.tableData, 'showSearchBox', true)
       this.showDeleteAll = _.get(this.tableData, 'showDeleteAll', false)
       this.showPagination = _.get(this.tableData, 'showPagination', true)
       this.needCheckBox = _.get(this.tableData, 'needCheckBox', false)
+      this.showAcceptRejectMenu = _.get(this.tableData, 'acceptRejectMenu', false)
       this.noDataMessage = _.get(this.tableData, 'noDataMessage', 'No data found')
+      this.getColumnConfiguration()
     }
   }
 
@@ -93,9 +96,14 @@ export class CoursesListTableComponent implements OnInit, OnChanges {
       columns.splice(0, 0, selectColumn)
     }
 
-    if (this.menuItems && this.menuItems.length > 0) {
-      const selectColumn = { displayName: '', key: 'menu', cellType: 'menu' }
-      columns.push(selectColumn)
+    if (this.showDefaultMenu || this.menuItems.length > 0) {
+      const menuColumn = { displayName: 'Actions', key: 'menu', cellType: 'menu' }
+      columns.push(menuColumn)
+    }
+
+    if (this.showAcceptRejectMenu) {
+      const acceptRejectColumn = { displayName: 'Action', key: 'acceptReject', cellType: 'acceptReject' }
+      columns.push(acceptRejectColumn)
     }
 
     this.tableColumns = columns
@@ -108,6 +116,9 @@ export class CoursesListTableComponent implements OnInit, OnChanges {
       this.dataSource = new MatTableDataSource<any>(this.coursesList)
       this.totalItemsCount = this.coursesList.length
       this.updatePaginationDetails()
+    } else {
+      this.dataSource = new MatTableDataSource<any>([])
+      this.totalItemsCount = 0
     }
   }
 

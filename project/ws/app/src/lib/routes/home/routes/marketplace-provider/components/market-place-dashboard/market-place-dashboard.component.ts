@@ -4,10 +4,12 @@ import { Router } from '@angular/router'
 import { MarketplaceService } from '../../services/marketplace.service'
 import { HttpErrorResponse } from '@angular/common/http'
 import * as _ from 'lodash'
-import { map } from 'rxjs/operators'
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators'
 import { DatePipe } from '@angular/common'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
+import { GlobalEventsService } from '../../../../../../../../../../../src/app/services/global-events.service'
+import { Subject } from 'rxjs'
 
 @Component({
   selector: 'ws-app-market-place-dashboard',
@@ -36,62 +38,86 @@ export class MarketPlaceDashboardComponent implements OnInit {
     btnText: string,
     action: string
   }[] = []
+  providersRequestsList = []
+  searchProvider$ = new Subject<string>();
+  searchRegisteredProvider$ = new Subject<string>();
 
   constructor(
     private dialog: MatDialog,
     private router: Router,
     private marketPlaceSvc: MarketplaceService,
     private snackBar: MatSnackBar,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private loaderService: GlobalEventsService
+
   ) { }
 
   ngOnInit() {
     this.intializeTableData()
+    this.searchProvider$.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    )
+      .subscribe(searchKey => {
+        this.searchKey = searchKey
+        this.getProviders()
+      })
+
+    this.searchRegisteredProvider$.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    )
+      .subscribe(searchKey => {
+        this.searchKey = searchKey
+        this.listProvidersRequests()
+      })
   }
 
   intializeTableData() {
     this.tabledata = {
       columns: [
         { displayName: 'Content Provider Name', key: 'contentPartnerName', cellType: 'text', imageKey: 'link' },
-        { displayName: 'Onboarded On', key: 'createdOn', cellType: 'text', cellClass: 'cell-gray-text' },
-        { displayName: 'Last Updated On', key: 'updatedOn', cellType: 'text', cellClass: 'cell-gray-text' },
+        { displayName: 'Onboarded On', key: 'createdOn', cellType: 'text', },
+        { displayName: 'Last Updated On', key: 'updatedOn', cellType: 'text', },
         { displayName: 'Authentication', key: 'isAuthenticate', cellType: 'authentication' },
+        { displayName: 'Status', key: 'isActive', cellType: 'isActive' },
       ],
       needCheckBox: false,
       showDeleteAll: false,
     }
 
-    this.menuItems = [
-      {
-        icon: 'edit',
-        btnText: 'Configure',
-        action: 'configure',
-      },
-      // {
-      //   icon: 'power_settings_new',
-      //   btnText: 'Deactivate',
-      //   action: 'deactivate'
-      // }
-    ]
+    this.menuItems = []
 
-    this.paginationDetails = {
-      startIndex: 0,
-      lastIndes: 20,
-      pageSize: 20,
-      pageIndex: 0,
-      totalCount: 20,
-    }
+    this.initializePagination()
     this.getProviders()
+  }
+
+  initailizeProviderRequestsTable() {
+    this.tabledata = {
+      columns: [
+        { displayName: 'Content Provider Name', key: 'contentPartnerName', cellType: 'text', imageKey: 'link' },
+        { displayName: 'Request Received On', key: 'createdOn', cellType: 'text', },
+        { displayName: 'Last Updated On', key: 'updatedOn', cellType: 'text', },
+        { displayName: 'Status', key: 'status', cellType: 'status' },
+      ],
+      needCheckBox: false,
+      showDeleteAll: false,
+      acceptRejectMenu: true,
+    }
+
+    this.menuItems = []
   }
 
   getProviders() {
     this.displayLoader = true
+    this.loaderService.setLoaderState(true)
+
     this.providersList = []
     const formBody: any = {
       filterCriteriaMap: {
-        isActive: true,
+        // isActive: true,
       },
-      pageNumber: this.paginationDetails.pageIndex,
+      pageNumber: this.paginationDetails.currentPage - 1,
       pageSize: this.paginationDetails.pageSize,
       facets: [
         'contentPartnerName',
@@ -121,18 +147,23 @@ export class MarketPlaceDashboardComponent implements OnInit {
           this.displayLoader = false
           this.providersList = responce.providersList
           this.paginationDetails.totalCount = responce.totalCount
+          this.loaderService.setLoaderState(false)
         },
         error: (error: HttpErrorResponse) => {
           this.displayLoader = false
           const errmsg = _.get(error, 'error.params.errMsg')
           this.showSnackBar(errmsg)
+          this.loaderService.setLoaderState(false)
         },
       })
   }
 
   onSearch(searchKey: string) {
-    this.searchKey = searchKey
-    this.getProviders()
+    this.searchProvider$.next(searchKey)
+  }
+
+  onSearchRegisteredPartners(searchKey: string) {
+    this.searchRegisteredProvider$.next(searchKey)
   }
 
   formateProvidersList(responce: any) {
@@ -148,20 +179,56 @@ export class MarketPlaceDashboardComponent implements OnInit {
   }
 
   providerEvents(event: any) {
+    const providerDetails = {
+      id: _.get(event, 'rows.id'),
+      providerName: _.get(event, 'rows.contentPartnerName'),
+      isAuthenticated: _.get(event, 'rows.isAuthenticate', false),
+      partnerCode: _.get(event, 'rows.partnerCode', false),
+    }
     switch (event.action) {
       case 'configure':
-        const providerDetails = {
-          id: _.get(event, 'rows.id'),
-          providerName: _.get(event, 'rows.contentPartnerName'),
-          isAuthenticated: _.get(event, 'rows.isAuthenticate', false),
-          partnerCode: _.get(event, 'rows.partnerCode', false),
-        }
         this.navigateToConfigurationV2(providerDetails)
         break
-      case 'deactivate':
-        this.openConformationPopup(event.row)
+      case 'sso_integration':
+        const providerDetailsSSO = {
+          ...providerDetails,
+          tab: 'sso_integration',
+        }
+        this.navigateToConfigurationV2(providerDetailsSSO)
+        break
+      case 'deactivate_provider':
+        this.openConformationPopup(event.rows)
+        break
+      case 'activate_provider':
+        this.activateProvider(event.rows)
+        break
+      case 'accept':
+        this.acceptRejectProviderStatus('accept', event.rows)
+        break
+      case 'reject':
+        this.acceptRejectProviderStatus('reject', event.rows)
         break
     }
+  }
+
+  acceptRejectProviderStatus(status: string, rowData: any) {
+    const formBody = {
+      id: rowData.id,
+      status: status === 'accept' ? 'APPROVED' : 'REJECTED',
+    }
+    this.loaderService.setLoaderState(true)
+    this.marketPlaceSvc.changeStatusRegisterProvider(formBody).subscribe({
+      next: () => {
+        this.listProvidersRequests()
+        this.loaderService.setLoaderState(false)
+      }
+      , error: (error: HttpErrorResponse) => {
+        this.loaderService.setLoaderState(false)
+        const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong')
+        this.showSnackBar(errmsg)
+      },
+    })
+
   }
 
   navigateToConfiguration(providerDetails?: any) {
@@ -173,9 +240,16 @@ export class MarketPlaceDashboardComponent implements OnInit {
   }
 
   navigateToConfigurationV2(providerDetails?: any) {
+    const queryParams: any = {}
+    if (providerDetails && providerDetails.id) {
+      queryParams.id = providerDetails.id
+    }
+    if (providerDetails && providerDetails.tab) {
+      queryParams.tab = providerDetails.tab
+    }
     if (providerDetails) {
       this.router.navigate([`/app/home/marketplace-providers/configure-provider`], {
-        queryParams: { id: providerDetails.id }
+        queryParams: queryParams
       })
     } else {
       this.router.navigate([`/app/home/marketplace-providers/configure-provider`])
@@ -248,12 +322,118 @@ export class MarketPlaceDashboardComponent implements OnInit {
   }
 
   onPageChange(event: any) {
-    this.paginationDetails = event
+    this.paginationDetails.currentPage = event.currentPage
+    this.paginationDetails.pageSize = event.pageSize
     this.getProviders()
   }
 
   showSnackBar(message: string) {
     this.snackBar.open(message)
+  }
+
+  activateProvider(rowData: any) {
+    this.loaderService.setLoaderState(true)
+
+    this.marketPlaceSvc.getProviderDetails(rowData.id).subscribe({
+      next: (response: any) => {
+        if (Object.keys(response?.result)?.length) {
+          const data = response.result
+          const updatedPayload = {
+            ...data,
+            isActive: true,
+          }
+
+          this.marketPlaceSvc.updateProvider(updatedPayload).subscribe({
+            next: (res: any) => {
+              if (res) {
+                this.getProviders()
+                this.loaderService.setLoaderState(false)
+
+              }
+            },
+            error: (error: HttpErrorResponse) => {
+              const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong')
+              this.showSnackBar(errmsg)
+              this.loaderService.setLoaderState(false)
+
+            },
+          })
+        } else {
+          const errmsg = _.get(response, 'params.errMsg', 'Something went wrong, please try again later')
+          this.showSnackBar(errmsg)
+          this.loaderService.setLoaderState(false)
+
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
+        this.showSnackBar(errmsg)
+        this.loaderService.setLoaderState(false)
+      },
+    })
+  }
+
+  handleOnTabChange(event: any) {
+    if (event.index === 0) {
+      this.intializeTableData()
+    }
+    if (event.index === 1) {
+      this.initailizeProviderRequestsTable()
+      this.listProvidersRequests()
+    }
+  }
+
+  listProvidersRequests() {
+    this.initializePagination()
+    this.loaderService.setLoaderState(true)
+    this.providersRequestsList = []
+    const formBody: any = {
+      filterCriteriaMap: {
+        "status": "PENDING"
+      },
+      pageNumber: this.paginationDetails.currentPage - 1,
+      pageSize: this.paginationDetails.pageSize,
+      orderBy: 'createdOn',
+      orderDirection: 'desc',
+    }
+
+    if (this.searchKey) {
+      formBody['searchString'] = this.searchKey
+    }
+
+    if (this.apiSubscription) {
+      this.apiSubscription.unsubscribe()
+    }
+
+    this.apiSubscription = this.marketPlaceSvc.contentRegisterList(formBody)
+      .pipe(map((response: any) => {
+        const providersDetails = {
+          data: this.formateProvidersList(_.get(response, 'result.data', [])),
+          totalCount: _.get(response, 'result.totalCount', 0),
+        }
+        return providersDetails
+      }))
+      .subscribe({
+        next: (response: any) => {
+          this.providersRequestsList = response.data
+          this.paginationDetails.totalCount = response.totalCount
+          this.loaderService.setLoaderState(false)
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loaderService.setLoaderState(false)
+          const errmsg = _.get(error, 'error.params.errMsg')
+          this.showSnackBar(errmsg)
+        },
+      })
+  }
+
+  initializePagination() {
+    this.paginationDetails = {
+      currentPage: 1,
+      pageSize: 20,
+      totalCount: 20,
+      paginationSizeOptions: [10, 20, 50, 100]
+    }
   }
 
 }

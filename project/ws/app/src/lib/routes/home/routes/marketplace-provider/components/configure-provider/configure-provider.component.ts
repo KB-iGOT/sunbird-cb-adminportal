@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core'
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { ActivatedRoute } from '@angular/router'
 import { Subscription } from 'rxjs'
 import { MarketplaceService } from '../../services/marketplace.service'
 import { HttpErrorResponse } from '@angular/common/http'
 import * as _ from 'lodash'
+import { MARKETPLACE_CONFIGURE_PROVIDERS_MENU } from '../../models/menu.model'
 
 @Component({
   selector: 'ws-app-configure-provider',
   templateUrl: './configure-provider.component.html',
   styleUrls: ['./configure-provider.component.scss']
 })
-export class ConfigureProviderComponent implements OnInit {
+export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewInit {
   opened: boolean = true
   currentMenuDetails: any
   menuSubscription: Subscription = new Subscription()
@@ -34,12 +35,14 @@ export class ConfigureProviderComponent implements OnInit {
     'Please ensure the Certificate file is named correctly'
   ]
 
+  routeSubscription: Subscription = new Subscription()
   constructor(
     private activateRoute: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private marketPlaceSvc: MarketplaceService
+    private marketPlaceSvc: MarketplaceService,
   ) {
   }
+
   activeMenuItemEvent(event: any): void {
     this.currentMenuDetails = event.activeMenuItem
     this.activeMenuItem = event.activeMenuItem.slug
@@ -49,17 +52,43 @@ export class ConfigureProviderComponent implements OnInit {
     this.getRoutesData()
   }
 
+  ngAfterViewInit(): void {
+    this.activeMenuItem = MARKETPLACE_CONFIGURE_PROVIDERS_MENU[0].slug
+    this.marketPlaceSvc.currentMenuItem.next(MARKETPLACE_CONFIGURE_PROVIDERS_MENU[0])
+
+    this.routeSubscription.add(
+      this.activateRoute.queryParams.subscribe(params => {
+        this.routerParams = params
+        if (params['tab']) {
+          const menuItem = MARKETPLACE_CONFIGURE_PROVIDERS_MENU.find(item => item.slug === params['tab'])
+          if (menuItem) {
+            this.activeMenuItem = menuItem.slug
+            this.marketPlaceSvc.currentMenuItem.next(menuItem)
+          }
+        }
+      })
+    )
+  }
+
+  ngOnDestroy(): void {
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe()
+    }
+  }
+
   getRoutesData() {
-    this.activateRoute.data.subscribe(data => {
-      if (data.providerDetails && data.providerDetails.data) {
-        this.disableCourseCatalog = false
-        this.providerDetails = data.providerDetails.data.result
-      }
-      if (_.get(data, 'pageData.data.configureCertificateGuide')) {
-        this.helpCenterGuide = _.get(data, 'pageData.data.configureCertificateGuide.helpCenterGuide', this.helpCenterGuide)
-        this.instructionsList = _.get(data, 'pageData.data.configureCertificateGuide.instructions', this.instructionsList)
-      }
-    })
+    this.routeSubscription.add(
+      this.activateRoute.data.subscribe(data => {
+        if (data.providerDetails && data.providerDetails.data) {
+          this.disableCourseCatalog = false
+          this.providerDetails = data.providerDetails.data.result
+        }
+        if (_.get(data, 'pageData.data.configureCertificateGuide')) {
+          this.helpCenterGuide = _.get(data, 'pageData.data.configureCertificateGuide.helpCenterGuide', this.helpCenterGuide)
+          this.instructionsList = _.get(data, 'pageData.data.configureCertificateGuide.instructions', this.instructionsList)
+        }
+      })
+    )
   }
 
   getProviderDetails(event: any) {

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { MARKETPLACE_CONFIGURE_PROVIDERS_MENU } from '../../models/menu.model'
-// import { MarketplaceService } from '../../services/marketplace.service'
+import { MarketplaceService } from '../../services/marketplace.service'
 
 @Component({
   selector: 'ws-app-configure-provider-menu',
@@ -9,18 +9,18 @@ import { MARKETPLACE_CONFIGURE_PROVIDERS_MENU } from '../../models/menu.model'
 })
 export class ConfigureProviderMenuComponent implements OnInit {
   @Output() activeMenu = new EventEmitter<any>();
-
   activeItem: any
   MENU_ITEMS = MARKETPLACE_CONFIGURE_PROVIDERS_MENU
 
-  constructor() {
-    this.activeItem = this.MENU_ITEMS[0]
+  constructor(private marketplaceService: MarketplaceService) {
+
+    this.marketplaceService.currentMenuItem.subscribe(menuItem => {
+      this.activeItem = menuItem
+    })
+
   }
 
-
   ngOnInit(): void {
-
-    this.activeMenu.emit({ activeMenuItem: this.activeItem })
   }
 
   trackByFn(_index: number, item: any): number {
