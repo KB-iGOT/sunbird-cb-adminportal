@@ -10,9 +10,8 @@
 .onboard-btn {
   width: 150px;
   height: 40px;
-  /* stylelint-enable */
-  font: 700 14px Lato;
-  /* stylelint-disable */
+  font-weight: 700;
+  font-size: 14px;
   color: #ffffff !important;
   background-color: #1b4ca1 !important;
 }
@@ -65,11 +64,7 @@
   }
 }
 
-::ng-deep .container-balanced {
-  padding: 16px 40px !important;
-}
-
-::ng-deep {
+::ng-deep .marketplace-lists {
   .mat-tab-label-active.mat-tab-label {
     opacity: 1;
   }

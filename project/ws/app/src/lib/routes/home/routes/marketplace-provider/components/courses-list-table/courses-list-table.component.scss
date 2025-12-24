@@ -31,7 +31,7 @@
   }
 }
 
-::ng-deep .mat-menu-content {
+::ng-deep .actions-menu .mat-menu-content {
   padding-top: 0 !important;
 }
 
@@ -354,8 +354,8 @@
   width: 10px;
   height: 10px;
   mat-icon {
-    width: 12px !important;
-    height: 12px !important;
+    width: 15px !important;
+    height: 15px !important;
     font-size: 10px !important;
     color: #fff;
   }
@@ -367,9 +367,7 @@
   color: #1d8923;
   border-radius: 4px;
   padding: 4px 8px;
-  /* stylelint-enable */
-  font: 400 12px Lato;
-  /* stylelint-disable */
+  font-size: 12px;
 
   .icon-status {
     @extend .icon-status-common;
@@ -383,9 +381,7 @@
   color: #d13924;
   border-radius: 4px;
   padding: 4px 8px;
-  /* stylelint-enable */
-  font: 400 12px Lato;
-  /* stylelint-disable */
+  font-size: 12px;
 
   .icon-status {
     @extend .icon-status-common;

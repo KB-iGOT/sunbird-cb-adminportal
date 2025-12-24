@@ -134,7 +134,7 @@
           <!-- Authentication Column -->
           <div *ngSwitchCase="'isAuthenticate'">
             <ng-container *ngIf="element[col.key]; else notAuthenticated">
-              <div class="authenticated inline-flex gap-2 items-center">
+              <div class="authenticated inline-flex gap-2 items-center mat-body-2">
                 <div class="icon-status">
                   <mat-icon class="checkCircle">check</mat-icon>
                 </div>
@@ -142,7 +142,7 @@
               </div>
             </ng-container>
             <ng-template #notAuthenticated>
-              <div class="not-authenticated inline-flex gap-2 items-center">
+              <div class="not-authenticated inline-flex gap-2 items-center mat-body-2">
                 <div class="icon-status">
                   <mat-icon class="checkCircle">close</mat-icon>
                 </div>
@@ -202,7 +202,7 @@
 </div>
 
 <!-- Actions Menu -->
-<mat-menu #moreMenu="matMenu">
+<mat-menu #moreMenu="matMenu" class="actions-menu">
   <ng-template matMenuContent let-rowData="data">
     <ng-container *ngIf="menuItems && menuItems.length > 0; else defaultMenu">
       <a class="flex items-center" mat-menu-item *ngFor="let item of menuItems" (click)="takeAction(item.action, rowData)">

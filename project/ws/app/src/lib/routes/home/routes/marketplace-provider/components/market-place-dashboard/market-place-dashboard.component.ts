@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core'
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core'
 import { ConformationPopupComponent } from '../../dialogs/conformation-popup/conformation-popup.component'
 import { Router } from '@angular/router'
 import { MarketplaceService } from '../../services/marketplace.service'
 import { HttpErrorResponse } from '@angular/common/http'
 import * as _ from 'lodash'
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators'
+import { debounceTime, distinctUntilChanged, map, takeWhile } from 'rxjs/operators'
 import { DatePipe } from '@angular/common'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
@@ -16,8 +16,8 @@ import { Subject } from 'rxjs'
   templateUrl: './market-place-dashboard.component.html',
   styleUrls: ['./market-place-dashboard.component.scss'],
 })
-export class MarketPlaceDashboardComponent implements OnInit {
-
+export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
+  isComponentActive = true
   helpCenterGuide = {
     header: 'SPV Help Center: Video Guides and Tips',
     guideNotes: [
@@ -56,7 +56,8 @@ export class MarketPlaceDashboardComponent implements OnInit {
     this.intializeTableData()
     this.searchProvider$.pipe(
       debounceTime(400),
-      distinctUntilChanged()
+      distinctUntilChanged(),
+      takeWhile(() => this.isComponentActive)
     )
       .subscribe(searchKey => {
         this.searchKey = searchKey
@@ -65,12 +66,28 @@ export class MarketPlaceDashboardComponent implements OnInit {
 
     this.searchRegisteredProvider$.pipe(
       debounceTime(400),
-      distinctUntilChanged()
+      distinctUntilChanged(),
+      takeWhile(() => this.isComponentActive)
     )
       .subscribe(searchKey => {
         this.searchKey = searchKey
         this.listProvidersRequests()
       })
+  }
+
+  ngAfterViewInit(): void {
+    const container = document.querySelector('.container-balanced')
+    if (container) {
+      container.classList.add('container-balanced-padding')
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.isComponentActive = false
+    const container = document.querySelector('.container-balanced')
+    if (container) {
+      container.classList.remove('container-balanced-padding')
+    }
   }
 
   intializeTableData() {

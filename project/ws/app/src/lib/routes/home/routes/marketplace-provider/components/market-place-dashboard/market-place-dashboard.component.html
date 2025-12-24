@@ -7,7 +7,7 @@
       <button
         (click)="navigateToConfigurationV2()"
         mat-raised-button
-        class="onboard-btn mat-btn-flat"
+        class="onboard-btn mat-btn-flat mat-body-1"
       >
         Onboard Provider
       </button>
@@ -15,7 +15,7 @@
   </div>
 
   <!-- <ng-container *ngIf="!displayLoader; else showLoader"> -->
-  <mat-tab-group (selectedTabChange)="handleOnTabChange($event)">
+  <mat-tab-group (selectedTabChange)="handleOnTabChange($event)" class="marketplace-lists">
     <mat-tab label="Onboarded Providers">
       <ng-container
         *ngIf="(providersList && providersList.length > 0) || searchKey; else noContent"
