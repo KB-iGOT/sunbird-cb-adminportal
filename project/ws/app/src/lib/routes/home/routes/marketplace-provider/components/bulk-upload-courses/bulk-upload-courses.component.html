@@ -1,62 +1,67 @@
 <div class="bulk-upload-provider-content rounded-xl p-4 bg-white">
   <p class="page-title">Add Bulk Upload Courses</p>
-  <div class="meta-info-download p-4">
-    <p class="mb-7">Open & follow these instruction</p>
-    <ol class="pl-4">
-      <li class="pb-4">Keep the row of the items you wish to process.</li>
-      <li class="pb-4">Keep the row of the items you wish to process.</li>
-      <li class="pb-4">Save the file in CSV format.</li>
-      <li class="pb-4">Delete the entire row you donot intend to process.</li>
-    </ol>
-
-    <button mat-flat-button class="flex rounded-full px-4 py-2 font-bold mat-btn-outline text-sm">
-      Download Sample File
-    </button>
-  </div>
   <div class="bulk-upload-meta-wrapper flex gap-3 p-4">
-    <div class="upload-bulk-content flex-1 flex items-center justify-center">
-      <div
-        class="right-upload-inner flex flex-col items-center justify-center"
-        wsAuthDragDrop
-        (fileDropped)="onDropHandler($event)"
-      >
-        <div class="flex flex-row items-center justify-center margin-bottom-s">
-          <mat-icon class="csv-icon" svgIcon="excel_sheet"> </mat-icon>
-        </div>
-        <div class="items-center justify-center flex flex-col">
-          <a class="browse_link cursor-pointer" (click)="fileInput.click()">Browse files</a>
-          <p class="mat-body-2 ws-mat-black60-text or-text">or</p>
-          <p class="mat-h4 ws-mat-black60-text mb-6">Drag file to upload</p>
-          <p class="mat-small ws-mat-black60-text margin-remove max-file-size">
-            Max file size: 100 MB
-          </p>
-          <p class="mat-small ws-mat-black60-text margin-remove">Supported file types: CSV</p>
-        </div>
-        <input
-          type="file"
-          #fileInput
-          class="input-file hidden"
-          accept=".csv"
-          (change)="onDropHandler($event.target.files[0]); fileInput.value = null"
-        />
-        <div
-          *ngIf="contentFileUploaded"
-          class="flex flex-middle justify-center flex-column position-relative pt-5 px-5"
+    <div class="flex flex-col w-2/4 gap-4">
+      <div class="meta-info-download p-4">
+        <p class="mb-7">Open & follow these instruction</p>
+        <ol class="pl-4">
+          <li class="pb-4">Keep the row of the items you wish to process.</li>
+          <li class="pb-4">Keep the row of the items you wish to process.</li>
+          <li class="pb-4">Save the file in CSV format.</li>
+          <li class="pb-4">Delete the entire row you donot intend to process.</li>
+        </ol>
+
+        <button
+          mat-flat-button
+          class="flex rounded-full px-4 py-2 font-bold mat-btn-outline text-sm"
         >
-          <mat-icon class="csv-icon" svgIcon="excel_sheet"> </mat-icon>
-          <p class="margin-left-xs mat-h3 font-weight-500 margin-remove-bottom break">
-            <ng-container *ngIf="contentFileUploaded; else elseBlock">
-              <span class="flex-wrap"> {{ fileName }}</span>
-            </ng-container>
-            <ng-template #elseBlock>
-              <span i18n>No file uploaded</span>
-            </ng-template>
-          </p>
+          Download Sample File
+        </button>
+      </div>
+      <div class="upload-bulk-content flex-1 flex items-center justify-center">
+        <div
+          class="right-upload-inner flex flex-col items-center justify-center"
+          wsAuthDragDrop
+          (fileDropped)="onDropHandler($event)"
+        >
+          <div class="flex flex-row items-center justify-center margin-bottom-s">
+            <mat-icon class="csv-icon" svgIcon="excel_sheet"> </mat-icon>
+          </div>
+          <div class="items-center justify-center flex flex-col">
+            <a class="browse_link cursor-pointer" (click)="fileInput.click()">Browse files</a>
+            <p class="mat-body-2 ws-mat-black60-text or-text">or</p>
+            <p class="mat-h4 ws-mat-black60-text mb-6">Drag file to upload</p>
+            <p class="mat-small ws-mat-black60-text margin-remove max-file-size">
+              Max file size: 100 MB
+            </p>
+            <p class="mat-small ws-mat-black60-text margin-remove">Supported file types: CSV</p>
+          </div>
+          <input
+            type="file"
+            #fileInput
+            class="input-file hidden"
+            accept=".csv"
+            (change)="onFileInputChange($event)"
+          />
+          <div
+            *ngIf="contentFileUploaded"
+            class="flex flex-middle justify-center flex-column position-relative pt-5 px-5"
+          >
+            <mat-icon class="csv-icon" svgIcon="excel_sheet"> </mat-icon>
+            <p class="margin-left-xs mat-h3 font-weight-500 margin-remove-bottom break">
+              <ng-container *ngIf="contentFileUploaded; else elseBlock">
+                <span class="flex-wrap"> {{ fileName }}</span>
+              </ng-container>
+              <ng-template #elseBlock>
+                <span i18n>No file uploaded</span>
+              </ng-template>
+            </p>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="form-spec-content flex w-full flex-col gap-1 flex-1 p-4">
+    <div class="form-spec-content flex w-2/4 flex-col gap-1 flex-1 p-4">
       <div>
         <span class="header">Transform Content</span>
       </div>
@@ -114,7 +119,12 @@
   </div>
 
   <div class="flex w-full justify-center mt-8">
-    <button mat-flat-button
-        class="flex items-center rounded-full px-4 py-2 font-bold text-sm mat-btn-flat" (click)="uploadFile()">Execute</button>
+    <button
+      mat-flat-button
+      class="flex items-center rounded-full px-4 py-2 font-bold text-sm mat-btn-flat"
+      (click)="uploadFile()"
+    >
+      Execute
+    </button>
   </div>
 </div>

@@ -33,7 +33,37 @@
   }
 }
 
+.points-help {
+  .mat-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+  }
+}
+
+.help-point-text {
+  font-family: Lato;
+  font-weight: 400;
+  font-size: 12px;
+}
+
 .rotate-icon {
   transform: rotate(180deg);
   transition: transform 0.3s ease;
+}
+
+.helpCenterDemo {
+  .helpCenterDemoVideo {
+    width: 175px;
+    height: 102px;
+    border-radius: 5px;
+    background-color: #fdead5;
+    font-weight: 600;
+    pointer-events: all;
+    cursor: pointer;
+
+    .video_icon {
+      font-size: 32px;
+    }
+  }
 }
