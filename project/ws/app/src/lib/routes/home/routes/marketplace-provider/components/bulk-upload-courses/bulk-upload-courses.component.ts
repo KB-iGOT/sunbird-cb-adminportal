@@ -61,15 +61,9 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
     this.transforamtionForm = this.formBuilder.group({})
   }
 
-  getRoutesData() {
-    this.activateRoute.data.subscribe(data => {
-      if (data.pageData.data) {
-        this.providerConfiguration = data.pageData.data
-      }
-    })
-  }
 
-  //#endregion
+  ngOnInit(): void {
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (
@@ -81,6 +75,14 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
     if (this.transformationType && this.transFormContentKeysAndControls.length < 1) {
       this.initializTransforamtionControls()
     }
+  }
+
+  getRoutesData() {
+    this.activateRoute.data.subscribe(data => {
+      if (data.pageData.data) {
+        this.providerConfiguration = data.pageData.data
+      }
+    })
   }
 
   initializTransforamtionControls() {
@@ -107,10 +109,14 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
     }
   }
 
-  ngOnInit(): void {
+  //#region (contain browsing file and related events to get drop down list)
+  onFileInputChange(event: any): void {
+    if (event.target.files && event.target.files.length > 0) {
+      this.onDropHandler(event.target.files[0])
+    }
+    event.target.value = null
   }
 
-  //#region (contain browsing file and related events to get drop down list)
   onDropHandler(file: File) {
     if (!file) {
       return

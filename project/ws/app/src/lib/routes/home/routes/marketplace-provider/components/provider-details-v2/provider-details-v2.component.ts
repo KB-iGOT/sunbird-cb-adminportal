@@ -59,6 +59,7 @@ export class ProviderDetailsV2Component implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.providerDetails && changes.providerDetails.currentValue) {
       this.providerDetailsBeforeUpdate = JSON.parse(JSON.stringify(changes.providerDetails.currentValue))
+      this.providerId = _.get(changes.providerDetails.currentValue, 'data.id', null)
       this.patchProviderDetails(changes.providerDetails.currentValue)
     }
   }
