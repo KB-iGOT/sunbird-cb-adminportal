@@ -9,6 +9,8 @@ import { ConformationPopupComponent } from '../../dialogs/conformation-popup/con
 import { HttpErrorResponse } from '@angular/common/http'
 import { environment } from '../../../../../../../../../../../src/environments/environment'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
+import { jsPDF } from 'jspdf'
+
 @Component({
   selector: 'ws-app-certificate-configuration',
   templateUrl: './certificate-configuration.component.html',
@@ -49,7 +51,7 @@ export class CertificateConfigurationComponent implements OnChanges {
 
   allowedFileTypes = '.jpg,.jpeg,.png'
   allowedMimeTypes = ['.svg', 'image/svg+xml']
-
+  defaultCertificateTemplateUrl = '/assets/images/sample/CourseCertificate_Template.svg'
   constructor(
     private marketPlaceSvc: MarketplaceService,
     private formBuilder: FormBuilder,
@@ -80,6 +82,26 @@ export class CertificateConfigurationComponent implements OnChanges {
       this.certificateUrl = this.generatePublicUrl(this.providerDetalsBeforUpdate.certificateTemplateUrl)
       this.fileName = this.getImageName(this.providerDetalsBeforUpdate.certificateTemplateUrl)
       this.safeCertificateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.certificateUrl)
+
+      const sitePath = environment.sitePath || ''
+      if (this.certificateUrl) {
+        const urlObj = new URL(this.certificateUrl)
+        urlObj.hostname = sitePath
+        this.certificateUrl = urlObj.toString()
+        this.safeCertificateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.certificateUrl)
+      }
+
+      fetch(this.certificateUrl)
+        .then(res => res.blob())
+        .then(blob => {
+          const file = new File([blob], this.fileName, { type: 'image/svg+xml' })
+          this.contentFile = file
+        })
+        .catch(() => {
+          this.showSnackBar('Failed to load existing certificate', 'error')
+          this.contentFile = undefined
+        })
+
     }
   }
 
@@ -444,4 +466,71 @@ export class CertificateConfigurationComponent implements OnChanges {
     const serializer = new XMLSerializer()
     return serializer.serializeToString(certDoc)
   }
+
+
+  downloadPDF() {
+    if (this.certificateUploaded && this.contentFile) {
+      const img = new Image()
+      img.crossOrigin = 'anonymous'
+
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+
+        if (!ctx) return
+
+        canvas.width = img.width
+        canvas.height = img.height
+
+        ctx.drawImage(img, 0, 0)
+
+        const imgData = canvas.toDataURL('image/png')
+
+        const pdf = new jsPDF({
+          orientation: img.width > img.height ? 'landscape' : 'portrait',
+          unit: 'px',
+          format: [img.width, img.height]
+        })
+
+        pdf.addImage(imgData, 'PNG', 0, 0, img.width, img.height)
+        pdf.save(this.fileName?.replace('.svg', '.pdf') || 'certificate.pdf')
+      }
+
+      img.onerror = () => {
+        this.showSnackBar('Failed to load certificate', 'error')
+      }
+
+      img.src = this.certificateUrl
+    } else {
+      this.showSnackBar('No certificate available for download', 'error')
+    }
+  }
+
+
+  useDefaultTemplate() {
+    if (!this.defaultCertificateTemplateUrl) {
+      this.showSnackBar('Default certificate template not found', 'error')
+      return
+    }
+
+    fetch(this.defaultCertificateTemplateUrl)
+      .then(res => res.blob())
+      .then(blob => {
+        const file = new File([blob], 'CourseCertificate_Template.svg', { type: 'image/svg+xml' })
+        this.contentFile = file
+        this.fileName = file.name
+
+        this.certificateUrl = URL.createObjectURL(file)
+        this.safeCertificateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.certificateUrl)
+        this.certificateUploaded = true
+
+        if (this.logoUploaded && this.selectedLogoImage) {
+          this.mergeLogo()
+        }
+      })
+      .catch(() => {
+        this.showSnackBar('Failed to load default certificate template', 'error')
+      })
+  }
+
 }

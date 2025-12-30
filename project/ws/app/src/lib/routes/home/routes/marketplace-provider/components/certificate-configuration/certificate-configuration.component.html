@@ -136,15 +136,15 @@
         </div>
 
         <div class="actions-on-certificate flex gap-4 mt-4 items-center justify-center">
-          <button mat-flat-button class="flex rounded-full mat-btn-outline">
+          <button mat-flat-button class="flex rounded-full mat-btn-outline" (click)="downloadPDF()" [disabled]="!certificateUploaded">
             <mat-icon svgIcon="download_color" class="mr-1"></mat-icon>
             Export PDF
           </button>
-          <button mat-flat-button class="flex rounded-full mat-btn-outline">
+          <button mat-flat-button class="flex rounded-full mat-btn-outline" onclick="document.getElementById('certificateFileInput')?.click()">
             <mat-icon svgIcon="archieve_color" class="mr-1"></mat-icon>
             Import Template
           </button>
-          <button mat-flat-button class="flex rounded-full mat-btn-outline">
+          <button mat-flat-button class="flex rounded-full mat-btn-outline" (click)="useDefaultTemplate()">
             <mat-icon svgIcon="certificate_color" class="mr-1"></mat-icon>
             Use Default
           </button>
