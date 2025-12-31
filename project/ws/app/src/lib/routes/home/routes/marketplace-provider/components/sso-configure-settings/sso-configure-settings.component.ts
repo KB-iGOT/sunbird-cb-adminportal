@@ -49,7 +49,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
       ssoUrl: ['', [Validators.required]],
       emailAttribute: ['', [Validators.required]],
       firstNameAttribute: ['', [Validators.required]],
-      lastNameAttribute: ['', [Validators.required]],
+      lastNameAttribute: ['',],
       userIdAttribute: ['', [Validators.required]],
     })
   }

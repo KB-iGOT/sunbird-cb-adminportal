@@ -46,7 +46,7 @@
             Verify your SSO configuration before going live
           </p>
 
-          <div class="email-failed-box p-4 rounded-lg">
+          <!-- <div class="email-failed-box p-4 rounded-lg">
             <div class="flex gap-2">
               <mat-icon svgIcon="alert_i"></mat-icon>
               <div class="info">
@@ -56,39 +56,41 @@
                 </p>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <!-- Test SSO Button  -->
-          <button [disabled]="!ssoConfigurations?.ssoTestUrl" (click)="testSsoUrl()"
-            mat-flat-button
-            class="flex items-center rounded-full px-4 py-2 mat-btn-flat mat-btn-height-32 w-full my-8"
+          <ng-container
+            *ngIf="!providerDetails?.data?.isAuthenticate && !providerDetails?.data?.isActive"
           >
-            Test SSO Connection
-          </button>
+            <button
+              [disabled]="!ssoConfigurations?.ssoTestUrl"
+              (click)="testSsoUrl()"
+              mat-flat-button
+              class="flex items-center rounded-full px-4 py-2 mat-btn-flat mat-btn-height-32 w-full my-8"
+            >
+              Test SSO Connection
+            </button>
+          </ng-container>
 
           <!-- Success SSO Message  -->
-          <!-- <div class="success-sso-message p-4 rounded-lg">
-        <div class="flex gap-3">
-          <mat-icon svgIcon="verified_tick"></mat-icon>
-          <div class="info">
-            <div class="mb-3">
-              <p class="info-title">Test Successful!</p>
-              <p class="text-sm section-title mt-2 mb-0">
-                SSO authentication completed successfully. User attributes received and mapped
-                correctly.
-              </p>
+          <ng-container
+            *ngIf="providerDetails?.data?.isAuthenticate && providerDetails?.data?.isActive"
+          >
+            <div class="success-sso-message p-4 rounded-lg">
+              <div class="flex gap-3">
+                <mat-icon svgIcon="verified_tick"></mat-icon>
+                <div class="info">
+                  <div class="mb-3">
+                    <p class="info-title">Test Successful!</p>
+                    <p class="text-sm section-title mt-2 mb-0">
+                      SSO authentication completed successfully. User attributes received and mapped
+                      correctly.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="received-attributes">
-              <p class="info-title">Received Attributes:</p>
-              <ol type="1">
-                <li>Email: test.user@partner.com</li>
-                <li>User ID: usr_12345</li>
-                <li>Name: John Doe</li>
-              </ol>
-            </div>
-          </div>
-        </div>
-      </div> -->
+          </ng-container>
         </div>
       </ng-container>
     </mat-tab>

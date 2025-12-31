@@ -144,6 +144,26 @@ export class InitService {
       'verified_tick',
       domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/verified-tick.svg'),
     )
+    iconRegistry.addSvgIcon(
+      'market_place',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hubs/market-place.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'content_management',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hubs/content-management.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'survey',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hubs/survey.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'corporate',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hubs/corporate.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'person_check',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hubs/person-check.svg'),
+    )
   }
 
   private initializeTranslations(): void {

@@ -51,7 +51,8 @@ import { BulkUploadCoursesComponent } from './components/bulk-upload-courses/bul
 import { ProvidersApiIntegrationsComponent } from './components/providers-api-integrations/providers-api-integrations.component';
 import { CertificateConfigurationComponent } from './components/certificate-configuration/certificate-configuration.component';
 import { SsoIntegrationComponent } from './components/sso-integration/sso-integration.component';
-import { SsoConfigureSettingsComponent } from './components/sso-configure-settings/sso-configure-settings.component'
+import { SsoConfigureSettingsComponent } from './components/sso-configure-settings/sso-configure-settings.component';
+import { LoadingPopupComponent } from './dialogs/loading-popup/loading-popup.component'
 
 const routes: Routes = [
   {
@@ -134,6 +135,7 @@ const routes: Routes = [
     CertificateConfigurationComponent,
     SsoIntegrationComponent,
     SsoConfigureSettingsComponent,
+    LoadingPopupComponent,
 
   ],
   imports: [
