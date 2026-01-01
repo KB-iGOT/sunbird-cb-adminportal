@@ -144,7 +144,7 @@
           </div>
 
           <div class="flex flex-column gap-1 mat-field-rounded">
-            <div class="flex items-center gap-1 required">
+            <div class="flex items-center gap-1">
               <span class="label">Last Name Attribute</span>
             </div>
             <mat-form-field class="w-full">
@@ -235,7 +235,7 @@
         <div class="mb-3">
           <span class="label"> Status </span>
           <div class="flex items-center justify-between mt-2">
-            <div class="badge success">Enabled</div>
+            <div class="badge"  [ngClass]="status.value ? 'success' : 'not-tested'">{{status.value ? 'Enabled': 'Disabled'}}</div>
             <mat-slide-toggle [formControl]="status"></mat-slide-toggle>
           </div>
         </div>
