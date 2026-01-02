@@ -31,9 +31,10 @@ import { SectorsComponent } from './routes/sectors/sectors.component'
 import { AddSectorComponent } from './routes/sectors/add-sector/add-sector.component'
 import { EditSectorComponent } from './routes/sectors/edit-sector/edit-sector.component'
 import { AllRequestComponent } from './routes/request/all-request/all-request.component'
-import { RequestCopyDetailsComponent } from './routes/request/request-copy-details/request-copy-details.component'
+// import { RequestCopyDetailsComponent } from './routes/request/request-copy-details/request-copy-details.component'
 import { KCMMappingComponent } from './routes/kcm-mapping/kcm-mapping.component'
 import { SurveyComponent } from './routes/survey/survey.component'
+import { RequestCopyDetailsV2Component } from './routes/request/request-copy-details-v2/request-copy-details-v2.component'
 
 const routes: Routes = [
   {
@@ -383,7 +384,7 @@ const routes: Routes = [
       },
       {
         path: 'request-details',
-        component: RequestCopyDetailsComponent,
+        component: RequestCopyDetailsV2Component,
         data: {
           pageId: 'home/request-details',
           module: 'Request-Details',

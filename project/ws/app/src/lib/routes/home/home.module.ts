@@ -101,6 +101,9 @@ import { ConfirmationBoxComponent } from './components/confirmation-box/confirma
 import { SelectedDesignationPopupComponent } from './components/selected-designation-popup/selected-designation-popup.component'
 import { ConformationPopupDesignationComponent } from './components/conformation-popup/conformation-popup-designation.component'
 import { FileProgressComponent } from './components/file-progress/file-progress.component'
+import { RequestCopyDetailsV2Component } from './routes/request/request-copy-details-v2/request-copy-details-v2.component'
+import { CreateRequestModule as LibCreateRequestModule } from '@sunbird-cb/consumption'
+
 @NgModule({
     declarations: [
         HomeComponent,
@@ -154,7 +157,8 @@ import { FileProgressComponent } from './components/file-progress/file-progress.
         ConfirmationBoxComponent,
         SelectedDesignationPopupComponent,
         ConformationPopupDesignationComponent,
-        FileProgressComponent
+        FileProgressComponent,
+        RequestCopyDetailsV2Component
     ],
     imports: [
         CommonModule,
@@ -212,7 +216,8 @@ import { FileProgressComponent } from './components/file-progress/file-progress.
         // ImageCropModule,
         NgMultiSelectDropDownModule.forRoot(),
         TaxonomyEditorModule,
-        TreeHierarchyModule
+        TreeHierarchyModule,
+        LibCreateRequestModule
     ],
     providers: [
         // CKEditorService,
