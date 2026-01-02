@@ -186,7 +186,7 @@
       <p class="sub-heading-title mb-4">Service Provider Info</p>
 
       <div class="flex flex-column gap-1 mat-field-rounded">
-        <div class="flex items-center gap-1">
+        <div class="flex items-center gap-1 required">
           <span class="meta-label">ACS URL</span>
         </div>
         <mat-form-field class="w-full">
@@ -204,11 +204,16 @@
             [matTooltip]="callbackUrlCopied ? 'Copied' : 'Copy'"
             [svgIcon]="'content_copy'"
           ></mat-icon>
+          <mat-error
+            class="m-1"
+            *ngIf="acsUrl.hasError('required') && (acsUrl.dirty || acsUrl.touched)"
+            >This field is required</mat-error
+          >
         </mat-form-field>
       </div>
 
       <div class="flex flex-column gap-1 mat-field-rounded">
-        <div class="flex items-center gap-1">
+        <div class="flex items-center gap-1 required">
           <span class="meta-label">Redirect URL</span>
         </div>
         <mat-form-field class="w-full">
@@ -226,6 +231,11 @@
             [matTooltip]="redirectUrlCopied ? 'Copied' : 'Copy'"
             [svgIcon]="'content_copy'"
           ></mat-icon>
+          <mat-error
+            class="m-1"
+            *ngIf="ssoTestUrl.hasError('required') && (ssoTestUrl.dirty || ssoTestUrl.touched)"
+            >This field is required</mat-error
+          >
         </mat-form-field>
       </div>
     </div>
@@ -258,9 +268,9 @@
           <div class="flex items-center justify-between mt-2">
             <div
               class="badge"
-              [ngClass]="SSOConfigurationData?.ssoTested ? 'success' : 'not-tested'"
+              [ngClass]="SSOConfigurationData?.isActive ? 'success' : 'not-tested'"
             >
-              {{ SSOConfigurationData?.ssoTested ? 'Tested' : 'Not Tested' }}
+              {{ SSOConfigurationData?.isActive ? 'Tested' : 'Not Tested' }}
             </div>
           </div>
         </div>

@@ -1,10 +1,16 @@
 <mat-toolbar *ngIf="showAppNavBar" [color]="primaryNavbarBackground?.color" style="min-height:30px"
-  [ngStyle]="primaryNavbarBackground?.styles" class="mat-elevation-z3 custom mobile">
+  [ngStyle]="primaryNavbarBackground?.styles" class="header-full custom mobile">
   <div class="fix-ww" id="root-tool-bar" role="toolbar">
     <ng-container *ngIf="mode === 'top'">
-      <a routerLink="/app/home" class="logo-dim" role="link" title="Home">
-        <img [src]="appIcon" alt="Application Logo" class="app-logo" />
-      </a>
+      <ng-container *ngIf="breadcrumbData?.length">
+        <ws-app-back-breadcrumbs [data]="breadcrumbData"></ws-app-back-breadcrumbs>
+      </ng-container>
+      <ng-container *ngIf="!breadcrumbData?.length">
+        <a routerLink="/app/home" class="logo-dim" role="link" title="Home">
+          <img [src]="appIcon" alt="Application Logo" class="app-logo" />
+        </a>
+      </ng-container>
+
       <!-- <span class="spacer"></span> -->
       <ng-container *ngIf="primaryNavbarConfig?.mediumScreen">
         <ng-container [ngTemplateOutlet]="navbarSide" [ngTemplateOutletContext]="{ item: item }"

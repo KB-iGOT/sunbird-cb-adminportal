@@ -83,14 +83,6 @@ export class CertificateConfigurationComponent implements OnChanges {
       this.fileName = this.getImageName(this.providerDetalsBeforUpdate.certificateTemplateUrl)
       this.safeCertificateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.certificateUrl)
 
-      const sitePath = environment.sitePath || ''
-      if (this.certificateUrl) {
-        const urlObj = new URL(this.certificateUrl)
-        urlObj.hostname = sitePath
-        this.certificateUrl = urlObj.toString()
-        this.safeCertificateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.certificateUrl)
-      }
-
       fetch(this.certificateUrl)
         .then(res => res.blob())
         .then(blob => {

@@ -31,7 +31,6 @@ export class SsoIntegrationComponent implements OnInit {
   constructor(private dialog: MatDialog, private marketplaceService: MarketplaceService, private snackBar: MatSnackBar,) { }
 
   ngOnInit(): void {
-    console.log(this.providerDetails)
   }
 
   updateCreateSSO() {
@@ -51,16 +50,10 @@ export class SsoIntegrationComponent implements OnInit {
 
   testSsoUrl() {
     const payload = {
-      ...this.providerDetails,
-      data: {
-        ...this.providerDetails.data,
-        isActive: true,
-        isAuthenticate: true
-      }
-    }
-
-    if (payload?.data?.contactName) {
-      delete payload?.data?.contactName
+      ...this.ssoConfigurations,
+      isActive: true,
+      isAuthenticate: true,
+      configuration: 'complete'
     }
 
     const dialogRef = this.dialog.open(LoadingPopupComponent, {
@@ -76,12 +69,13 @@ export class SsoIntegrationComponent implements OnInit {
       }
     })
 
-    this.marketplaceService.updateProvider(payload).subscribe({
+    this.marketplaceService.updateSSOConfiguration(this.providerDetails?.id, payload).subscribe({
       next: (response: any) => {
-        if (response) {
+        if (response && response?.result?.ssoData) {
+          this.ssoConfigurations = response?.result?.ssoData
           setTimeout(() => {
             dialogRef.close()
-            this.loadProviderDetails.emit(true)
+            // this.loadProviderDetails.emit(true)
           }, 1000)
         }
       },

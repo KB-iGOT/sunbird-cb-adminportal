@@ -1,26 +1,30 @@
-import { Component, ViewChild, ElementRef, Output, Input, EventEmitter, SimpleChanges, OnChanges } from '@angular/core'
+import { Component, ViewChild, ElementRef, Output, Input, EventEmitter, SimpleChanges, OnChanges, OnDestroy } from '@angular/core'
 import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { DatePipe } from '@angular/common'
 import { MarketplaceService } from '../../services/marketplace.service'
 import * as _ from 'lodash'
 import { forkJoin, of } from 'rxjs'
-import { mergeMap } from 'rxjs/operators'
+import { mergeMap, takeWhile } from 'rxjs/operators'
 import { Router } from '@angular/router'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
+import { GlobalEventsService } from '../../../../../../../../../../../src/app/services/global-events.service'
+import { NavigationExternalService } from '../../../../../../../../../../../src/app/services/navigation-external.service'
 @Component({
   selector: 'ws-app-provider-details-v2',
   templateUrl: './provider-details-v2.component.html',
   styleUrls: ['./provider-details-v2.component.scss']
 })
-export class ProviderDetailsV2Component implements OnChanges {
+export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
   @Input() providerDetails: any
   @Output() loadProviderDetails = new EventEmitter<Boolean>()
 
-  providerDetailsForm: FormGroup
+  providerDetailsForm!: FormGroup
   @ViewChild('logoInput') logoInput?: ElementRef<HTMLInputElement>
   @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>
   @ViewChild('canvas') canvas?: ElementRef<HTMLCanvasElement>
+
+  isActive = true
 
   logoPreviewUrl: string | ArrayBuffer | null = null
   logoFile: File | null = null
@@ -43,8 +47,41 @@ export class ProviderDetailsV2Component implements OnChanges {
     private snackBar: MatSnackBar,
     private datePipe: DatePipe,
     private marketplaceSvc: MarketplaceService,
-    private router: Router
+    private router: Router,
+    private loaderService: GlobalEventsService,
+    private externalsvc: NavigationExternalService,
   ) {
+    this.initializeForm()
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.providerDetails && changes.providerDetails.currentValue) {
+      this.providerDetailsBeforeUpdate = JSON.parse(JSON.stringify(changes.providerDetails.currentValue))
+      this.providerId = _.get(changes.providerDetails.currentValue, 'data.id', null)
+      this.patchProviderDetails(changes.providerDetails.currentValue)
+
+      // Add back button wirh breadcrumbs
+      this.externalsvc.breadcrumnItems.next(
+        [
+          {
+            label: 'Content Marketplace',
+            route: '/app/home/marketplace-providers',
+            active: false
+          },
+          {
+            label: this.providerDetailsBeforeUpdate?.data?.contentPartnerName || 'New Provider',
+            active: true
+          }
+        ]
+      )
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.isActive = false
+  }
+
+  initializeForm(): void {
     this.providerDetailsForm = this.fb.group({
       contentPartnerName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\] ' !]*$/), Validators.maxLength(70)]],
       partnerCode: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/), Validators.maxLength(6)]],
@@ -54,14 +91,12 @@ export class ProviderDetailsV2Component implements OnChanges {
       partnerAgreement: [''],
       providerLogo: ['']
     })
-  }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.providerDetails && changes.providerDetails.currentValue) {
-      this.providerDetailsBeforeUpdate = JSON.parse(JSON.stringify(changes.providerDetails.currentValue))
-      this.providerId = _.get(changes.providerDetails.currentValue, 'data.id', null)
-      this.patchProviderDetails(changes.providerDetails.currentValue)
-    }
+    this.controls['partnerCode']?.valueChanges.pipe((takeWhile(() => this.isActive))).subscribe((value: string) => {
+      if (value) {
+        this.providerDetailsForm.get('partnerCode')?.setValue(value.toUpperCase(), { emitEvent: false })
+      }
+    })
   }
 
   get controls() {
@@ -105,7 +140,7 @@ export class ProviderDetailsV2Component implements OnChanges {
       description: _.get(providerDetails, 'data.description', ''),
     })
     this.getTipsList.clear()
-    this.logoPreviewUrl = _.get(providerDetails, 'data.link', '')
+    this.logoPreviewUrl = this.marketplaceSvc.convertResourceUrl(_.get(providerDetails, 'data.link', ''))
     this.uploadedPdfUrl = _.get(providerDetails, 'data.documentUrl', '')
     this.fileUploadedDate = _.get(providerDetails, 'data.documentUploadedDate', '')
     if (this.uploadedPdfUrl) {
@@ -252,6 +287,7 @@ export class ProviderDetailsV2Component implements OnChanges {
   submit() {
     this.logoTouched = true
     if (this.providerDetailsForm.valid && this.logoPreviewUrl) {
+      this.loaderService.setLoaderState(true)
       this.createContentsToUpload()
     } else {
       this.showSnackBar('Please fill all the mandatory fields with proper data', 'error')
@@ -315,11 +351,16 @@ export class ProviderDetailsV2Component implements OnChanges {
           } else {
             this.saveProviderDetails()
           }
+
         },
         error: () => {
           this.loading = false
           this.showSnackBar('File upload failed', 'error')
+          this.loaderService.setLoaderState(false)
         },
+        complete: () => {
+          this.loaderService.setLoaderState(false)
+        }
       })
     } else {
       if (this.providerId) {
@@ -354,12 +395,16 @@ export class ProviderDetailsV2Component implements OnChanges {
             setTimeout(() => {
               const successMsg = 'Successfully Onboarded'
               this.showSnackBar(successMsg, 'success')
+              this.loaderService.setLoaderState(false)
+
             }, 1000)
           }
         },
         error: () => {
           this.loading = false
           this.showSnackBar('Failed to create provider', 'error')
+          this.loaderService.setLoaderState(false)
+
         },
       })
     } else {
@@ -371,19 +416,19 @@ export class ProviderDetailsV2Component implements OnChanges {
     if (this.providerDetailsForm.valid && this.logoPreviewUrl && this.providerDetailsBeforeUpdate) {
       const formDetails = this.providerDetailsForm.value
       const updatePayload = JSON.parse(JSON.stringify(this.providerDetailsBeforeUpdate))
-      updatePayload['websiteUrl'] = formDetails.websiteUrl
-      updatePayload['isActive'] = true
-      updatePayload['description'] = formDetails.description
-      updatePayload['contentPartnerName'] = formDetails.contentPartnerName
-      updatePayload['providerTips'] = formDetails.providerTips
-      updatePayload['link'] = this.logoPreviewUrl
+      updatePayload['data']['websiteUrl'] = formDetails.websiteUrl
+      updatePayload['data']['isActive'] = true
+      updatePayload['data']['description'] = formDetails.description
+      updatePayload['data']['contentPartnerName'] = formDetails.contentPartnerName
+      updatePayload['data']['providerTips'] = formDetails.providerTips
+      updatePayload['data']['link'] = this.logoPreviewUrl
 
       if (this.uploadedPdfUrl) {
-        updatePayload['documentUrl'] = this.uploadedPdfUrl
-        updatePayload['documentUploadedDate'] = this.fileUploadedDate
+        updatePayload['data']['documentUrl'] = this.uploadedPdfUrl
+        updatePayload['data']['documentUploadedDate'] = this.fileUploadedDate
       } else {
-        delete updatePayload['documentUrl']
-        delete updatePayload['documentUploadedDate']
+        delete updatePayload['data']['documentUrl']
+        delete updatePayload['data']['documentUploadedDate']
       }
 
       this.marketplaceSvc.updateProvider(updatePayload).subscribe({
@@ -394,12 +439,15 @@ export class ProviderDetailsV2Component implements OnChanges {
               this.sendDetailsUpdateEvent()
               const successMsg = 'Provider details updated successfully.'
               this.showSnackBar(successMsg, 'success')
+              this.loaderService.setLoaderState(false)
+
             }, 1000)
           }
         },
         error: () => {
           this.loading = false
           this.showSnackBar('Failed to update provider', 'error')
+          this.loaderService.setLoaderState(false)
         },
       })
     } else {
