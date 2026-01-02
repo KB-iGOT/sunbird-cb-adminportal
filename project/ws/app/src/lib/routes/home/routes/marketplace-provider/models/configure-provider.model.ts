@@ -29,4 +29,6 @@ export interface SsoConfiguration {
   firstNameAttribute: string
   userIdAttribute: string
   lastNameAttribute: string
+  isActive: boolean
+  isAuthenticate: boolean
 }

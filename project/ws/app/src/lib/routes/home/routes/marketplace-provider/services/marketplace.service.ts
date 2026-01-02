@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { BehaviorSubject, Observable } from 'rxjs'
+import { environment } from '../../../../../../../../../../src/environments/environment'
 
 const API_END_POINTS = {
   CREATE_CONTENTPARTNER: `/apis/proxies/v8/contentpartner/v1/create`,
@@ -121,6 +122,25 @@ export class MarketplaceService {
       newFormData
     )
   }
+
+  convertResourceUrl(url?: string): string {
+    if (!url) return ''
+    let parsed: URL
+    try {
+      parsed = new URL(url)
+    } catch {
+      return url
+    }
+
+    const firstSlash = parsed.pathname.indexOf('/', 1)
+    if (firstSlash === -1) return url
+
+    const resourcePath = parsed.pathname.slice(firstSlash)
+    return `${environment.contentHost}/content-store${resourcePath}`
+  }
+
+
+
 
   getCoursesList(formBody: any) {
     return this.http.post<any>(`${API_END_POINTS.GET_CONTENT_LIST}`, formBody)

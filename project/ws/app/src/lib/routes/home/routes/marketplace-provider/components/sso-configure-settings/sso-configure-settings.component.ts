@@ -25,8 +25,8 @@ export class SsoConfigureSettingsComponent implements OnInit {
   }]
   ssoSettingsForm!: FormGroup
 
-  acsUrl = new FormControl('')
-  ssoTestUrl = new FormControl('')
+  acsUrl = new FormControl('', [Validators.required])
+  ssoTestUrl = new FormControl('', [Validators.required])
   status = new FormControl(false)
 
   SSOConfigurationData: SsoConfiguration | null = null

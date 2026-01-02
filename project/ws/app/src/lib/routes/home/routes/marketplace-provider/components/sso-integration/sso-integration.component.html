@@ -5,13 +5,13 @@
   <div class="flex justify-between items-center mb-4">
     <p class="page-title">SSO Integration</p>
     <div class="actions-buttons-sso flex items-center gap-4">
-      <button
+      <!-- <button
         mat-flat-button
         class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline mat-btn-height-32"
       >
         Cancel
-      </button>
-      <button
+      </button> -->
+      <!-- <button
         mat-flat-button
         class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline mat-btn-height-32"
       >
@@ -19,7 +19,7 @@
           <mat-icon class="mr-2">remove_red_eye</mat-icon>
           <div class="font-bold text-sm">Preview</div>
         </div>
-      </button>
+      </button> -->
       <button
         (click)="updateCreateSSO()"
         mat-flat-button
@@ -60,7 +60,7 @@
 
           <!-- Test SSO Button  -->
           <ng-container
-            *ngIf="!providerDetails?.data?.isAuthenticate && !providerDetails?.data?.isActive"
+            *ngIf="!ssoConfigurations?.isAuthenticate || !ssoConfigurations?.isActive"
           >
             <button
               [disabled]="!ssoConfigurations?.ssoTestUrl"
@@ -74,7 +74,7 @@
 
           <!-- Success SSO Message  -->
           <ng-container
-            *ngIf="providerDetails?.data?.isAuthenticate && providerDetails?.data?.isActive"
+            *ngIf="ssoConfigurations?.isAuthenticate && ssoConfigurations?.isActive"
           >
             <div class="success-sso-message p-4 rounded-lg">
               <div class="flex gap-3">
