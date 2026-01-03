@@ -8,6 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import * as _ from 'lodash'
+import { forkJoin } from 'rxjs'
 
 
 @Component({
@@ -21,6 +22,7 @@ export class SsoIntegrationComponent implements OnInit {
 
   @ViewChild('ssoConfigurationSettings') ssoConfigurationSettings!: SsoConfigureSettingsComponent
   ssoConfigurations: SsoConfiguration | null = null
+  providerResponse: any
 
   helpCenterGuide = {
     header: 'Note:- Content Upload Details: Video Guides and Tips.',
@@ -49,41 +51,58 @@ export class SsoIntegrationComponent implements OnInit {
   }
 
   testSsoUrl() {
-    const payload = {
+    const ssoPayload = {
       ...this.ssoConfigurations,
       isActive: true,
-      isAuthenticate: true,
       configuration: 'complete'
     }
 
+    const providerPayload = {
+      ...this.providerDetails,
+    }
+    providerPayload.data.isAuthenticate = true
+    providerPayload.data.isActive = true
+
     const dialogRef = this.dialog.open(LoadingPopupComponent, {
       autoFocus: false,
-      width: "345px",
-      height: "164px",
+      width: '345px',
+      height: '164px',
       maxWidth: '80vw',
       maxHeight: '90vh',
       disableClose: true,
       data: {
         title: 'Testing SSO Connection',
-        subtitle: 'Wait a second, Its processing….'
+        subtitle: "Wait a second, It's processing…"
       }
     })
 
-    this.marketplaceService.updateSSOConfiguration(this.providerDetails?.id, payload).subscribe({
-      next: (response: any) => {
-        if (response && response?.result?.ssoData) {
-          this.ssoConfigurations = response?.result?.ssoData
-          setTimeout(() => {
-            dialogRef.close()
-            // this.loadProviderDetails.emit(true)
-          }, 1000)
+    forkJoin({
+      ssoResponse: this.marketplaceService.updateSSOConfiguration(
+        this.providerDetails?.id,
+        ssoPayload
+      ),
+      providerResponse: this.marketplaceService.updateProvider(providerPayload)
+    }).subscribe({
+      next: ({ ssoResponse, providerResponse }: any) => {
+        if (ssoResponse?.result?.ssoData) {
+          this.ssoConfigurations = ssoResponse.result.ssoData
+          this.providerResponse = providerResponse?.result
         }
+
+        setTimeout(() => {
+          dialogRef.close()
+          this.ssoConfigurationSettings?.fetchSSOSettings()
+          this.loadProviderDetails.emit(true)
+        }, 1000)
       },
       error: (error: HttpErrorResponse) => {
         dialogRef.close()
-        const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong, please try again later')
+        const errmsg = _.get(error,
+          'error.params.errMsg',
+          'Something went wrong, please try again later'
+        )
         this.showSnackBar(errmsg, 'error')
-      },
+      }
     })
   }
 
