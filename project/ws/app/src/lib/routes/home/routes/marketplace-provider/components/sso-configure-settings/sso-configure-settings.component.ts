@@ -104,8 +104,10 @@ export class SsoConfigureSettingsComponent implements OnInit {
   }
 
   createSSOConfigurations() {
-    if (this.ssoSettingsForm.invalid) {
+    if (this.ssoSettingsForm.invalid || this.acsUrl.invalid || this.ssoTestUrl.invalid) {
       this.ssoSettingsForm.markAllAsTouched()
+      this.acsUrl.markAllAsTouched()
+      this.ssoTestUrl.markAllAsTouched()
       return
     }
     this.loaderService.setLoaderState(true)
@@ -114,7 +116,8 @@ export class SsoConfigureSettingsComponent implements OnInit {
       ...formValues,
       status: this.status.value,
       acsUrl: this.acsUrl.value,
-      ssoTestUrl: this.ssoTestUrl.value
+      ssoTestUrl: this.ssoTestUrl.value,
+      configuration: 'complete'
     }
 
     this.marketplaceService.createSSOConfiguration(this.providerDetails.id, payload).subscribe({
