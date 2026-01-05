@@ -59,9 +59,7 @@
           </div> -->
 
           <!-- Test SSO Button  -->
-          <ng-container
-            *ngIf="!providerDetails?.data?.isAuthenticate || !providerDetails?.data?.isActive || ssoConfigurations?.configuration !== 'complete'"
-          >
+          <ng-container *ngIf="!isSSOSuccessfullyConfigured">
             <button
               [disabled]="!ssoConfigurations?.ssoTestUrl"
               (click)="testSsoUrl()"
@@ -73,9 +71,7 @@
           </ng-container>
 
           <!-- Success SSO Message  -->
-          <ng-container
-            *ngIf="providerDetails?.data?.isAuthenticate && providerDetails?.data?.isActive && ssoConfigurations?.configuration === 'complete'"
-          >
+          <ng-container *ngIf="isSSOSuccessfullyConfigured">
             <div class="success-sso-message p-4 rounded-lg">
               <div class="flex gap-3">
                 <mat-icon svgIcon="verified_tick"></mat-icon>

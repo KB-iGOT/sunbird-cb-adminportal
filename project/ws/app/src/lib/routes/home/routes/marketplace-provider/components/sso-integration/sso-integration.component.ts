@@ -50,6 +50,15 @@ export class SsoIntegrationComponent implements OnInit {
     this.loadProviderDetails.emit({ ...this.providerDetails, ssoDetails: event })
   }
 
+  get isSSOSuccessfullyConfigured(): boolean {
+    return (
+      this.providerDetails?.data?.isAuthenticate &&
+      this.providerDetails?.data?.isActive &&
+      this.ssoConfigurations?.configuration === 'complete' &&
+      this.ssoConfigurations?.isActive
+    )
+  }
+
   testSsoUrl() {
     const ssoPayload = {
       ...this.ssoConfigurations,
