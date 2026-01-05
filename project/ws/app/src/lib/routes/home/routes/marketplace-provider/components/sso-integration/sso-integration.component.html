@@ -59,10 +59,7 @@
           </div> -->
 
           <!-- Test SSO Button  -->
-          <ng-container
-            *ngIf="!isSSOSuccessfullyConfigured
-            "
-          >
+          <ng-container *ngIf="!isSSOSuccessfullyConfigured">
             <button
               [disabled]="!ssoConfigurations?.ssoTestUrl"
               (click)="testSsoUrl()"
