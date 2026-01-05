@@ -6,6 +6,7 @@ import { MarketplaceService } from '../../services/marketplace.service'
 import { HttpErrorResponse } from '@angular/common/http'
 import * as _ from 'lodash'
 import { MARKETPLACE_CONFIGURE_PROVIDERS_MENU } from '../../models/menu.model'
+import { NavigationExternalService } from '../../../../../../../../../../../src/app/services/navigation-external.service'
 
 @Component({
   selector: 'ws-app-configure-provider',
@@ -40,6 +41,7 @@ export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewI
     private activateRoute: ActivatedRoute,
     private snackBar: MatSnackBar,
     private marketPlaceSvc: MarketplaceService,
+    private externalsvc: NavigationExternalService,
   ) {
   }
 
@@ -73,6 +75,7 @@ export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewI
   ngOnDestroy(): void {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe()
+      this.externalsvc.breadcrumnItems.next([])
     }
   }
 
@@ -87,6 +90,20 @@ export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewI
           this.helpCenterGuide = _.get(data, 'pageData.data.configureCertificateGuide.helpCenterGuide', this.helpCenterGuide)
           this.instructionsList = _.get(data, 'pageData.data.configureCertificateGuide.instructions', this.instructionsList)
         }
+
+        this.externalsvc.breadcrumnItems.next(
+          [
+            {
+              label: 'Content Marketplace',
+              route: '/app/home/marketplace-providers',
+              active: false
+            },
+            {
+              label: this.providerDetails?.data?.contentPartnerName || 'New Provider',
+              active: true
+            }
+          ]
+        )
       })
     )
   }

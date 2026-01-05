@@ -8,6 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import * as _ from 'lodash'
+import { forkJoin } from 'rxjs'
 
 
 @Component({
@@ -21,6 +22,7 @@ export class SsoIntegrationComponent implements OnInit {
 
   @ViewChild('ssoConfigurationSettings') ssoConfigurationSettings!: SsoConfigureSettingsComponent
   ssoConfigurations: SsoConfiguration | null = null
+  providerResponse: any
 
   helpCenterGuide = {
     header: 'Note:- Content Upload Details: Video Guides and Tips.',
@@ -31,7 +33,6 @@ export class SsoIntegrationComponent implements OnInit {
   constructor(private dialog: MatDialog, private marketplaceService: MarketplaceService, private snackBar: MatSnackBar,) { }
 
   ngOnInit(): void {
-    console.log(this.providerDetails)
   }
 
   updateCreateSSO() {
@@ -49,47 +50,68 @@ export class SsoIntegrationComponent implements OnInit {
     this.loadProviderDetails.emit({ ...this.providerDetails, ssoDetails: event })
   }
 
+  get isSSOSuccessfullyConfigured(): boolean {
+    return (
+      this.providerDetails?.data?.isAuthenticate &&
+      this.providerDetails?.data?.isActive &&
+      this.ssoConfigurations?.configuration === 'complete' &&
+      this.ssoConfigurations?.isActive
+    )
+  }
+
   testSsoUrl() {
-    const payload = {
-      ...this.providerDetails,
-      data: {
-        ...this.providerDetails.data,
-        isActive: true,
-        isAuthenticate: true
-      }
+    const ssoPayload = {
+      ...this.ssoConfigurations,
+      isActive: true,
+      configuration: 'complete'
     }
 
-    if (payload?.data?.contactName) {
-      delete payload?.data?.contactName
+    const providerPayload = {
+      ...this.providerDetails,
     }
+    providerPayload.data.isAuthenticate = true
+    providerPayload.data.isActive = true
 
     const dialogRef = this.dialog.open(LoadingPopupComponent, {
       autoFocus: false,
-      width: "345px",
-      height: "164px",
+      width: '345px',
+      height: '164px',
       maxWidth: '80vw',
       maxHeight: '90vh',
       disableClose: true,
       data: {
         title: 'Testing SSO Connection',
-        subtitle: 'Wait a second, Its processing….'
+        subtitle: "Wait a second, It's processing…"
       }
     })
 
-    this.marketplaceService.updateProvider(payload).subscribe({
-      next: (response: any) => {
-        if (response) {
-          setTimeout(() => {
-            dialogRef.close()
-            this.loadProviderDetails.emit(true)
-          }, 1000)
+    forkJoin({
+      ssoResponse: this.marketplaceService.updateSSOConfiguration(
+        this.providerDetails?.id,
+        ssoPayload
+      ),
+      providerResponse: this.marketplaceService.updateProvider(providerPayload)
+    }).subscribe({
+      next: ({ ssoResponse, providerResponse }: any) => {
+        if (ssoResponse?.result?.ssoData) {
+          this.ssoConfigurations = ssoResponse.result.ssoData
+          this.providerResponse = providerResponse?.result
         }
+
+        setTimeout(() => {
+          dialogRef.close()
+          this.ssoConfigurationSettings?.fetchSSOSettings()
+          this.loadProviderDetails.emit(true)
+        }, 1000)
       },
       error: (error: HttpErrorResponse) => {
         dialogRef.close()
-        const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong, please try again later')
+        const errmsg = _.get(error,
+          'error.params.errMsg',
+          'Something went wrong, please try again later'
+        )
         this.showSnackBar(errmsg, 'error')
-      },
+      }
     })
   }
 
