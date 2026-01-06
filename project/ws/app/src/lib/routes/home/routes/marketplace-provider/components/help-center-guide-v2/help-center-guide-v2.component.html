@@ -1,7 +1,10 @@
-<div class="flex justify-between mb-3 flex-column info-pill">
+<div
+  class="flex justify-between mb-3 flex-column info-pill cursor-pointer"
+  (click)="showDetailToggle = !showDetailToggle"
+>
   <div class="flex flex-row justify-between">
     <div class="flex items-center justify-center">
-      <div class="flex gap-1 items-center justify-center">
+      <div class="flex items-center justify-center">
         <img src="assets/icons/i-icon.svg" alt="icon" width="35" />
         <span class="bold-text ml-4">{{ helpCenterGuide?.header }}</span>
       </div>
@@ -23,27 +26,30 @@
       />
     </div>
   </div>
-  <ng-container *ngIf="showDetailToggle">
-    <div class="content-help flex gap-4 items-start justify-between mt-3">
-      <div class="points-help px-4">
-        <ng-container *ngFor="let note of helpCenterGuide?.guideNotes">
-          <div class="flex w-full gap-3">
-            <div class="flex items-center justify-center"><mat-icon class="mat-icon">error_outline</mat-icon></div>
-            <div class="help-point-text">{{ note }}</div>
+  <div
+    [@expandCollapse]="showDetailToggle ? 'expanded' : 'collapsed'"
+    class="content-help flex gap-4 items-start justify-between"
+  >
+    <div class="points-help px-4 mt-3">
+      <ng-container *ngFor="let note of helpCenterGuide?.guideNotes">
+        <div class="flex w-full gap-3">
+          <div class="flex items-center justify-center">
+            <mat-icon class="mat-icon">error_outline</mat-icon>
           </div>
-        </ng-container>
-      </div>
-      <div class="pb-3">
-        <div class="helpCenterDemo flex justify-end section-2">
-          <div
-            class="helpCenterDemoVideo flex flex-column flex-middle justify-center"
-            (click)="openVideoPopup()"
-          >
-            <mat-icon class="video_icon mb-2">play_arrow</mat-icon>
-            <div>Watch how it works</div>
-          </div>
+          <div class="help-point-text">{{ note }}</div>
+        </div>
+      </ng-container>
+    </div>
+    <div class="pb-3">
+      <div class="helpCenterDemo flex justify-end section-2">
+        <div
+          class="helpCenterDemoVideo flex flex-column flex-middle justify-center"
+          (click)="openVideoPopup()"
+        >
+          <mat-icon class="video_icon mb-2">play_arrow</mat-icon>
+          <div>Watch how it works</div>
         </div>
       </div>
     </div>
-  </ng-container>
+  </div>
 </div>

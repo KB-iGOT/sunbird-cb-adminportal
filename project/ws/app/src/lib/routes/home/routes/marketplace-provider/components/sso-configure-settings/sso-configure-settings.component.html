@@ -165,6 +165,7 @@
 
       <div class="flex gap-4 items-center justify-center mt-6">
         <button
+          (click)="navigateToProvidersDashboard()"
           mat-flat-button
           class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline mat-btn-height-32"
         >
@@ -173,6 +174,7 @@
         <button
           (click)="updateCreateSSO()"
           mat-flat-button
+          [disabled]="isSaveDisabled"
           class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat mat-btn-height-32"
         >
           {{ SSOConfigurationData ? 'Update' : 'Save' }}
@@ -245,7 +247,9 @@
         <div class="mb-3">
           <span class="label"> Status </span>
           <div class="flex items-center justify-between mt-2">
-            <div class="badge"  [ngClass]="status.value ? 'success' : 'not-tested'">{{status.value ? 'Enabled': 'Disabled'}}</div>
+            <div class="badge" [ngClass]="status.value ? 'success' : 'not-tested'">
+              {{ status.value ? 'Enabled' : 'Disabled' }}
+            </div>
             <mat-slide-toggle [formControl]="status"></mat-slide-toggle>
           </div>
         </div>
