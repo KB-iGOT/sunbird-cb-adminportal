@@ -22,15 +22,21 @@
 }
 
 .info-pill {
-  padding: 0.5rem 1.5rem 0.5rem 0.5rem;
+  padding: 1rem;
   border-radius: 12px;
   background: #1b4ca129;
 
   .bold-text {
+    /* stylelint-disable */
     font-family: Lato;
+    /* stylelint-enable */
     font-weight: 700;
     font-size: 14px;
   }
+}
+
+.content-help {
+  overflow: hidden;
 }
 
 .points-help {
@@ -42,9 +48,11 @@
 }
 
 .help-point-text {
+  /* stylelint-disable */
   font-family: Lato;
+  /* stylelint-enable */
   font-weight: 400;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .rotate-icon {

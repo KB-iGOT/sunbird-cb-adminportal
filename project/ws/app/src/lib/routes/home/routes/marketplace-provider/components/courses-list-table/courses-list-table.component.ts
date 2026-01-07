@@ -124,9 +124,10 @@ export class CoursesListTableComponent implements OnInit, OnChanges {
 
   private updatePaginationDetails(): void {
     if (this.paginationDetails) {
-      this.currentPage = this.paginationDetails.currentPage || 0
-      this.paginationSize = this.paginationDetails.pageSize || 10
-      this.totalItemsCount = this.paginationDetails.totalCount || this.coursesList.length
+      this.currentPage = this.paginationDetails?.currentPage || 0
+      this.paginationSize = this.paginationDetails?.pageSize || 10
+      this.totalItemsCount = this.paginationDetails?.totalCount || this.coursesList.length
+      this.pageSizeOptions = this.paginationDetails?.paginationSizeOptions || [10, 20, 50, 100]
     }
   }
 

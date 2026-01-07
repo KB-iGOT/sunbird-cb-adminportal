@@ -41,7 +41,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
   providersRequestsList = []
   searchProvider$ = new Subject<string>();
   searchRegisteredProvider$ = new Subject<string>();
-
+  currentTab: string = 'onboardProviders'
   constructor(
     private dialog: MatDialog,
     private router: Router,
@@ -341,7 +341,12 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
   onPageChange(event: any) {
     this.paginationDetails.currentPage = event.currentPage
     this.paginationDetails.pageSize = event.pageSize
-    this.getProviders()
+
+    if (this.currentTab === 'onboardProviders') {
+      this.getProviders()
+    } else if (this.currentTab === 'providerRequests') {
+      this.listProvidersRequests()
+    }
   }
 
   showSnackBar(message: string) {
@@ -393,15 +398,17 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
   handleOnTabChange(event: any) {
     if (event.index === 0) {
       this.intializeTableData()
+      this.currentTab = 'onboardProviders'
     }
     if (event.index === 1) {
       this.initailizeProviderRequestsTable()
+      this.initializePagination()
       this.listProvidersRequests()
+      this.currentTab = 'providerRequests'
     }
   }
 
   listProvidersRequests() {
-    this.initializePagination()
     this.loaderService.setLoaderState(true)
     this.providersRequestsList = []
     const formBody: any = {
@@ -449,7 +456,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
       currentPage: 1,
       pageSize: 20,
       totalCount: 20,
-      paginationSizeOptions: [10, 20, 50, 100]
+      paginationSizeOptions: [20, 50, 100]
     }
   }
 

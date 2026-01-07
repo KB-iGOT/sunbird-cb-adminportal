@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, Input, OnInit, Output, } from '@angular/core'
 import { Clipboard } from '@angular/cdk/clipboard'
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MarketplaceService } from '../../services/marketplace.service'
@@ -6,6 +6,7 @@ import { SsoConfiguration } from '../../models/configure-provider.model'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
 import { GlobalEventsService } from '../../../../../../../../../../../src/app/services/global-events.service'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'ws-app-sso-configure-settings',
@@ -25,13 +26,18 @@ export class SsoConfigureSettingsComponent implements OnInit {
   }]
   ssoSettingsForm!: FormGroup
 
+  initialFormValue: any = {}
+  initialAcsUrl = ''
+  initialSsoTestUrl = ''
+  initialStatus = false
+
   acsUrl = new FormControl('', [Validators.required])
   ssoTestUrl = new FormControl('', [Validators.required])
   status = new FormControl(false)
 
   SSOConfigurationData: SsoConfiguration | null = null
   constructor(private clipboard: Clipboard, private formBuilder: FormBuilder, private marketplaceService: MarketplaceService, private snackBar: MatSnackBar,
-    private loaderService: GlobalEventsService
+    private loaderService: GlobalEventsService, private router: Router,
 
   ) {
     this.initializeForm()
@@ -52,6 +58,15 @@ export class SsoConfigureSettingsComponent implements OnInit {
       lastNameAttribute: ['',],
       userIdAttribute: ['', [Validators.required]],
     })
+
+  }
+
+  get isSaveDisabled(): boolean {
+    const currentForm = this.ssoSettingsForm.getRawValue()
+    return JSON.stringify(currentForm) === JSON.stringify(this.initialFormValue) &&
+      this.acsUrl.value === this.initialAcsUrl &&
+      this.ssoTestUrl.value === this.initialSsoTestUrl &&
+      this.status.value === this.initialStatus
   }
 
   copy(type: string, value: string) {
@@ -93,6 +108,21 @@ export class SsoConfigureSettingsComponent implements OnInit {
             this.status.setValue(this.SSOConfigurationData?.status || false)
             this.acsUrl.setValue(this.SSOConfigurationData?.acsUrl || '')
             this.ssoTestUrl.setValue(this.SSOConfigurationData?.ssoTestUrl || '')
+
+            // Set initial values for comparison to properly enable/disable save button
+            this.initialFormValue = {
+              clientId: this.SSOConfigurationData?.clientId || '',
+              partnerName: this.providerDetails?.data?.contentPartnerName || '',
+              ssoProtocol: this.SSOConfigurationData?.ssoProtocol || 'saml',
+              ssoUrl: this.SSOConfigurationData?.ssoUrl || '',
+              emailAttribute: this.SSOConfigurationData?.emailAttribute || '',
+              firstNameAttribute: this.SSOConfigurationData?.firstNameAttribute || '',
+              lastNameAttribute: this.SSOConfigurationData?.lastNameAttribute || '',
+              userIdAttribute: this.SSOConfigurationData?.userIdAttribute || '',
+            }
+            this.initialAcsUrl = this.SSOConfigurationData?.acsUrl || ''
+            this.initialSsoTestUrl = this.SSOConfigurationData?.ssoTestUrl || ''
+            this.initialStatus = this.SSOConfigurationData?.status || false
           }
           this.loaderService.setLoaderState(false)
 
@@ -210,4 +240,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
     return 'Something went wrong'
   }
 
+  navigateToProvidersDashboard() {
+    this.router.navigateByUrl('/app/home/marketplace-providers')
+  }
 }
