@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { GlobalEventsService } from '../../../../../../../../../../../src/app/services/global-events.service'
 import { Subject } from 'rxjs'
+import { SnackbarComponent } from '@sunbird-cb/consumption'
 
 @Component({
   selector: 'ws-app-market-place-dashboard',
@@ -125,11 +126,11 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
     this.menuItems = []
   }
 
-  getProviders() {
+  getProviders(sort = { field: 'createdOn', direction: 'desc' }) {
     this.displayLoader = true
     this.loaderService.setLoaderState(true)
 
-    this.providersList = []
+    // this.providersList = []
     const formBody: any = {
       filterCriteriaMap: {
         // isActive: true,
@@ -139,8 +140,8 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
       facets: [
         'contentPartnerName',
       ],
-      orderBy: 'createdOn',
-      orderDirection: 'desc',
+      orderBy: sort.field,
+      orderDirection: sort.direction,
     }
 
     if (this.searchKey) {
@@ -169,7 +170,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
         error: (error: HttpErrorResponse) => {
           this.displayLoader = false
           const errmsg = _.get(error, 'error.params.errMsg')
-          this.showSnackBar(errmsg)
+          this.showSnackBar(errmsg, 'error')
           this.loaderService.setLoaderState(false)
         },
       })
@@ -238,11 +239,12 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
       next: () => {
         this.listProvidersRequests()
         this.loaderService.setLoaderState(false)
+        this.showSnackBar(`The request has been ${status === 'accept' ? 'approved' : 'rejected'} successfully.`, 'success')
       }
       , error: (error: HttpErrorResponse) => {
         this.loaderService.setLoaderState(false)
         const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong')
-        this.showSnackBar(errmsg)
+        this.showSnackBar(errmsg, 'error')
       },
     })
 
@@ -333,7 +335,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
       error: (error: HttpErrorResponse) => {
         this.displayLoader = false
         const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong')
-        this.showSnackBar(errmsg)
+        this.showSnackBar(errmsg, 'error')
       },
     })
   }
@@ -349,8 +351,12 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
-  showSnackBar(message: string) {
-    this.snackBar.open(message)
+  showSnackBar(message: string, type: 'error' | 'success') {
+    this.snackBar.openFromComponent(SnackbarComponent, {
+      data: {
+        message: message, type: type,
+      }, duration: 5000, panelClass: type,
+    })
   }
 
   activateProvider(rowData: any) {
@@ -375,21 +381,21 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
             },
             error: (error: HttpErrorResponse) => {
               const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong')
-              this.showSnackBar(errmsg)
+              this.showSnackBar(errmsg, 'error')
               this.loaderService.setLoaderState(false)
 
             },
           })
         } else {
           const errmsg = _.get(response, 'params.errMsg', 'Something went wrong, please try again later')
-          this.showSnackBar(errmsg)
+          this.showSnackBar(errmsg, 'error')
           this.loaderService.setLoaderState(false)
 
         }
       },
       error: (error: HttpErrorResponse) => {
         const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
-        this.showSnackBar(errmsg)
+        this.showSnackBar(errmsg, 'error')
         this.loaderService.setLoaderState(false)
       },
     })
@@ -408,7 +414,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
-  listProvidersRequests() {
+  listProvidersRequests(sort = { field: 'createdOn', direction: 'desc' }) {
     this.loaderService.setLoaderState(true)
     this.providersRequestsList = []
     const formBody: any = {
@@ -417,8 +423,8 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
       },
       pageNumber: this.paginationDetails.currentPage - 1,
       pageSize: this.paginationDetails.pageSize,
-      orderBy: 'createdOn',
-      orderDirection: 'desc',
+      orderBy: sort.field,
+      orderDirection: sort.direction,
     }
 
     if (this.searchKey) {
@@ -446,7 +452,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
         error: (error: HttpErrorResponse) => {
           this.loaderService.setLoaderState(false)
           const errmsg = _.get(error, 'error.params.errMsg')
-          this.showSnackBar(errmsg)
+          this.showSnackBar(errmsg, 'error')
         },
       })
   }
@@ -457,6 +463,16 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
       pageSize: 20,
       totalCount: 20,
       paginationSizeOptions: [20, 50, 100]
+    }
+  }
+
+  onSortChange(event: { field: string, direction: string }) {
+    if (event.field === 'isActive') return
+    this.initializePagination()
+    if (this.currentTab === 'onboardProviders') {
+      this.getProviders(event)
+    } else if (this.currentTab === 'providerRequests') {
+      this.listProvidersRequests(event)
     }
   }
 
