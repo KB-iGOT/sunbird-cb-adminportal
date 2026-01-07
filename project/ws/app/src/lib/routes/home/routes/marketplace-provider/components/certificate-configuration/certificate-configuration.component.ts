@@ -109,7 +109,7 @@ export class CertificateConfigurationComponent implements OnChanges {
     if (!this.fileName.toLowerCase().endsWith('.svg')) {
       this.showSnackBar('Unsupported File Format. Please upload a SVG file.', 'error')
     } else if (file.size > this.FILE_UPLOAD_MAX_SIZE) {
-      this.showSnackBar('Please upload a file less than 100 MB', 'error')
+      this.showSnackBar('Please upload a file less than 100 MB.', 'error')
     } else {
       this.contentFile = file
       this.certificateUrl = URL.createObjectURL(file)
@@ -125,11 +125,12 @@ export class CertificateConfigurationComponent implements OnChanges {
 
   private handleFileUpload(file: File, uploadType: 'logo'): void {
     if (!this.isValidFile(file)) {
+      this.showSnackBar('Please upload a valid file.', 'error')
       return
     }
 
     if (file.size > this.FILE_UPLOAD_MAX_SIZE_LOGO) {
-      this.showSnackBar('Please upload a file less than 1 GB', 'error')
+      this.showSnackBar('Please upload a file less than 1 GB.', 'error')
       return
     }
 
