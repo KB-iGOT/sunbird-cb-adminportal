@@ -19,6 +19,7 @@ export class CoursesListTableComponent implements OnInit, OnChanges {
   @Output() actionTriggered = new EventEmitter<{ action: string; rows: any }>()
   @Output() searchKey = new EventEmitter<string>()
   @Output() pageChange = new EventEmitter<any>()
+  @Output() sortChange = new EventEmitter<any>()
 
   // Form controls
   searchControl = new FormControl()
@@ -161,11 +162,13 @@ export class CoursesListTableComponent implements OnInit, OnChanges {
       this.sortDirection = 'asc'
     }
     this.sortData()
+    this.sortChange.emit({ field: this.sortField, direction: this.sortDirection })
   }
 
   private sortData(): void {
     const sorted = _.orderBy(this.dataSource.data, [this.sortField], [this.sortDirection])
     this.dataSource = new MatTableDataSource<any>(sorted)
+
   }
 
   onPageChange(event: PageChangeEmitter): void {

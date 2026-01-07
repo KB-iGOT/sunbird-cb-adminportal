@@ -341,7 +341,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
           responses.forEach((response: any) => {
             const createdUrl = _.get(response, 'result.url')
             if (response.fileType === 'thumbnail') {
-              this.logoPreviewUrl = createdUrl
+              this.logoPreviewUrl = this.marketplaceSvc.convertResourceUrl(createdUrl)
             } else if (response.fileType === 'ciosFile') {
               this.uploadedPdfUrl = createdUrl
             }
@@ -393,6 +393,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
           this.loading = false
           if (response) {
             setTimeout(() => {
+              this.sendDetailsUpdateEvent()
               const successMsg = 'Successfully Onboarded'
               this.showSnackBar(successMsg, 'success')
               this.loaderService.setLoaderState(false)
