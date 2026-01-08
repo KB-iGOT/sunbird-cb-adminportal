@@ -70,7 +70,6 @@ export class SsoIntegrationComponent implements OnInit {
       ...this.providerDetails,
     }
     providerPayload.data.isAuthenticate = true
-    providerPayload.data.isActive = true
 
     const dialogRef = this.dialog.open(LoadingPopupComponent, {
       autoFocus: false,

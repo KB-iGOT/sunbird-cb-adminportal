@@ -19,7 +19,7 @@
           </div>
         </div>
 
-        <mat-error *ngIf="logoError" class="mt-1">{{ logoError }}</mat-error>
+        <mat-error *ngIf="getControlValidation('providerLogo', 'required') && logoTouched" class="mt-1 mr-auto">Logo is required</mat-error>
 
         <div class="logo-filename mt-2" *ngIf="logoFile || controls['providerLogo'].value">
           {{ logoFile?.name || controls['providerLogo'].value }}
@@ -144,7 +144,7 @@
     </div>
 
     <div class="flex flex-column gap-2 mt-3">
-      <div class="flex items-center gap-1 required">
+      <div class="flex items-center gap-1">
         <span class="label">Provider Specific Tips</span>
       </div>
 

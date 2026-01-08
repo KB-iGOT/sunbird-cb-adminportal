@@ -47,6 +47,7 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
   executed = false
   uploadedFileHeadersList: string[] = []
   availableHeadrsList: string[] = []
+  configurationData: any
   //#endregion
   //#endregion
 
@@ -63,6 +64,7 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
 
 
   ngOnInit(): void {
+    this.configurationData = this.activateRoute?.snapshot?.data?.pageData?.data
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -190,7 +192,7 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
   }
 
   upDateTransforamtionDetails() {
-    this.providerDetalsBeforUpdate['data']['isActive'] = true
+    // this.providerDetalsBeforUpdate['data']['isActive'] = true
     const hasTransformationAlready = this.providerDetalsBeforUpdate[this.transformationType] ? true : false
     this.transforamtionForm.markAllAsTouched()
     if (this.transforamtionForm.valid) {
@@ -369,6 +371,11 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
         message: message, type: type,
       }, duration: 5000, panelClass: type,
     })
+  }
+
+  downloadSampleFile() {
+    const sampleFileLink = this.configurationData?.bulkUploadCourse?.sampleFileDownloadLink
+    this.marketPlaceSvc.downloadAssetFile(sampleFileLink, 'Sample File')
   }
 
 }

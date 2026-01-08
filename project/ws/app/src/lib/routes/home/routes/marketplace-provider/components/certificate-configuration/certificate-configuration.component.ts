@@ -83,7 +83,8 @@ export class CertificateConfigurationComponent implements OnChanges {
       this.fileName = this.getImageName(this.providerDetalsBeforUpdate.certificateTemplateUrl)
       this.safeCertificateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.certificateUrl)
 
-      fetch(this.certificateUrl)
+      const modifiedUrl = this.updateBaseOfUrl(this.certificateUrl)
+      fetch(modifiedUrl)
         .then(res => res.blob())
         .then(blob => {
           const file = new File([blob], this.fileName, { type: 'image/svg+xml' })
@@ -95,6 +96,11 @@ export class CertificateConfigurationComponent implements OnChanges {
         })
 
     }
+  }
+
+  updateBaseOfUrl(url: string): string {
+    const parsedUrl = new URL(url)
+    return `${parsedUrl.protocol}//${environment.sitePath}${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`
   }
 
   onDropLogo(event: any): void {
