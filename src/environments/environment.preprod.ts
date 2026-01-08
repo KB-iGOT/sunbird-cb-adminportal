@@ -14,4 +14,5 @@ export const environment = {
   KCMframeworkName: (window as { [key: string]: any })['env']['KCMframeworkName'] || '',
   compentencyVersionKey: (window as { [key: string]: any })['env']['compentencyVersionKey'] || '',
   ODCSMasterFramework: (window as { [key: string]: any })['env']['ODCSMasterFramework'] || '',
+  spvorgID: (window as { [key: string]: any })['env']['spvorgID'] || ''
 }
