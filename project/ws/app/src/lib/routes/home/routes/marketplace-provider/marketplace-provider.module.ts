@@ -48,11 +48,12 @@ import { OnboardingCoursesComponent } from './components/onboarding-courses/onbo
 import { CoursesListTableComponent } from './components/courses-list-table/courses-list-table.component'
 import { AddProviderCoursesComponent } from './components/add-provider-courses/add-provider-courses.component'
 import { BulkUploadCoursesComponent } from './components/bulk-upload-courses/bulk-upload-courses.component'
-import { ProvidersApiIntegrationsComponent } from './components/providers-api-integrations/providers-api-integrations.component';
-import { CertificateConfigurationComponent } from './components/certificate-configuration/certificate-configuration.component';
-import { SsoIntegrationComponent } from './components/sso-integration/sso-integration.component';
-import { SsoConfigureSettingsComponent } from './components/sso-configure-settings/sso-configure-settings.component';
+import { ProvidersApiIntegrationsComponent } from './components/providers-api-integrations/providers-api-integrations.component'
+import { CertificateConfigurationComponent } from './components/certificate-configuration/certificate-configuration.component'
+import { SsoIntegrationComponent } from './components/sso-integration/sso-integration.component'
+import { SsoConfigureSettingsComponent } from './components/sso-configure-settings/sso-configure-settings.component'
 import { LoadingPopupComponent } from './dialogs/loading-popup/loading-popup.component'
+import { MaxLengthNumberDirective } from './directives/max-length-number.directive'
 
 const routes: Routes = [
   {
@@ -136,7 +137,7 @@ const routes: Routes = [
     SsoIntegrationComponent,
     SsoConfigureSettingsComponent,
     LoadingPopupComponent,
-
+    MaxLengthNumberDirective
   ],
   imports: [
     CommonModule,
