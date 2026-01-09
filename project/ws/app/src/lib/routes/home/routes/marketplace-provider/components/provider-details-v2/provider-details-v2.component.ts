@@ -28,7 +28,6 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
 
   logoPreviewUrl: string | ArrayBuffer | null = null
   logoFile: File | null = null
-  logoError: string | null = null
   logoTouched = false
 
   FILE_UPLOAD_MAX_SIZE = 100 * 1024 * 1024
@@ -89,7 +88,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
       description: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,\.\-_$/:\[\] ' !]*$/), Validators.maxLength(500)]],
       providerTips: this.fb.array([]),
       partnerAgreement: [''],
-      providerLogo: ['']
+      providerLogo: ['', [Validators.required]]
     })
 
     this.controls['partnerCode']?.valueChanges.pipe((takeWhile(() => this.isActive))).subscribe((value: string) => {
@@ -138,6 +137,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
       partnerCode: _.get(providerDetails, 'data.partnerCode', ''),
       websiteUrl: _.get(providerDetails, 'data.websiteUrl', ''),
       description: _.get(providerDetails, 'data.description', ''),
+      providerLogo: this.logoPreviewUrl || ''
     })
     this.getTipsList.clear()
     this.logoPreviewUrl = this.marketplaceSvc.convertResourceUrl(_.get(providerDetails, 'data.link', ''))
@@ -172,7 +172,6 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
   }
 
   onLogoSelected(event: Event): void {
-    this.logoError = null
     const input = event.target as HTMLInputElement
     if (!input.files || input.files.length === 0) {
       return
@@ -202,11 +201,9 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
           reader.readAsDataURL(this.logoFile)
         } else {
           this.showSnackBar('Please upload image sized between 10 KB and 2 MB', 'error')
-          this.logoError = 'Please upload image sized between 10 KB and 2 MB'
         }
       } else {
         this.showSnackBar('Please upload svg or png image', 'error')
-        this.logoError = 'Please upload svg or png image'
       }
     }
   }
@@ -244,12 +241,13 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
     }, 'image/png')
 
     this.logoPreviewUrl = canvas.toDataURL('image/png')
+    this.providerDetailsForm.patchValue({ providerLogo: this.logoPreviewUrl })
   }
 
   removeLogo(): void {
     this.logoFile = null
     this.logoPreviewUrl = null
-    this.logoError = null
+    this.logoTouched = true
     this.providerDetailsForm.patchValue({ providerLogo: '' })
     if (this.logoInput && this.logoInput.nativeElement) {
       this.logoInput.nativeElement.value = ''
@@ -290,6 +288,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
       this.loaderService.setLoaderState(true)
       this.createContentsToUpload()
     } else {
+      this.providerDetailsForm.get('providerLogo')?.markAsTouched()
       this.showSnackBar('Please fill all the mandatory fields with proper data', 'error')
     }
   }
@@ -391,21 +390,24 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
       this.marketplaceSvc.createProvider(formBody).subscribe({
         next: (response: any) => {
           this.loading = false
-          if (response) {
+          if (response?.params?.status === 'success') {
+            this.providerDetailsBeforeUpdate = response?.result
+            this.providerId = response?.result?.id
             setTimeout(() => {
-              this.sendDetailsUpdateEvent()
               const successMsg = 'Successfully Onboarded'
               this.showSnackBar(successMsg, 'success')
               this.loaderService.setLoaderState(false)
 
             }, 1000)
+          } else {
+            this.showSnackBar(response?.params?.errMsg || 'Failed to create provider', 'error')
+            this.loaderService.setLoaderState(false)
           }
         },
-        error: () => {
+        error: (error: any) => {
           this.loading = false
-          this.showSnackBar('Failed to create provider', 'error')
+          this.showSnackBar(error?.error?.params?.errMsg || 'Failed to create provider', 'error')
           this.loaderService.setLoaderState(false)
-
         },
       })
     } else {

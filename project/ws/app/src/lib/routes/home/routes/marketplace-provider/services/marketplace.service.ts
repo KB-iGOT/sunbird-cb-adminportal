@@ -139,9 +139,6 @@ export class MarketplaceService {
     return `${environment.contentHost}/content-store${resourcePath}`
   }
 
-
-
-
   getCoursesList(formBody: any) {
     return this.http.post<any>(`${API_END_POINTS.GET_CONTENT_LIST}`, formBody)
   }
@@ -192,4 +189,14 @@ export class MarketplaceService {
     return this.http.post(`${API_END_POINTS.updateStatusRegisterProvider}`, formBody)
   }
 
+  downloadAssetFile(assetPath: string, fileName?: string): void {
+    const link = document.createElement('a')
+    link.href = assetPath
+    link.download = fileName || assetPath.split('/').pop() || 'file'
+    link.target = '_blank'
+
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
 }

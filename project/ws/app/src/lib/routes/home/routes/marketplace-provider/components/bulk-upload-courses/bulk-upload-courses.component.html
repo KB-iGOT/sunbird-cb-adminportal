@@ -3,23 +3,29 @@
   <div class="bulk-upload-meta-wrapper flex gap-3 p-4">
     <div class="flex flex-col w-2/4 gap-4">
       <div class="meta-info-download p-4">
-        <p class="mb-7">Open & follow these instruction</p>
-        <ol class="pl-4">
-          <li class="pb-4">Keep the row of the items you wish to process.</li>
-          <li class="pb-4">Keep the row of the items you wish to process.</li>
-          <li class="pb-4">Save the file in CSV format.</li>
-          <li class="pb-4">Delete the entire row you donot intend to process.</li>
+        <p class="mb-7" *ngIf="configurationData?.bulkUploadCourse?.instructions?.length">
+          Open & follow these instruction
+        </p>
+        <ol class="pl-4" *ngIf="configurationData?.bulkUploadCourse?.instructions?.length">
+          <li
+            class="pb-4"
+            *ngFor="let instruction of configurationData?.bulkUploadCourse?.instructions"
+          >
+            {{ instruction }}
+          </li>
         </ol>
 
         <button
+          (click)="downloadSampleFile()"
           mat-flat-button
           class="flex rounded-full px-4 py-2 font-bold mat-btn-outline text-sm"
         >
           Download Sample File
         </button>
       </div>
-      <div class="upload-bulk-content flex-1 flex items-center justify-center">
+      <div class="upload-bulk-content flex-1 flex items-center justify-center relative">
         <div
+          *ngIf="!contentFileUploaded"
           class="right-upload-inner flex flex-col items-center justify-center"
           wsAuthDragDrop
           (fileDropped)="onDropHandler($event)"
@@ -43,19 +49,22 @@
             accept=".csv"
             (change)="onFileInputChange($event)"
           />
-          <div
-            *ngIf="contentFileUploaded"
-            class="flex flex-middle justify-center flex-column position-relative pt-5 px-5"
-          >
-            <mat-icon class="csv-icon" svgIcon="excel_sheet"> </mat-icon>
-            <p class="margin-left-xs mat-h3 font-weight-500 margin-remove-bottom break">
-              <ng-container *ngIf="contentFileUploaded; else elseBlock">
-                <span class="flex-wrap"> {{ fileName }}</span>
-              </ng-container>
-              <ng-template #elseBlock>
-                <span i18n>No file uploaded</span>
-              </ng-template>
-            </p>
+        </div>
+        <div
+          *ngIf="contentFileUploaded"
+          class="flex flex-middle justify-center flex-column pt-5 px-5"
+        >
+          <mat-icon class="csv-icon" svgIcon="excel_sheet"> </mat-icon>
+          <p class="margin-left-xs mat-h3 font-weight-500 margin-remove-bottom break">
+            <ng-container *ngIf="contentFileUploaded; else elseBlock">
+              <span class="flex-wrap"> {{ fileName }}</span>
+            </ng-container>
+            <ng-template #elseBlock>
+              <span i18n>No file uploaded</span>
+            </ng-template>
+          </p>
+          <div class="close-icon" matTooltip="Remove Logo" (click)="removeFile()">
+            <mat-icon>close</mat-icon>
           </div>
         </div>
       </div>
