@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, } from '@angular/core'
 import { Clipboard } from '@angular/cdk/clipboard'
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms'
 import { MarketplaceService } from '../../services/marketplace.service'
 import { SsoConfiguration } from '../../models/configure-provider.model'
 import { MatSnackBar } from '@angular/material/snack-bar'
@@ -31,8 +31,8 @@ export class SsoConfigureSettingsComponent implements OnInit {
   initialSsoTestUrl = ''
   initialStatus = false
 
-  acsUrl = new FormControl('', [Validators.required])
-  ssoTestUrl = new FormControl('', [Validators.required])
+  acsUrl = new FormControl('', [Validators.required, this.urlValidator()])
+  ssoTestUrl = new FormControl('', [Validators.required, this.urlValidator()])
   status = new FormControl(false)
 
   SSOConfigurationData: SsoConfiguration | null = null
@@ -40,10 +40,11 @@ export class SsoConfigureSettingsComponent implements OnInit {
     private loaderService: GlobalEventsService, private router: Router,
 
   ) {
-    this.initializeForm()
+    this.ssoSettingsForm = this.formBuilder.group({})
   }
 
   ngOnInit(): void {
+    this.initializeForm()
     this.fetchSSOSettings()
   }
 
@@ -52,7 +53,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
       clientId: ['', [Validators.required]],
       partnerName: ['', [Validators.required]],
       ssoProtocol: ['saml', [Validators.required]],
-      ssoUrl: ['', [Validators.required]],
+      ssoUrl: ['', [Validators.required, this.urlValidator()]],
       emailAttribute: ['', [Validators.required]],
       firstNameAttribute: ['', [Validators.required]],
       lastNameAttribute: ['',],
@@ -242,5 +243,27 @@ export class SsoConfigureSettingsComponent implements OnInit {
 
   navigateToProvidersDashboard() {
     this.router.navigateByUrl('/app/home/marketplace-providers')
+  }
+
+  urlValidator(): ValidatorFn {
+    return (control: AbstractControl) => {
+      if (!control.value) return null
+
+      try {
+        const url = new URL(control.value)
+        const hostname = url.hostname
+
+        const parts = hostname.split('.')
+
+        const isValid =
+          parts.length >= 2 &&
+          !hostname.endsWith('.') &&
+          parts[parts.length - 1].length >= 2
+
+        return isValid ? null : { invalidUrl: true }
+      } catch {
+        return { invalidUrl: true }
+      }
+    }
   }
 }

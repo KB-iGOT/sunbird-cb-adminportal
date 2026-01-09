@@ -134,6 +134,8 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
     const formBody: any = {
       filterCriteriaMap: {
         // isActive: true,
+        providerType: ["external"]
+
       },
       pageNumber: this.paginationDetails.currentPage - 1,
       pageSize: this.paginationDetails.pageSize,

@@ -36,31 +36,26 @@ export class ProviderSettingsComponent implements OnChanges {
 
   initializeForm() {
     this.providerSettingsForm = this.fb.group({
-      overAllLimit: [null, [Validators.pattern(/^[0-9]*$/)]],
-      userWiseLimit: [null, [Validators.pattern(/^[0-9]*$/)]],
+      overAllLimit: [null, [Validators.min(0), Validators.max(100000000)]],
+      userWiseLimit: [null,],
       isUserWiseLimitEnabled: [false],
-      concurrentLimit: [null, [Validators.pattern(/^[0-9]*$/)]],
+      concurrentLimit: [null,],
       isConcurrentLimitEnabled: [false],
-      karmaPoints: [null, [Validators.pattern(/^[0-9]*$/)]],
+      karmaPoints: [null,],
       addKarmaPointEnabled: [false],
-    })
-
-    this.controls['isUserWiseLimitEnabled'].valueChanges.subscribe((value) => {
-      if (value) {
-        this.controls['userWiseLimit'].setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)])
-        this.controls['userWiseLimit'].enable()
-
-      } else {
-        this.controls['userWiseLimit'].clearValidators()
-        this.controls['userWiseLimit'].disable()
-
-      }
-      this.controls['userWiseLimit'].updateValueAndValidity()
     })
 
     this.controls['isConcurrentLimitEnabled'].valueChanges.subscribe((value) => {
       if (value) {
-        this.controls['concurrentLimit'].setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)])
+        if (this.controls['userWiseLimit'].enabled) {
+          this.controls['concurrentLimit'].setValidators(
+            [Validators.required, Validators.min(1), Validators.max(this.controls['userWiseLimit'].value)]
+          )
+        } else {
+          this.controls['concurrentLimit'].setValidators(
+            [Validators.required, Validators.min(1), Validators.max(this.controls['overAllLimit'].value)]
+          )
+        }
         this.controls['concurrentLimit'].enable()
 
       } else {
@@ -71,9 +66,53 @@ export class ProviderSettingsComponent implements OnChanges {
       this.controls['concurrentLimit'].updateValueAndValidity()
     })
 
+    this.controls['overAllLimit'].valueChanges.subscribe((value) => {
+      if (value) {
+        if (!this.controls['userWiseLimit'].enabled && this.controls['concurrentLimit'].enabled) {
+          this.controls['concurrentLimit'].setValidators(
+            [Validators.required, Validators.min(1), Validators.max(this.controls['overAllLimit'].value)]
+          )
+          this.controls['concurrentLimit'].updateValueAndValidity()
+        }
+      }
+    })
+
+
+    this.controls['isUserWiseLimitEnabled'].valueChanges.subscribe((value) => {
+      if (value) {
+        this.controls['userWiseLimit'].setValidators([Validators.required, Validators.min(1), Validators.max(100000000)])
+        this.controls['userWiseLimit'].enable()
+        this.controls['userWiseLimit'].updateValueAndValidity()
+
+      } else {
+        this.controls['userWiseLimit'].clearValidators()
+        this.controls['userWiseLimit'].disable()
+        this.controls['userWiseLimit'].updateValueAndValidity()
+
+        // Reset concurrent limit validators to use  when user wise limit is disabled
+        if (!this.controls['userWiseLimit'].enabled && this.controls['concurrentLimit'].enabled) {
+          this.controls['concurrentLimit'].setValidators(
+            [Validators.required, Validators.min(1), Validators.max(this.controls['overAllLimit'].value)]
+          )
+          this.controls['concurrentLimit'].updateValueAndValidity()
+        }
+      }
+    })
+
+    this.controls['userWiseLimit'].valueChanges.subscribe((value) => {
+      if (value) {
+        this.controls['concurrentLimit'].setValidators(
+          [Validators.required, Validators.min(1), Validators.max(this.controls['userWiseLimit'].value)]
+        )
+        this.controls['concurrentLimit'].updateValueAndValidity()
+      }
+    })
+
     this.controls['addKarmaPointEnabled'].valueChanges.subscribe((value) => {
       if (value) {
-        this.controls['karmaPoints'].setValidators([Validators.required, Validators.pattern(/^[0-9]*$/)])
+        this.controls['karmaPoints'].setValidators(
+          [Validators.required, Validators.min(2), Validators.max(10000)]
+        )
         this.controls['karmaPoints'].enable()
 
       } else {
@@ -101,6 +140,7 @@ export class ProviderSettingsComponent implements OnChanges {
     return this.providerSettingsForm.controls
   }
 
+
   submit() {
     if (this.providerFormGroup.valid) {
       if (this.providerDetails && this.providerDetails.id) {
@@ -118,12 +158,21 @@ export class ProviderSettingsComponent implements OnChanges {
     const formDetails = this.providerSettingsForm.getRawValue()
     const formBody: any = {
       overAllLimit: formDetails.overAllLimit,
-      userWiseLimit: formDetails.isUserWiseLimitEnabled ? formDetails.userWiseLimit : null,
       isUserWiseLimitEnabled: formDetails.isUserWiseLimitEnabled,
-      concurrentLimit: formDetails.isConcurrentLimitEnabled ? formDetails.concurrentLimit : null,
       isConcurrentLimitEnabled: formDetails.isConcurrentLimitEnabled,
-      karmaPoints: formDetails.addKarmaPointEnabled ? formDetails.karmaPoints : null,
       addKarmaPointEnabled: formDetails.addKarmaPointEnabled,
+    }
+
+    if (formDetails.isUserWiseLimitEnabled && (formDetails.userWiseLimit || formDetails.userWiseLimit === 0)) {
+      formBody.userWiseLimit = formDetails.userWiseLimit
+    }
+
+    if (formDetails.isConcurrentLimitEnabled && (formDetails.concurrentLimit || formDetails.userWiseLimit === 0)) {
+      formBody.concurrentLimit = formDetails.concurrentLimit
+    }
+
+    if (formDetails.addKarmaPointEnabled && (formDetails.karmaPoints || formDetails.userWiseLimit === 0)) {
+      formBody.karmaPoints = formDetails.karmaPoints
     }
 
     this.marketPlaceSvc.createProvider(formBody).subscribe({
@@ -148,12 +197,21 @@ export class ProviderSettingsComponent implements OnChanges {
     const formDetails = this.providerSettingsForm.getRawValue()
 
     this.providerDetailsBeforeUpdate['data']['overAllLimit'] = formDetails.overAllLimit
-    this.providerDetailsBeforeUpdate['data']['userWiseLimit'] = formDetails.userWiseLimit
     this.providerDetailsBeforeUpdate['data']['isUserWiseLimitEnabled'] = formDetails.isUserWiseLimitEnabled
-    this.providerDetailsBeforeUpdate['data']['concurrentLimit'] = formDetails.concurrentLimit
     this.providerDetailsBeforeUpdate['data']['isConcurrentLimitEnabled'] = formDetails.isConcurrentLimitEnabled
-    this.providerDetailsBeforeUpdate['data']['karmaPoints'] = formDetails.karmaPoints
     this.providerDetailsBeforeUpdate['data']['addKarmaPointEnabled'] = formDetails.addKarmaPointEnabled
+
+    if (formDetails.userWiseLimit || formDetails.userWiseLimit === 0) {
+      this.providerDetailsBeforeUpdate['data']['userWiseLimit'] = formDetails.userWiseLimit
+    }
+
+    if (formDetails.concurrentLimit || formDetails.concurrentLimit === 0) {
+      this.providerDetailsBeforeUpdate['data']['concurrentLimit'] = formDetails.concurrentLimit
+    }
+
+    if (formDetails.karmaPoints || formDetails.karmaPoints === 0) {
+      this.providerDetailsBeforeUpdate['data']['karmaPoints'] = formDetails.karmaPoints
+    }
 
     this.marketPlaceSvc.updateProvider(this.providerDetailsBeforeUpdate).subscribe({
       next: (response: any) => {

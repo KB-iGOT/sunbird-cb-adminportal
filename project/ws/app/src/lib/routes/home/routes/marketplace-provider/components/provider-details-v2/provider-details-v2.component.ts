@@ -425,6 +425,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
       updatePayload['data']['contentPartnerName'] = formDetails.contentPartnerName
       updatePayload['data']['providerTips'] = formDetails.providerTips
       updatePayload['data']['link'] = this.logoPreviewUrl
+      updatePayload['data']['partnerCode'] = formDetails.partnerCode.toUpperCase()
 
       if (this.uploadedPdfUrl) {
         updatePayload['data']['documentUrl'] = this.uploadedPdfUrl

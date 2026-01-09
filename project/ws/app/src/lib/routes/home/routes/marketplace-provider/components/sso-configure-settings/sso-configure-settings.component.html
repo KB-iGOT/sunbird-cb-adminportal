@@ -79,6 +79,14 @@
                 "
                 >This field is required</mat-error
               >
+              <mat-error
+                class="m-1"
+                *ngIf="
+                  ssoSettingsForm.get('ssoUrl').hasError('invalidUrl') &&
+                  (ssoSettingsForm.get('ssoUrl').dirty || ssoSettingsForm.get('ssoUrl').touched)
+                "
+                >Please enter a valid URL</mat-error
+              >
             </mat-form-field>
           </div>
         </div>
@@ -211,6 +219,11 @@
             *ngIf="acsUrl.hasError('required') && (acsUrl.dirty || acsUrl.touched)"
             >This field is required</mat-error
           >
+          <mat-error
+            class="m-1"
+            *ngIf="acsUrl.hasError('invalidUrl') && (acsUrl.dirty || acsUrl.touched)"
+            >Please enter a valid URL</mat-error
+          >
         </mat-form-field>
       </div>
 
@@ -237,6 +250,11 @@
             class="m-1"
             *ngIf="ssoTestUrl.hasError('required') && (ssoTestUrl.dirty || ssoTestUrl.touched)"
             >This field is required</mat-error
+          >
+          <mat-error
+            class="m-1"
+            *ngIf="ssoTestUrl.hasError('invalidUrl') && (ssoTestUrl.dirty || ssoTestUrl.touched)"
+            >Please enter a valid URL</mat-error
           >
         </mat-form-field>
       </div>
