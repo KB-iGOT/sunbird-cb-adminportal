@@ -415,3 +415,14 @@
   @extend .icon-accept-common;
   background-color: #d13924;
 }
+
+.disabled-menu-item {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.disabled-text {
+  color: #999 !important;
+  cursor: not-allowed;
+}
