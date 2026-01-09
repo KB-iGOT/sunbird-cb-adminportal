@@ -211,11 +211,11 @@
     </ng-container>
 
     <ng-template #defaultMenu>
-      <a class="flex items-center" mat-menu-item (click)="takeAction('configure', rowData)">
-        <span>Configure</span>
+      <a class="flex items-center" mat-menu-item [disabled]="!rowData.isActive" (click)="takeAction('configure', rowData)" [ngClass]="{ 'disabled-menu-item': !rowData.isActive }">
+        <span [ngClass]="{ 'disabled-text': !rowData.isActive }">Configure</span>
       </a>
-      <a class="flex items-center" mat-menu-item (click)="takeAction('sso_integration', rowData)">
-        <span>SSO Integration</span>
+      <a class="flex items-center" mat-menu-item [disabled]="!rowData.isActive" (click)="takeAction('sso_integration', rowData)" [ngClass]="{ 'disabled-menu-item': !rowData.isActive }">
+        <span [ngClass]="{ 'disabled-text': !rowData.isActive }">SSO Integration</span>
       </a>
       <a
         *ngIf="rowData.isActive"

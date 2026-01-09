@@ -126,7 +126,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
     this.menuItems = []
   }
 
-  getProviders(sort = { field: 'createdOn', direction: 'desc' }) {
+  getProviders(sort = { field: 'contentPartnerName', direction: 'desc' }) {
     this.displayLoader = true
     this.loaderService.setLoaderState(true)
 

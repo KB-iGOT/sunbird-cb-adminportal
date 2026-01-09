@@ -39,7 +39,7 @@
     </mat-tab>
     <mat-tab label="Providers Request">
       <ng-container
-        *ngIf="(providersList && providersList.length > 0) || searchKey; else noContent"
+        *ngIf="(providersRequestsList && providersRequestsList.length > 0) || searchKey; else noContent"
       >
         <div class="flex gap-4 flex-column">
           <div>
@@ -47,7 +47,7 @@
               [tableData]="tabledata"
               [coursesList]="providersRequestsList"
               [menuItems]="menuItems"
-              [paginationDetails]="paginationDetails"
+              [paginationDetails]="providerRequestsPaginationDetails"
               (searchKey)="onSearchRegisteredPartners($event)"
               (actionTriggered)="providerEvents($event)"
               (pageChange)="onPageChange($event)"
