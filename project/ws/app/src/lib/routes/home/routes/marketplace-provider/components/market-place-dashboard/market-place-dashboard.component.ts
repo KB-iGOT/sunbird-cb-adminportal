@@ -43,6 +43,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
   searchProvider$ = new Subject<string>();
   searchRegisteredProvider$ = new Subject<string>();
   currentTab: string = 'onboardProviders'
+  sortData: any = { field: 'createdOn', direction: 'desc' }
   constructor(
     private dialog: MatDialog,
     private router: Router,
@@ -126,7 +127,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
     this.menuItems = []
   }
 
-  getProviders(sort = { field: 'contentPartnerName', direction: 'desc' }) {
+  getProviders(sort = { field: 'createdOn', direction: 'desc' }) {
     this.displayLoader = true
     this.loaderService.setLoaderState(true)
 
@@ -347,9 +348,9 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
     this.paginationDetails.pageSize = event.pageSize
 
     if (this.currentTab === 'onboardProviders') {
-      this.getProviders()
+      this.getProviders(this.sortData)
     } else if (this.currentTab === 'providerRequests') {
-      this.listProvidersRequests()
+      this.listProvidersRequests(this.sortData)
     }
   }
 
@@ -466,11 +467,13 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
       totalCount: 20,
       paginationSizeOptions: [20, 50, 100]
     }
+    this.sortData = { field: 'createdOn', direction: 'desc' }
   }
 
   onSortChange(event: { field: string, direction: string }) {
     if (event.field === 'isActive') return
     this.initializePagination()
+    this.sortData = event
     if (this.currentTab === 'onboardProviders') {
       this.getProviders(event)
     } else if (this.currentTab === 'providerRequests') {
