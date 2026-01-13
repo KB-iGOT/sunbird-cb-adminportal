@@ -27,7 +27,8 @@ const API_END_POINTS = {
   UPDATE_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/update/${partnerId}`,
 
   contentRegisterSearch: `/apis/proxies/v8/contentpartner/register/v1/search`,
-  updateStatusRegisterProvider: `/apis/proxies/v8/contentpartner/register/v1/update`
+  updateStatusRegisterProvider: `/apis/proxies/v8/contentpartner/register/v1/update`,
+  REGISTERED_PROVIDER_READ: (id: string) => `/apis/proxies/v8/contentpartner/register/v1/readbyid?id=${id}`,
 }
 
 @Injectable({
@@ -198,5 +199,9 @@ export class MarketplaceService {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+  }
+
+  readRegisteredProviderDetails(id: string) {
+    return this.http.get(`${API_END_POINTS.REGISTERED_PROVIDER_READ(id)}`)
   }
 }

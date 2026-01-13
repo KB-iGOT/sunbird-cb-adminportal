@@ -229,6 +229,9 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
       case 'reject':
         this.acceptRejectProviderStatus('reject', event.rows)
         break
+      case 'view':
+        this.navigateToConfigurationV2(providerDetails, 'PENDING')
+        break
     }
   }
 
@@ -261,13 +264,16 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
     }
   }
 
-  navigateToConfigurationV2(providerDetails?: any) {
+  navigateToConfigurationV2(providerDetails?: any, status?: string) {
     const queryParams: any = {}
     if (providerDetails && providerDetails.id) {
       queryParams.id = providerDetails.id
     }
     if (providerDetails && providerDetails.tab) {
       queryParams.tab = providerDetails.tab
+    }
+    if (providerDetails && status) {
+      queryParams.status = status
     }
     if (providerDetails) {
       this.router.navigate([`/app/home/marketplace-providers/configure-provider`], {
@@ -306,8 +312,10 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
           response: true,
         },
       ],
+
     }
     const dialogRef = this.dialog.open(ConformationPopupComponent, {
+      panelClass: 'reject-reason',
       data: dialogData,
       autoFocus: false,
       width: '626px',

@@ -395,13 +395,17 @@
 
 .icon-accept-common {
   border-radius: 50%;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
   mat-icon {
-    width: 22px !important;
-    height: 21px !important;
-    font-size: 21px !important;
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 20px !important;
     color: #fff;
   }
 }
@@ -414,6 +418,11 @@
 .icon-status-reject {
   @extend .icon-accept-common;
   background-color: #d13924;
+}
+
+.icon-status-view {
+  @extend .icon-accept-common;
+  background-color: #1b4ca1;
 }
 
 .disabled-menu-item {

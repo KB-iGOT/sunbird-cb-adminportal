@@ -165,3 +165,24 @@
 .canvas-inputfile {
   display: none;
 }
+
+.provider-details-disabled {
+  pointer-events: none;
+
+  input,
+  textarea,
+  button:not(.mat-btn-outline),
+  mat-form-field,
+  .edit-icon,
+  .close-icon,
+  .removeTipBox,
+  .parnter-ship-agreement {
+    pointer-events: none;
+    opacity: 0.8;
+  }
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.8;
+}
