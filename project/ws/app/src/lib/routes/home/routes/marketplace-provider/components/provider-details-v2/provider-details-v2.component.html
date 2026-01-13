@@ -59,7 +59,7 @@
 
     <ng-container *ngIf="isPendingProvider">
       <div class="flex flex-column gap-1 mat-field-rounded">
-        <div class="flex items-center gap-1">
+        <div class="flex items-center gap-1 required">
           <span class="label">Contact Name</span>
         </div>
         <mat-form-field class="w-full">
@@ -67,7 +67,7 @@
         </mat-form-field>
       </div>
       <div class="flex flex-column gap-1 mat-field-rounded">
-        <div class="flex items-center gap-1">
+        <div class="flex items-center gap-1 required">
           <span class="label">Email</span>
         </div>
         <mat-form-field class="w-full">
@@ -75,11 +75,11 @@
         </mat-form-field>
       </div>
       <div class="flex flex-column gap-1 mat-field-rounded">
-        <div class="flex items-center gap-1">
-          <span class="label">Phone</span>
+        <div class="flex items-center gap-1 required">
+          <span class="label">Mobile Number</span>
         </div>
         <mat-form-field class="w-full">
-          <input formControlName="phone" matInput placeholder="Enter phone number" />
+          <input formControlName="phone" matInput placeholder="Enter Mobile Number" />
         </mat-form-field>
       </div>
     </ng-container>
@@ -137,7 +137,7 @@
     </div>
 
     <div class="flex flex-column gap-1">
-      <div class="flex items-center gap-1 required">
+      <div class="flex items-center gap-1" [ngClass]="{'required': !isPendingProvider}">
         <span class="label">Description</span>
       </div>
       <mat-form-field class="w-full">
