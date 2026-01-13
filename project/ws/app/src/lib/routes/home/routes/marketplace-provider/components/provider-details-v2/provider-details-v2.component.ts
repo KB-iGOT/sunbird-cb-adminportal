@@ -555,7 +555,6 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
     this.loaderService.setLoaderState(true)
     this.marketplaceSvc.changeStatusRegisterProvider(formBody).subscribe({
       next: () => {
-        this.loadProviderDetails.emit(true)
         this.loaderService.setLoaderState(false)
         this.showSnackBar(`The request has been ${status === 'accept' ? 'approved' : 'rejected'} successfully.`, 'success')
         this.navigateToProvidersDashboard()
