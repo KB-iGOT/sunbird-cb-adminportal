@@ -7,6 +7,7 @@ import { HttpErrorResponse } from '@angular/common/http'
 import * as _ from 'lodash'
 import { MARKETPLACE_CONFIGURE_PROVIDERS_MENU } from '../../models/menu.model'
 import { NavigationExternalService } from '../../../../../../../../../../../src/app/services/navigation-external.service'
+import { SnackbarComponent } from '@sunbird-cb/consumption'
 
 @Component({
   selector: 'ws-app-configure-provider',
@@ -82,6 +83,9 @@ export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewI
   getRoutesData() {
     this.routeSubscription.add(
       this.activateRoute.data.subscribe(data => {
+        if (data.providerDetails && data.providerDetails.error) {
+          this.showSnackBar(data.providerDetails.error, 'error')
+        }
         if (data.providerDetails && data.providerDetails.data) {
           this.disableCourseCatalog = false
           this.providerDetails = data.providerDetails.data.result
@@ -119,14 +123,19 @@ export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewI
         },
         error: (error: HttpErrorResponse) => {
           const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
-          this.showSnackBar(errmsg)
+          this.showSnackBar(errmsg, 'error')
         },
       })
     }
   }
 
-  showSnackBar(message: string) {
-    this.snackBar.open(message)
+
+  showSnackBar(message: string, type: 'error' | 'success') {
+    this.snackBar.openFromComponent(SnackbarComponent, {
+      data: {
+        message: message, type: type,
+      }, duration: 5000, panelClass: type,
+    })
   }
 
 }

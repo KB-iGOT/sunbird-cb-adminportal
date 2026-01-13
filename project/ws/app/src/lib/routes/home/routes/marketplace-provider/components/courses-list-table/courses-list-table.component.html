@@ -154,12 +154,24 @@
           <div *ngSwitchCase="'acceptReject'">
             <ng-container>
               <div class="flex gap-5">
+                <!-- <div class="icon-status-view" (click)="takeAction('view', element)">
+                  <mat-icon class="checkCircle">remove_red_eye</mat-icon>
+                </div>
                 <div class="icon-status-accept" (click)="takeAction('accept', element)">
                   <mat-icon class="checkCircle">check</mat-icon>
                 </div>
                 <div class="icon-status-reject" (click)="takeAction('reject', element)">
                   <mat-icon class="checkCircle">close</mat-icon>
-                </div>
+                </div> -->
+                <button (click)="takeAction('view', element)"
+                  mat-flat-button
+                  class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline mat-btn-height-32"
+                >
+                  <div class="flex items-center justify center">
+                    <mat-icon class="mr-2">remove_red_eye</mat-icon>
+                    <div class="font-bold text-sm">Preview</div>
+                  </div>
+                </button>
               </div>
             </ng-container>
           </div>
@@ -205,16 +217,33 @@
 <mat-menu #moreMenu="matMenu" class="actions-menu">
   <ng-template matMenuContent let-rowData="data">
     <ng-container *ngIf="menuItems && menuItems.length > 0; else defaultMenu">
-      <a class="flex items-center" mat-menu-item *ngFor="let item of menuItems" (click)="takeAction(item.action, rowData)">
+      <a
+        class="flex items-center"
+        mat-menu-item
+        *ngFor="let item of menuItems"
+        (click)="takeAction(item.action, rowData)"
+      >
         <span>{{ item.btnText }}</span>
       </a>
     </ng-container>
 
     <ng-template #defaultMenu>
-      <a class="flex items-center" mat-menu-item [disabled]="!rowData.isActive" (click)="takeAction('configure', rowData)" [ngClass]="{ 'disabled-menu-item': !rowData.isActive }">
+      <a
+        class="flex items-center"
+        mat-menu-item
+        [disabled]="!rowData.isActive"
+        (click)="takeAction('configure', rowData)"
+        [ngClass]="{ 'disabled-menu-item': !rowData.isActive }"
+      >
         <span [ngClass]="{ 'disabled-text': !rowData.isActive }">Configure</span>
       </a>
-      <a class="flex items-center" mat-menu-item [disabled]="!rowData.isActive" (click)="takeAction('sso_integration', rowData)" [ngClass]="{ 'disabled-menu-item': !rowData.isActive }">
+      <a
+        class="flex items-center"
+        mat-menu-item
+        [disabled]="!rowData.isActive"
+        (click)="takeAction('sso_integration', rowData)"
+        [ngClass]="{ 'disabled-menu-item': !rowData.isActive }"
+      >
         <span [ngClass]="{ 'disabled-text': !rowData.isActive }">SSO Integration</span>
       </a>
       <a

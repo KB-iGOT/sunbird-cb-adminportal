@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, Output, Input, EventEmitter, SimpleChanges, OnChanges, OnDestroy } from '@angular/core'
+import { Component, ViewChild, ElementRef, Output, Input, EventEmitter, SimpleChanges, OnChanges, OnDestroy, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { DatePipe } from '@angular/common'
@@ -6,16 +6,18 @@ import { MarketplaceService } from '../../services/marketplace.service'
 import * as _ from 'lodash'
 import { forkJoin, of } from 'rxjs'
 import { mergeMap, takeWhile } from 'rxjs/operators'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
+import { MatDialog } from '@angular/material/dialog'
 import { GlobalEventsService } from '../../../../../../../../../../../src/app/services/global-events.service'
 import { NavigationExternalService } from '../../../../../../../../../../../src/app/services/navigation-external.service'
+import { ConformationPopupComponent } from '../../dialogs/conformation-popup/conformation-popup.component'
 @Component({
   selector: 'ws-app-provider-details-v2',
   templateUrl: './provider-details-v2.component.html',
   styleUrls: ['./provider-details-v2.component.scss']
 })
-export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
+export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit {
   @Input() providerDetails: any
   @Output() loadProviderDetails = new EventEmitter<Boolean>()
 
@@ -40,7 +42,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
   loading = false
   providerId: string | null = null
   providerDetailsBeforeUpdate: any
-
+  isPendingProvider = false
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
@@ -49,8 +51,14 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
     private router: Router,
     private loaderService: GlobalEventsService,
     private externalsvc: NavigationExternalService,
+    private activatedRoute: ActivatedRoute,
+    private dialog: MatDialog,
   ) {
     this.initializeForm()
+  }
+
+  ngOnInit(): void {
+    this.isPendingProvider = this.activatedRoute.snapshot.queryParams.status === 'PENDING'
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -88,7 +96,10 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
       description: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,\.\-_$/:\[\] ' !]*$/), Validators.maxLength(500)]],
       providerTips: this.fb.array([]),
       partnerAgreement: [''],
-      providerLogo: ['', [Validators.required]]
+      providerLogo: ['', [Validators.required]],
+      contactName: [''],
+      email: [''],
+      phone: [''],
     })
 
     this.controls['partnerCode']?.valueChanges.pipe((takeWhile(() => this.isActive))).subscribe((value: string) => {
@@ -137,7 +148,10 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
       partnerCode: _.get(providerDetails, 'data.partnerCode', ''),
       websiteUrl: _.get(providerDetails, 'data.websiteUrl', ''),
       description: _.get(providerDetails, 'data.description', ''),
-      providerLogo: this.logoPreviewUrl || ''
+      providerLogo: this.logoPreviewUrl || '',
+      contactName: _.get(providerDetails, 'data.contactName', ''),
+      email: _.get(providerDetails, 'data.email', ''),
+      phone: _.get(providerDetails, 'data.phone', ''),
     })
     this.getTipsList.clear()
     this.logoPreviewUrl = this.marketplaceSvc.convertResourceUrl(_.get(providerDetails, 'data.link', ''))
@@ -474,6 +488,84 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy {
 
   sendDetailsUpdateEvent() {
     this.loadProviderDetails.emit(true)
+  }
+
+  rejectApproveProvider(type: 'reject' | 'approve') {
+    if (type === 'approve') {
+      this.acceptRejectProviderStatus('accept', this.providerDetails?.data)
+    } else {
+      const dialogRefrence = this.dialog.open(ConformationPopupComponent, {
+        data: {
+          dialogType: 'input',
+          descriptions: [
+            {
+              header: 'Are you sure you want to reject the provider ?',
+              headerClass: 'flex items-start justify-center font-bold text-base ',
+            },
+          ],
+          inputDetails: {
+            placeholder: 'Enter reason for rejection',
+            rows: 4,
+            value: '',
+            required: true,
+            error: 'Reason for rejection is required',
+          },
+
+          footerClass: 'items-center justify-center',
+          buttons: [
+            {
+              btnText: 'No',
+              btnClass: 'btn-outline',
+              response: false,
+            },
+            {
+              btnText: 'Yes',
+              btnClass: 'btn-full-success',
+              response: true,
+            },
+          ],
+        },
+        autoFocus: false,
+        width: '626px',
+        maxWidth: '80vw',
+        maxHeight: '90vh',
+        height: '252px',
+        disableClose: true,
+        panelClass: 'reject-reason',
+      })
+
+      dialogRefrence.afterClosed().subscribe((res: any) => {
+        if (res && res.result) {
+          this.acceptRejectProviderStatus('reject', this.providerDetails?.data, res.value)
+        }
+      })
+    }
+  }
+
+  acceptRejectProviderStatus(status: string, rowData: any, rejectionReason?: string) {
+    const formBody = {
+      id: rowData.id,
+      status: status === 'accept' ? 'APPROVED' : 'REJECTED',
+    }
+
+    if (status === 'reject' && rejectionReason) {
+      (formBody as any).comment = rejectionReason
+    }
+
+    this.loaderService.setLoaderState(true)
+    this.marketplaceSvc.changeStatusRegisterProvider(formBody).subscribe({
+      next: () => {
+        this.loadProviderDetails.emit(true)
+        this.loaderService.setLoaderState(false)
+        this.showSnackBar(`The request has been ${status === 'accept' ? 'approved' : 'rejected'} successfully.`, 'success')
+        this.navigateToProvidersDashboard()
+      },
+      error: (error: any) => {
+        this.loaderService.setLoaderState(false)
+        const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong')
+        this.showSnackBar(errmsg, 'error')
+      },
+    })
   }
 
 }
