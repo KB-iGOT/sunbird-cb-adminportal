@@ -229,6 +229,9 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
       case 'reject':
         this.acceptRejectProviderStatus('reject', event.rows)
         break
+      case 'view':
+        this.navigateToConfigurationV2(providerDetails, 'PENDING')
+        break
     }
   }
 
