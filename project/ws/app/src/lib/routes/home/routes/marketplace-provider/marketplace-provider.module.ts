@@ -105,6 +105,7 @@ const routes: Routes = [
       providerDetails: ProviderResolveService,
 
     },
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange'
   },
 
 ]
