@@ -4,7 +4,7 @@
       <ng-container *ngFor="let item of MENU_ITEMS; trackBy: trackByFn">
         <li
           class="step-item cursor-pointer text-sm"
-          [ngClass]="{ active: activeItem.slug === item.slug }"
+          [ngClass]="{ active: activeItem.slug === item.slug, disabled: item.disabled }"
           (click)="setActiveItem(item)"
         >
           <div class="step-item-label">{{ item.label }}</div>

@@ -36,7 +36,7 @@ const API_END_POINTS = {
 })
 export class MarketplaceService {
   currentMenuItem: BehaviorSubject<any> = new BehaviorSubject<number>(0);
-
+  newProviderAdded: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   constructor(
     private http: HttpClient,

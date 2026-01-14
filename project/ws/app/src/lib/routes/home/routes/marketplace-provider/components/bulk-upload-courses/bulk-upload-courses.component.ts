@@ -272,7 +272,7 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
   get getUpdateBtnText(): string {
     let btnText = ''
     if (this.transformationType === 'trasformContentJson') {
-      if (this.providerDetalsBeforUpdate.trasformContentJson) {
+      if (this.providerDetalsBeforUpdate?.trasformContentJson) {
         btnText = 'Update Transform Content'
       } else {
         btnText = 'Save Transform Content'
@@ -310,7 +310,7 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
     } else {
       let message = ''
       if (this.transformationType === 'trasformContentJson') {
-        message = this.providerDetalsBeforUpdate.trasformContentJson ? 'Please update transform content' : 'Please add transform content'
+        message = this.providerDetalsBeforUpdate?.trasformContentJson ? 'Please update transform content' : 'Please add transform content'
       }
       this.showSnackBar(message, 'error')
     }

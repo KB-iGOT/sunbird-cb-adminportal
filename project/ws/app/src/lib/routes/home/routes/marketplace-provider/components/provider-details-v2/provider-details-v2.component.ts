@@ -407,6 +407,10 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
           if (response?.params?.status === 'success') {
             this.providerDetailsBeforeUpdate = response?.result
             this.providerId = response?.result?.id
+            this.router.navigate([`/app/home/marketplace-providers/configure-provider`], {
+              queryParams: { id: this.providerId }
+            })
+            this.marketplaceSvc.newProviderAdded.next(this.providerId)
             setTimeout(() => {
               const successMsg = 'Successfully Onboarded'
               this.showSnackBar(successMsg, 'success')

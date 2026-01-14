@@ -54,3 +54,8 @@
   color: #fff;
   background-color: red;
 }
+
+.step-item.disabled {
+  color: #ccc;
+  pointer-events: none;
+}
