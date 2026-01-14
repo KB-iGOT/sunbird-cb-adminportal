@@ -43,7 +43,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
   searchProvider$ = new Subject<string>();
   searchRegisteredProvider$ = new Subject<string>();
   currentTab: string = 'onboardProviders'
-  sortData: any = { field: 'createdOn', direction: 'desc' }
+  sortData: any = { field: 'updatedOn', direction: 'desc' }
   constructor(
     private dialog: MatDialog,
     private router: Router,
@@ -127,7 +127,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
     this.menuItems = []
   }
 
-  getProviders(sort = { field: 'createdOn', direction: 'desc' }) {
+  getProviders(sort = { field: 'updatedOn', direction: 'desc' }) {
     this.displayLoader = true
     this.loaderService.setLoaderState(true)
 
