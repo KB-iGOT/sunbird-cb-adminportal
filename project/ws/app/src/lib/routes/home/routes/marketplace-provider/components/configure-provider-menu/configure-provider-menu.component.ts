@@ -16,10 +16,19 @@ export class ConfigureProviderMenuComponent implements OnInit, OnDestroy {
   canOnlyView = false
   subscription: Subscription = new Subscription()
   constructor(private marketplaceService: MarketplaceService, private activatedRoute: ActivatedRoute) {
-    this.canOnlyView = this.activatedRoute.snapshot.queryParams.status === 'PENDING'
-    if (this.canOnlyView) {
-      this.MENU_ITEMS = this.MENU_ITEMS.filter(item => item.slug === 'provider_details')
-    }
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.canOnlyView = params.status === 'PENDING'
+      if (this.canOnlyView) {
+        this.MENU_ITEMS = this.MENU_ITEMS.filter(item => item.slug === 'provider_details')
+      }
+
+      if (params.id) {
+        this.MENU_ITEMS = this.MENU_ITEMS.map(items => {
+          items.disabled = false
+          return items
+        })
+      }
+    });
 
     this.subscription.add(
       this.marketplaceService.currentMenuItem.subscribe(menuItem => {
@@ -42,14 +51,6 @@ export class ConfigureProviderMenuComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (!this.activatedRoute.snapshot.queryParams?.id) {
-      this.MENU_ITEMS = this.MENU_ITEMS.map(items => {
-        if (items.slug !== 'provider_details') {
-          items.disabled = true
-        }
-        return items
-      })
-    }
   }
 
   ngOnDestroy(): void {

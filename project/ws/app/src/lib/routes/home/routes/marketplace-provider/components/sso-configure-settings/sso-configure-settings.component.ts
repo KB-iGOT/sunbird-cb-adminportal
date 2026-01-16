@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, } from '@angular/core'
 import { Clipboard } from '@angular/cdk/clipboard'
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms'
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms'
 import { MarketplaceService } from '../../services/marketplace.service'
 import { SsoConfiguration } from '../../models/configure-provider.model'
 import { MatSnackBar } from '@angular/material/snack-bar'
@@ -35,6 +35,10 @@ export class SsoConfigureSettingsComponent implements OnInit {
   ssoTestUrl = new FormControl('', [Validators.required, this.urlValidator()])
   status = new FormControl(false)
 
+  get mappersFormArray() {
+    return this.ssoSettingsForm.get('mappers') as FormArray
+  }
+
   SSOConfigurationData: SsoConfiguration | null = null
   constructor(private clipboard: Clipboard, private formBuilder: FormBuilder, private marketplaceService: MarketplaceService, private snackBar: MatSnackBar,
     private loaderService: GlobalEventsService, private router: Router,
@@ -54,12 +58,48 @@ export class SsoConfigureSettingsComponent implements OnInit {
       partnerName: ['', [Validators.required]],
       ssoProtocol: ['saml', [Validators.required]],
       ssoUrl: ['', [Validators.required, this.urlValidator()]],
-      emailAttribute: ['', [Validators.required]],
-      firstNameAttribute: ['', [Validators.required]],
-      lastNameAttribute: ['',],
-      userIdAttribute: ['', [Validators.required]],
+      mappers: this.formBuilder.array([])
     })
 
+  }
+
+  addMappers() {
+    if (this.isLastMapperFilled()) {
+      const mappers = this.mappersFormArray
+      mappers.push(this.createMapperGroup())
+    }
+  }
+
+  isLastMapperFilled(): boolean {
+    const mappers = this.mappersFormArray
+    if (mappers.length === 0) return true
+
+    const lastMapper = mappers.at(mappers.length - 1)
+    const key = lastMapper.get('key')?.value
+    const value = lastMapper.get('value')?.value
+
+    return key && value
+  }
+
+  canAddMapper(): boolean {
+    return this.isLastMapperFilled()
+  }
+
+  removeMapper(index: number) {
+    this.mappersFormArray.removeAt(index)
+  }
+
+  createMapperGroup(): FormGroup {
+    return this.formBuilder.group({
+      key: ['', Validators.required],
+      value: ['', Validators.required]
+    })
+  }
+
+  addEmptyMapperIfNone() {
+    if (this.mappersFormArray.length === 0) {
+      this.mappersFormArray.push(this.createMapperGroup())
+    }
   }
 
   get isSaveDisabled(): boolean {
@@ -91,11 +131,15 @@ export class SsoConfigureSettingsComponent implements OnInit {
       this.ssoSettingsForm.controls['partnerName'].setValue(this.providerDetails?.data?.contentPartnerName || '')
       this.ssoSettingsForm.controls['partnerName'].disable()
 
+      this.addEmptyMapperIfNone()
+
       this.marketplaceService.getSSOConfiguration(this.providerDetails.id).subscribe({
         next: (response: any) => {
           if (response && response.params?.status === 'success' && Object.keys(response?.result?.ssoData || {}).length > 0) {
             this.SSOConfigurationData = response?.result?.ssoData
             this.loadSSODetails.emit(this.SSOConfigurationData)
+
+            const { mappers } = this.SSOConfigurationData || {}
             this.ssoSettingsForm.patchValue({
               clientId: this.SSOConfigurationData?.clientId,
               ssoProtocol: this.SSOConfigurationData?.ssoProtocol,
@@ -105,6 +149,8 @@ export class SsoConfigureSettingsComponent implements OnInit {
               lastNameAttribute: this.SSOConfigurationData?.lastNameAttribute,
               userIdAttribute: this.SSOConfigurationData?.userIdAttribute,
             })
+
+            this.populateMappers(mappers || [])
 
             this.status.setValue(this.SSOConfigurationData?.status || false)
             this.acsUrl.setValue(this.SSOConfigurationData?.acsUrl || '')
@@ -120,6 +166,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
               firstNameAttribute: this.SSOConfigurationData?.firstNameAttribute || '',
               lastNameAttribute: this.SSOConfigurationData?.lastNameAttribute || '',
               userIdAttribute: this.SSOConfigurationData?.userIdAttribute || '',
+              mappers: this.SSOConfigurationData?.mappers || {},
             }
             this.initialAcsUrl = this.SSOConfigurationData?.acsUrl || ''
             this.initialSsoTestUrl = this.SSOConfigurationData?.ssoTestUrl || ''
@@ -145,10 +192,10 @@ export class SsoConfigureSettingsComponent implements OnInit {
     const formValues = this.ssoSettingsForm.getRawValue()
     const payload = {
       ...formValues,
+      mappers: this.getMappersValue(),
       status: this.status.value,
       acsUrl: this.acsUrl.value,
       ssoTestUrl: this.ssoTestUrl.value,
-      configuration: 'complete'
     }
 
     this.marketplaceService.createSSOConfiguration(this.providerDetails.id, payload).subscribe({
@@ -177,11 +224,26 @@ export class SsoConfigureSettingsComponent implements OnInit {
     const formValues = this.ssoSettingsForm.getRawValue()
     const payload = {
       ...formValues,
+      mappers: this.getMappersValue(),
       status: this.status.value,
       acsUrl: this.acsUrl.value,
       ssoTestUrl: this.ssoTestUrl.value,
       ssoId: this.SSOConfigurationData?.ssoId || '',
       configuration: this.SSOConfigurationData?.configuration || '',
+
+      includeAuthnStatement: this.SSOConfigurationData?.includeAuthnStatement,
+      signDocuments: this.SSOConfigurationData?.signDocuments,
+      optimizeRedirectSigningKeyLookup: this.SSOConfigurationData?.optimizeRedirectSigningKeyLookup,
+      signAssertions: this.SSOConfigurationData?.signAssertions,
+      signatureAlgorithm: this.SSOConfigurationData?.signatureAlgorithm,
+      samlSignatureKeyName: this.SSOConfigurationData?.samlSignatureKeyName,
+      forcePOSTBinding: this.SSOConfigurationData?.forcePOSTBinding,
+      encryptAssertions: this.SSOConfigurationData?.encryptAssertions,
+      forceNameIdFormat: this.SSOConfigurationData?.forceNameIdFormat,
+      clientSignatureRequired: this.SSOConfigurationData?.clientSignatureRequired,
+      nameIdFormat: this.SSOConfigurationData?.nameIdFormat,
+      rootUrl: this.SSOConfigurationData?.rootUrl,
+      validRedirectUrls: this.SSOConfigurationData?.validRedirectUrls || []
     }
 
     this.marketplaceService.updateSSOConfiguration(this.providerDetails.id, payload).subscribe({
@@ -265,5 +327,53 @@ export class SsoConfigureSettingsComponent implements OnInit {
         return { invalidUrl: true }
       }
     }
+  }
+
+  populateMappers(mappers: Array<{ key: string, value: string }> | { [key: string]: string }) {
+    const mappersFormArray = this.mappersFormArray
+    mappersFormArray.clear()
+
+    if (mappers) {
+      if (Array.isArray(mappers)) {
+        if (mappers.length > 0) {
+          mappers.forEach(mapper => {
+            mappersFormArray.push(
+              this.formBuilder.group({
+                key: [mapper.key, Validators.required],
+                value: [mapper.value, Validators.required]
+              })
+            )
+          })
+        }
+      } else {
+        Object.entries(mappers).forEach(([key, value]) => {
+          mappersFormArray.push(
+            this.formBuilder.group({
+              key: [key, Validators.required],
+              value: [value, Validators.required]
+            })
+          )
+        })
+      }
+    }
+
+    if (mappersFormArray.length === 0) {
+      this.addMappers()
+    }
+  }
+
+  getMappersValue(): { [key: string]: string } {
+    const result: { [key: string]: string } = {}
+
+    this.mappersFormArray.controls.forEach((control: any) => {
+      const key = control.get('key')?.value
+      const value = control.get('value')?.value
+
+      if (key && value) {
+        result[key] = value
+      }
+    })
+
+    return result
   }
 }

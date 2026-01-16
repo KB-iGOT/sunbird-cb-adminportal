@@ -230,7 +230,11 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
         this.acceptRejectProviderStatus('reject', event.rows)
         break
       case 'view':
-        this.navigateToConfigurationV2(providerDetails, 'PENDING')
+        if (event?.rows?.status === 'PENDING') {
+          this.navigateToConfigurationV2(providerDetails, 'PENDING')
+        } else {
+          this.navigateToConfigurationV2(providerDetails)
+        }
         break
     }
   }
