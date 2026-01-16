@@ -54,16 +54,16 @@ export class SsoIntegrationComponent implements OnInit {
     return (
       this.providerDetails?.data?.isAuthenticate &&
       this.providerDetails?.data?.isActive &&
-      this.ssoConfigurations?.configuration === 'complete' &&
-      this.ssoConfigurations?.isActive
+      this.ssoConfigurations?.configuration === 'completed' &&
+      this.ssoConfigurations?.ssoTested
     )
   }
 
   testSsoUrl() {
     const ssoPayload = {
       ...this.ssoConfigurations,
-      isActive: true,
-      configuration: 'complete'
+      ssoTested: true,
+      configuration: 'completed'
     }
 
     const providerPayload = {
