@@ -43,6 +43,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
   providerId: string | null = null
   providerDetailsBeforeUpdate: any
   isPendingProvider = false
+  hasPartnerCode = false
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
@@ -91,7 +92,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
   initializeForm(): void {
     this.providerDetailsForm = this.fb.group({
       contentPartnerName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\] ' !]*$/), Validators.maxLength(70)]],
-      partnerCode: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/), Validators.maxLength(6)]],
+      partnerCode: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/), Validators.maxLength(6)],],
       websiteUrl: ['', [Validators.required, Validators.pattern(/^(https?|http):\/\/[^\s/$.?#].[^\s]*$/), Validators.maxLength(1024)]],
       description: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,\.\-_$/:\[\] ' !]*$/), Validators.maxLength(500)]],
       providerTips: this.fb.array([]),
@@ -143,6 +144,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
   }
   //#endregion
   patchProviderDetails(providerDetails: any) {
+    this.hasPartnerCode = _.get(providerDetails, 'data.partnerCode') ? true : false
     this.providerDetailsForm.patchValue({
       contentPartnerName: _.get(providerDetails, 'data.contentPartnerName', ''),
       partnerCode: _.get(providerDetails, 'data.partnerCode', ''),
@@ -394,7 +396,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
         contentPartnerName: formDetails.contentPartnerName,
         providerTips: formDetails.providerTips,
         link: this.logoPreviewUrl,
-        partnerCode: formDetails.partnerCode.toUpperCase(),
+        partnerCode: formDetails.partnerCode?.toUpperCase(),
       }
       if (this.uploadedPdfUrl) {
         formBody['documentUrl'] = this.uploadedPdfUrl

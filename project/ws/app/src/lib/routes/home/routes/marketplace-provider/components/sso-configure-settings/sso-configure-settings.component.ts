@@ -246,6 +246,10 @@ export class SsoConfigureSettingsComponent implements OnInit {
       validRedirectUrls: this.SSOConfigurationData?.validRedirectUrls || []
     }
 
+    if (this.SSOConfigurationData?.ssoTested !== undefined) {
+      payload['ssoTested'] = this.SSOConfigurationData.ssoTested
+    }
+
     this.marketplaceService.updateSSOConfiguration(this.providerDetails.id, payload).subscribe({
       next: (response: any) => {
         if (response && response.params?.status === 'success') {
