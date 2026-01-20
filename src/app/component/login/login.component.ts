@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   welcomeFooter: ILoginDescriptiveFooterConfig | null = null
   title = ''
   subTitle = ''
+  copyrightYears = `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`
   // private redirectUrl = ''
   private subscriptionLogin: Subscription | null = null
 
