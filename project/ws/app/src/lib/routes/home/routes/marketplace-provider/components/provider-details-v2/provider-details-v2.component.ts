@@ -37,6 +37,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
   pdfFile: any = null
   uploadedPdfUrl = ''
   fileName = ''
+  logoName = ''
   fileUploadedDate: string | null = ''
 
   loading = false
@@ -96,7 +97,6 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
       websiteUrl: ['', [Validators.required, Validators.pattern(/^(https?|http):\/\/[^\s/$.?#].[^\s]*$/), Validators.maxLength(1024)]],
       description: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,\.\-_$/:\[\] ' !]*$/), Validators.maxLength(500)]],
       providerTips: this.fb.array([]),
-      partnerAgreement: [''],
       providerLogo: ['', [Validators.required]],
       contactName: [''],
       email: [''],
@@ -112,10 +112,6 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
 
   get controls() {
     return this.providerDetailsForm.controls
-  }
-
-  get providerTipsList(): FormArray {
-    return this.providerDetailsForm.get('providerTips') as FormArray
   }
 
   get getTipsList(): FormArray {
@@ -145,7 +141,8 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
   //#endregion
   patchProviderDetails(providerDetails: any) {
     this.hasPartnerCode = _.get(providerDetails, 'data.partnerCode') ? true : false
-    this.providerDetailsForm.patchValue({
+    this.logoPreviewUrl = this.marketplaceSvc.convertResourceUrl(_.get(providerDetails, 'data.link', ''))
+    this.providerDetailsForm.setValue({
       contentPartnerName: _.get(providerDetails, 'data.contentPartnerName', ''),
       partnerCode: _.get(providerDetails, 'data.partnerCode', ''),
       websiteUrl: _.get(providerDetails, 'data.websiteUrl', ''),
@@ -154,9 +151,13 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
       contactName: _.get(providerDetails, 'data.contactName', ''),
       email: _.get(providerDetails, 'data.email', ''),
       phone: _.get(providerDetails, 'data.phone', ''),
+      providerTips: []
     })
+    if (this.logoPreviewUrl) {
+      this.logoName = this.logoPreviewUrl.split('_')[1] || ''
+    }
+    this.providerDetailsForm.updateValueAndValidity()
     this.getTipsList.clear()
-    this.logoPreviewUrl = this.marketplaceSvc.convertResourceUrl(_.get(providerDetails, 'data.link', ''))
     this.uploadedPdfUrl = _.get(providerDetails, 'data.documentUrl', '')
     this.fileUploadedDate = _.get(providerDetails, 'data.documentUploadedDate', '')
     if (this.uploadedPdfUrl) {
@@ -445,7 +446,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
       updatePayload['data']['contentPartnerName'] = formDetails.contentPartnerName
       updatePayload['data']['providerTips'] = formDetails.providerTips
       updatePayload['data']['link'] = this.logoPreviewUrl
-      updatePayload['data']['partnerCode'] = formDetails.partnerCode.toUpperCase()
+      updatePayload['data']['partnerCode'] = _.get(formDetails, 'partnerCode', _.get(this.providerDetailsForm, 'controls.partnerCode.value', '')).toUpperCase()
 
       if (this.uploadedPdfUrl) {
         updatePayload['data']['documentUrl'] = this.uploadedPdfUrl

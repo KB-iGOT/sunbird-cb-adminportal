@@ -30,9 +30,10 @@
             <p class="mat-small ws-mat-black60-text margin-remove max-file-size">
               Max file size: 100 MB
             </p>
-            <p class="mat-small ws-mat-black60-text margin-remove">Supported file types: CSV</p>
+            <p class="mat-small ws-mat-black60-text margin-remove">Supported file types: CSV, XLSX</p>
           </div>
-          <input type="file" #fileInput class="input-file hidden" accept=".csv" (change)="onFileInputChange($event)" />
+          <input type="file" #fileInput class="input-file hidden" accept=".csv,.xlsx"
+            (change)="onFileInputChange($event)" />
         </div>
         <div *ngIf="contentFileUploaded" class="flex flex-middle justify-center flex-column pt-5 px-5">
           <mat-icon class="csv-icon" svgIcon="excel_sheet"> </mat-icon>
@@ -44,7 +45,7 @@
               <span i18n>No file uploaded</span>
             </ng-template>
           </p>
-          <div class="close-icon" matTooltip="Remove Logo" (click)="removeFile()">
+          <div class="close-icon" matTooltip="Remove File" (click)="removeFile()">
             <mat-icon>close</mat-icon>
           </div>
         </div>

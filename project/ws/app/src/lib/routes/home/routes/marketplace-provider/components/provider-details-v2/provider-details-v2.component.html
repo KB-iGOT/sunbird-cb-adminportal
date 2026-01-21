@@ -26,7 +26,7 @@
           required</mat-error>
 
         <div class="logo-filename mt-2" *ngIf="logoFile || controls['providerLogo'].value">
-          {{ logoFile?.name || controls['providerLogo'].value }}
+          {{ logoFile?.name || logoName || controls['providerLogo'].value }}
         </div>
       </div>
     </div>
