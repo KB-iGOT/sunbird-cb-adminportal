@@ -86,9 +86,9 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
 
   private initializeFormGroups(): void {
     this.servicesFormGroup = this.formBuilder.group({
-      serviceName: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\]'!]*$/)]),
+      serviceName: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\]'!\s]*$/)]),
       serviceCode: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\]'!]*$/)]),
-      serviceDescription: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,.\-_$/:\[\]'!]*$/)]),
+      serviceDescription: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,.\-_$/:\[\]'!\s\n]*$/)]),
       isAuthenticated: new FormControl(false),
       strictCache: new FormControl(false),
       strictCacheTimeInMinutes: new FormControl()
@@ -215,6 +215,7 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
     if (JSON.stringify(authPayload) !== '{}') {
       this.servicesFormGroup.controls.isAuthenticated.patchValue(true)
       this.authenticationFormGroup.controls.rawData.patchValue(authPayload)
+      this.authenticationToggleChange()
     }
 
     const transformContent = _.get(this.providerDetails, this.transformationType, _.get(this.providerConfiguration, this.transformationType))
@@ -441,7 +442,7 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
     const serviceDetails = this.servicesFormGroup.value
     serviceDetails['serviceCode'] = this.servicesFormGroup.controls.serviceCode.value.toUpperCase()
     const params = this.getParamsAndUrl()
-    const isFormData = this.bodyFormGroup.value.tableListFormArray[0].key ? true : false
+    const isFormData = _.get(this.bodyFormGroup, 'value.tableListFormArray[0].key') ? true : false
     const authPayload = _.get(this.authenticationFormGroup, 'value.rawData', '{}')
     const formBody = {
       isFormData,

@@ -49,7 +49,24 @@
         </ng-container>
       </div>
 
-      <!-- Service Name -->
+      <!-- Service Code -->
+      <div class="flex flex-column gap-1 mat-field-rounded">
+        <div class="flex items-center gap-1 required">
+          <span class="label">Service Code</span>
+        </div>
+        <form [formGroup]="servicesFormGroup">
+          <mat-form-field class="w-full" appearance="outline">
+            <input formControlName="serviceCode" matInput placeholder="Type Here" type="text" />
+            <mat-error *ngIf="getControlValidation('serviceCode', 'required')">
+              Service Code is mandatory
+            </mat-error>
+            <mat-error *ngIf="getControlValidation('serviceCode', 'pattern')">
+              Only ( a-z/A-Z/0-9 . - _ $ / : [ ]' !) characters are supported
+            </mat-error>
+          </mat-form-field>
+        </form>
+      </div>
+
       <div class="flex flex-column gap-1 mat-field-rounded">
         <div class="flex items-center gap-1 required">
           <span class="label">Service Name</span>
