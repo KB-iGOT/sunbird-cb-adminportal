@@ -129,7 +129,9 @@
           </div>
           <form [formGroup]="servicesFormGroup">
             <mat-form-field class="w-full" appearance="outline">
-              <input formControlName="strictCacheTimeInMinutes" matInput type="number" placeholder="minutes" />
+              <input type="text" matInput placeholder="minutes" formControlName="strictCacheTimeInMinutes"
+                aria-label="Mobile Number input" maxlength="10" (keypress)="numericOnly($event)"
+                (paste)="numericOnly($event)">
               <mat-error *ngIf="getControlValidation('strictCacheTimeInMinutes', 'required')">
                 Time is mandatory
               </mat-error>

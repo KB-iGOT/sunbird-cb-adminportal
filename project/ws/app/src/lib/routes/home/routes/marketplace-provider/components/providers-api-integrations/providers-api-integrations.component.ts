@@ -56,7 +56,9 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
     private snackBar: MatSnackBar,
     private activateRoute: ActivatedRoute,
     private marketPlaceSvc: MarketplaceService
-  ) { }
+  ) {
+    this.initializeFormGroups()
+  }
 
   ngOnInit(): void {
     this.activateRoute.data.subscribe(data => {
@@ -65,14 +67,13 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
       }
     })
 
-    this.initializeFormGroups()
     this.setupValueChangeListeners()
     this.delayTabLoad = false
 
     // Load configuration after forms are initialized
-    if (this.providerDetails) {
-      this.getCoursesConfiguration()
-    }
+    // if (this.providerDetails) {
+    //   this.getCoursesConfiguration()
+    // }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -91,7 +92,7 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
       serviceDescription: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,.\-_$/:\[\]'!\s\n]*$/)]),
       isAuthenticated: new FormControl(false),
       strictCache: new FormControl(false),
-      strictCacheTimeInMinutes: new FormControl()
+      strictCacheTimeInMinutes: new FormControl('', [Validators.pattern(/^([0-9])$/)])
     })
 
     this.viaApiFormGroup = this.formBuilder.group({
@@ -185,9 +186,9 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
       serviceName: _.get(configurationDetails, 'serviceName'),
       serviceCode: _.get(configurationDetails, 'serviceCode'),
       serviceDescription: _.get(configurationDetails, 'serviceDescription'),
-      strictCache: _.get(configurationDetails, 'requestPayload.strictCache', false),
-      strictCacheTimeInMinutes: _.get(configurationDetails, 'requestPayload.strictCacheTimeInMinutes', 0),
-      isAuthenticated: false
+      strictCache: _.get(configurationDetails, 'strictCache', false),
+      strictCacheTimeInMinutes: _.get(configurationDetails, 'strictCacheTimeInMinutes', '') as string,
+      isAuthenticated: _.get(configurationDetails, 'isSecureHeader', false)
     })
 
     this.onToggleChange()
@@ -213,9 +214,10 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
     }
 
     if (JSON.stringify(authPayload) !== '{}') {
-      this.servicesFormGroup.controls.isAuthenticated.patchValue(true)
       this.authenticationFormGroup.controls.rawData.patchValue(authPayload)
-      this.authenticationToggleChange()
+    }
+    if (_.get(configurationDetails, 'isSecureHeader', false)) {
+      this.authenticationToggleChange(false)
     }
 
     const transformContent = _.get(this.providerDetails, this.transformationType, _.get(this.providerConfiguration, this.transformationType))
@@ -301,6 +303,12 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
     }
   }
 
+  numericOnly(event: any): boolean {
+    const pattren = /^([0-9])$/
+    const result = pattren.test(event.key)
+    return result
+  }
+
   onApiTabChange(tabValue: string): void {
     this.selectedApiTab = tabValue
   }
@@ -315,20 +323,56 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
     return control?.value?.length || 0
   }
 
-  authenticationToggleChange(): void {
+  authenticationToggleChange(restAuthenticationFormGroup = true): void {
     const isAuthenticated = this.servicesFormGroup.controls.isAuthenticated.value
     if (!isAuthenticated) {
       this.servicesFormGroup.controls.strictCache.patchValue(false)
+      this.resetControl('strictCacheTimeInMinutes')
       this.apiMetadata = this.apiMetadata.filter(item => item.name !== 'Authentication')
+      this.authenticationFormGroup.reset()
+      if (this.selectedApiTab === 'authPayload') {
+        this.selectedApiTab = this.apiMetadata[0].value
+      }
     } else {
       this.apiMetadata.push({ name: 'Authentication', value: 'authPayload' })
+      const authPayloadControl = this.authenticationFormGroup.controls.rawData
+      if (authPayloadControl && restAuthenticationFormGroup) {
+        authPayloadControl.patchValue(
+          _.get(this.providerConfiguration, 'transformContentViaApiAuthentication', {})
+        )
+      }
     }
   }
 
   onToggleChange(): void {
     const strictCache = this.servicesFormGroup.controls.strictCache.value
     if (!strictCache) {
-      this.servicesFormGroup.controls.strictCacheTimeInMinutes.patchValue(null)
+      this.resetControl('strictCacheTimeInMinutes')
+    } else {
+      const strictCacheTimeInMinutesControl = this.getControl('strictCacheTimeInMinutes')
+      if (strictCacheTimeInMinutesControl) {
+        strictCacheTimeInMinutesControl.setValidators([Validators.required])
+        strictCacheTimeInMinutesControl.updateValueAndValidity()
+        strictCacheTimeInMinutesControl.markAsUntouched()
+      }
+    }
+  }
+
+  getControl(controlName: string): FormControl | null {
+    const control: FormControl | null = this.servicesFormGroup.get(controlName) as FormControl | null
+    if (control) {
+      return control
+    }
+    return null
+  }
+
+  resetControl(controlName: string): void {
+    const control = this.getControl(controlName)
+    if (control) {
+      control.reset()
+      control.markAsUntouched()
+      control.clearValidators()
+      control.updateValueAndValidity()
     }
   }
 
@@ -454,7 +498,7 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
       operationType: 'PEER_TO_PEER',
       urlPlaceholder: params.urlPlaceholder,
       isActive: true,
-      isSecureHeader: true,
+      isSecureHeader: serviceDetails.isAuthenticated ? true : false,
       urlSegment: null,
       hostAddress: null,
       partnerCode: _.get(this.providerDetails, 'data.partnerCode'),
@@ -465,7 +509,7 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
       },
       authPayload: authPayload ? authPayload : {},
       strictCache: serviceDetails.strictCache,
-      strictCacheTimeInMinutes: serviceDetails.strictCacheTimeInMinutes
+      strictCacheTimeInMinutes: serviceDetails.strictCacheTimeInMinutes ? Number(serviceDetails.strictCacheTimeInMinutes) : null
     }
     return formBody
   }
