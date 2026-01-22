@@ -7,29 +7,19 @@
           Open & follow these instruction
         </p>
         <ol class="pl-4" *ngIf="configurationData?.bulkUploadCourse?.instructions?.length">
-          <li
-            class="pb-4"
-            *ngFor="let instruction of configurationData?.bulkUploadCourse?.instructions"
-          >
+          <li class="pb-4" *ngFor="let instruction of configurationData?.bulkUploadCourse?.instructions">
             {{ instruction }}
           </li>
         </ol>
 
-        <button
-          (click)="downloadSampleFile()"
-          mat-flat-button
-          class="flex rounded-full px-4 py-2 font-bold mat-btn-outline text-sm"
-        >
+        <button (click)="downloadSampleFile()" mat-flat-button
+          class="flex rounded-full px-4 py-2 font-bold mat-btn-outline text-sm">
           Download Sample File
         </button>
       </div>
       <div class="upload-bulk-content flex-1 flex items-center justify-center relative">
-        <div
-          *ngIf="!contentFileUploaded"
-          class="right-upload-inner flex flex-col items-center justify-center"
-          wsAuthDragDrop
-          (fileDropped)="onDropHandler($event)"
-        >
+        <div *ngIf="!contentFileUploaded" class="right-upload-inner flex flex-col items-center justify-center"
+          wsAuthDragDrop (fileDropped)="onDropHandler($event)">
           <div class="flex flex-row items-center justify-center margin-bottom-s">
             <mat-icon class="csv-icon" svgIcon="excel_sheet"> </mat-icon>
           </div>
@@ -40,20 +30,12 @@
             <p class="mat-small ws-mat-black60-text margin-remove max-file-size">
               Max file size: 100 MB
             </p>
-            <p class="mat-small ws-mat-black60-text margin-remove">Supported file types: CSV</p>
+            <p class="mat-small ws-mat-black60-text margin-remove">Supported file types: CSV, XLSX</p>
           </div>
-          <input
-            type="file"
-            #fileInput
-            class="input-file hidden"
-            accept=".csv"
-            (change)="onFileInputChange($event)"
-          />
+          <input type="file" #fileInput class="input-file hidden" accept=".csv,.xlsx"
+            (change)="onFileInputChange($event)" />
         </div>
-        <div
-          *ngIf="contentFileUploaded"
-          class="flex flex-middle justify-center flex-column pt-5 px-5"
-        >
+        <div *ngIf="contentFileUploaded" class="flex flex-middle justify-center flex-column pt-5 px-5">
           <mat-icon class="csv-icon" svgIcon="excel_sheet"> </mat-icon>
           <p class="margin-left-xs mat-h3 font-weight-500 margin-remove-bottom break">
             <ng-container *ngIf="contentFileUploaded; else elseBlock">
@@ -63,7 +45,7 @@
               <span i18n>No file uploaded</span>
             </ng-template>
           </p>
-          <div class="close-icon" matTooltip="Remove Logo" (click)="removeFile()">
+          <div class="close-icon" matTooltip="Remove File" (click)="removeFile()">
             <mat-icon>close</mat-icon>
           </div>
         </div>
@@ -74,29 +56,20 @@
       <div>
         <span class="header">Transform Content</span>
       </div>
-      <div
-        class="flex flex-col gap-4 transformation-box"
-        [ngClass]="{ 'transformation-required': !transformationsUpdated && executed }"
-      >
+      <div class="flex flex-col gap-4 transformation-box"
+        [ngClass]="{ 'transformation-required': !transformationsUpdated && executed }">
         <form [formGroup]="transforamtionForm">
           <div class="flex flex-col gap-2">
             <ng-container *ngFor="let transFormControl of transFormContentKeysAndControls">
               <div class="flex flex-column gap-1 mat-field-rounded">
-                <div class="flex items-center gap-1 required">
-                  <span class="label"
-                    >{{ transFormControl.lable }}
-                    <mat-icon
-                      svgIcon="field_i"
-                      matTooltip="{{ transFormControl.lable }}"
-                    ></mat-icon>
+                <div class="flex items-center gap-1" [ngClass]="{'required': transFormControl.isRequired }">
+                  <span class="label">{{ transFormControl.lable }}
+                    <mat-icon svgIcon="field_i" matTooltip="{{ transFormControl.lable }}"></mat-icon>
                   </span>
                 </div>
                 <mat-form-field class="w-full" appearance="outline">
-                  <mat-select
-                    formControlName="{{ transFormControl.controlName }}"
-                    (selectionChange)="onSelectChange()"
-                    placeholder="Select"
-                  >
+                  <mat-select formControlName="{{ transFormControl.controlName }}" (selectionChange)="onSelectChange()"
+                    placeholder="Select">
                     <ng-container *ngFor="let header of availableHeadrsList">
                       <mat-option [value]="header">
                         {{ header }}
@@ -115,11 +88,8 @@
           </div>
         </form>
         <div class="flex w-full justify-end mt-4">
-          <button
-            mat-flat-button
-            class="flex items-center rounded-full px-4 py-2 font-bold text-sm mat-btn-flat"
-            (click)="upDateTransforamtionDetails()"
-          >
+          <button mat-flat-button class="flex items-center rounded-full px-4 py-2 font-bold text-sm mat-btn-flat"
+            (click)="upDateTransforamtionDetails()">
             {{ getUpdateBtnText }}
           </button>
         </div>
@@ -128,11 +98,8 @@
   </div>
 
   <div class="flex w-full justify-center mt-8">
-    <button
-      mat-flat-button
-      class="flex items-center rounded-full px-4 py-2 font-bold text-sm mat-btn-flat"
-      (click)="uploadFile()"
-    >
+    <button mat-flat-button class="flex items-center rounded-full px-4 py-2 font-bold text-sm mat-btn-flat"
+      (click)="uploadFile()">
       Execute
     </button>
   </div>

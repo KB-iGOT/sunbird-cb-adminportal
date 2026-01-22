@@ -95,17 +95,24 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
     }
 
     if (trasformationJson) {
+      const requiredList = _.get(this.providerConfiguration, 'trasformContentJson[0].requiredList', [])
       Object.entries(trasformationJson).forEach(([key, path]) => {
         const transFormContentKeysAndControl: {
           lable: string,
           controlName: string,
-          path: string
+          path: string,
+          isRequired: boolean
         } = {
           lable: key,
           controlName: key.replace(' ', ''),
           path: path as string,
+          isRequired: requiredList.includes(key)
         }
-        this.transforamtionForm.addControl(key.replace(' ', ''), new FormControl('', Validators.required))
+        if (transFormContentKeysAndControl.isRequired) {
+          this.transforamtionForm.addControl(key.replace(' ', ''), new FormControl('', Validators.required))
+        } else {
+          this.transforamtionForm.addControl(key.replace(' ', ''), new FormControl(''))
+        }
         this.transFormContentKeysAndControls.push(transFormContentKeysAndControl)
       })
     }
@@ -180,7 +187,9 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
     const headers = (<string>csvRecordsArr[0]).split(',')
     const headerArray = []
     for (let j = 0; j < headers.length; j = j + 1) {
-      headerArray.push(headers[j])
+      // Remove surrounding quotes and trim whitespace
+      const cleanedHeader = headers[j].replace(/^"|"$/g, '').trim()
+      headerArray.push(cleanedHeader)
     }
     return headerArray
   }

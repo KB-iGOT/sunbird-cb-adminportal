@@ -9,25 +9,25 @@ export const MARKETPLACE_CONFIGURE_PROVIDERS_MENU = [
     id: 2,
     label: 'SSO Integration',
     slug: 'sso_integration',
-    disabled: false
+    disabled: true
   },
   {
     id: 3,
     label: 'Course Onboarding',
     slug: 'active_courses',
-    disabled: false
+    disabled: true
   },
   {
     id: 4,
     label: 'Configure Certificate',
     slug: 'configure_certificate',
-    disabled: false
+    disabled: true
   },
   {
     id: 5,
     label: 'Provider Settings',
     slug: 'provider_settings',
-    disabled: false
+    disabled: true
   },
 ]
 
