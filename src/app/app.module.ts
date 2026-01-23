@@ -134,6 +134,7 @@ import { GlobalEventsService } from './services/global-events.service'
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 
 import { TranslateHttpLoader } from '@ngx-translate/http-loader'
+import { BackBreadcrumbsComponent } from '../../project/ws/app/src/lib/routes/home/components/back-breadcrumbs/back-breadcrumbs.component'
 /** Improt from Sunbird Collection */
 
 // import { AvatarPhotoModule } from '@sunbird-cb/collection'
@@ -249,6 +250,7 @@ const getBaseHref = (platformLocation: PlatformLocation): string => {
     LoginRootComponent,
     LoginRootDirective,
     PublicHomeComponent,
+    BackBreadcrumbsComponent
   ],
   imports: [
     FormsModule,

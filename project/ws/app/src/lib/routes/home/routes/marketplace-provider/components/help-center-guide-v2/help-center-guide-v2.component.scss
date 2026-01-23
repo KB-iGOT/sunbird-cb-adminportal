@@ -22,18 +22,56 @@
 }
 
 .info-pill {
-  padding: 0.5rem 1.5rem 0.5rem 0.5rem;
+  padding: 1rem;
   border-radius: 12px;
   background: #1b4ca129;
 
   .bold-text {
+    /* stylelint-disable */
     font-family: Lato;
+    /* stylelint-enable */
     font-weight: 700;
     font-size: 14px;
   }
 }
 
+.content-help {
+  overflow: hidden;
+}
+
+.points-help {
+  .mat-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+  }
+}
+
+.help-point-text {
+  /* stylelint-disable */
+  font-family: Lato;
+  /* stylelint-enable */
+  font-weight: 400;
+  font-size: 14px;
+}
+
 .rotate-icon {
   transform: rotate(180deg);
   transition: transform 0.3s ease;
+}
+
+.helpCenterDemo {
+  .helpCenterDemoVideo {
+    width: 175px;
+    height: 102px;
+    border-radius: 5px;
+    background-color: #fdead5;
+    font-weight: 600;
+    pointer-events: all;
+    cursor: pointer;
+
+    .video_icon {
+      font-size: 32px;
+    }
+  }
 }

@@ -31,6 +31,10 @@
   }
 }
 
+::ng-deep .actions-menu .mat-menu-content {
+  padding-top: 0 !important;
+}
+
 // Content Container
 .courses-content-container {
   .content-header {
@@ -126,9 +130,17 @@
   }
 }
 
+.content-partner-container {
+  @extend .content-name-container;
+  width: 110px;
+  height: 62px;
+}
+
 // Status Badge Styling
 .status-badge {
-  .live {
+  .live,
+  .active,
+  .approved {
     @include status-badge(#00a650, true);
     color: #00a650;
   }
@@ -138,7 +150,8 @@
     color: #1b2133;
   }
 
-  .draft {
+  .draft,
+  .pending {
     @include status-badge(#f3962f, true);
     color: #1b2133;
   }
@@ -148,7 +161,9 @@
     color: #000000de;
   }
 
-  .retired {
+  .retired,
+  .inactive,
+  .rejected {
     @include status-badge(#d13924, true);
   }
 }
@@ -320,4 +335,103 @@
 
 .mat-column-select {
   text-align: center;
+}
+
+.header-info-icon {
+  color: #6c757d;
+  font-size: 14px;
+  height: 14px;
+  width: 14px;
+  margin-left: 5px;
+}
+
+.mat-column-contentPartnerName {
+  width: 395px;
+}
+
+.icon-status-common {
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  mat-icon {
+    width: 15px !important;
+    height: 15px !important;
+    font-size: 10px !important;
+    color: #fff;
+  }
+}
+
+.authenticated {
+  border: 1px solid #1d8923;
+  background: #1d892329;
+  color: #1d8923;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+
+  .icon-status {
+    @extend .icon-status-common;
+    background-color: #1d8923;
+  }
+}
+
+.not-authenticated {
+  background: #d1392429;
+  border: 1px solid #d13924;
+  color: #d13924;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+
+  .icon-status {
+    @extend .icon-status-common;
+    background-color: #d13924;
+  }
+}
+
+.cell-gray-text {
+  color: #0000008a !important;
+}
+
+.icon-accept-common {
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  mat-icon {
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 20px !important;
+    color: #fff;
+  }
+}
+
+.icon-status-accept {
+  @extend .icon-accept-common;
+  background-color: #1d8923;
+}
+
+.icon-status-reject {
+  @extend .icon-accept-common;
+  background-color: #d13924;
+}
+
+.icon-status-view {
+  @extend .icon-accept-common;
+  background-color: #1b4ca1;
+}
+
+.disabled-menu-item {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.disabled-text {
+  color: #999 !important;
+  cursor: not-allowed;
 }

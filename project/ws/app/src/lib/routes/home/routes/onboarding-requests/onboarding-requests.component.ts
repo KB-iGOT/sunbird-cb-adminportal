@@ -121,7 +121,7 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
   }
 
   getDisplayName() {
-    return this.displayType.charAt(0).toUpperCase() + this.displayType.substr(1).toLowerCase()
+    return this.displayType?.charAt(0)?.toUpperCase() + this.displayType?.substr(1)?.toLowerCase()
   }
 
   formatData(resData: any, list: any) {

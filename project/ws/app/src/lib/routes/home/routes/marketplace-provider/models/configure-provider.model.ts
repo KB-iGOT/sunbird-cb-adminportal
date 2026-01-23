@@ -29,4 +29,20 @@ export interface SsoConfiguration {
   firstNameAttribute: string
   userIdAttribute: string
   lastNameAttribute: string
+  isActive: boolean
+  isAuthenticate: boolean
+  mappers?: Array<{ key: string, value: string }> | { [key: string]: string },
+  includeAuthnStatement?: boolean,
+  signDocuments?: boolean,
+  optimizeRedirectSigningKeyLookup?: boolean,
+  signAssertions?: boolean,
+  signatureAlgorithm?: string,
+  samlSignatureKeyName?: string,
+  forcePOSTBinding?: boolean,
+  encryptAssertions?: boolean,
+  forceNameIdFormat?: boolean,
+  clientSignatureRequired?: boolean,
+  nameIdFormat?: string,
+  rootUrl?: string,
+  validRedirectUrls?: string[]
 }

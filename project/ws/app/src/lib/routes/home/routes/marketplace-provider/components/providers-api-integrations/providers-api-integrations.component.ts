@@ -6,6 +6,7 @@ import { SnackbarComponent } from '@sunbird-cb/consumption'
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor'
 import * as _ from 'lodash'
 import { MarketplaceService } from '../../services/marketplace.service'
+import { HttpErrorResponse } from '@angular/common/http'
 
 @Component({
   selector: 'ws-app-providers-api-integrations',
@@ -23,7 +24,7 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
   paramsFormGroup!: FormGroup
   bodyFormGroup!: FormGroup
   authenticationFormGroup!: FormGroup
-  transforamtionForm!: FormGroup
+  // transforamtionForm!: FormGroup
 
   // API Configuration
   apiTypesList: any[] = []
@@ -55,7 +56,9 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
     private snackBar: MatSnackBar,
     private activateRoute: ActivatedRoute,
     private marketPlaceSvc: MarketplaceService
-  ) { }
+  ) {
+    this.initializeFormGroups()
+  }
 
   ngOnInit(): void {
     this.activateRoute.data.subscribe(data => {
@@ -64,34 +67,32 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
       }
     })
 
-    this.initializeFormGroups()
     this.setupValueChangeListeners()
     this.delayTabLoad = false
 
     // Load configuration after forms are initialized
-    if (this.providerDetails) {
-      this.getCoursesConfiguration()
-    }
+    // if (this.providerDetails) {
+    //   this.getCoursesConfiguration()
+    // }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     // Ensure forms are initialized before attempting to patch data
     if (changes.providerDetails &&
       changes.providerDetails.previousValue === undefined &&
-      this.providerDetails &&
-      this.transformationSpecForm) {
+      this.providerDetails) {
       this.getCoursesConfiguration()
     }
   }
 
   private initializeFormGroups(): void {
     this.servicesFormGroup = this.formBuilder.group({
-      serviceName: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\]'!]*$/)]),
+      serviceName: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\]'!\s]*$/)]),
       serviceCode: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\]'!]*$/)]),
-      serviceDescription: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,.\-_$/:\[\]'!]*$/)]),
+      serviceDescription: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,.\-_$/:\[\]'!\s\n]*$/)]),
       isAuthenticated: new FormControl(false),
       strictCache: new FormControl(false),
-      strictCacheTimeInMinutes: new FormControl()
+      strictCacheTimeInMinutes: new FormControl('', [Validators.pattern(/^([0-9])$/)])
     })
 
     this.viaApiFormGroup = this.formBuilder.group({
@@ -118,7 +119,7 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
       rawData: new FormControl('', Validators.required)
     })
 
-    this.transforamtionForm = this.formBuilder.group({})
+    // this.transforamtionForm = this.formBuilder.group({})
 
     this.apiTypesList = [
       { type: 'Get', value: 'GET' },
@@ -159,9 +160,9 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
 
   getCoursesConfiguration(): void {
     // Ensure forms are initialized
-    if (!this.transformationSpecForm) {
-      return
-    }
+    // if (!this.transformationSpecForm) {
+    //   return
+    // }
     const contentApisId = _.get(this.providerDetails, 'serviceRegistryDetails.contentApisId', null)
     if (contentApisId) {
       this.marketPlaceSvc.getConfiguraionDetails(contentApisId).subscribe((responce: any) => {
@@ -185,9 +186,9 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
       serviceName: _.get(configurationDetails, 'serviceName'),
       serviceCode: _.get(configurationDetails, 'serviceCode'),
       serviceDescription: _.get(configurationDetails, 'serviceDescription'),
-      strictCache: _.get(configurationDetails, 'requestPayload.strictCache', false),
-      strictCacheTimeInMinutes: _.get(configurationDetails, 'requestPayload.strictCacheTimeInMinutes', 0),
-      isAuthenticated: false
+      strictCache: _.get(configurationDetails, 'strictCache', false),
+      strictCacheTimeInMinutes: _.get(configurationDetails, 'strictCacheTimeInMinutes', '') as string,
+      isAuthenticated: _.get(configurationDetails, 'isSecureHeader', false)
     })
 
     this.onToggleChange()
@@ -213,8 +214,10 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
     }
 
     if (JSON.stringify(authPayload) !== '{}') {
-      this.servicesFormGroup.controls.isAuthenticated.patchValue(true)
       this.authenticationFormGroup.controls.rawData.patchValue(authPayload)
+    }
+    if (_.get(configurationDetails, 'isSecureHeader', false)) {
+      this.authenticationToggleChange(false)
     }
 
     const transformContent = _.get(this.providerDetails, this.transformationType, _.get(this.providerConfiguration, this.transformationType))
@@ -300,6 +303,12 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
     }
   }
 
+  numericOnly(event: any): boolean {
+    const pattren = /^([0-9])$/
+    const result = pattren.test(event.key)
+    return result
+  }
+
   onApiTabChange(tabValue: string): void {
     this.selectedApiTab = tabValue
   }
@@ -314,17 +323,56 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
     return control?.value?.length || 0
   }
 
-  authenticationToggleChange(): void {
+  authenticationToggleChange(restAuthenticationFormGroup = true): void {
     const isAuthenticated = this.servicesFormGroup.controls.isAuthenticated.value
     if (!isAuthenticated) {
       this.servicesFormGroup.controls.strictCache.patchValue(false)
+      this.resetControl('strictCacheTimeInMinutes')
+      this.apiMetadata = this.apiMetadata.filter(item => item.name !== 'Authentication')
+      this.authenticationFormGroup.reset()
+      if (this.selectedApiTab === 'authPayload') {
+        this.selectedApiTab = this.apiMetadata[0].value
+      }
+    } else {
+      this.apiMetadata.push({ name: 'Authentication', value: 'authPayload' })
+      const authPayloadControl = this.authenticationFormGroup.controls.rawData
+      if (authPayloadControl && restAuthenticationFormGroup) {
+        authPayloadControl.patchValue(
+          _.get(this.providerConfiguration, 'transformContentViaApiAuthentication', {})
+        )
+      }
     }
   }
 
   onToggleChange(): void {
     const strictCache = this.servicesFormGroup.controls.strictCache.value
     if (!strictCache) {
-      this.servicesFormGroup.controls.strictCacheTimeInMinutes.patchValue(null)
+      this.resetControl('strictCacheTimeInMinutes')
+    } else {
+      const strictCacheTimeInMinutesControl = this.getControl('strictCacheTimeInMinutes')
+      if (strictCacheTimeInMinutesControl) {
+        strictCacheTimeInMinutesControl.setValidators([Validators.required])
+        strictCacheTimeInMinutesControl.updateValueAndValidity()
+        strictCacheTimeInMinutesControl.markAsUntouched()
+      }
+    }
+  }
+
+  getControl(controlName: string): FormControl | null {
+    const control: FormControl | null = this.servicesFormGroup.get(controlName) as FormControl | null
+    if (control) {
+      return control
+    }
+    return null
+  }
+
+  resetControl(controlName: string): void {
+    const control = this.getControl(controlName)
+    if (control) {
+      control.reset()
+      control.markAsUntouched()
+      control.clearValidators()
+      control.updateValueAndValidity()
     }
   }
 
@@ -333,32 +381,188 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
   }
 
   updateTransformationDetails(): void {
-    if (this.transforamtionType === 'viaForm') {
-      if (this.transforamtionForm.valid) {
-        this.transformationsUpdated = true
-        this.showSnackBar('Transformation updated successfully', 'success')
-      }
-    } else if (this.transforamtionType === 'viaSpec') {
-      if (this.transformationSpecForm.valid) {
-        this.transformationsUpdated = true
-        this.showSnackBar('Transformation updated successfully', 'success')
+    const hasTransformationAlready = this.providerDetails[this.transformationType] ? true : false
+    // if (this.transforamtionType === 'viaForm') {
+    //   if (this.transforamtionForm.valid) {
+    //     this.transformationsUpdated = true
+    //     this.showSnackBar('Transformation updated successfully', 'success')
+    //   }
+    // } else if (this.transforamtionType === 'viaSpec') {
+    this.transformationSpecForm.markAsTouched()
+    if (this.transformationSpecForm.valid) {
+      try {
+        if (this.jsonEditor) {
+          this.jsonEditor!.get()
+        }
+        if (this.transformationSpecForm.valid && JSON.stringify(this.transformationSpecForm.value) !== '{}') {
+          this.providerDetails[this.transformationType] = this.transformationSpecForm.value
+          this.marketPlaceSvc.updateProvider(this.providerDetails).subscribe({
+            next: (responce: any) => {
+              if (responce) {
+                setTimeout(() => {
+                  let successMsg = 'Saved Successfully'
+                  successMsg = hasTransformationAlready ? 'Transformation updated successfully.' : 'Transformation saved successfully.'
+                  this.showSnackBar(successMsg, 'success')
+                  this.transformationsUpdated = true
+                }, 1000)
+              }
+            },
+            error: (error: HttpErrorResponse) => {
+              const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
+              this.showSnackBar(errmsg, 'error')
+            },
+          })
 
+        } else {
+          const message = 'Please provied valid spec json'
+          this.showSnackBar(message, 'error')
+        }
+      } catch (err) {
+        const message = 'Please provied valid spec json'
+        this.showSnackBar(message, 'error')
       }
     }
+    // }
   }
 
   get getUpdateBtnText(): string {
-    return this.transformationsUpdated ? 'Update' : 'Add'
+    return _.get(this.providerConfiguration, this.transformationType) ? 'Update' : 'Add'
   }
 
   configure(): void {
     if (this.servicesFormGroup.valid && this.viaApiFormGroup.valid && this.transformationsUpdated) {
-      this.showSnackBar('API Configuration saved successfully', 'success')
+      const formBody: any = this.generatCoursesConfiguration()
+      if (_.get(this.providerDetails, 'serviceRegistryDetails.contentApisId', null)) {
+        formBody['id'] = _.get(this.providerDetails, 'serviceRegistryDetails.contentApisId')
+        this.marketPlaceSvc.updateConfiguration(formBody).subscribe({
+          next: responce => {
+            if (responce) {
+              const message = 'API Configuration saved successfully'
+              this.showSnackBar(message, 'success')
+            }
+          },
+          error: (error: HttpErrorResponse) => {
+            const errmsg = _.get(error, 'message', 'Some thing went wrong please try again')
+            this.showSnackBar(errmsg, 'error')
+          },
+        })
+      } else {
+        this.marketPlaceSvc.createConfiguration(formBody).subscribe({
+          next: (responce: any) => {
+            if (responce) {
+              if (this.providerDetails['serviceRegistryDetails']) {
+                this.providerDetails['serviceRegistryDetails']['contentApisId'] = responce.id
+              } else {
+                this.providerDetails['serviceRegistryDetails'] = {
+                  contentApisId: responce.id,
+                }
+              }
+              this.updateProviderDetails()
+            }
+          },
+          error: (error: HttpErrorResponse) => {
+            const errmsg = _.get(error, 'message', 'Some thing went wrong please try again')
+            this.showSnackBar(errmsg, 'error')
+          },
+        })
+      }
     } else {
-      this.showSnackBar('Please fill all required fields and add transformation', 'error')
-
+      this.servicesFormGroup.markAllAsTouched()
+      this.viaApiFormGroup.markAllAsTouched()
+      if (this.servicesFormGroup.invalid || this.viaApiFormGroup.invalid) {
+        this.showSnackBar('Please fill all required fields and add transformation', 'error')
+      } else if (!this.transformationsUpdated) {
+        if (_.get(this.providerConfiguration, this.transformationType)) {
+          this.showSnackBar('Please update transform content', 'error')
+        } else {
+          this.showSnackBar('Please add transform content', 'error')
+        }
+      }
       this.executed = true
     }
+  }
+
+  generatCoursesConfiguration() {
+    const serviceDetails = this.servicesFormGroup.value
+    serviceDetails['serviceCode'] = this.servicesFormGroup.controls.serviceCode.value.toUpperCase()
+    const params = this.getParamsAndUrl()
+    const isFormData = _.get(this.bodyFormGroup, 'value.tableListFormArray[0].key') ? true : false
+    const authPayload = _.get(this.authenticationFormGroup, 'value.rawData', '{}')
+    const formBody = {
+      isFormData,
+      requestMethod: this.viaApiFormGroup.controls.apiType.value,
+      url: params.url,
+      serviceCode: serviceDetails.serviceCode,
+      serviceName: serviceDetails.serviceName,
+      serviceDescription: serviceDetails.serviceDescription,
+      operationType: 'PEER_TO_PEER',
+      urlPlaceholder: params.urlPlaceholder,
+      isActive: true,
+      isSecureHeader: serviceDetails.isAuthenticated ? true : false,
+      urlSegment: null,
+      hostAddress: null,
+      partnerCode: _.get(this.providerDetails, 'data.partnerCode'),
+      requestPayload: {
+        requestMap: isFormData ? this.generateObjectFromForm(this.bodyFormGroup.value.tableListFormArray) : this.bodyFormGroup.value.rawData,
+        headerMap: this.generateObjectFromForm(this.headersFormGroup.value.tableListFormArray),
+        urlMap: this.generateObjectFromForm(this.paramsFormGroup.value.tableListFormArray, true)
+      },
+      authPayload: authPayload ? authPayload : {},
+      strictCache: serviceDetails.strictCache,
+      strictCacheTimeInMinutes: serviceDetails.strictCacheTimeInMinutes ? Number(serviceDetails.strictCacheTimeInMinutes) : null
+    }
+    return formBody
+  }
+
+  getParamsAndUrl() {
+    const parmsAndUrl = {
+      url: `${this.actualUrl}`,
+      urlPlaceholder: '',
+    }
+    const params = this.paramsFormGroup.value.tableListFormArray
+    if (params && params[0].key) {
+      let paramsUrl = ''
+      params.forEach((element: any) => {
+        if (element.key) {
+          paramsUrl = `${paramsUrl}&${element['key']}={${element['key']}}`
+          parmsAndUrl.urlPlaceholder =
+            `${parmsAndUrl.urlPlaceholder}${parmsAndUrl.urlPlaceholder.length === 0 ? '{' : ',{'}${element['key']}}`
+        }
+      })
+      if (paramsUrl) {
+        parmsAndUrl.url = `${parmsAndUrl.url}?${paramsUrl}`
+      }
+    }
+    return parmsAndUrl
+  }
+
+  generateObjectFromForm(form: any, isParams = false) {
+    const generatedObject: any = {}
+    if (form && form[0] && form[0].key) {
+      form.forEach((element: any) => {
+        if (element.key) {
+          generatedObject[element.key] = isParams ? `{${element.key}}` : element.value
+        }
+      })
+    }
+    return generatedObject
+  }
+
+  updateProviderDetails() {
+    this.marketPlaceSvc.updateProvider(this.providerDetails).subscribe({
+      next: (responce: any) => {
+        if (responce) {
+          setTimeout(() => {
+            const successMsg = 'API Configuration saved successfully'
+            this.showSnackBar(successMsg, 'success')
+          }, 1000)
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
+        this.showSnackBar(errmsg, 'error')
+      },
+    })
   }
 
   showSnackBar(message: string, type: 'error' | 'success') {
