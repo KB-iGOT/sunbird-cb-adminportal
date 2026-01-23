@@ -156,3 +156,18 @@
   margin-top: 2rem !important;
   margin-bottom: 2rem !important;
 }
+
+.mapper-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+
+  .mat-form-field {
+    flex: 1;
+  }
+
+  .remove-mapper-btn {
+    color: #dc3545;
+    padding: 0.25rem;
+  }
+}

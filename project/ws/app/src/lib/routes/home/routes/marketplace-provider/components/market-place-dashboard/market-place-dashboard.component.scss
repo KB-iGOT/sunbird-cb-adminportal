@@ -1,21 +1,22 @@
 .header {
-  color: #000000DE;
+  color: #000;
   /* stylelint-enable */
-  font: 600 16px Montserrat;
+  font-family: Montserrat;
   /* stylelint-disable */
+  font-weight: 600;
+  font-size: 20px;
 }
 
 .onboard-btn {
   width: 150px;
   height: 40px;
-  /* stylelint-enable */
-  font: 700 14px Lato;
-  /* stylelint-disable */
-  color: #FFFFFF !important;
-  background-color: #1B4CA1 !important;
+  font-weight: 700;
+  font-size: 14px;
+  color: #ffffff !important;
+  background-color: #1b4ca1 !important;
 }
 
-.emptyShelf-img{
+.emptyShelf-img {
   width: 417px;
   height: 366px;
 }
@@ -24,11 +25,10 @@
   /* stylelint-enable */
   font: 600 20px Montserrat;
   /* stylelint-disable */
-  color: #000000DE;
+  color: #000000de;
 }
 
 .search {
-
   .search-icon {
     position: absolute;
     top: 9px;
@@ -61,5 +61,19 @@
   .MarketplaceSpinner {
     position: unset !important;
     margin: 0px !important;
+  }
+}
+
+::ng-deep .marketplace-lists {
+  .mat-tab-label-active.mat-tab-label {
+    opacity: 1;
+  }
+  .mat-tab-label-active .mat-tab-label-content {
+    /* stylelint-enable */
+    font-family: Lato;
+    /* stylelint-disable */
+    font-weight: 700;
+    font-size: 14px;
+    color: #1b4ca1;
   }
 }

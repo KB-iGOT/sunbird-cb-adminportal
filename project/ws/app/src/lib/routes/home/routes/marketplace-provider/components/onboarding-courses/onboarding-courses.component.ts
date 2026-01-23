@@ -48,7 +48,6 @@ export class OnboardingCoursesComponent implements OnInit, OnChanges {
     totalCount: 20,
     paginationSize: 10,
     paginationSizeOptions: [10, 20, 50, 100]
-
   }
 
   delayTabLoad = true

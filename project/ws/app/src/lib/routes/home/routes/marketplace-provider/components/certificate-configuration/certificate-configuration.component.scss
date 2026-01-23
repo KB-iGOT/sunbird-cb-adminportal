@@ -55,7 +55,7 @@
     width: 200px;
   }
 
-  .certificate-logo-image-icon {
+  .certificate-logo-image-icon, .remove-logo-image-icon {
     position: absolute;
     right: -15px;
     top: -15px;
@@ -80,7 +80,7 @@
     justify-content: center;
   }
   .uploaded-certificate {
-    width: 200px;
+    width: 565px;
   }
 
   .actions-on-certificate button {

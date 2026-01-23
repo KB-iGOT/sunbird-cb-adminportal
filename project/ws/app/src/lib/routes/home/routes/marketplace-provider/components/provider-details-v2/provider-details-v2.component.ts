@@ -1,30 +1,35 @@
-import { Component, ViewChild, ElementRef, Output, Input, EventEmitter, SimpleChanges, OnChanges } from '@angular/core'
+import { Component, ViewChild, ElementRef, Output, Input, EventEmitter, SimpleChanges, OnChanges, OnDestroy, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { DatePipe } from '@angular/common'
 import { MarketplaceService } from '../../services/marketplace.service'
 import * as _ from 'lodash'
 import { forkJoin, of } from 'rxjs'
-import { mergeMap } from 'rxjs/operators'
-import { Router } from '@angular/router'
+import { mergeMap, takeWhile } from 'rxjs/operators'
+import { ActivatedRoute, Router } from '@angular/router'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
+import { MatDialog } from '@angular/material/dialog'
+import { GlobalEventsService } from '../../../../../../../../../../../src/app/services/global-events.service'
+import { NavigationExternalService } from '../../../../../../../../../../../src/app/services/navigation-external.service'
+import { ConformationPopupComponent } from '../../dialogs/conformation-popup/conformation-popup.component'
 @Component({
   selector: 'ws-app-provider-details-v2',
   templateUrl: './provider-details-v2.component.html',
   styleUrls: ['./provider-details-v2.component.scss']
 })
-export class ProviderDetailsV2Component implements OnChanges {
+export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit {
   @Input() providerDetails: any
   @Output() loadProviderDetails = new EventEmitter<Boolean>()
 
-  providerDetailsForm: FormGroup
+  providerDetailsForm!: FormGroup
   @ViewChild('logoInput') logoInput?: ElementRef<HTMLInputElement>
   @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>
   @ViewChild('canvas') canvas?: ElementRef<HTMLCanvasElement>
 
+  isActive = true
+
   logoPreviewUrl: string | ArrayBuffer | null = null
   logoFile: File | null = null
-  logoError: string | null = null
   logoTouched = false
 
   FILE_UPLOAD_MAX_SIZE = 100 * 1024 * 1024
@@ -32,43 +37,81 @@ export class ProviderDetailsV2Component implements OnChanges {
   pdfFile: any = null
   uploadedPdfUrl = ''
   fileName = ''
+  logoName = ''
   fileUploadedDate: string | null = ''
 
   loading = false
   providerId: string | null = null
   providerDetailsBeforeUpdate: any
-
+  isPendingProvider = false
+  hasPartnerCode = false
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private datePipe: DatePipe,
     private marketplaceSvc: MarketplaceService,
-    private router: Router
+    private router: Router,
+    private loaderService: GlobalEventsService,
+    private externalsvc: NavigationExternalService,
+    private activatedRoute: ActivatedRoute,
+    private dialog: MatDialog,
   ) {
-    this.providerDetailsForm = this.fb.group({
-      contentPartnerName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\] ' !]*$/), Validators.maxLength(70)]],
-      partnerCode: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/), Validators.maxLength(6)]],
-      websiteUrl: ['', [Validators.required, Validators.pattern(/^(https?|http):\/\/[^\s/$.?#].[^\s]*$/), Validators.maxLength(1024)]],
-      description: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,\.\-_$/:\[\] ' !]*$/), Validators.maxLength(500)]],
-      providerTips: this.fb.array([]),
-      partnerAgreement: [''],
-      providerLogo: ['']
-    })
+    this.initializeForm()
+  }
+
+  ngOnInit(): void {
+    this.isPendingProvider = this.activatedRoute.snapshot.queryParams.status === 'PENDING'
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.providerDetails && changes.providerDetails.currentValue) {
       this.providerDetailsBeforeUpdate = JSON.parse(JSON.stringify(changes.providerDetails.currentValue))
+      this.providerId = _.get(changes.providerDetails.currentValue, 'data.id', null)
       this.patchProviderDetails(changes.providerDetails.currentValue)
+
+      // Add back button wirh breadcrumbs
+      this.externalsvc.breadcrumnItems.next(
+        [
+          {
+            label: 'Content Marketplace',
+            route: '/app/home/marketplace-providers',
+            active: false
+          },
+          {
+            label: this.providerDetailsBeforeUpdate?.data?.contentPartnerName || 'New Provider',
+            active: true
+          }
+        ]
+      )
     }
+  }
+
+  ngOnDestroy(): void {
+    this.isActive = false
+  }
+
+  initializeForm(): void {
+    this.providerDetailsForm = this.fb.group({
+      contentPartnerName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\] ' !]*$/), Validators.maxLength(70)]],
+      partnerCode: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/), Validators.maxLength(6)],],
+      websiteUrl: ['', [Validators.required, Validators.pattern(/^(https?|http):\/\/[^\s/$.?#].[^\s]*$/), Validators.maxLength(1024)]],
+      description: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,\.\-_$/:\[\] ' !]*$/), Validators.maxLength(500)]],
+      providerTips: this.fb.array([]),
+      providerLogo: ['', [Validators.required]],
+      contactName: [''],
+      email: [''],
+      phone: [''],
+    })
+
+    this.controls['partnerCode']?.valueChanges.pipe((takeWhile(() => this.isActive))).subscribe((value: string) => {
+      if (value) {
+        this.providerDetailsForm.get('partnerCode')?.setValue(value.toUpperCase(), { emitEvent: false })
+      }
+    })
   }
 
   get controls() {
     return this.providerDetailsForm.controls
-  }
-
-  get providerTipsList(): FormArray {
-    return this.providerDetailsForm.get('providerTips') as FormArray
   }
 
   get getTipsList(): FormArray {
@@ -97,14 +140,24 @@ export class ProviderDetailsV2Component implements OnChanges {
   }
   //#endregion
   patchProviderDetails(providerDetails: any) {
-    this.providerDetailsForm.patchValue({
+    this.hasPartnerCode = _.get(providerDetails, 'data.partnerCode') ? true : false
+    this.logoPreviewUrl = this.marketplaceSvc.convertResourceUrl(_.get(providerDetails, 'data.link', ''))
+    this.providerDetailsForm.setValue({
       contentPartnerName: _.get(providerDetails, 'data.contentPartnerName', ''),
       partnerCode: _.get(providerDetails, 'data.partnerCode', ''),
       websiteUrl: _.get(providerDetails, 'data.websiteUrl', ''),
       description: _.get(providerDetails, 'data.description', ''),
+      providerLogo: this.logoPreviewUrl || '',
+      contactName: _.get(providerDetails, 'data.contactName', ''),
+      email: _.get(providerDetails, 'data.email', ''),
+      phone: _.get(providerDetails, 'data.phone', ''),
+      providerTips: []
     })
+    if (this.logoPreviewUrl) {
+      this.logoName = this.logoPreviewUrl.split('_')[1] || ''
+    }
+    this.providerDetailsForm.updateValueAndValidity()
     this.getTipsList.clear()
-    this.logoPreviewUrl = _.get(providerDetails, 'data.link', '')
     this.uploadedPdfUrl = _.get(providerDetails, 'data.documentUrl', '')
     this.fileUploadedDate = _.get(providerDetails, 'data.documentUploadedDate', '')
     if (this.uploadedPdfUrl) {
@@ -136,7 +189,6 @@ export class ProviderDetailsV2Component implements OnChanges {
   }
 
   onLogoSelected(event: Event): void {
-    this.logoError = null
     const input = event.target as HTMLInputElement
     if (!input.files || input.files.length === 0) {
       return
@@ -166,11 +218,9 @@ export class ProviderDetailsV2Component implements OnChanges {
           reader.readAsDataURL(this.logoFile)
         } else {
           this.showSnackBar('Please upload image sized between 10 KB and 2 MB', 'error')
-          this.logoError = 'Please upload image sized between 10 KB and 2 MB'
         }
       } else {
         this.showSnackBar('Please upload svg or png image', 'error')
-        this.logoError = 'Please upload svg or png image'
       }
     }
   }
@@ -208,12 +258,13 @@ export class ProviderDetailsV2Component implements OnChanges {
     }, 'image/png')
 
     this.logoPreviewUrl = canvas.toDataURL('image/png')
+    this.providerDetailsForm.patchValue({ providerLogo: this.logoPreviewUrl })
   }
 
   removeLogo(): void {
     this.logoFile = null
     this.logoPreviewUrl = null
-    this.logoError = null
+    this.logoTouched = true
     this.providerDetailsForm.patchValue({ providerLogo: '' })
     if (this.logoInput && this.logoInput.nativeElement) {
       this.logoInput.nativeElement.value = ''
@@ -251,8 +302,10 @@ export class ProviderDetailsV2Component implements OnChanges {
   submit() {
     this.logoTouched = true
     if (this.providerDetailsForm.valid && this.logoPreviewUrl) {
+      this.loaderService.setLoaderState(true)
       this.createContentsToUpload()
     } else {
+      this.providerDetailsForm.get('providerLogo')?.markAsTouched()
       this.showSnackBar('Please fill all the mandatory fields with proper data', 'error')
     }
   }
@@ -304,7 +357,7 @@ export class ProviderDetailsV2Component implements OnChanges {
           responses.forEach((response: any) => {
             const createdUrl = _.get(response, 'result.url')
             if (response.fileType === 'thumbnail') {
-              this.logoPreviewUrl = createdUrl
+              this.logoPreviewUrl = this.marketplaceSvc.convertResourceUrl(createdUrl)
             } else if (response.fileType === 'ciosFile') {
               this.uploadedPdfUrl = createdUrl
             }
@@ -314,11 +367,16 @@ export class ProviderDetailsV2Component implements OnChanges {
           } else {
             this.saveProviderDetails()
           }
+
         },
         error: () => {
           this.loading = false
           this.showSnackBar('File upload failed', 'error')
+          this.loaderService.setLoaderState(false)
         },
+        complete: () => {
+          this.loaderService.setLoaderState(false)
+        }
       })
     } else {
       if (this.providerId) {
@@ -339,7 +397,7 @@ export class ProviderDetailsV2Component implements OnChanges {
         contentPartnerName: formDetails.contentPartnerName,
         providerTips: formDetails.providerTips,
         link: this.logoPreviewUrl,
-        partnerCode: formDetails.partnerCode.toUpperCase(),
+        partnerCode: formDetails.partnerCode?.toUpperCase(),
       }
       if (this.uploadedPdfUrl) {
         formBody['documentUrl'] = this.uploadedPdfUrl
@@ -349,16 +407,28 @@ export class ProviderDetailsV2Component implements OnChanges {
       this.marketplaceSvc.createProvider(formBody).subscribe({
         next: (response: any) => {
           this.loading = false
-          if (response) {
+          if (response?.params?.status === 'success') {
+            this.providerDetailsBeforeUpdate = response?.result
+            this.providerId = response?.result?.id
+            this.router.navigate([`/app/home/marketplace-providers/configure-provider`], {
+              queryParams: { id: this.providerId }
+            })
+            this.marketplaceSvc.newProviderAdded.next(this.providerId)
             setTimeout(() => {
               const successMsg = 'Successfully Onboarded'
               this.showSnackBar(successMsg, 'success')
+              this.loaderService.setLoaderState(false)
+
             }, 1000)
+          } else {
+            this.showSnackBar(response?.params?.errMsg || 'Failed to create provider', 'error')
+            this.loaderService.setLoaderState(false)
           }
         },
-        error: () => {
+        error: (error: any) => {
           this.loading = false
-          this.showSnackBar('Failed to create provider', 'error')
+          this.showSnackBar(error?.error?.params?.errMsg || 'Failed to create provider', 'error')
+          this.loaderService.setLoaderState(false)
         },
       })
     } else {
@@ -370,19 +440,20 @@ export class ProviderDetailsV2Component implements OnChanges {
     if (this.providerDetailsForm.valid && this.logoPreviewUrl && this.providerDetailsBeforeUpdate) {
       const formDetails = this.providerDetailsForm.value
       const updatePayload = JSON.parse(JSON.stringify(this.providerDetailsBeforeUpdate))
-      updatePayload['websiteUrl'] = formDetails.websiteUrl
-      updatePayload['isActive'] = true
-      updatePayload['description'] = formDetails.description
-      updatePayload['contentPartnerName'] = formDetails.contentPartnerName
-      updatePayload['providerTips'] = formDetails.providerTips
-      updatePayload['link'] = this.logoPreviewUrl
+      updatePayload['data']['websiteUrl'] = formDetails.websiteUrl
+      updatePayload['data']['isActive'] = true
+      updatePayload['data']['description'] = formDetails.description
+      updatePayload['data']['contentPartnerName'] = formDetails.contentPartnerName
+      updatePayload['data']['providerTips'] = formDetails.providerTips
+      updatePayload['data']['link'] = this.logoPreviewUrl
+      updatePayload['data']['partnerCode'] = _.get(formDetails, 'partnerCode', _.get(this.providerDetailsForm, 'controls.partnerCode.value', '')).toUpperCase()
 
       if (this.uploadedPdfUrl) {
-        updatePayload['documentUrl'] = this.uploadedPdfUrl
-        updatePayload['documentUploadedDate'] = this.fileUploadedDate
+        updatePayload['data']['documentUrl'] = this.uploadedPdfUrl
+        updatePayload['data']['documentUploadedDate'] = this.fileUploadedDate
       } else {
-        delete updatePayload['documentUrl']
-        delete updatePayload['documentUploadedDate']
+        delete updatePayload['data']['documentUrl']
+        delete updatePayload['data']['documentUploadedDate']
       }
 
       this.marketplaceSvc.updateProvider(updatePayload).subscribe({
@@ -393,12 +464,15 @@ export class ProviderDetailsV2Component implements OnChanges {
               this.sendDetailsUpdateEvent()
               const successMsg = 'Provider details updated successfully.'
               this.showSnackBar(successMsg, 'success')
+              this.loaderService.setLoaderState(false)
+
             }, 1000)
           }
         },
         error: () => {
           this.loading = false
           this.showSnackBar('Failed to update provider', 'error')
+          this.loaderService.setLoaderState(false)
         },
       })
     } else {
@@ -421,6 +495,83 @@ export class ProviderDetailsV2Component implements OnChanges {
 
   sendDetailsUpdateEvent() {
     this.loadProviderDetails.emit(true)
+  }
+
+  rejectApproveProvider(type: 'reject' | 'approve') {
+    if (type === 'approve') {
+      this.acceptRejectProviderStatus('accept', this.providerDetails?.data)
+    } else {
+      const dialogRefrence = this.dialog.open(ConformationPopupComponent, {
+        data: {
+          dialogType: 'input',
+          descriptions: [
+            {
+              header: 'Are you sure you want to reject the provider ?',
+              headerClass: 'flex items-start justify-center font-bold text-base ',
+            },
+          ],
+          inputDetails: {
+            placeholder: 'Enter reason for rejection',
+            rows: 4,
+            value: '',
+            required: true,
+            error: 'Reason for rejection is required',
+          },
+
+          footerClass: 'items-center justify-center',
+          buttons: [
+            {
+              btnText: 'No',
+              btnClass: 'btn-outline',
+              response: false,
+            },
+            {
+              btnText: 'Yes',
+              btnClass: 'btn-full-success',
+              response: true,
+            },
+          ],
+        },
+        autoFocus: false,
+        width: '626px',
+        maxWidth: '80vw',
+        maxHeight: '90vh',
+        height: '252px',
+        disableClose: true,
+        panelClass: 'reject-reason',
+      })
+
+      dialogRefrence.afterClosed().subscribe((res: any) => {
+        if (res && res.result) {
+          this.acceptRejectProviderStatus('reject', this.providerDetails?.data, res.value)
+        }
+      })
+    }
+  }
+
+  acceptRejectProviderStatus(status: string, rowData: any, rejectionReason?: string) {
+    const formBody = {
+      id: rowData.id,
+      status: status === 'accept' ? 'APPROVED' : 'REJECTED',
+    }
+
+    if (status === 'reject' && rejectionReason) {
+      (formBody as any).comment = rejectionReason
+    }
+
+    this.loaderService.setLoaderState(true)
+    this.marketplaceSvc.changeStatusRegisterProvider(formBody).subscribe({
+      next: () => {
+        this.loaderService.setLoaderState(false)
+        this.showSnackBar(`The request has been ${status === 'accept' ? 'approved' : 'rejected'} successfully.`, 'success')
+        this.navigateToProvidersDashboard()
+      },
+      error: (error: any) => {
+        this.loaderService.setLoaderState(false)
+        const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong')
+        this.showSnackBar(errmsg, 'error')
+      },
+    })
   }
 
 }

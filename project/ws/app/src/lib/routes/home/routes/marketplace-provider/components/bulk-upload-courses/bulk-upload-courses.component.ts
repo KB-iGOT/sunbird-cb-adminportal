@@ -47,6 +47,7 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
   executed = false
   uploadedFileHeadersList: string[] = []
   availableHeadrsList: string[] = []
+  configurationData: any
   //#endregion
   //#endregion
 
@@ -61,15 +62,10 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
     this.transforamtionForm = this.formBuilder.group({})
   }
 
-  getRoutesData() {
-    this.activateRoute.data.subscribe(data => {
-      if (data.pageData.data) {
-        this.providerConfiguration = data.pageData.data
-      }
-    })
-  }
 
-  //#endregion
+  ngOnInit(): void {
+    this.configurationData = this.activateRoute?.snapshot?.data?.pageData?.data
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (
@@ -83,6 +79,14 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
     }
   }
 
+  getRoutesData() {
+    this.activateRoute.data.subscribe(data => {
+      if (data.pageData.data) {
+        this.providerConfiguration = data.pageData.data
+      }
+    })
+  }
+
   initializTransforamtionControls() {
     this.transforamtionForm = this.formBuilder.group({})
     let trasformationJson: any = {}
@@ -91,26 +95,37 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
     }
 
     if (trasformationJson) {
+      const requiredList = _.get(this.providerConfiguration, 'trasformContentJson[0].requiredList', [])
       Object.entries(trasformationJson).forEach(([key, path]) => {
         const transFormContentKeysAndControl: {
           lable: string,
           controlName: string,
-          path: string
+          path: string,
+          isRequired: boolean
         } = {
           lable: key,
           controlName: key.replace(' ', ''),
           path: path as string,
+          isRequired: requiredList.includes(key)
         }
-        this.transforamtionForm.addControl(key.replace(' ', ''), new FormControl('', Validators.required))
+        if (transFormContentKeysAndControl.isRequired) {
+          this.transforamtionForm.addControl(key.replace(' ', ''), new FormControl('', Validators.required))
+        } else {
+          this.transforamtionForm.addControl(key.replace(' ', ''), new FormControl(''))
+        }
         this.transFormContentKeysAndControls.push(transFormContentKeysAndControl)
       })
     }
   }
 
-  ngOnInit(): void {
+  //#region (contain browsing file and related events to get drop down list)
+  onFileInputChange(event: any): void {
+    if (event.target.files && event.target.files.length > 0) {
+      this.onDropHandler(event.target.files[0])
+    }
+    event.target.value = null
   }
 
-  //#region (contain browsing file and related events to get drop down list)
   onDropHandler(file: File) {
     if (!file) {
       return
@@ -172,7 +187,9 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
     const headers = (<string>csvRecordsArr[0]).split(',')
     const headerArray = []
     for (let j = 0; j < headers.length; j = j + 1) {
-      headerArray.push(headers[j])
+      // Remove surrounding quotes and trim whitespace
+      const cleanedHeader = headers[j].replace(/^"|"$/g, '').trim()
+      headerArray.push(cleanedHeader)
     }
     return headerArray
   }
@@ -184,7 +201,7 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
   }
 
   upDateTransforamtionDetails() {
-    this.providerDetalsBeforUpdate['data']['isActive'] = true
+    // this.providerDetalsBeforUpdate['data']['isActive'] = true
     const hasTransformationAlready = this.providerDetalsBeforUpdate[this.transformationType] ? true : false
     this.transforamtionForm.markAllAsTouched()
     if (this.transforamtionForm.valid) {
@@ -264,7 +281,7 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
   get getUpdateBtnText(): string {
     let btnText = ''
     if (this.transformationType === 'trasformContentJson') {
-      if (this.providerDetalsBeforUpdate.trasformContentJson) {
+      if (this.providerDetalsBeforUpdate?.trasformContentJson) {
         btnText = 'Update Transform Content'
       } else {
         btnText = 'Save Transform Content'
@@ -302,7 +319,7 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
     } else {
       let message = ''
       if (this.transformationType === 'trasformContentJson') {
-        message = this.providerDetalsBeforUpdate.trasformContentJson ? 'Please update transform content' : 'Please add transform content'
+        message = this.providerDetalsBeforUpdate?.trasformContentJson ? 'Please update transform content' : 'Please add transform content'
       }
       this.showSnackBar(message, 'error')
     }
@@ -363,6 +380,11 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
         message: message, type: type,
       }, duration: 5000, panelClass: type,
     })
+  }
+
+  downloadSampleFile() {
+    const sampleFileLink = this.configurationData?.bulkUploadCourse?.sampleFileDownloadLink
+    this.marketPlaceSvc.downloadAssetFile(sampleFileLink, 'Sample File')
   }
 
 }
