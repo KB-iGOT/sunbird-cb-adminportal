@@ -6,7 +6,8 @@ import { SsoConfiguration } from '../../models/configure-provider.model'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
 import { GlobalEventsService } from '../../../../../../../../../../../src/app/services/global-events.service'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
+import * as _ from 'lodash'
 
 @Component({
   selector: 'ws-app-sso-configure-settings',
@@ -34,6 +35,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
   acsUrl = new FormControl('', [Validators.required, this.urlValidator()])
   ssoTestUrl = new FormControl('', [Validators.required, this.urlValidator()])
   status = new FormControl(false)
+  attributesOptionsList = []
 
   get mappersFormArray() {
     return this.ssoSettingsForm.get('mappers') as FormArray
@@ -42,6 +44,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
   SSOConfigurationData: SsoConfiguration | null = null
   constructor(private clipboard: Clipboard, private formBuilder: FormBuilder, private marketplaceService: MarketplaceService, private snackBar: MatSnackBar,
     private loaderService: GlobalEventsService, private router: Router,
+    private activateRoute: ActivatedRoute,
 
   ) {
     this.ssoSettingsForm = this.formBuilder.group({})
@@ -53,6 +56,11 @@ export class SsoConfigureSettingsComponent implements OnInit {
   }
 
   initializeForm() {
+    this.activateRoute.data.subscribe(data => {
+      if (data.pageData.data) {
+        this.attributesOptionsList = _.get(data, 'pageData.data.SSO_attributs', [])
+      }
+    })
     this.ssoSettingsForm = this.formBuilder.group({
       clientId: ['', [Validators.required]],
       partnerName: ['', [Validators.required]],

@@ -18,15 +18,11 @@
                   <mat-option [value]="type.value">{{ type.name }}</mat-option>
                 </ng-container>
               </mat-select>
-              <mat-error
-                class="m-1"
-                *ngIf="
+              <mat-error class="m-1" *ngIf="
                   ssoSettingsForm.get('ssoProtocol').hasError('required') &&
                   (ssoSettingsForm.get('ssoProtocol').dirty ||
                     ssoSettingsForm.get('ssoProtocol').touched)
-                "
-                >This field is required</mat-error
-              >
+                ">This field is required</mat-error>
             </mat-form-field>
           </div>
 
@@ -36,15 +32,11 @@
             </div>
             <mat-form-field class="w-full">
               <input matInput placeholder="Type here" formControlName="partnerName" />
-              <mat-error
-                class="m-1"
-                *ngIf="
+              <mat-error class="m-1" *ngIf="
                   ssoSettingsForm.get('partnerName').hasError('required') &&
                   (ssoSettingsForm.get('partnerName').dirty ||
                     ssoSettingsForm.get('partnerName').touched)
-                "
-                >This field is required</mat-error
-              >
+                ">This field is required</mat-error>
             </mat-form-field>
           </div>
 
@@ -54,14 +46,10 @@
             </div>
             <mat-form-field class="w-full">
               <input matInput placeholder="Type here" formControlName="clientId" />
-              <mat-error
-                class="m-1"
-                *ngIf="
+              <mat-error class="m-1" *ngIf="
                   ssoSettingsForm.get('clientId').hasError('required') &&
                   (ssoSettingsForm.get('clientId').dirty || ssoSettingsForm.get('clientId').touched)
-                "
-                >This field is required</mat-error
-              >
+                ">This field is required</mat-error>
             </mat-form-field>
           </div>
 
@@ -71,22 +59,14 @@
             </div>
             <mat-form-field class="w-full">
               <input matInput placeholder="Type here" formControlName="ssoUrl" />
-              <mat-error
-                class="m-1"
-                *ngIf="
+              <mat-error class="m-1" *ngIf="
                   ssoSettingsForm.get('ssoUrl').hasError('required') &&
                   (ssoSettingsForm.get('ssoUrl').dirty || ssoSettingsForm.get('ssoUrl').touched)
-                "
-                >This field is required</mat-error
-              >
-              <mat-error
-                class="m-1"
-                *ngIf="
+                ">This field is required</mat-error>
+              <mat-error class="m-1" *ngIf="
                   ssoSettingsForm.get('ssoUrl').hasError('invalidUrl') &&
                   (ssoSettingsForm.get('ssoUrl').dirty || ssoSettingsForm.get('ssoUrl').touched)
-                "
-                >Please enter a valid URL</mat-error
-              >
+                ">Please enter a valid URL</mat-error>
             </mat-form-field>
           </div>
         </div>
@@ -97,58 +77,54 @@
             <p class="text-sm section-title mb-6 mt-2">Map SSO attributes to user profile fields</p>
           </div>
           <div class="second-sec-right">
-            <button
-              type="button"
-              (click)="addMappers()"
-              mat-flat-button
-              [disabled]="!canAddMapper()"
-              matTooltip="Please fill the last mapper before adding a new one"
-              matTooltipPosition="above"
-              class="flex items-center rounded-full px-4 py-2 btn-primary font-bold text-sm mat-btn-flat mat-btn-height-32"
-            >
+            <button type="button" (click)="addMappers()" mat-flat-button [disabled]="!canAddMapper()"
+              matTooltip="Please fill the last mapper before adding a new one" matTooltipPosition="above"
+              class="flex items-center rounded-full px-4 py-2 btn-primary font-bold text-sm mat-btn-flat mat-btn-height-32">
               Add Mapper
             </button>
           </div>
         </div>
 
-        <div
-          formArrayName="mappers"
-          *ngFor="let mapper of mappersFormArray.controls; let i = index"
-          class="mapper-row mb-3 mat-field-rounded w-full"
-        >
-          <div [formGroupName]="i" class="flex gap-2 w-full">
-            <mat-form-field class="flex-1">
-              <input matInput placeholder="Key" formControlName="key" />
-              <mat-error
-                *ngIf="
-                  mappersFormArray.at(i).get('key')?.hasError('required') &&
-                  (mappersFormArray.at(i).get('key')?.dirty ||
-                    mappersFormArray.at(i).get('key')?.touched)
-                "
-              >
-                Key is required
-              </mat-error>
-            </mat-form-field>
-            <mat-form-field class="flex-1">
-              <input matInput placeholder="Value" formControlName="value" />
-              <mat-error
-                *ngIf="
-                  mappersFormArray.at(i).get('value')?.hasError('required') &&
-                  (mappersFormArray.at(i).get('value')?.dirty ||
-                    mappersFormArray.at(i).get('value')?.touched)
-                "
-              >
-                Value is required
-              </mat-error>
-            </mat-form-field>
-            <button
-              type="button"
-              mat-icon-button
-              (click)="removeMapper(i)"
-              class="remove-mapper-btn"
-              *ngIf="mappersFormArray.length > 1"
-              matTooltip="Remove mapper"
-            >
+        <div formArrayName="mappers" *ngFor="let mapper of mappersFormArray.controls; let i = index"
+          class="mapper-row mb-3 mat-field-rounded w-full">
+          <div [formGroupName]="i" class="flex items-center gap-4 w-full">
+            <div class="flex flex-col w-full">
+              <div class="flex items-center gap-1 required">
+                <span class="label">key</span>
+              </div>
+              <mat-form-field class="flex-1" appearance="outline">
+                <input matInput placeholder="Key" formControlName="key" />
+                <mat-error *ngIf="
+                                        mappersFormArray.at(i).get('key')?.hasError('required') &&
+                                        (mappersFormArray.at(i).get('key')?.dirty ||
+                                          mappersFormArray.at(i).get('key')?.touched)
+                                      ">
+                  Key is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="flex flex-col w-full">
+              <div class="flex items-center gap-1 required">
+                <span class="label">value</span>
+              </div>
+              <mat-form-field class="flex-1">
+                <input matInput placeholder="Value" formControlName="value" [matAutocomplete]="autoValue">
+                <mat-autocomplete #autoValue="matAutocomplete">
+                  <mat-option *ngFor="let option of attributesOptionsList" [value]="option">
+                    {{ option }}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="
+                                            mappersFormArray.at(i).get('value')?.hasError('required') &&
+                                            (mappersFormArray.at(i).get('value')?.dirty ||
+                                            mappersFormArray.at(i).get('value')?.touched)
+                                          ">
+                  Value is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <button type="button" mat-icon-button (click)="removeMapper(i)" class="remove-mapper-btn"
+              *ngIf="mappersFormArray.length > 1" matTooltip="Remove mapper">
               <mat-icon>close</mat-icon>
             </button>
           </div>
@@ -156,19 +132,12 @@
       </div>
 
       <div class="flex gap-4 items-center justify-center mt-6">
-        <button
-          (click)="navigateToProvidersDashboard()"
-          mat-flat-button
-          class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline mat-btn-height-32"
-        >
+        <button (click)="navigateToProvidersDashboard()" mat-flat-button
+          class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline mat-btn-height-32">
           Cancel
         </button>
-        <button
-          (click)="updateCreateSSO()"
-          mat-flat-button
-          [disabled]="isSaveDisabled"
-          class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat mat-btn-height-32"
-        >
+        <button (click)="updateCreateSSO()" mat-flat-button [disabled]="isSaveDisabled"
+          class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat mat-btn-height-32">
           {{ SSOConfigurationData ? 'Update' : 'Save' }}
         </button>
       </div>
@@ -184,30 +153,13 @@
           <span class="meta-label">ACS URL</span>
         </div>
         <mat-form-field class="w-full">
-          <input
-            class="input-ellipse"
-            #callbackUrl
-            matInput
-            placeholder="Type here"
-            [formControl]="acsUrl"
-          />
-          <mat-icon
-            matSuffix
-            (click)="copy('callback', callbackUrl.value)"
-            matTooltipPosition="above"
-            [matTooltip]="callbackUrlCopied ? 'Copied' : 'Copy'"
-            [svgIcon]="'content_copy'"
-          ></mat-icon>
-          <mat-error
-            class="m-1"
-            *ngIf="acsUrl.hasError('required') && (acsUrl.dirty || acsUrl.touched)"
-            >This field is required</mat-error
-          >
-          <mat-error
-            class="m-1"
-            *ngIf="acsUrl.hasError('invalidUrl') && (acsUrl.dirty || acsUrl.touched)"
-            >Please enter a valid URL</mat-error
-          >
+          <input class="input-ellipse" #callbackUrl matInput placeholder="Type here" [formControl]="acsUrl" />
+          <mat-icon matSuffix (click)="copy('callback', callbackUrl.value)" matTooltipPosition="above"
+            [matTooltip]="callbackUrlCopied ? 'Copied' : 'Copy'" [svgIcon]="'content_copy'"></mat-icon>
+          <mat-error class="m-1" *ngIf="acsUrl.hasError('required') && (acsUrl.dirty || acsUrl.touched)">This field is
+            required</mat-error>
+          <mat-error class="m-1" *ngIf="acsUrl.hasError('invalidUrl') && (acsUrl.dirty || acsUrl.touched)">Please enter
+            a valid URL</mat-error>
         </mat-form-field>
       </div>
 
@@ -216,30 +168,15 @@
           <span class="meta-label">Redirect URL</span>
         </div>
         <mat-form-field class="w-full">
-          <input
-            class="input-ellipse"
-            #redirectUrl
-            matInput
-            placeholder="Type here"
-            [formControl]="ssoTestUrl"
-          />
-          <mat-icon
-            matSuffix
-            (click)="copy('redirect', redirectUrl.value)"
-            matTooltipPosition="above"
-            [matTooltip]="redirectUrlCopied ? 'Copied' : 'Copy'"
-            [svgIcon]="'content_copy'"
-          ></mat-icon>
-          <mat-error
-            class="m-1"
-            *ngIf="ssoTestUrl.hasError('required') && (ssoTestUrl.dirty || ssoTestUrl.touched)"
-            >This field is required</mat-error
-          >
-          <mat-error
-            class="m-1"
-            *ngIf="ssoTestUrl.hasError('invalidUrl') && (ssoTestUrl.dirty || ssoTestUrl.touched)"
-            >Please enter a valid URL</mat-error
-          >
+          <input class="input-ellipse" #redirectUrl matInput placeholder="Type here" [formControl]="ssoTestUrl" />
+          <mat-icon matSuffix (click)="copy('redirect', redirectUrl.value)" matTooltipPosition="above"
+            [matTooltip]="redirectUrlCopied ? 'Copied' : 'Copy'" [svgIcon]="'content_copy'"></mat-icon>
+          <mat-error class="m-1"
+            *ngIf="ssoTestUrl.hasError('required') && (ssoTestUrl.dirty || ssoTestUrl.touched)">This field is
+            required</mat-error>
+          <mat-error class="m-1"
+            *ngIf="ssoTestUrl.hasError('invalidUrl') && (ssoTestUrl.dirty || ssoTestUrl.touched)">Please enter a valid
+            URL</mat-error>
         </mat-form-field>
       </div>
     </div>
@@ -258,12 +195,9 @@
         <div class="mb-3">
           <span class="label"> Configuration </span>
           <div class="flex items-center justify-between mt-2">
-            <div
-              class="badge"
-              [ngClass]="
+            <div class="badge" [ngClass]="
                 SSOConfigurationData?.configuration === 'completed' ? 'success' : 'incomplete'
-              "
-            >
+              ">
               {{ SSOConfigurationData?.configuration || 'incomplete' }}
             </div>
           </div>
@@ -272,10 +206,7 @@
         <div class="mb-3">
           <span class="label"> Active </span>
           <div class="flex items-center justify-between mt-2">
-            <div
-              class="badge"
-              [ngClass]="SSOConfigurationData?.ssoTested ? 'success' : 'not-tested'"
-            >
+            <div class="badge" [ngClass]="SSOConfigurationData?.ssoTested ? 'success' : 'not-tested'">
               {{ SSOConfigurationData?.ssoTested ? 'Tested' : 'Not Tested' }}
             </div>
           </div>
