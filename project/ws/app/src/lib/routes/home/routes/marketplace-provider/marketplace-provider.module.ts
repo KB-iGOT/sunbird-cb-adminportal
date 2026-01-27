@@ -54,6 +54,8 @@ import { SsoIntegrationComponent } from './components/sso-integration/sso-integr
 import { SsoConfigureSettingsComponent } from './components/sso-configure-settings/sso-configure-settings.component'
 import { LoadingPopupComponent } from './dialogs/loading-popup/loading-popup.component'
 import { MaxLengthNumberDirective } from './directives/max-length-number.directive'
+import { MatLegacyAutocompleteModule } from '@angular/material/legacy-autocomplete'
+import { MatLegacyOptionModule } from '@angular/material/legacy-core'
 
 const routes: Routes = [
   {
@@ -168,7 +170,9 @@ const routes: Routes = [
     MatFormFieldModule,
     MatSidenavModule,
     MatRippleModule,
-    PaginationModule
+    PaginationModule,
+    MatLegacyAutocompleteModule,
+    MatLegacyOptionModule
   ],
   providers: [DatePipe, LoaderService],
   exports: [RouterModule],
