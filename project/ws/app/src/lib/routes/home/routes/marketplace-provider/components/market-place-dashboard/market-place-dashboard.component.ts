@@ -13,9 +13,10 @@ import { Subject } from 'rxjs'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
 
 @Component({
-  selector: 'ws-app-market-place-dashboard',
-  templateUrl: './market-place-dashboard.component.html',
-  styleUrls: ['./market-place-dashboard.component.scss'],
+    selector: 'ws-app-market-place-dashboard',
+    templateUrl: './market-place-dashboard.component.html',
+    styleUrls: ['./market-place-dashboard.component.scss'],
+    standalone: false
 })
 export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   isComponentActive = true

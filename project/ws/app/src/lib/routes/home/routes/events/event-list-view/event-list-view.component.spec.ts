@@ -1,7 +1,7 @@
 import { EventListViewComponent } from './event-list-view.component'
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
+import { MatTableDataSource } from '@angular/material/table'
 import { SimpleChange, SimpleChanges } from '@angular/core'
-import * as moment from 'moment'
+import moment from 'moment'
 
 // Mock dependencies
 jest.mock('@angular/router', () => ({

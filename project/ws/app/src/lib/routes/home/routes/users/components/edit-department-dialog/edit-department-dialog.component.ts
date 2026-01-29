@@ -1,14 +1,15 @@
 import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core'
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms'
 import { TenantAdminService } from '../../../../services/tenant-admin.service'
 
 @Component({
-  selector: 'ws-admin-edit-department-dialog',
-  providers: [TenantAdminService],
-  templateUrl: './edit-department-dialog.component.html',
-  styleUrls: ['./edit-department-dialog.component.scss'],
+    selector: 'ws-admin-edit-department-dialog',
+    providers: [TenantAdminService],
+    templateUrl: './edit-department-dialog.component.html',
+    styleUrls: ['./edit-department-dialog.component.scss'],
+    standalone: false
 })
 export class EditDepartmentDialogComponent implements OnInit {
   editForm: UntypedFormGroup

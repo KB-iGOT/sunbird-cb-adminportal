@@ -12,9 +12,10 @@ import { SnackbarComponent } from '@sunbird-cb/consumption'
 import { jsPDF } from 'jspdf'
 
 @Component({
-  selector: 'ws-app-certificate-configuration',
-  templateUrl: './certificate-configuration.component.html',
-  styleUrls: ['./certificate-configuration.component.scss']
+    selector: 'ws-app-certificate-configuration',
+    templateUrl: './certificate-configuration.component.html',
+    styleUrls: ['./certificate-configuration.component.scss'],
+    standalone: false
 })
 export class CertificateConfigurationComponent implements OnChanges {
   @Input() providerDetails: any

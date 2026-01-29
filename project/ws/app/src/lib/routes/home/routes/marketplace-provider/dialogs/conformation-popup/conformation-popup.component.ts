@@ -3,9 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 
 @Component({
-  selector: 'ws-app-conformation-popup',
-  templateUrl: './conformation-popup.component.html',
-  styleUrls: ['./conformation-popup.component.scss'],
+    selector: 'ws-app-conformation-popup',
+    templateUrl: './conformation-popup.component.html',
+    styleUrls: ['./conformation-popup.component.scss'],
+    standalone: false
 })
 export class ConformationPopupComponent implements OnInit {
 

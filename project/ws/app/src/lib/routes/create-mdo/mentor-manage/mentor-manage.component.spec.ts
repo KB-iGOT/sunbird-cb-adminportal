@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router'
 import { MentorManageComponent } from './mentor-manage.component'
 import { BehaviorSubject, of, Subject } from 'rxjs'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 import { EventService } from '@sunbird-cb/utils-v2'
 import { LoaderService } from '../../home/services/loader.service'
 import { DomSanitizer } from '@angular/platform-browser'

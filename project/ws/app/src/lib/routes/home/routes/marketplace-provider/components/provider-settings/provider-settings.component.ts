@@ -7,9 +7,10 @@ import { MarketplaceService } from '../../services/marketplace.service'
 import { LoaderService } from '../../../../services/loader.service'
 
 @Component({
-  selector: 'ws-app-provider-settings',
-  templateUrl: './provider-settings.component.html',
-  styleUrls: ['./provider-settings.component.scss']
+    selector: 'ws-app-provider-settings',
+    templateUrl: './provider-settings.component.html',
+    styleUrls: ['./provider-settings.component.scss'],
+    standalone: false
 })
 export class ProviderSettingsComponent implements OnChanges {
   providerSettingsForm!: FormGroup

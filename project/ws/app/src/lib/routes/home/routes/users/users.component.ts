@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { ActivatedRoute } from '@angular/router'
 import { NsAutoComplete } from '@sunbird-cb/collection'
 import { SystemRolesManagementService } from '../../services/system-roles-management.service'
@@ -10,11 +10,11 @@ import { EditDepartmentDialogComponent } from './components/edit-department-dial
 import { TenantAdminService } from '../../services/tenant-admin.service'
 
 @Component({
-  selector: 'ws-admin-users',
-  providers: [TenantAdminService],
-  templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss'],
-
+    selector: 'ws-admin-users',
+    providers: [TenantAdminService],
+    templateUrl: './users.component.html',
+    styleUrls: ['./users.component.scss'],
+    standalone: false
 })
 export class UsersComponent implements OnInit {
   @Output() selectedUser: EventEmitter<any> = new EventEmitter<any>()

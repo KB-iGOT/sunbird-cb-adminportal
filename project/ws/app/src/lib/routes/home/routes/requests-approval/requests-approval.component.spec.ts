@@ -5,8 +5,8 @@ import { of } from 'rxjs'
 import { RejectReasonDialogComponent } from '../reject-reason-dialog/reject-reason-dialog.component'
 import { DialogConfirmComponent } from '../../../../../../../../../src/app/component/dialog-confirm/dialog-confirm.component'
 import * as _ from 'lodash'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
 
 describe('RequestsApprovalComponent', () => {
     let component: RequestsApprovalComponent

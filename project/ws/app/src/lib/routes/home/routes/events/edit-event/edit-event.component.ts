@@ -2,8 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetect
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
 import { EventsService } from '../services/events.service'
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core'
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatPaginator } from '@angular/material/paginator'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { MatSort } from '@angular/material/sort'
 import { ITableData } from '../interfaces/interfaces'
 import { MatDialog } from '@angular/material/dialog'
@@ -11,7 +11,7 @@ import { ParticipantsComponent } from '../participants/participants.component'
 import { SuccessComponent } from '../success/success.component'
 import { Router, ActivatedRoute } from '@angular/router'
 import { ConfigurationsService, EventService } from '@sunbird-cb/utils-v2'
-import * as moment from 'moment'
+import moment from 'moment'
 /* tslint:disable */
 import * as _ from 'lodash'
 import { TelemetryEvents } from '../model/telemetry.event.model'
@@ -39,6 +39,7 @@ export const MY_FORMATS = {
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
+  standalone: false
 })
 export class EditEventComponent implements OnInit {
 

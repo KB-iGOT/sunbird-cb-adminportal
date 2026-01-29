@@ -5,9 +5,10 @@ import { DemoVideoPopupComponent } from '../../../../components/demo-video-popup
 import { MatDialog } from '@angular/material/dialog'
 
 @Component({
-  selector: 'ws-app-help-center-guide',
-  templateUrl: './help-center-guide.component.html',
-  styleUrls: ['./help-center-guide.component.scss'],
+    selector: 'ws-app-help-center-guide',
+    templateUrl: './help-center-guide.component.html',
+    styleUrls: ['./help-center-guide.component.scss'],
+    standalone: false
 })
 export class HelpCenterGuideComponent implements OnInit {
 

@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core'
-import { MatLegacyDialog } from '@angular/material/legacy-dialog'
-import { MatLegacySnackBar } from '@angular/material/legacy-snack-bar'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { ActivatedRoute, Router } from '@angular/router'
 import { RequestServiceService } from '../request-service.service'
 import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component'
 
 @Component({
-  selector: 'ws-app-request-copy-details-v2',
-  templateUrl: './request-copy-details-v2.component.html',
-  styleUrls: ['./request-copy-details-v2.component.scss']
+    selector: 'ws-app-request-copy-details-v2',
+    templateUrl: './request-copy-details-v2.component.html',
+    styleUrls: ['./request-copy-details-v2.component.scss'],
+    standalone: false
 })
 export class RequestCopyDetailsV2Component implements OnInit {
 
@@ -21,9 +22,9 @@ export class RequestCopyDetailsV2Component implements OnInit {
 
   constructor(
     private activatedRouter: ActivatedRoute,
-    private snackBar: MatLegacySnackBar,
+    private snackBar: MatSnackBar,
     private router: Router,
-    public dialog: MatLegacyDialog,
+    public dialog: MatDialog,
     private requestService: RequestServiceService,
   ) {
     this.currentUser = sessionStorage.getItem('idDetails') ? sessionStorage.getItem('idDetails') : ''

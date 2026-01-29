@@ -14,9 +14,10 @@ import { Globals } from '../../globals'
 import { ConfigurationsService, LoggerService, NsPage } from '@sunbird-cb/utils-v2'
 
 @Component({
-  selector: 'ws-app-tnc',
-  templateUrl: './tnc.component.html',
-  styleUrls: ['./tnc.component.scss'],
+    selector: 'ws-app-tnc',
+    templateUrl: './tnc.component.html',
+    styleUrls: ['./tnc.component.scss'],
+    standalone: false
 })
 export class TncComponent implements OnInit, OnDestroy {
   tncData: NsTnc.ITnc | null = null

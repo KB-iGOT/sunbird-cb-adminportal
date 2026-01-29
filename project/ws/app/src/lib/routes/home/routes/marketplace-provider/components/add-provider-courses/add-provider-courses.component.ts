@@ -2,9 +2,10 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 
 @Component({
-  selector: 'ws-app-add-provider-courses',
-  templateUrl: './add-provider-courses.component.html',
-  styleUrls: ['./add-provider-courses.component.scss']
+    selector: 'ws-app-add-provider-courses',
+    templateUrl: './add-provider-courses.component.html',
+    styleUrls: ['./add-provider-courses.component.scss'],
+    standalone: false
 })
 export class AddProviderCoursesComponent implements OnInit {
   @Output() action: EventEmitter<any> = new EventEmitter<any>()

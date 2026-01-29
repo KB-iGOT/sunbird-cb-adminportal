@@ -9,9 +9,10 @@ import { MarketplaceService } from '../../services/marketplace.service'
 import { HttpErrorResponse } from '@angular/common/http'
 
 @Component({
-  selector: 'ws-app-providers-api-integrations',
-  templateUrl: './providers-api-integrations.component.html',
-  styleUrls: ['./providers-api-integrations.component.scss']
+    selector: 'ws-app-providers-api-integrations',
+    templateUrl: './providers-api-integrations.component.html',
+    styleUrls: ['./providers-api-integrations.component.scss'],
+    standalone: false
 })
 export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
   @ViewChild('jsonEditor') jsonEditor: JsonEditorComponent | undefined

@@ -1,7 +1,7 @@
 
 import { Component, OnInit } from '@angular/core'
 import { NSProfileDataV2 } from '../../models/profile-v2.model'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 /* tslint:disable */
@@ -9,12 +9,12 @@ import _ from 'lodash'
 import { ModerationService } from '../../services/moderation.service'
 
 @Component({
-  selector: 'ws-app-directory',
-  templateUrl: './moderation.component.html',
-  styleUrls: ['./moderation.component.scss'],
-  /* tslint:disable */
-  host: { class: 'flex flex-1 margin-top-l' },
-  /* tslint:enable */
+    selector: 'ws-app-directory',
+    templateUrl: './moderation.component.html',
+    styleUrls: ['./moderation.component.scss'],
+    /* tslint:disable */
+    host: { class: 'flex flex-1 margin-top-l' },
+    standalone: false
 })
 export class ModerationViewComponent implements OnInit {
   currentFilter = 'MDO'

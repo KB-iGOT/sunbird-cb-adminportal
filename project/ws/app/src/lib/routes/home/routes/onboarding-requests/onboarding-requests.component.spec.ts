@@ -3,7 +3,7 @@ import { Router, Params } from '@angular/router'
 import { RequestsService } from '../../services/onboarding-requests.service'
 import { OnboardingRequestsComponent } from './onboarding-requests.component'
 import { of, Subject } from 'rxjs'
-import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator'
+import { PageEvent } from '@angular/material/paginator'
 
 describe('OnboardingRequestsComponent', () => {
     let component: OnboardingRequestsComponent

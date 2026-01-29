@@ -13,9 +13,10 @@ import { GlobalEventsService } from '../../../../../../../../../../../src/app/se
 import { NavigationExternalService } from '../../../../../../../../../../../src/app/services/navigation-external.service'
 import { ConformationPopupComponent } from '../../dialogs/conformation-popup/conformation-popup.component'
 @Component({
-  selector: 'ws-app-provider-details-v2',
-  templateUrl: './provider-details-v2.component.html',
-  styleUrls: ['./provider-details-v2.component.scss']
+    selector: 'ws-app-provider-details-v2',
+    templateUrl: './provider-details-v2.component.html',
+    styleUrls: ['./provider-details-v2.component.scss'],
+    standalone: false
 })
 export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit {
   @Input() providerDetails: any

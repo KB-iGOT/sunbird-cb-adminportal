@@ -10,9 +10,10 @@ import { UsersService } from '../../../home/services/users.service'
 //   lastName: any; email: any; active: any; blocked: any; roles: any[]
 // }
 @Component({
-  selector: 'ws-app-users',
-  templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss'],
+    selector: 'ws-app-users',
+    templateUrl: './users.component.html',
+    styleUrls: ['./users.component.scss'],
+    standalone: false
 })
 
 export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {

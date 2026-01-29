@@ -10,9 +10,10 @@ import { ActivatedRoute, Router } from '@angular/router'
 import * as _ from 'lodash'
 
 @Component({
-  selector: 'ws-app-sso-configure-settings',
-  templateUrl: './sso-configure-settings.component.html',
-  styleUrls: ['./sso-configure-settings.component.scss']
+    selector: 'ws-app-sso-configure-settings',
+    templateUrl: './sso-configure-settings.component.html',
+    styleUrls: ['./sso-configure-settings.component.scss'],
+    standalone: false
 })
 export class SsoConfigureSettingsComponent implements OnInit {
   @Input() providerDetails: any

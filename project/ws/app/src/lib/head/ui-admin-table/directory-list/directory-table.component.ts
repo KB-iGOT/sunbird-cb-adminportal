@@ -3,8 +3,8 @@ import {
   AfterViewInit, OnChanges, SimpleChanges, ElementRef,
 } from '@angular/core'
 import { SelectionModel } from '@angular/cdk/collections'
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator'
+import { MatTableDataSource } from '@angular/material/table'
+import { MatPaginator } from '@angular/material/paginator'
 import { MatSort } from '@angular/material/sort'
 import * as _ from 'lodash'
 
@@ -20,9 +20,10 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators'
 import { BehaviorSubject } from 'rxjs'
 
 @Component({
-  selector: 'ws-widget-directory-table',
-  templateUrl: './directory-table.component.html',
-  styleUrls: ['./directory-table.component.scss'],
+    selector: 'ws-widget-directory-table',
+    templateUrl: './directory-table.component.html',
+    styleUrls: ['./directory-table.component.scss'],
+    standalone: false
 })
 export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('searchInput') searchInput!: ElementRef

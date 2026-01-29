@@ -3,10 +3,10 @@ import {
   AfterViewInit, OnChanges, SimpleChanges,
 } from '@angular/core'
 import { SelectionModel } from '@angular/cdk/collections'
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatTableDataSource } from '@angular/material/table'
+import { MatDialog } from '@angular/material/dialog'
+import { MatPaginator } from '@angular/material/paginator'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { MatSort } from '@angular/material/sort'
 import * as _ from 'lodash'
 
@@ -19,9 +19,10 @@ import { environment } from '../../../../../../../../src/environments/environmen
 import { PageEvent } from '@angular/material/paginator'
 
 @Component({
-  selector: 'ws-widget-ui-user-table',
-  templateUrl: './ui-admin-user-table.component.html',
-  styleUrls: ['./ui-admin-user-table.component.scss'],
+    selector: 'ws-widget-ui-user-table',
+    templateUrl: './ui-admin-user-table.component.html',
+    styleUrls: ['./ui-admin-user-table.component.scss'],
+    standalone: false
 })
 export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() tableData!: ITableData | undefined

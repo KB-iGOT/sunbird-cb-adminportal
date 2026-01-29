@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core'
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import * as _ from 'lodash'
 import { SectorsService } from '../sectors.service'
 import { DomSanitizer } from '@angular/platform-browser'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { sectorConstants } from '../sectors-constats.model'
 
 @Component({
-  selector: 'ws-app-edit-sector',
-  templateUrl: './edit-sector.component.html',
-  styleUrls: ['./edit-sector.component.scss'],
+    selector: 'ws-app-edit-sector',
+    templateUrl: './edit-sector.component.html',
+    styleUrls: ['./edit-sector.component.scss'],
+    standalone: false
 })
 export class EditSectorComponent implements OnInit {
 

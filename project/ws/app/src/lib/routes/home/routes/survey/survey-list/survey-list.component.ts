@@ -3,9 +3,9 @@ import {
   AfterViewInit, OnChanges, Inject, ChangeDetectorRef, AfterViewChecked,
 } from '@angular/core'
 import { SelectionModel } from '@angular/cdk/collections'
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatTableDataSource } from '@angular/material/table'
+import { MatPaginator } from '@angular/material/paginator'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { MatSort } from '@angular/material/sort'
 import * as _ from 'lodash'
 import { ITableData, IColums, IAction } from './../interfaces/interfaces'
@@ -14,7 +14,7 @@ import { ActivatedRoute } from '@angular/router'
 import { MAT_DIALOG_DATA } from '@angular/material/dialog'
 // import { EventService } from '@sunbird-cb/utils-v2'
 import { NsContent } from '@sunbird-cb/collection'
-// import * as moment from 'moment'
+// import moment from 'moment'
 import { environment } from '../../../../../../../../../../src/environments/environment'
 export interface IContentShareData {
   content: NsContent.IContent
@@ -24,6 +24,7 @@ export interface IContentShareData {
   selector: 'ws-app-survey-list',
   templateUrl: './survey-list.component.html',
   styleUrls: ['./survey-list.component.scss'],
+  standalone: false
 })
 export class SurveyListComponent implements OnInit, AfterViewInit, OnChanges, AfterViewChecked {
 

@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ConfigurationsService, EventService } from '@sunbird-cb/utils-v2'
-import * as moment from 'moment'
+import moment from 'moment'
 /* tslint:disable */
 import * as _ from 'lodash'
 import { EventsService } from '../services/events.service'
 import { DialogConfirmComponent } from '../../../../../../../../../../src/app/component/dialog-confirm/dialog-confirm.component'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { TelemetryEvents } from '../model/telemetry.event.model'
 
 @Component({
   selector: 'ws-app-events-list',
   templateUrl: './events-list.component.html',
   styleUrls: ['./events-list.component.scss'],
+  standalone: false
 })
 export class EventsListComponent implements OnInit {
   currentUser!: string | null

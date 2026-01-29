@@ -3,10 +3,10 @@ import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { CreateUserService } from './create-user.service'
 import { SystemRolesManagementService } from '../../../services/system-roles-management.service'
 import { Router, ActivatedRoute } from '@angular/router'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 
-jest.mock('@angular/material/legacy-snack-bar', () => ({
-    MatLegacySnackBar: jest.fn().mockImplementation(() => ({
+jest.mock('@angular/material/snack-bar', () => ({
+    MatSnackBar: jest.fn().mockImplementation(() => ({
         open: jest.fn(),
     })),
 }))

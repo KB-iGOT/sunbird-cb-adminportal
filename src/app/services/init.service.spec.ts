@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing'
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing'
 import { APP_BASE_HREF } from '@angular/common'
 import { MatIconRegistry } from '@angular/material/icon'
 import { DomSanitizer } from '@angular/platform-browser'
@@ -9,6 +9,7 @@ import { ConfigurationsService, LoggerService, UserPreferenceService } from '@su
 import { BtnSettingsService } from '@sunbird-cb/collection'
 import { SbUiResolverService } from '@sunbird-cb/resolver-v2'
 import { environment } from '../../environments/environment'
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('InitService', () => {
   let service: InitService
@@ -50,54 +51,56 @@ describe('InitService', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         InitService,
         {
-          provide: ConfigurationsService,
-          useValue: configServiceMockImpl
+            provide: ConfigurationsService,
+            useValue: configServiceMockImpl
         },
         {
-          provide: LoggerService,
-          useValue: {
-            info: jest.fn(),
-            warn: jest.fn(),
-            error: jest.fn()
-          }
+            provide: LoggerService,
+            useValue: {
+                info: jest.fn(),
+                warn: jest.fn(),
+                error: jest.fn()
+            }
         },
         {
-          provide: SbUiResolverService,
-          useValue: {
-            initialize: jest.fn(),
-            getWidgetKey: jest.fn()
-          }
+            provide: SbUiResolverService,
+            useValue: {
+                initialize: jest.fn(),
+                getWidgetKey: jest.fn()
+            }
         },
         {
-          provide: BtnSettingsService,
-          useValue: {
-            initializePrefChanges: jest.fn()
-          }
+            provide: BtnSettingsService,
+            useValue: {
+                initializePrefChanges: jest.fn()
+            }
         },
         {
-          provide: UserPreferenceService,
-          useValue: {
-            initialize: jest.fn()
-          }
+            provide: UserPreferenceService,
+            useValue: {
+                initialize: jest.fn()
+            }
         },
         {
-          provide: DomSanitizer,
-          useValue: domSanitizerMockImpl
+            provide: DomSanitizer,
+            useValue: domSanitizerMockImpl
         },
         {
-          provide: MatIconRegistry,
-          useValue: matIconRegistryMockImpl
+            provide: MatIconRegistry,
+            useValue: matIconRegistryMockImpl
         },
         {
-          provide: APP_BASE_HREF,
-          useValue: '/test'
-        }
-      ]
-    })
+            provide: APP_BASE_HREF,
+            useValue: '/test'
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
 
     service = TestBed.inject(InitService)
     httpMock = TestBed.inject(HttpTestingController)

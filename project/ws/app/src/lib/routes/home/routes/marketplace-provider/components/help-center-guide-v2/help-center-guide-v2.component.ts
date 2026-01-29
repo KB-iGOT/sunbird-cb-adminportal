@@ -6,25 +6,26 @@ import { DemoVideoPopupComponent } from '../../../../components/demo-video-popup
 import { MatDialog } from '@angular/material/dialog'
 
 @Component({
-  selector: 'ws-app-help-center-guide-v2',
-  templateUrl: './help-center-guide-v2.component.html',
-  styleUrls: ['./help-center-guide-v2.component.scss'],
-  animations: [
-    trigger('expandCollapse', [
-      state('collapsed', style({
-        height: '0',
-        overflow: 'hidden',
-        opacity: 0
-      })),
-      state('expanded', style({
-        height: '*',
-        opacity: 1
-      })),
-      transition('collapsed <=> expanded', [
-        animate('300ms ease-in-out')
-      ])
-    ])
-  ]
+    selector: 'ws-app-help-center-guide-v2',
+    templateUrl: './help-center-guide-v2.component.html',
+    styleUrls: ['./help-center-guide-v2.component.scss'],
+    animations: [
+        trigger('expandCollapse', [
+            state('collapsed', style({
+                height: '0',
+                overflow: 'hidden',
+                opacity: 0
+            })),
+            state('expanded', style({
+                height: '*',
+                opacity: 1
+            })),
+            transition('collapsed <=> expanded', [
+                animate('300ms ease-in-out')
+            ])
+        ])
+    ],
+    standalone: false
 })
 export class HelpCenterGuideComponentV2 implements OnInit {
 

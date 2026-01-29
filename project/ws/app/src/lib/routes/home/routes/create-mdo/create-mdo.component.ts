@@ -1,8 +1,8 @@
 import { DirectoryService } from '../../services/directory.services'
 import { Component, OnInit, Input } from '@angular/core'
 import { UntypedFormGroup, UntypedFormControl, ValidatorFn, AbstractControl, Validators } from '@angular/forms'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { UserPopupComponent } from '../user-popup/user-popup'
 
 import { LoaderService } from '../../services/loader.service'
@@ -37,10 +37,11 @@ export function forbiddenNamesValidator(optionsArray: any): ValidatorFn {
   }
 }
 @Component({
-  selector: 'ws-app-create-mdo',
-  providers: [AuthInitService, LoaderService],
-  templateUrl: './create-mdo.component.html',
-  styleUrls: ['./create-mdo.component.scss'],
+    selector: 'ws-app-create-mdo',
+    providers: [AuthInitService, LoaderService],
+    templateUrl: './create-mdo.component.html',
+    styleUrls: ['./create-mdo.component.scss'],
+    standalone: false
 })
 export class CreateMdoComponent implements OnInit {
   @Input() isSubmitPressed = false
