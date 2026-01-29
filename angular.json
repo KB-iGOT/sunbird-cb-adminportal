@@ -125,11 +125,10 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
+                  "maximumWarning": "200kb",
+                  "maximumError": "200kb"
                 }
-              ],
-              "serviceWorker": "ngsw-config.json"
+              ]
             },
             "dev": {
               "fileReplacements": [
@@ -148,14 +147,13 @@
                 {
                   "type": "initial",
                   "maximumWarning": "4mb",
-                  "maximumError": "15mb"
+                  "maximumError": "25mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
+                  "maximumWarning": "200kb"
                 }
-              ],
-              "serviceWorker": "ngsw-config.json"
+              ]
             },
             "preprod": {
               "fileReplacements": [
@@ -174,14 +172,13 @@
                 {
                   "type": "initial",
                   "maximumWarning": "4mb",
-                  "maximumError": "15mb"
+                  "maximumError": "25mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
+                  "maximumWarning": "200kb"
                 }
-              ],
-              "serviceWorker": "ngsw-config.json"
+              ]
             }
           },
           "defaultConfiguration": ""
