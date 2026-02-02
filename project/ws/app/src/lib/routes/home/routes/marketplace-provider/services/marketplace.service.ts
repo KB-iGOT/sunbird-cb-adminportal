@@ -25,6 +25,8 @@ const API_END_POINTS = {
   GET_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/read/${partnerId}`,
   CREATE_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/create/${partnerId}`,
   UPDATE_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/update/${partnerId}`,
+  TEST_SSO_CONFIGURATION: `/apis/proxies/v8/sso/test`,
+
 
   contentRegisterSearch: `/apis/proxies/v8/contentpartner/register/v1/search`,
   updateStatusRegisterProvider: `/apis/proxies/v8/contentpartner/register/v1/update`,
@@ -180,6 +182,10 @@ export class MarketplaceService {
 
   updateSSOConfiguration(partnerId: string, formBody: any) {
     return this.http.post(`${API_END_POINTS.UPDATE_SSO_CONFIGURATION(partnerId)}`, formBody)
+  }
+
+  testSSOConfiguration(formBody: any) {
+    return this.http.post(`${API_END_POINTS.TEST_SSO_CONFIGURATION}`, formBody)
   }
 
   contentRegisterList(formBody: any) {
