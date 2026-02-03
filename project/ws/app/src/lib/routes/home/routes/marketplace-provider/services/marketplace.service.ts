@@ -10,6 +10,7 @@ const API_END_POINTS = {
   UPLOAD_CIOS_CONTRACT: `/apis/proxies/v8/storage/v1/uploadCiosContract`,
   GET_PROVIDERS_LIST: `/apis/proxies/v8/contentpartner/v1/search`,
   DELETE_PROVIDER: `/apis/proxies/v8/contentpartner/v1/delete/`,
+  ACTIVATE_PROVIDER: `/apis/proxies/v8/contentpartner/v1/activate`,
   GET_PROVIDER_DETAILS: (id: string) => `/apis/proxies/v8/contentpartner/v1/read/${id}`,
   UPLOAD_CONTENT: `/apis/proxies/v8/ciosIntegration/v1/loadContentFromExcel/`,
   UPLOAD_PROGRES: `/apis/proxies/v8/ciosIntegration/v1/loadContentProgressFromExcel/`,
@@ -86,6 +87,10 @@ export class MarketplaceService {
 
   deleteProvider(providerId: string) {
     return this.http.delete(`${API_END_POINTS.DELETE_PROVIDER}${providerId}`)
+  }
+
+  activateProvider(formBody: any) {
+    return this.http.put(`${API_END_POINTS.ACTIVATE_PROVIDER}`, formBody)
   }
 
   getProviderDetails(id: string) {
