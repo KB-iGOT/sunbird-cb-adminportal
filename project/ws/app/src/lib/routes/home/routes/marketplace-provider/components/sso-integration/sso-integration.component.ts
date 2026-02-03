@@ -8,7 +8,8 @@ import { HttpErrorResponse } from '@angular/common/http'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import * as _ from 'lodash'
-import { forkJoin } from 'rxjs'
+import { forkJoin, Observable } from 'rxjs'
+import { mergeMap } from 'rxjs/operators'
 
 
 @Component({
@@ -84,13 +85,36 @@ export class SsoIntegrationComponent implements OnInit {
       }
     })
 
-    forkJoin({
-      ssoResponse: this.marketplaceService.updateSSOConfiguration(
-        this.providerDetails?.id,
-        ssoPayload
-      ),
-      providerResponse: this.marketplaceService.updateProvider(providerPayload)
-    }).subscribe({
+    const testPayload = {
+      courseDeeplink: '',
+      ssoId: ''
+    }
+
+    this.marketplaceService.testSSOConfiguration(testPayload).pipe(
+      mergeMap((testResponse: any) => {
+        // Check if testSSOConfiguration response has failed status
+        if (testResponse?.responseCode !== 'OK') {
+          return new Observable((observer) => {
+            observer.error({
+              error: {
+                params: {
+                  errMsg: testResponse?.params?.errmsg || 'SSO configuration test failed'
+                }
+              }
+            })
+          })
+        }
+
+        // If test passed, continue with forkJoin
+        return forkJoin({
+          ssoResponse: this.marketplaceService.updateSSOConfiguration(
+            this.providerDetails?.id,
+            ssoPayload
+          ),
+          providerResponse: this.marketplaceService.updateProvider(providerPayload)
+        })
+      })
+    ).subscribe({
       next: ({ ssoResponse, providerResponse }: any) => {
         if (ssoResponse?.result?.ssoData) {
           this.ssoConfigurations = ssoResponse.result.ssoData
