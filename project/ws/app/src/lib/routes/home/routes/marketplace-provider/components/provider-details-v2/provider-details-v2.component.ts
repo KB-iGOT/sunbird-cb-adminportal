@@ -230,23 +230,34 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
     const canvas = this.canvas.nativeElement
     const ctx = canvas.getContext('2d')
 
-    const aspectRatio = 16 / 9
-    let width = image.width
-    let height = image.height
-    if (width / height > aspectRatio) {
-      width = height * aspectRatio
+    // const aspectRatio = 16 / 9
+    const aspectRatio = 1 / 1
+    const containerWidth = 800
+    const containerHeight = containerWidth / aspectRatio
+
+    let drawWidth, drawHeight, offsetX, offsetY
+
+    const imageAspect = image.width / image.height
+
+    if (imageAspect > aspectRatio) {
+      drawWidth = containerWidth
+      drawHeight = containerWidth / imageAspect
+      offsetX = 0
+      offsetY = (containerHeight - drawHeight) / 2
     } else {
-      height = width / aspectRatio
+      drawHeight = containerHeight
+      drawWidth = containerHeight * imageAspect
+      offsetX = (containerWidth - drawWidth) / 2
+      offsetY = 0
     }
 
-    const startX = (image.width - width) / 2
-    const startY = (image.height - height) / 2
-
-    canvas.width = width
-    canvas.height = height
+    canvas.width = containerWidth
+    canvas.height = containerHeight
 
     if (ctx) {
-      ctx.drawImage(image, startX, startY, width, height, 0, 0, width, height)
+      ctx.fillStyle = 'white'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight)
     }
     canvas.toBlob(blob => {
       if (blob && this.logoFile) {
