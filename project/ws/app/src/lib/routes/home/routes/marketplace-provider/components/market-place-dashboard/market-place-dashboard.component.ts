@@ -377,43 +377,19 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
 
   activateProvider(rowData: any) {
     this.loaderService.setLoaderState(true)
-
-    this.marketPlaceSvc.getProviderDetails(rowData.id).subscribe({
-      next: (response: any) => {
-        if (Object.keys(response?.result)?.length) {
-          const data = response.result
-          const updatedPayload = {
-            ...data,
-            isActive: true,
-          }
-
-          this.marketPlaceSvc.updateProvider(updatedPayload).subscribe({
-            next: (res: any) => {
-              if (res) {
-                this.getProviders()
-                this.loaderService.setLoaderState(false)
-
-              }
-            },
-            error: (error: HttpErrorResponse) => {
-              const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong')
-              this.showSnackBar(errmsg, 'error')
-              this.loaderService.setLoaderState(false)
-
-            },
-          })
-        } else {
-          const errmsg = _.get(response, 'params.errMsg', 'Something went wrong, please try again later')
-          this.showSnackBar(errmsg, 'error')
+    this.marketPlaceSvc.activateProvider({ partnerId: rowData.id }).subscribe({
+      next: (res: any) => {
+        if (res) {
+          this.getProviders()
           this.loaderService.setLoaderState(false)
-
         }
       },
       error: (error: HttpErrorResponse) => {
-        const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
-        this.showSnackBar(errmsg, 'error')
         this.loaderService.setLoaderState(false)
-      },
+        if (error) {
+          this.showSnackBar('Something went wrong please try again', 'error')
+        }
+      }
     })
   }
 

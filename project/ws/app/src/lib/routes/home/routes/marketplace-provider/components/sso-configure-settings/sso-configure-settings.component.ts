@@ -238,7 +238,8 @@ export class SsoConfigureSettingsComponent implements OnInit {
       acsUrl: this.acsUrl.value,
       ssoTestUrl: this.ssoTestUrl.value,
       ssoId: this.SSOConfigurationData?.ssoId || '',
-      configuration: this.SSOConfigurationData?.configuration || '',
+      // configuration: this.SSOConfigurationData?.configuration || '',
+      configuration: 'incomplete',
 
       includeAuthnStatement: this.SSOConfigurationData?.includeAuthnStatement,
       signDocuments: this.SSOConfigurationData?.signDocuments,
@@ -256,7 +257,8 @@ export class SsoConfigureSettingsComponent implements OnInit {
     }
 
     if (this.SSOConfigurationData?.ssoTested !== undefined) {
-      payload['ssoTested'] = this.SSOConfigurationData.ssoTested
+      // payload['ssoTested'] = this.SSOConfigurationData.ssoTested
+      payload['ssoTested'] = false
     }
 
     this.marketplaceService.updateSSOConfiguration(this.providerDetails.id, payload).subscribe({
