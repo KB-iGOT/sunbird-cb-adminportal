@@ -221,7 +221,11 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
           this.providerDetalsBeforUpdate[this.transformationType] = trasformContentJson
         }
       }
-      this.marketPlaceSvc.updateProvider(this.providerDetalsBeforUpdate).subscribe({
+      const providerDetails = JSON.parse(JSON.stringify(this.providerDetalsBeforUpdate))
+      if (_.get(providerDetails, 'trasformContentJson[0].requiredList')) {
+        delete providerDetails.trasformContentJson[0].requiredList
+      }
+      this.marketPlaceSvc.updateProvider(providerDetails).subscribe({
         next: (responce: any) => {
           if (responce) {
             setTimeout(() => {
