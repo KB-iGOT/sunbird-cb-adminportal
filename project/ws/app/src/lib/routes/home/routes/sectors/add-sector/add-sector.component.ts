@@ -1,20 +1,21 @@
 import { Component, OnInit } from '@angular/core'
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
-import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog'
+import { MatDialog, MatDialogConfig as MatDialogConfig } from '@angular/material/dialog'
 import { ActivatedRoute, Router } from '@angular/router'
 import * as _ from 'lodash'
 import { AddThumbnailComponent } from '../../add-thumbnail/add-thumbnail.component'
 // import { ImageCropComponent } from '../../image-crop/image-crop.component'
 import { environment } from '../../../../../../../../../../src/environments/environment'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { SectorsService } from '../sectors.service'
 import { DomSanitizer } from '@angular/platform-browser'
 import { sectorConstants } from '../sectors-constats.model'
 
 @Component({
-  selector: 'ws-app-add-sector',
-  templateUrl: './add-sector.component.html',
-  styleUrls: ['./add-sector.component.scss'],
+    selector: 'ws-app-add-sector',
+    templateUrl: './add-sector.component.html',
+    styleUrls: ['./add-sector.component.scss'],
+    standalone: false
 })
 export class AddSectorComponent implements OnInit {
 
@@ -63,7 +64,7 @@ export class AddSectorComponent implements OnInit {
         this.router.navigate([`/app/home/sectors`])
       }
       this.isLoading = false
-    },                                                     eResp => {
+    }, eResp => {
       if (eResp && eResp.error && eResp.error.responseCode === 'BAD_REQUEST') {
         this.snackBar.open(eResp.error.params.errmsg)
       }

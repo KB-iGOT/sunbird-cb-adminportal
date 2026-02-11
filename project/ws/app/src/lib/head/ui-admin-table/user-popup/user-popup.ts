@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core'
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog'
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { CreateMDOService } from '../../../routes/home/services/create-mdo.services'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 // tslint:disable-next-line:import-spacing
 // import  *  as  contentQuality  from  './content-quality.json'
 export interface IDialogData {
@@ -10,9 +10,10 @@ export interface IDialogData {
   data: any
 }
 @Component({
-  selector: 'ws-widget-user-admin-popup',
-  templateUrl: './user-popup.html',
-  styleUrls: ['./user-popup.scss'],
+    selector: 'ws-widget-user-admin-popup',
+    templateUrl: './user-popup.html',
+    styleUrls: ['./user-popup.scss'],
+    standalone: false
 })
 export class UserPopupComponent implements OnInit {
 

@@ -3,19 +3,20 @@ import { FormControl } from '@angular/forms'
 import { MatSelect } from '@angular/material/select'
 import { environment } from '../../../../../../../../../src/environments/environment'
 import { OrgHierarchyService } from '../../services/org-hierarchy.service'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { GlobalEventsService } from '../../../../../../../../../src/app/services/global-events.service'
 import { ActivatedRoute, Router } from '@angular/router'
 import _ from 'lodash'
 import { Subject, of } from 'rxjs'
 import { switchMap, finalize, debounceTime } from 'rxjs/operators'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 import { BulkUploadOrgComponent } from '../../bulk-upload-org/bulk-upload-org.component'
 
 @Component({
-  selector: 'ws-app-org-hierarchy-mapping',
-  templateUrl: './org-hierarchy-mapping.component.html',
-  styleUrls: ['./org-hierarchy-mapping.component.scss']
+    selector: 'ws-app-org-hierarchy-mapping',
+    templateUrl: './org-hierarchy-mapping.component.html',
+    styleUrls: ['./org-hierarchy-mapping.component.scss'],
+    standalone: false
 })
 export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   @ViewChild('singleSelect') singleSelect!: MatSelect

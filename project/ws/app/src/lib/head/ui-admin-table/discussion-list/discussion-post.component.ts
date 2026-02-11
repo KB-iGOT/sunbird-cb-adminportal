@@ -4,16 +4,16 @@ import {
   SimpleChanges,
 } from '@angular/core'
 import { SelectionModel } from '@angular/cdk/collections'
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
+import { MatTableDataSource } from '@angular/material/table'
 // import { MatCardModule } from '@angular/material'
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator'
+import { MatPaginator } from '@angular/material/paginator'
 import { MatSort } from '@angular/material/sort'
 import * as _ from 'lodash'
 import { RejectPublishService } from '../reject-publish.service'
 // import {IColums } from '../interface/interfaces'
 // import { Router } from '@angular/router'
 
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 // import { ImageCroppedEvent } from 'ngx-image-cropper'
 import {
   LoggerService,
@@ -30,9 +30,10 @@ export interface IDialogData {
 }
 
 @Component({
-  selector: 'ws-widget-discussion-post',
-  templateUrl: './discussion-post.component.html',
-  styleUrls: ['./discussion-post.component.scss'],
+    selector: 'ws-widget-discussion-post',
+    templateUrl: './discussion-post.component.html',
+    styleUrls: ['./discussion-post.component.scss'],
+    standalone: false
 })
 export class UIDiscussionPostComponent implements OnInit, OnChanges {
   @Input() tableData!: any

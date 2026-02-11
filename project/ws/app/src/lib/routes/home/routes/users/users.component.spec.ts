@@ -3,11 +3,11 @@ import { ActivatedRoute } from '@angular/router'
 import { SystemRolesManagementService } from '../../services/system-roles-management.service'
 import { TenantAdminService } from '../../services/tenant-admin.service'
 import { of, } from 'rxjs'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
 
-jest.mock('@angular/material/legacy-snack-bar')
-jest.mock('@angular/material/legacy-dialog')
+jest.mock('@angular/material/snack-bar')
+jest.mock('@angular/material/dialog')
 jest.mock('@angular/router')
 jest.mock('../../services/system-roles-management.service')
 jest.mock('../../services/tenant-admin.service')

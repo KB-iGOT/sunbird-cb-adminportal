@@ -1,13 +1,14 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { RequestsService } from '../../services/onboarding-requests.service'
-import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator'
+import { PageEvent } from '@angular/material/paginator'
 import * as _ from 'lodash'
 
 @Component({
   selector: 'ws-app-onboarding-requests',
   templateUrl: './onboarding-requests.component.html',
   styleUrls: ['./onboarding-requests.component.scss'],
+  standalone: false
 })
 export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
   tabledata: any = []

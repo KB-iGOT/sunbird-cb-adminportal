@@ -6,9 +6,10 @@ import { RolesService } from '../../../home/services/roles.service'
 import { environment } from '../../../../../../../../../src/environments/environment'
 // import { RolesAccessService } from '../../services/roles-access.service'
 @Component({
-  selector: 'ws-app-roles-access',
-  templateUrl: './roles-access.component.html',
-  styleUrls: ['./roles-access.component.scss'],
+    selector: 'ws-app-roles-access',
+    templateUrl: './roles-access.component.html',
+    styleUrls: ['./roles-access.component.scss'],
+    standalone: false
 })
 export class RolesAccessComponent implements OnInit, AfterViewInit {
   tabledata: any = []

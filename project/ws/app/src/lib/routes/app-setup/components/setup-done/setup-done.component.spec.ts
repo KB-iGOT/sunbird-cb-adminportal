@@ -1,7 +1,7 @@
 import { SetupDoneComponent } from './setup-done.component'
 import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { DomSanitizer } from '@angular/platform-browser'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 import { Router } from '@angular/router'
 import { Globals } from '../../globals'
 import { AppTourDialogComponent } from '@sunbird-cb/collection'

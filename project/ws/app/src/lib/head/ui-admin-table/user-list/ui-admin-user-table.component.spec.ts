@@ -1,14 +1,14 @@
 import { UIAdminUserTableComponent } from './ui-admin-user-table.component'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { Router } from '@angular/router'
 import { CreateMDOService as MDO2 } from '../../../routes/home/services/create-mdo.services'
 import { EventService } from '@sunbird-cb/utils-v2'
 import { of } from 'rxjs'
 
 jest.mock('@angular/router')
-jest.mock('@angular/material/legacy-dialog')
-jest.mock('@angular/material/legacy-snack-bar')
+jest.mock('@angular/material/dialog')
+jest.mock('@angular/material/snack-bar')
 jest.mock('../../../routes/home/services/create-mdo.services')
 jest.mock('@sunbird-cb/utils-v2')
 

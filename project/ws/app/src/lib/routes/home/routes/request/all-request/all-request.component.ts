@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
+import { MatTableDataSource } from '@angular/material/table'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
 import { Router } from '@angular/router'
 import { RequestServiceService } from '../request-service.service'
@@ -16,9 +16,10 @@ export enum statusValue {
   fullfill = 'Fulfill',
 }
 @Component({
-  selector: 'ws-app-all-request',
-  templateUrl: './all-request.component.html',
-  styleUrls: ['./all-request.component.scss'],
+    selector: 'ws-app-all-request',
+    templateUrl: './all-request.component.html',
+    styleUrls: ['./all-request.component.scss'],
+    standalone: false
 })
 export class AllRequestComponent implements OnInit {
 
@@ -228,7 +229,7 @@ export class AllRequestComponent implements OnInit {
       if (_res && _res.data === 'confirmed') {
         setTimeout(() => {
           this.getRequestList()
-        },         1000)
+        }, 1000)
 
         this.snackBar.open('Re-assign submitted Successfully')
       } else {
@@ -288,7 +289,7 @@ export class AllRequestComponent implements OnInit {
         this.invalidRes = res
         setTimeout(() => {
           this.getRequestList()
-        },         1000)
+        }, 1000)
         this.snackBar.open('Marked as Invalid')
       }
 
@@ -310,7 +311,7 @@ export class AllRequestComponent implements OnInit {
       if (_res && _res.data === 'confirmed') {
         setTimeout(() => {
           this.getRequestList()
-        },         1000)
+        }, 1000)
         this.snackBar.open('Assigned submitted Successfully')
       } else {
         // this.snackBar.open('error')

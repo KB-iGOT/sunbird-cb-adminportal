@@ -665,20 +665,20 @@ h3.shepherd-title {
 }
 
 .mat-mdc-snack-bar-container {
-  --mdc-snackbar-container-color: #333333;
-  --mdc-snackbar-supporting-text-color: rgba(255, 255, 255, 0.87);
+  --mat-snackbar-container-color: #333333;
+  --mat-snackbar-supporting-text-color: rgba(255, 255, 255, 0.87);
   --mat-snack-bar-button-color: #fff;
 
   &.success {
-    --mdc-snackbar-container-color: #1d8923;
+    --mat-snackbar-container-color: #1d8923;
     --mat-mdc-snack-bar-button-color: #fff;
-    --mdc-snackbar-supporting-text-color: #fff;
+    --mat-snackbar-supporting-text-color: #fff;
   }
 
   &.error {
-    --mdc-snackbar-container-color: #891d1d;
+    --mat-snackbar-container-color: #891d1d;
     --mat-mdc-snack-bar-button-color: #fff;
-    --mdc-snackbar-supporting-text-color: #fff;
+    --mat-snackbar-supporting-text-color: #fff;
   }
 }
 
@@ -740,7 +740,7 @@ h3.shepherd-title {
   }
 
   .mat-primary .mat-pseudo-checkbox-checked {
-    background-color: var(--mdc-theme-primary, #1976d2);
+    background-color: var(--mat-theme-primary, #1976d2);
   }
 }
 

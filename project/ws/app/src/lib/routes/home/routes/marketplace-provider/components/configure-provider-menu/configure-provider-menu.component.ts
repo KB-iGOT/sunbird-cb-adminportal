@@ -5,9 +5,10 @@ import { ActivatedRoute } from '@angular/router'
 import { Subscription } from 'rxjs'
 
 @Component({
-  selector: 'ws-app-configure-provider-menu',
-  templateUrl: './configure-provider-menu.component.html',
-  styleUrls: ['./configure-provider-menu.component.scss']
+    selector: 'ws-app-configure-provider-menu',
+    templateUrl: './configure-provider-menu.component.html',
+    styleUrls: ['./configure-provider-menu.component.scss'],
+    standalone: false
 })
 export class ConfigureProviderMenuComponent implements OnInit, OnDestroy {
   @Output() activeMenu = new EventEmitter<any>();

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { UntypedFormGroup, Validators, UntypedFormControl, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { IUserForm } from '../users.model'
 import { CreateUserService } from './create-user.service'
@@ -9,9 +9,10 @@ import { SystemRolesManagementService } from '../../../services/system-roles-man
 import { IManageUser } from '../../../services/system-roles-management.model'
 
 @Component({
-  selector: 'ws-admin-create-user',
-  templateUrl: './create-user.component.html',
-  styleUrls: ['./create-user.component.scss'],
+    selector: 'ws-admin-create-user',
+    templateUrl: './create-user.component.html',
+    styleUrls: ['./create-user.component.scss'],
+    standalone: false
 })
 export class CreateUserComponent implements OnInit {
   roleList!: string[]

@@ -1,13 +1,13 @@
 import { ChangeDetectorRef } from '@angular/core'
 import { UsersService } from '../../../routes/home/services/users.service'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { RolesService } from '../../../routes/home/services/roles.service'
 import { ActivatedRoute } from '@angular/router'
 import { UserCardComponent } from './user-card.component'
 import { of } from 'rxjs'
 import { EventService } from '@sunbird-cb/utils-v2'
-import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips'
+import { MatChipInputEvent } from '@angular/material/chips'
 
 describe('UserCardComponent', () => {
     let component: UserCardComponent

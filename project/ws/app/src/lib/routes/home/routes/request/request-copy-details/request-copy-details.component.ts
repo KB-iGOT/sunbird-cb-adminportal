@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core'
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
 import { RequestServiceService } from '../request-service.service'
 import { ActivatedRoute, Router } from '@angular/router'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { CompetencyViewComponent } from '../competency-view/competency-view.component'
 import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component'
 /* tslint:disable */
@@ -16,9 +16,10 @@ import { InitService } from '../../../../../../../../../../src/app/services/init
 /* tslint:enable */
 
 @Component({
-  selector: 'ws-app-request-copy-details',
-  templateUrl: './request-copy-details.component.html',
-  styleUrls: ['./request-copy-details.component.scss'],
+    selector: 'ws-app-request-copy-details',
+    templateUrl: './request-copy-details.component.html',
+    styleUrls: ['./request-copy-details.component.scss'],
+    standalone: false
 })
 export class RequestCopyDetailsComponent implements OnInit {
 

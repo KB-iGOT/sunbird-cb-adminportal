@@ -10,9 +10,10 @@ import { NavigationExternalService } from '../../../../../../../../../../../src/
 import { SnackbarComponent } from '@sunbird-cb/consumption'
 
 @Component({
-  selector: 'ws-app-configure-provider',
-  templateUrl: './configure-provider.component.html',
-  styleUrls: ['./configure-provider.component.scss']
+    selector: 'ws-app-configure-provider',
+    templateUrl: './configure-provider.component.html',
+    styleUrls: ['./configure-provider.component.scss'],
+    standalone: false
 })
 export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewInit {
   opened: boolean = true

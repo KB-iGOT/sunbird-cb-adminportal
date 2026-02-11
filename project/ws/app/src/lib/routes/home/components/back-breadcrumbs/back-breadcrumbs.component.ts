@@ -3,9 +3,10 @@ import { BackBreadcrumb } from '../../../../../../../../../src/app/models/tnc.mo
 import { Router } from '@angular/router'
 
 @Component({
-  selector: 'ws-app-back-breadcrumbs',
-  templateUrl: './back-breadcrumbs.component.html',
-  styleUrls: ['./back-breadcrumbs.component.scss']
+    selector: 'ws-app-back-breadcrumbs',
+    templateUrl: './back-breadcrumbs.component.html',
+    styleUrls: ['./back-breadcrumbs.component.scss'],
+    standalone: false
 })
 export class BackBreadcrumbsComponent {
   @Input() data: BackBreadcrumb[] = []

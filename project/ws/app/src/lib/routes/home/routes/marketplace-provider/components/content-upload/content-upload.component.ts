@@ -7,10 +7,11 @@ import { HttpErrorResponse } from '@angular/common/http'
 import { MatSnackBar } from '@angular/material/snack-bar'
 
 @Component({
-  selector: 'ws-app-content-upload',
-  templateUrl: './content-upload.component.html',
-  styleUrls: ['./content-upload.component.scss'],
-  providers: [DatePipe],
+    selector: 'ws-app-content-upload',
+    templateUrl: './content-upload.component.html',
+    styleUrls: ['./content-upload.component.scss'],
+    providers: [DatePipe],
+    standalone: false
 })
 export class ContentUploadComponent implements OnInit, OnChanges {
   //#region (global variables)

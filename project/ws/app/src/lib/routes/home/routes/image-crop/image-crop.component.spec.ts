@@ -2,8 +2,8 @@ import { ImageCropComponent } from './image-crop.component'
 import { ValueService } from './value.service'
 import { ConfigurationsService } from '../../services/configurations.service'
 import { sectorConstants } from '../sectors/sectors-constats.model'
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatDialogRef } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
 
 describe('ImageCropComponent', () => {
   let component: ImageCropComponent

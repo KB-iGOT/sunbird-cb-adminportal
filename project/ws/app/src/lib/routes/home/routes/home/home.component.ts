@@ -11,12 +11,12 @@ import { Subscription } from 'rxjs'
 /* tslint:enable */
 
 @Component({
-  selector: 'ws-app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-  /* tslint:disable */
-  host: { class: 'margin-top-l' },
-  /* tslint:enable */
+    selector: 'ws-app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    /* tslint:disable */
+    host: { class: 'margin-top-l' },
+    standalone: false
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   sideNavBarOpened = true

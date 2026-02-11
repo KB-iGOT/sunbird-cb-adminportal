@@ -1,7 +1,8 @@
 import { Directive, HostListener, Input, ElementRef } from '@angular/core'
 
 @Directive({
-  selector: '[appMaxLengthNumber]'
+    selector: '[appMaxLengthNumber]',
+    standalone: false
 })
 export class MaxLengthNumberDirective {
   @Input() appMaxLengthNumber!: number

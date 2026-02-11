@@ -13,9 +13,10 @@ import { mergeMap } from 'rxjs/operators'
 
 
 @Component({
-  selector: 'ws-app-sso-integration',
-  templateUrl: './sso-integration.component.html',
-  styleUrls: ['./sso-integration.component.scss']
+    selector: 'ws-app-sso-integration',
+    templateUrl: './sso-integration.component.html',
+    styleUrls: ['./sso-integration.component.scss'],
+    standalone: false
 })
 export class SsoIntegrationComponent implements OnInit {
   @Input() providerDetails: any

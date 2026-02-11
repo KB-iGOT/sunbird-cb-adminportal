@@ -8,10 +8,11 @@ import { MatSnackBar } from '@angular/material/snack-bar'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
 
 @Component({
-  selector: 'ws-app-onboarding-courses',
-  templateUrl: './onboarding-courses.component.html',
-  styleUrls: ['./onboarding-courses.component.scss'],
-  providers: [DatePipe],
+    selector: 'ws-app-onboarding-courses',
+    templateUrl: './onboarding-courses.component.html',
+    styleUrls: ['./onboarding-courses.component.scss'],
+    providers: [DatePipe],
+    standalone: false
 })
 export class OnboardingCoursesComponent implements OnInit, OnChanges {
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef<HTMLInputElement>

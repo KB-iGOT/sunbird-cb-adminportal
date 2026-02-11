@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { RequestsService } from '../../services/onboarding-requests.service'
 import * as _ from 'lodash'
-import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator'
+import { PageEvent } from '@angular/material/paginator'
 
 @Component({
   selector: 'ws-app-email-domains',
   templateUrl: './email-domains.component.html',
   styleUrls: ['./email-domains.component.scss'],
+  standalone: false
 })
 export class EmailDomainsComponent implements OnInit {
   tabledata: any = []

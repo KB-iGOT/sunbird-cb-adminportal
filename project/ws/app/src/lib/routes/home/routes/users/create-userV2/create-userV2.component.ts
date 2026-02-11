@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core'
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms'
 import { Subscription } from 'rxjs'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { TenantAdminService } from '../../../services/tenant-admin.service'
 
 @Component({
-  selector: 'ws-admin-create-user',
-  templateUrl: './create-userV2.component.html',
-  styleUrls: ['./create-userV2.component.scss'],
+    selector: 'ws-admin-create-user',
+    templateUrl: './create-userV2.component.html',
+    styleUrls: ['./create-userV2.component.scss'],
+    standalone: false
 })
 export class CreateUserV2Component implements OnInit, OnDestroy {
   createUserForm: UntypedFormGroup

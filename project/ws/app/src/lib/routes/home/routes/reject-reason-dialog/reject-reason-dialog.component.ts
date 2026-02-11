@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core'
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog'
+import { MatDialogRef } from '@angular/material/dialog'
 
 @Component({
-  selector: 'ws-app-reject-reason-dialog',
-  templateUrl: './reject-reason-dialog.component.html',
-  styleUrls: ['./reject-reason-dialog.component.scss'],
+    selector: 'ws-app-reject-reason-dialog',
+    templateUrl: './reject-reason-dialog.component.html',
+    styleUrls: ['./reject-reason-dialog.component.scss'],
+    standalone: false
 })
 export class RejectReasonDialogComponent implements OnInit {
   reasonForm!: UntypedFormGroup

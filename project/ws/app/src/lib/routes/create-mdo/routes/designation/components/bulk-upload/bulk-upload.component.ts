@@ -17,9 +17,10 @@ import { FileProgressComponent } from '../../../../../home/components/file-progr
 import { DesignationsService } from '../../services/designations.service'
 
 @Component({
-  selector: 'ws-app-bulk-upload',
-  templateUrl: './bulk-upload.component.html',
-  styleUrls: ['./bulk-upload.component.scss'],
+    selector: 'ws-app-bulk-upload',
+    templateUrl: './bulk-upload.component.html',
+    styleUrls: ['./bulk-upload.component.scss'],
+    standalone: false
 })
 export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() closeComponent: EventEmitter<boolean> = new EventEmitter<boolean>();

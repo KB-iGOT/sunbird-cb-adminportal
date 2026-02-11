@@ -9,9 +9,10 @@ import { IUploadedLogoresponse } from '../interface/interfaces'
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators'
 import { Subject } from 'rxjs'
 @Component({
-  selector: 'ws-app-create-organisation',
-  templateUrl: './create-organisation.component.html',
-  styleUrls: ['./create-organisation.component.scss']
+    selector: 'ws-app-create-organisation',
+    templateUrl: './create-organisation.component.html',
+    styleUrls: ['./create-organisation.component.scss'],
+    standalone: false
 })
 export class CreateOrganisationComponent implements OnInit, OnDestroy {
 

@@ -13,29 +13,29 @@ import { CoursesTableComponent } from './components/courses-table/courses-table.
 import { DragDropDirective } from './directives/drag-drop.directive'
 import { PageResolve } from '@sunbird-cb/utils-v2'
 import { NgJsonEditorModule } from 'ang-jsoneditor'
-import { MatLegacyInputModule } from '@angular/material/legacy-input'
-import { MatLegacyCardModule as MatCardModule } from '@angular/material/legacy-card'
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button'
+import { MatInputModule } from '@angular/material/input'
+import { MatCardModule } from '@angular/material/card'
+import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 import { MatExpansionModule } from '@angular/material/expansion'
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs'
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu'
+import { MatTabsModule as MatTabsModule } from '@angular/material/tabs'
+import { MatMenuModule } from '@angular/material/menu'
 import { MatDialogModule } from '@angular/material/dialog'
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip'
-import { MatLegacyProgressBarModule as MatProgressBarModule } from '@angular/material/legacy-progress-bar'
-import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox'
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner'
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator'
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table'
+import { MatTooltipModule } from '@angular/material/tooltip'
+import { MatProgressBarModule as MatProgressBarModule } from '@angular/material/progress-bar'
+import { MatCheckboxModule } from '@angular/material/checkbox'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { MatPaginatorModule } from '@angular/material/paginator'
+import { MatTableModule } from '@angular/material/table'
 import { LoaderService } from '../../services/loader.service'
 import { ProviderResolveService } from './services/provider-resolve.service'
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select'
+import { MatSelectModule } from '@angular/material/select'
 import { TransformationsComponent } from './components/transformations/transformations.component'
 import { ViaApiParamsTableComponent } from './components/via-api-params-table/via-api-params-table.component'
 import { ViaApiComponent } from './components/via-api/via-api.component'
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio'
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle'
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field'
+import { MatRadioModule } from '@angular/material/radio'
+import { MatSlideToggleModule as MatSlideToggleModule } from '@angular/material/slide-toggle'
+import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatSidenavModule } from '@angular/material/sidenav'
 import { MatRippleModule } from '@angular/material/core'
 import { PaginationModule } from '@sunbird-cb/consumption'
@@ -54,8 +54,8 @@ import { SsoIntegrationComponent } from './components/sso-integration/sso-integr
 import { SsoConfigureSettingsComponent } from './components/sso-configure-settings/sso-configure-settings.component'
 import { LoadingPopupComponent } from './dialogs/loading-popup/loading-popup.component'
 import { MaxLengthNumberDirective } from './directives/max-length-number.directive'
-import { MatLegacyAutocompleteModule } from '@angular/material/legacy-autocomplete'
-import { MatLegacyOptionModule } from '@angular/material/legacy-core'
+import { MatAutocompleteModule } from '@angular/material/autocomplete'
+import { MatOptionModule } from '@angular/material/core'
 
 const routes: Routes = [
   {
@@ -147,7 +147,7 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     FormsModule,
     ReactiveFormsModule,
-    MatLegacyInputModule,
+    MatInputModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -171,8 +171,8 @@ const routes: Routes = [
     MatSidenavModule,
     MatRippleModule,
     PaginationModule,
-    MatLegacyAutocompleteModule,
-    MatLegacyOptionModule
+    MatAutocompleteModule,
+    MatOptionModule
   ],
   providers: [DatePipe, LoaderService],
   exports: [RouterModule],
