@@ -12,7 +12,7 @@
                     class="mat-accent-border cancle-btn flex-auto-display" (click)="goToList()">
                     <span>Cancel</span>
                 </button>
-                <button mat-button class="create-btn btn-success" type="button" (click)="onSubmit()"
+                <button mat-button class="create-btn btn-success ml-5" type="button" (click)="onSubmit()"
                     [disabled]="!createEventForm.valid || disableCreateButton">
                     <span>Submit</span>
                 </button>
@@ -98,7 +98,7 @@
                                 aria-label="Event title label">
                                 Event title
                             </label>
-                            <mat-form-field appearance="outline" class="margin-top-xs">
+                            <mat-form-field appearance="outline" class="margin-top-xs w-full">
                                 <input id="eventTitle" matInput #eventTitle formControlName="eventTitle"
                                     placeholder="Type here" aria-label="Event Title input" class="form-input"
                                     maxlength="250" />
@@ -122,7 +122,7 @@
                             </label>
                             <label class="sub_title">Detailed description about the event. It will
                                 appear in the event details page</label>
-                            <mat-form-field appearance="outline" class="margin-top-xs">
+                            <mat-form-field appearance="outline" class="margin-top-xs w-full">
                                 <textarea id="description" matInput #description formControlName="description"
                                     placeholder="Type here" aria-label="description input" class="form-input" rows="8"
                                     cols="40" maxlength="1000"></textarea>
@@ -144,7 +144,7 @@
                             <label for="agenda" class=" margin-remove-bottom form-label" aria-label="agenda label">
                                 Event agenda
                             </label>
-                            <mat-form-field appearance="outline" class="margin-top-xs">
+                            <mat-form-field appearance="outline" class="margin-top-xs w-full">
                                 <textarea id="agenda" matInput #agenda formControlName="agenda" placeholder="Type here"
                                     aria-label="agenda input" class="form-input" rows="8" cols="40"
                                     maxlength="500"></textarea>
@@ -161,7 +161,7 @@
                         </div>
                         <div class="margin-bottom-s">
                             <label>Event type</label>
-                            <mat-form-field appearance="outline" class="custom-width margin-top-xs">
+                            <mat-form-field appearance="outline" class="custom-width margin-top-xs ">
                                 <mat-select formControlName="eventType" (selectionChange)="resetDateField()">
                                     <mat-option [value]="type" *ngFor="let type of evntTypesList">{{type}}
                                     </mat-option>
@@ -275,7 +275,7 @@
                                     </label>
                                     <ng-container
                                         *ngIf="allowedCurrentDates?.includes(createEventForm.get('eventType')?.value)">
-                                        <mat-form-field color="accent" appearance="outline">
+                                        <mat-form-field color="accent" appearance="outline" class="w-full">
                                             <input matInput [matDatepicker]="eventDate" formControlName="eventDate"
                                                 [min]="currentDate" [max]="maxDate" [(ngModel)]="todayDate"
                                                 (dateChange)="updateDate($event)">
@@ -298,7 +298,7 @@
                                     </ng-container>
                                     <ng-container
                                         *ngIf="!allowedCurrentDates?.includes(createEventForm.get('eventType')?.value)">
-                                        <mat-form-field color="accent" appearance="outline">
+                                        <mat-form-field color="accent" appearance="outline" class="w-full">
                                             <input matInput [matDatepicker]="eventDate" formControlName="eventDate"
                                                 [min]="minDate" [max]="maxDate" [(ngModel)]="todayDate"
                                                 (dateChange)="updateDate($event)">
@@ -325,7 +325,7 @@
                                         aria-label="Event Time label">
                                         When
                                     </label>
-                                    <mat-form-field appearance="outline">
+                                    <mat-form-field appearance="outline" class="w-full">
                                         <mat-select formControlName="eventTime" #eventTime [(ngModel)]="todayTime">
                                             <mat-option *ngFor="let timeObj of timeArr" [value]="timeObj?.value"
                                                 [disabled]="isTimeDisabled(timeObj?.value)">
@@ -354,7 +354,7 @@
                                         aria-label="Event Duration label">
                                         Duration Hours
                                     </label>
-                                    <mat-form-field appearance="outline" class="margin-right-l">
+                                    <mat-form-field appearance="outline" class="margin-right-l w-full">
                                         <mat-select formControlName="eventDurationHours" #eventDuration>
                                             <mat-option *ngFor="let hourObj of hoursList" [value]="hourObj">
                                                 {{hourObj}}
@@ -372,7 +372,7 @@
                                         aria-label="Event Duration label">
                                         Duration Minutes
                                     </label>
-                                    <mat-form-field appearance="outline">
+                                    <mat-form-field appearance="outline" class="w-full">
                                         <mat-select formControlName="eventDurationMinutes" #eventDuration>
                                             <mat-option *ngFor="let minObj of minsList" [value]="minObj">
                                                 {{minObj}}

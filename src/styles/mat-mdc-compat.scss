@@ -1,0 +1,40 @@
+/* Compatibility shims for Angular Material MDC form-field selectors */
+/* Keeps legacy selectors and MDC selectors in sync for CSS-only migration */
+
+/* General label behavior */
+.mat-form-field-label,
+.mat-mdc-form-field-label,
+.mdc-floating-label {
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+/* Inputs: ensure caret & basic input behavior applies to MDC inputs too */
+.mat-input-element,
+.mdc-text-field__input,
+.mat-mdc-form-field-input {
+  caret-color: inherit;
+}
+
+/* Error / hint text parity */
+.mat-error,
+.mat-mdc-form-field-error,
+.mdc-text-field-helper-text--persistent,
+.mdc-text-field-helper-text--validation-msg {
+  color: inherit;
+}
+
+/* Outline / appearance helpers: target both legacy and MDC outline elements */
+.mat-form-field-outline,
+.mat-mdc-form-field-outline,
+.mat-form-field-outline-thick,
+.mat-mdc-form-field-outline-thick {
+  box-sizing: border-box;
+}
+
+/* Focus helpers: ensure focus state selectors are catchable on both host classes */
+.mat-form-field.mat-focused .mat-form-field-label,
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-label,
+.mat-mdc-form-field.mat-mdc-focused .mat-mdc-form-field-label,
+.mdc-text-field--focused .mdc-floating-label {
+  color: inherit;
+}
