@@ -22,7 +22,7 @@
                     aria-label="Event Date label">
                     Sector Name
                   </label>
-                  <mat-form-field appearance="outline" class="margin-top-xs margin-bottom-m sector-title">
+                  <mat-form-field appearance="outline" class="margin-top-xs margin-bottom-m sector-title w-full">
                     <input id="sectorTitle" matInput #sectorTitle formControlName="sectorTitle"
                       placeholder="Add sector name here" aria-label="Sector Title input" class="form-input"
                       maxlength="70" />
@@ -62,8 +62,8 @@
             </div>
             <div class=" flex">
               <div class="margin-right-s">
-                <button mat-stroked-button color="accent" type="button" class="mat-accent-border cancle-btn flex-auto-display"
-                  (click)="goToList()">
+                <button mat-stroked-button color="accent" type="button"
+                  class="mat-accent-border cancle-btn flex-auto-display" (click)="goToList()">
                   <span>Cancel</span>
                 </button>
               </div>
