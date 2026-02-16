@@ -869,18 +869,22 @@ input.mat-input-element {
 
 
 
-.mat-mdc-select:focus-visible {
-  outline: 1px solid black !important;
-  outline-offset: 1px;
+.mat-mdc-select:focus-visible { outline: 1px solid black !important; }
+.mat-mdc-input-element:focus-visible { outline: 1px solid black !important; }
+.mat-mdc-form-field:focus-within { outline: 1px solid black !important; }
+
+/* Remove custom outline to prevent double border */
+.mat-mdc-input-element:focus-visible,
+.mat-mdc-form-field:focus-within {
+  outline: none !important;
 }
 
-.mat-mdc-button:focus-visible,
-.mat-mdc-icon-button:focus-visible,
-.mat-mdc-tab:focus-visible,
-.mat-mdc-form-field:focus-within,
-.mat-mdc-input-element:focus-visible {
-  outline: 1px solid black !important;
-  outline-offset: 1px;
+/* Proper single focus border */
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: #1b4ca1 !important; // your brand blue
+  border-width: 2px !important;
 }
 
 /* Selected option text color */
@@ -892,3 +896,26 @@ input.mat-input-element {
 .mat-mdc-option.mdc-list-item--selected {
   background-color: #1B4CA1 !important;
 }
+
+.mat-mdc-option {
+  padding:0 10px !important;
+}
+
+/* Selected radio outer circle */
+.mat-mdc-radio-button.mat-mdc-radio-checked
+  .mdc-radio__outer-circle {
+  border-color: #1B4CA1 !important; /* brand color */
+}
+
+/* Selected radio inner circle (fill) */
+.mat-mdc-radio-button.mat-mdc-radio-checked
+  .mdc-radio__inner-circle {
+  background-color: #1B4CA1 !important; /* brand color */
+  border-color: #1B4CA1 !important;
+}
+
+/* Remove ripple overlay color interference (optional but cleaner) */
+.mat-mdc-radio-button .mdc-radio__background::before {
+  background-color: transparent !important;
+}
+
