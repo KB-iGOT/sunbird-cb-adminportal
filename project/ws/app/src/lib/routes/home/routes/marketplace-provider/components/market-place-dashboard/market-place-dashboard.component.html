@@ -4,11 +4,7 @@
   <div class="w-full flex justify-between items-center">
     <div class="header">Content Marketplace</div>
     <div>
-      <button
-        (click)="navigateToConfigurationV2()"
-        mat-raised-button
-        class="onboard-btn mat-btn-flat mat-body-1"
-      >
+      <button (click)="navigateToConfigurationV2()" mat-raised-button class="onboard-btn mat-btn-flat mat-body-1">
         Onboard Provider
       </button>
     </div>
@@ -17,42 +13,25 @@
   <!-- <ng-container *ngIf="!displayLoader; else showLoader"> -->
   <mat-tab-group (selectedTabChange)="handleOnTabChange($event)" class="marketplace-lists">
     <mat-tab label="Onboarded Providers">
-      <ng-container
-        *ngIf="(providersList && providersList.length > 0) || searchKey; else noContent"
-      >
+      <ng-container *ngIf="(providersList && providersList.length > 0) || searchKey; else noContent">
         <div class="flex gap-4 flex-column">
           <div>
-            <ws-app-courses-list-table
-              [tableData]="tabledata"
-              [coursesList]="providersList"
-              [menuItems]="menuItems"
-              [paginationDetails]="paginationDetails"
-              (searchKey)="onSearch($event)"
-              [showDefaultMenu]="true"
-              (actionTriggered)="providerEvents($event)"
-              (pageChange)="onPageChange($event)"
-              (sortChange)="onSortChange($event)"
-            ></ws-app-courses-list-table>
+            <ws-app-courses-list-table [tableData]="tabledata" [coursesList]="providersList" [menuItems]="menuItems"
+              [paginationDetails]="paginationDetails" (searchKey)="onSearch($event)" [showDefaultMenu]="true"
+              (actionTriggered)="providerEvents($event)" (pageChange)="onPageChange($event)"
+              (sortChange)="onSortChange($event)"></ws-app-courses-list-table>
           </div>
         </div>
       </ng-container>
     </mat-tab>
     <mat-tab label="Providers Request">
-      <ng-container
-        *ngIf="(providersRequestsList && providersRequestsList.length > 0) || searchKey; else noContent"
-      >
+      <ng-container *ngIf="(providersRequestsList && providersRequestsList.length > 0) || searchKey; else noContent">
         <div class="flex gap-4 flex-column">
           <div>
-            <ws-app-courses-list-table
-              [tableData]="tabledata"
-              [coursesList]="providersRequestsList"
-              [menuItems]="menuItems"
-              [paginationDetails]="providerRequestsPaginationDetails"
-              (searchKey)="onSearchRegisteredPartners($event)"
-              (actionTriggered)="providerEvents($event)"
-              (pageChange)="onPageChange($event)"
-              (sortChange)="onSortChange($event)"
-            ></ws-app-courses-list-table>
+            <ws-app-courses-list-table [tableData]="tabledata" [coursesList]="providersRequestsList"
+              [menuItems]="menuItems" [paginationDetails]="providerRequestsPaginationDetails"
+              (searchKey)="onSearchRegisteredPartners($event)" (actionTriggered)="providerEvents($event)"
+              (pageChange)="onPageChange($event)" (sortChange)="onSortChange($event)"></ws-app-courses-list-table>
           </div>
         </div>
       </ng-container>
@@ -60,7 +39,7 @@
   </mat-tab-group>
 
   <ng-template #noContent>
-    <div class="w-full flex flex-column items-center justify-center gap-6">
+    <div class="w-full flex flex-column items-center justify-center gap-6 mt-10">
       <img class="emptyShelf-img" src="/assets/icons/empty_shelf.svg" alt="no content img" />
       <span class="no-content-text">No content partner has been onboarded</span>
     </div>
