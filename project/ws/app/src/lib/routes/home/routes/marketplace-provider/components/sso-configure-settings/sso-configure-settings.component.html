@@ -77,8 +77,9 @@
             <p class="text-sm section-title mb-6 mt-2">Map SSO attributes to user profile fields</p>
           </div>
           <div class="second-sec-right">
-            <button type="button" (click)="addMappers()" mat-flat-button [disabled]="!canAddMapper()"
-              matTooltip="Please fill the last mapper before adding a new one" matTooltipPosition="above"
+            <button type="button" (click)="addMappers()" mat-flat-button
+              [matTooltip]="!canAddMapper() ? 'Please fill the last mapper before adding a new one' : ''"
+              matTooltipPosition="above" [ngClass]="{'btn-disable': !canAddMapper()}"
               class="flex items-center rounded-full px-4 py-2 btn-primary font-bold text-sm mat-btn-flat mat-btn-height-32">
               Add Mapper
             </button>
