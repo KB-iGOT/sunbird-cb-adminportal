@@ -8,6 +8,11 @@
   margin-bottom: 0;
 }
 
+.disable-btn {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 .email-failed-box {
   background: #00000014;
   border: 1px solid #00000029;

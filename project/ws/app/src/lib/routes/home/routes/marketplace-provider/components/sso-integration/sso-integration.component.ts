@@ -25,6 +25,7 @@ export class SsoIntegrationComponent implements OnInit {
   @ViewChild('ssoConfigurationSettings') ssoConfigurationSettings!: SsoConfigureSettingsComponent
   ssoConfigurations: SsoConfiguration | null = null
   providerResponse: any
+  selectedTabIndex = 0
 
   helpCenterGuide = {
     header: 'Note:- Content Upload Details: Video Guides and Tips.',
@@ -59,6 +60,21 @@ export class SsoIntegrationComponent implements OnInit {
       this.ssoConfigurations?.configuration === 'completed' &&
       this.ssoConfigurations?.ssoTested
     )
+  }
+
+  get canSave(): boolean {
+    if (!this.ssoConfigurationSettings) {
+      return false
+    }
+
+    const { ssoSettingsForm, acsUrl, ssoTestUrl, status, isSaveDisabled } = this.ssoConfigurationSettings
+
+    const allValid = ssoSettingsForm.valid && acsUrl.valid && ssoTestUrl.valid && status.valid
+
+    const anyTouched = ssoSettingsForm.touched || acsUrl.touched || ssoTestUrl.touched || status.touched
+    const isDirty = ssoSettingsForm.dirty || acsUrl.dirty || ssoTestUrl.dirty || status.dirty
+
+    return !isSaveDisabled && allValid && (anyTouched || isDirty)
   }
 
   testSsoUrl() {

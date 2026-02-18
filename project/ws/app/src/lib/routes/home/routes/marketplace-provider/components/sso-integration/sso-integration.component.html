@@ -20,23 +20,19 @@
           <div class="font-bold text-sm">Preview</div>
         </div>
       </button> -->
-      <button [disabled]="ssoConfigurationSettings?.isSaveDisabled"
-        (click)="updateCreateSSO()"
-        mat-flat-button
-        class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat mat-btn-height-32"
-      >
-        {{ ssoConfigurationSettings && ssoConfigurationSettings?.SSOConfigurationData ? 'Update' : 'Save' }}
-      </button>
+      <ng-container *ngIf="selectedTabIndex !== 1">
+        <button [disabled]="!canSave" [ngClass]="{'disable-btn': !canSave}" (click)="updateCreateSSO()" mat-flat-button
+          class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat mat-btn-height-32">
+          {{ ssoConfigurationSettings && ssoConfigurationSettings?.SSOConfigurationData ? 'Update' : 'Save' }}
+        </button>
+      </ng-container>
     </div>
   </div>
 
-  <mat-tab-group class="grouped-tabs-courses">
+  <mat-tab-group (selectedIndexChange)="selectedTabIndex = $event" class="grouped-tabs-courses">
     <mat-tab label="Configure">
-      <ws-app-sso-configure-settings
-        #ssoConfigurationSettings
-        [providerDetails]="providerDetails"
-        (loadSSODetails)="loadSSODetails($event)"
-      ></ws-app-sso-configure-settings>
+      <ws-app-sso-configure-settings #ssoConfigurationSettings [providerDetails]="providerDetails"
+        (loadSSODetails)="loadSSODetails($event)"></ws-app-sso-configure-settings>
     </mat-tab>
     <mat-tab label="Test & Preview">
       <ng-container>
@@ -60,12 +56,8 @@
 
           <!-- Test SSO Button  -->
           <ng-container *ngIf="!isSSOSuccessfullyConfigured">
-            <button
-              [disabled]="!ssoConfigurations?.ssoTestUrl"
-              (click)="testSsoUrl()"
-              mat-flat-button
-              class="flex items-center rounded-full px-4 py-2 mat-btn-flat mat-btn-height-32 w-full my-8"
-            >
+            <button [disabled]="!ssoConfigurations?.ssoTestUrl" (click)="testSsoUrl()" mat-flat-button
+              class="flex items-center rounded-full px-4 py-2 mat-btn-flat mat-btn-height-32 w-full my-8">
               Test SSO Connection
             </button>
           </ng-container>
