@@ -869,9 +869,17 @@ input.mat-input-element {
 
 
 
-.mat-mdc-select:focus-visible { outline: 1px solid black !important; }
-.mat-mdc-input-element:focus-visible { outline: 1px solid black !important; }
-.mat-mdc-form-field:focus-within { outline: 1px solid black !important; }
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: #1b4ca1 !important;
+  border-width: 2px !important;
+}
+
+/* Ensure caret visible */
+.mat-mdc-input-element {
+  caret-color: auto !important;
+}
 
 /* Remove custom outline to prevent double border */
 .mat-mdc-input-element:focus-visible,
@@ -918,4 +926,5 @@ input.mat-input-element {
 .mat-mdc-radio-button .mdc-radio__background::before {
   background-color: transparent !important;
 }
+
 
