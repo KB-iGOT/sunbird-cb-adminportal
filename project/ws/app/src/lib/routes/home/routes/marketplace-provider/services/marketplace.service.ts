@@ -26,7 +26,7 @@ const API_END_POINTS = {
   GET_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/read/${partnerId}`,
   CREATE_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/create/${partnerId}`,
   UPDATE_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/update/${partnerId}`,
-  TEST_SSO_CONFIGURATION: `/apis/proxies/v8/sso/test`,
+  TEST_SSO_CONFIGURATION: `/apis/proxies/v8/sso/validateSaml`,
 
 
   contentRegisterSearch: `/apis/proxies/v8/contentpartner/register/v1/search`,
