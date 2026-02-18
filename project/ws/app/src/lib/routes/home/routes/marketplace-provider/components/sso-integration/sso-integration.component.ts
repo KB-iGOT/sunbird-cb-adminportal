@@ -13,10 +13,10 @@ import { mergeMap } from 'rxjs/operators'
 
 
 @Component({
-    selector: 'ws-app-sso-integration',
-    templateUrl: './sso-integration.component.html',
-    styleUrls: ['./sso-integration.component.scss'],
-    standalone: false
+  selector: 'ws-app-sso-integration',
+  templateUrl: './sso-integration.component.html',
+  styleUrls: ['./sso-integration.component.scss'],
+  standalone: false
 })
 export class SsoIntegrationComponent implements OnInit {
   @Input() providerDetails: any
@@ -87,8 +87,8 @@ export class SsoIntegrationComponent implements OnInit {
     })
 
     const testPayload = {
-      courseDeeplink: '',
-      ssoId: ''
+      courseDeeplink: _.get(this.ssoConfigurationSettings, 'SSOConfigurationData.ssoTestUrl', ''),
+      ssoId: _.get(this.ssoConfigurationSettings, 'SSOConfigurationData.ssoId', ''),
     }
 
     this.marketplaceService.testSSOConfiguration(testPayload).pipe(
@@ -131,7 +131,7 @@ export class SsoIntegrationComponent implements OnInit {
       error: (error: HttpErrorResponse) => {
         dialogRef.close()
         const errmsg = _.get(error,
-          'error.params.errMsg',
+          'error.params.errmsg',
           'Something went wrong, please try again later'
         )
         this.showSnackBar(errmsg, 'error')
