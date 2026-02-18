@@ -169,11 +169,19 @@
           class="info-icon">info_outline</mat-icon>
       </div>
 
-      <a (click)="disableAddTips ? null : addTips()" [ngClass]="{ 'disabled': disableAddTips }" class="addtips-btn"
-        matRipple [matTooltip]="disableAddTips ? 'Maximum number of tips added' : ''">
-        <mat-icon class="addtips-icon">add</mat-icon>
-        <span class="addtips-text">Add tips</span>
-      </a>
+      <ng-container *ngIf="!disableAddTips; else addTipsDisabled">
+        <a (click)="addTips()" class="addtips-btn" matRipple>
+          <mat-icon class="addtips-icon">add</mat-icon>
+          <span class="addtips-text">Add tips</span>
+        </a>
+      </ng-container>
+
+      <ng-template #addTipsDisabled>
+        <a class="addtips-btn disabled" matRipple matTooltip="Maximum number of tips added">
+          <mat-icon class="addtips-icon">add</mat-icon>
+          <span class="addtips-text">Add tips</span>
+        </a>
+      </ng-template>
 
       <div class="flex flex-column gap-2" formArrayName="providerTips">
         <ng-container *ngFor="let tip of getTipsList?.controls; let i = index">
