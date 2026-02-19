@@ -28,8 +28,8 @@ export class CertificateConfigurationComponent implements OnChanges {
   FILE_UPLOAD_MAX_SIZE_LOGO: number = 1 * 1024 * 1024 * 1024
 
   private readonly TARGET_HEIGHT = 73;
-  private readonly TARGET_Y_CENTER = 116.5;
-  private readonly TARGET_X_START = 982.5;
+  private readonly TARGET_Y_CENTER = 104;
+  private readonly TARGET_X_START = 1050;
 
   contentFile: any
   certificateUrl = ''
@@ -52,7 +52,7 @@ export class CertificateConfigurationComponent implements OnChanges {
 
   allowedFileTypes = '.jpg,.jpeg,.png'
   allowedMimeTypes = ['.svg', 'image/svg+xml']
-  defaultCertificateTemplateUrl = '/assets/images/sample/CourseCertificate_Template.svg'
+  defaultCertificateTemplateUrl = '/assets/images/sample/Course_completion_certificate_New4.svg'
   constructor(
     private marketPlaceSvc: MarketplaceService,
     private formBuilder: FormBuilder,
@@ -355,7 +355,7 @@ export class CertificateConfigurationComponent implements OnChanges {
     } catch (error: any) { }
   }
 
-  // Extracts the logo and places it at the ExternalProvider_Logo location in the certificate
+  // Extracts the logo and places it at the ProvidersLogo_Placement location in the certificate
   private updateCertificateWithLogo(certificateSvgContent: string, logoSvgContent: string): string {
     const parser = new DOMParser()
     const certDoc = parser.parseFromString(certificateSvgContent, 'image/svg+xml')
@@ -366,18 +366,18 @@ export class CertificateConfigurationComponent implements OnChanges {
       return ''
     }
 
-    // Find the ExternalProvider_Logo group
-    let logoGroup = certDoc.getElementById('ExternalProvider_Logo')
+    // Find the ProvidersLogo_Placement group
+    let logoGroup = certDoc.getElementById('ProvidersLogo_Placement')
     if (!logoGroup) {
-      logoGroup = certDoc.querySelector('[id="ExternalProvider_Logo"]')
+      logoGroup = certDoc.querySelector('[id="ProvidersLogo_Placement"]')
     }
     if (!logoGroup) {
       // Try partial match if id not exact
-      logoGroup = certDoc.querySelector('g[id*="ExternalProvider_Logo"]')
+      logoGroup = certDoc.querySelector('g[id*="ProvidersLogo_Placement"]')
     }
 
     if (!logoGroup) {
-      this.showSnackBar('Could not find ExternalProvider_Logo group in the certificate SVG', 'error')
+      this.showSnackBar('Could not find ProvidersLogo_Placement group in the certificate SVG', 'error')
       return ''
     }
 
@@ -396,7 +396,7 @@ export class CertificateConfigurationComponent implements OnChanges {
 
     // Create a new group for the logo
     const newLogoGroup = certDoc.createElementNS('http://www.w3.org/2000/svg', 'g')
-    newLogoGroup.setAttribute('id', 'ExternalProvider_Logo')
+    newLogoGroup.setAttribute('id', 'ProvidersLogo_Placement')
 
     // --- Dimension Extraction & Alignment Logic ---
     const viewBox = logoSvg.getAttribute('viewBox')
