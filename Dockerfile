@@ -1,7 +1,9 @@
 FROM node:22.13.0
 
 WORKDIR /app
-COPY . .
+COPY --chown=node:node . .
+
+USER node
 
 #RUN npm i yarn
 #RUN yarn global add @angular/cli@latest
@@ -12,7 +14,7 @@ RUN npm run compress:brotli
 #RUN npm run compress:gzip
 
 WORKDIR /app/dist
-COPY assets/SPV/client-assets/dist www/en/assets
+COPY --chown=node:node assets/SPV/client-assets/dist www/en/assets
 RUN npm install --production
 EXPOSE 3004
 
