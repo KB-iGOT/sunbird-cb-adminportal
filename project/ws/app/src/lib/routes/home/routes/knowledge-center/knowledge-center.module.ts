@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { HttpClientModule } from '@angular/common/http'
 
 // Angular Material Modules
 import { MatTableModule } from '@angular/material/table'
@@ -9,6 +10,13 @@ import { MatMenuModule } from '@angular/material/menu'
 import { MatButtonModule } from '@angular/material/button'
 import { MatSortModule } from '@angular/material/sort'
 import { MatPaginatorModule } from '@angular/material/paginator'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatInputModule } from '@angular/material/input'
+import { MatSelectModule } from '@angular/material/select'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { MatTooltipModule } from '@angular/material/tooltip'
+import { MatCardModule } from '@angular/material/card'
+import { MatExpansionModule } from '@angular/material/expansion'
 
 // Sunbird CB Modules
 import { PaginationModule } from '@sunbird-cb/consumption'
@@ -29,6 +37,7 @@ import { KnowledgeCenterListComponent } from './components/knowledge-center-list
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
     KnowledgeCenterRoutingModule,
     MatTableModule,
     MatIconModule,
@@ -36,6 +45,13 @@ import { KnowledgeCenterListComponent } from './components/knowledge-center-list
     MatButtonModule,
     MatSortModule,
     MatPaginatorModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatCardModule,
+    MatExpansionModule,
     PaginationModule,
   ],
 })

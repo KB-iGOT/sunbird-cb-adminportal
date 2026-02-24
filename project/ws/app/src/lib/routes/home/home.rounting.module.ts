@@ -306,10 +306,10 @@ const routes: Routes = [
         },
       },
       {
-        path: 'knowledge-centre',
+        path: 'knowledge-center',
         loadChildren: () => import('./routes/knowledge-center/knowledge-center.module').then(u => u.KnowledgeCenterModule),
         data: {
-          pageId: 'home/knowledge-centre',
+          pageId: 'home/knowledge-center',
           module: 'KnowledgeCenter',
           pageType: 'feature',
           pageKey: 'KnowledgeCenter',

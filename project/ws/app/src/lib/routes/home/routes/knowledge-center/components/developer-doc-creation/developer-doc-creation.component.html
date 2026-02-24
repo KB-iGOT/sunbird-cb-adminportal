@@ -1,1 +1,201 @@
-<p>developer-doc-creation works!</p>
+<!-- Main Container -->
+<div class="dev-doc-container">
+  <!-- Loading Spinner -->
+  <ng-container *ngIf="isLoading">
+    <div class="dev-doc-spinner">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+  </ng-container>
+
+  <!-- Form Container -->
+  <ng-container *ngIf="!isLoading">
+    <mat-card class="dev-doc-card">
+      <!-- Card Header -->
+      <mat-card-header class="dev-doc-card-header">
+        <h1 class="dev-doc-title">{{ headerText }}</h1>
+        <div class="dev-doc-header-actions">
+          <button mat-raised-button color="primary"
+            [disabled]="(mode !== 'view' && (subCategoryForm.invalid || isSaving)) || (mode === 'view' && false)"
+            (click)="handleAction()">
+            {{ actionButtonText }}
+          </button>
+          <button mat-stroked-button (click)="cancel()">
+            Cancel
+          </button>
+        </div>
+      </mat-card-header>
+
+      <!-- Card Content -->
+      <mat-card-content class="dev-doc-card-content">
+        <form [formGroup]="subCategoryForm" class="dev-doc-form">
+          <!-- Article Details Section -->
+          <ng-container *ngTemplateOutlet="articleDetailsSection"></ng-container>
+
+          <!-- Content Section -->
+          <ng-container *ngTemplateOutlet="contentsSection"></ng-container>
+
+          <!-- Publishing Settings Section -->
+          <ng-container *ngTemplateOutlet="publishingSection"></ng-container>
+
+          <!-- Template: Article Details Section -->
+          <ng-template #articleDetailsSection>
+            <div class="dev-doc-section">
+              <h2 class="dev-doc-section-title">Article Details</h2>
+              <div class="dev-doc-section-content">
+                <!-- Title Field -->
+                <div class="dev-doc-form-group">
+                  <label class="dev-doc-label" htmlFor="title-input">Title</label>
+                  <mat-form-field class="dev-doc-form-field" appearance="outline">
+                    <input id="title-input" matInput formControlName="title" placeholder="Enter article title"
+                      [readonly]="mode === 'view'" aria-label="Title" />
+                    <mat-error *ngIf="hasError('title', 'required')">
+                      Title is required
+                    </mat-error>
+                    <mat-error *ngIf="hasError('title', 'minlength')">
+                      Title must be at least 3 characters
+                    </mat-error>
+                    <mat-hint align="end">
+                      {{ subCategoryForm.get('title')?.value?.length || 0 }} / 200
+                    </mat-hint>
+                  </mat-form-field>
+                </div>
+
+                <!-- Excerpt Field (Textarea) -->
+                <div class="dev-doc-form-group">
+                  <label class="dev-doc-label" htmlFor="excerpt-input">Excerpt</label>
+                  <mat-form-field class="dev-doc-form-field" appearance="outline">
+                    <textarea id="excerpt-input" matInput formControlName="excerpt" placeholder="Enter article excerpt"
+                      rows="5" [readonly]="mode === 'view'" aria-label="Excerpt"></textarea>
+                    <mat-error *ngIf="hasError('excerpt', 'required')">
+                      Excerpt is required
+                    </mat-error>
+                    <mat-error *ngIf="hasError('excerpt', 'minlength')">
+                      Excerpt must be at least 10 characters
+                    </mat-error>
+                    <mat-hint align="end">
+                      {{ subCategoryForm.get('excerpt')?.value?.length || 0 }} / 1000
+                    </mat-hint>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+
+          <!-- Template: Contents Section -->
+          <ng-template #contentsSection>
+            <div class="dev-doc-section">
+              <div class="dev-doc-section-header">
+                <h2 class="dev-doc-section-title">Contents</h2>
+                <ng-container *ngIf="mode !== 'view'">
+                  <button mat-icon-button type="button" (click)="addArticle()" matTooltip="Add new content section">
+                    <mat-icon>add_circle</mat-icon>
+                  </button>
+                </ng-container>
+              </div>
+
+              <div class="dev-doc-section-content">
+                <mat-accordion formArrayName="articles" class="dev-doc-accordion">
+                  <ng-container *ngFor="let article of articlesArray.controls; let i = index">
+                    <mat-expansion-panel [formGroupName]="i" class="dev-doc-expansion-panel" [hideToggle]="true">
+                      <!-- Expansion Panel Header -->
+                      <mat-expansion-panel-header class="dev-doc-expansion-header">
+                        <mat-panel-title class="dev-doc-panel-title">
+                          {{ articlesArray.at(i)?.get('title')?.value }}
+                        </mat-panel-title>
+                        <ng-container *ngIf="mode !== 'view' && articlesArray.length > 1">
+                          <mat-icon (click)="removeArticle(i); $event.stopPropagation()"
+                            (keydown.enter)="removeArticle(i); $event.stopPropagation()"
+                            (keydown.space)="removeArticle(i); $event.stopPropagation()" class="dev-doc-delete-icon"
+                            tabindex="0" role="button" aria-label="Delete section">delete</mat-icon>
+                        </ng-container>
+                      </mat-expansion-panel-header>
+
+                      <!-- Expansion Panel Content -->
+                      <div class="dev-doc-panel-content">
+                        <!-- Article Title -->
+                        <div class="dev-doc-form-group">
+                          <label class="dev-doc-label" [htmlFor]="'content-title-' + i">Content Title</label>
+                          <mat-form-field class="dev-doc-form-field" appearance="outline">
+                            <input [id]="'content-title-' + i" matInput formControlName="title"
+                              placeholder="Enter content title" [readonly]="mode === 'view'"
+                              [attr.aria-label]="'Content Title ' + (i + 1)" />
+                            <mat-error *ngIf="articleHasError(i, 'title', 'required')">
+                              Content title is required
+                            </mat-error>
+                            <mat-error *ngIf="articleHasError(i, 'title', 'minlength')">
+                              Title must be at least 3 characters
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+
+                        <!-- Article Content (Rich Text Editor) -->
+                        <div class="dev-doc-form-group">
+                          <label class="dev-doc-label" [htmlFor]="'content-' + i">Content</label>
+                          <div class="dev-doc-textarea-wrapper" [class.dev-doc-readonly]="mode === 'view'">
+                            <textarea formControlName="content" [id]="'content-' + i"
+                              placeholder="Enter content here... (Rich text editor integration can be added)"
+                              class="dev-doc-textarea" [readonly]="mode === 'view'" rows="10"></textarea>
+                          </div>
+                          <mat-error *ngIf="articleHasError(i, 'content', 'required')" class="dev-doc-error">
+                            Content is required
+                          </mat-error>
+                          <mat-error *ngIf="articleHasError(i, 'content', 'minlength')" class="dev-doc-error">
+                            Content must be at least 20 characters
+                          </mat-error>
+                          <mat-hint align="end" class="dev-doc-hint">
+                            {{ articlesArray.at(i)?.get('content')?.value?.length || 0 }} characters
+                          </mat-hint>
+                        </div>
+                      </div>
+                    </mat-expansion-panel>
+                  </ng-container>
+                </mat-accordion>
+
+                <!-- Empty State -->
+                <ng-container *ngIf="articlesArray.length === 0">
+                  <div class="dev-doc-empty-state">
+                    <p>No content sections added yet</p>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </ng-template>
+
+          <!-- Template: Publishing Settings Section -->
+          <ng-template #publishingSection>
+            <div class="dev-doc-section">
+              <h2 class="dev-doc-section-title">Publishing Settings</h2>
+              <div class="dev-doc-section-content dev-doc-publishing-grid">
+                <!-- Visibility Dropdown -->
+                <div class="dev-doc-form-group">
+                  <label class="dev-doc-label" htmlFor="visibility-select">Visibility</label>
+                  <mat-form-field class="dev-doc-form-field" appearance="outline">
+                    <mat-select id="visibility-select" formControlName="visibility" [disabled]="mode === 'view'"
+                      aria-label="Visibility">
+                      <mat-option *ngFor="let option of visibilityOptions" [value]="option.value">
+                        {{ option.label }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <!-- Status Dropdown -->
+                <div class="dev-doc-form-group">
+                  <label class="dev-doc-label" htmlFor="status-select">Status</label>
+                  <mat-form-field class="dev-doc-form-field" appearance="outline">
+                    <mat-select id="status-select" formControlName="status" [disabled]="mode === 'view'"
+                      aria-label="Status">
+                      <mat-option *ngFor="let option of statusOptions" [value]="option.value">
+                        {{ option.label }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+</div>

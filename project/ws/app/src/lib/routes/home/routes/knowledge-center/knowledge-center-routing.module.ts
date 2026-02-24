@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 import { KnowledgeCenterListComponent } from './components/knowledge-center-list/knowledge-center-list.component'
+import { DeveloperDocCreationComponent } from './components/developer-doc-creation/developer-doc-creation.component'
 
 const routes: Routes = [
   {
@@ -13,17 +14,16 @@ const routes: Routes = [
       pageKey: 'KnowledgeCenterList',
     }
   },
-  // Add more child routes here as needed
-  // {
-  //   path: 'view/:id',
-  //   component: KnowledgeCenterDetailComponent,
-  //   data: {
-  //     pageId: 'home/knowledge-centre/view',
-  //     module: 'KnowledgeCenter',
-  //     pageType: 'feature',
-  //     pageKey: 'KnowledgeCenterDetail',
-  //   }
-  // },
+  {
+    path: 'developer-doc',
+    component: DeveloperDocCreationComponent,
+    data: {
+      pageId: 'home/knowledge-centre/developer-doc',
+      module: 'KnowledgeCenter',
+      pageType: 'feature',
+      pageKey: 'DeveloperDocCreation',
+    }
+  },
 ]
 
 @NgModule({

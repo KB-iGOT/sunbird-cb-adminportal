@@ -5,133 +5,69 @@
       <h1 class="header-title">Knowledge Center</h1>
       <p class="header-description">Manage and organize your knowledge base articles</p>
     </div>
-    <button mat-flat-button class="add-article-btn flex items-center rounded-full px-6 py-2 font-bold text-sm gap-2"
-      (click)="addNewArticle()">
-      <mat-icon>add</mat-icon>
+    <button mat-raised-button class="add-article-btn flex items-center" (click)="addNewArticle()">
       <span>Add Article</span>
     </button>
   </div>
 
+  <!-- Search and Filter Section -->
+  <div class="mt-4 flex items-center justify-between">
+    <div class="content-search w-full">
+      <div class="search-wrapper w-1/2">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input type="text" placeholder="Type here to search..." class="search-input" (input)="onSearchInput()"
+          [formControl]="searchControl" />
+      </div>
+    </div>
+  </div>
+
   <!-- Table Section -->
-  <div class="mat-elevation-z8 knowledge-center-table">
-    <table mat-table [dataSource]="dataSource" class="table-container w-full">
-      <!-- Title with Author Column -->
-      <ng-container matColumnDef="title">
-        <th class="table-header-spacing" mat-header-cell *matHeaderCellDef>
-          <span class="sortable-header" (click)="onSortChange('title')">
-            Title / Author
-            <ng-container *ngIf="sortField === 'title'; else defaultIcon">
-              <mat-icon class="sort-icon">
-                {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-              </mat-icon>
-            </ng-container>
+  <div class="mat-elevation-z8 knowledge-center-table seperate-tab-table">
+    <table mat-table [dataSource]="dataSource" class="table-container w-full mt-4">
+      <!-- Dynamic Columns -->
+      <ng-container *ngFor="let col of tableColumns" [matColumnDef]="col.key">
+        <th class="table-header-spacing" mat-header-cell *matHeaderCellDef [ngSwitch]="col.cellType">
+          <!-- Regular Column Header -->
+          <span *ngSwitchDefault class="sortable-header" (click)="onSortChange(col.key)">
+            {{ col.displayName }}
+            <mat-icon class="sort-icon" *ngIf="sortField === col.key; else defaultIcon">
+              {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+            </mat-icon>
             <ng-template #defaultIcon>
               <mat-icon class="sort-icon default-icon">arrow_upward</mat-icon>
             </ng-template>
           </span>
         </th>
-        <td class="table-cell-spacing px-4" mat-cell *matCellDef="let element">
-          <div class="article-info">
-            <span class="article-title">{{ element.title }}</span>
-            <span class="article-author">by {{ element.author }}</span>
+
+        <td class="table-cell-spacing px-4" mat-cell *matCellDef="let element" [ngSwitch]="col.key">
+          <!-- Title/Summary Column -->
+          <div *ngSwitchCase="'title'" class="article-info py-4 pl-6 gap-2">
+            <span class="article-title">{{ element['title'] }}</span>
+            <span class="article-author">{{ element['summary'] }}</span>
           </div>
-        </td>
-      </ng-container>
 
-      <!-- Category Column -->
-      <ng-container matColumnDef="category">
-        <th class="table-header-spacing" mat-header-cell *matHeaderCellDef>
-          <span class="sortable-header" (click)="onSortChange('category')">
-            Category
-            <ng-container *ngIf="sortField === 'category'; else defaultIcon1">
-              <mat-icon class="sort-icon">
-                {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-              </mat-icon>
+          <!-- Status Column -->
+          <div *ngSwitchCase="'status'" class="status-badge">
+            <span class="{{ element?.status?.toLowerCase() }}">
+              {{ capitalizeText(element?.status) }}
+            </span>
+          </div>
+
+          <!-- Menu/Actions Column -->
+          <div *ngSwitchCase="'actions'">
+            <mat-icon class="cursor-pointer" [matMenuTriggerFor]="actionMenu"
+              [matMenuTriggerData]="{ article: element }">
+              more_horiz
+            </mat-icon>
+          </div>
+
+          <!-- Regular Text Column -->
+          <span *ngSwitchDefault [ngClass]="col.cellClass">
+            <ng-container *ngIf="col.imageKey">
+              <img class="imageCell" [src]="element[col.imageKey]" alt="logo" />
             </ng-container>
-            <ng-template #defaultIcon1>
-              <mat-icon class="sort-icon default-icon">arrow_upward</mat-icon>
-            </ng-template>
+            {{ element[col.key] }}
           </span>
-        </th>
-        <td class="table-cell-spacing px-4" mat-cell *matCellDef="let element">
-          <span>{{ element.category }}</span>
-        </td>
-      </ng-container>
-
-      <!-- Last Updated Column -->
-      <ng-container matColumnDef="lastUpdated">
-        <th class="table-header-spacing" mat-header-cell *matHeaderCellDef>
-          <span class="sortable-header" (click)="onSortChange('lastUpdated')">
-            Last Updated
-            <ng-container *ngIf="sortField === 'lastUpdated'; else defaultIcon2">
-              <mat-icon class="sort-icon">
-                {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-              </mat-icon>
-            </ng-container>
-            <ng-template #defaultIcon2>
-              <mat-icon class="sort-icon default-icon">arrow_upward</mat-icon>
-            </ng-template>
-          </span>
-        </th>
-        <td class="table-cell-spacing px-4" mat-cell *matCellDef="let element">
-          <span>{{ element.lastUpdated | date: 'MMM dd, yyyy' }}</span>
-        </td>
-      </ng-container>
-
-      <!-- Status Column -->
-      <ng-container matColumnDef="status">
-        <th class="table-header-spacing" mat-header-cell *matHeaderCellDef>
-          <span class="sortable-header" (click)="onSortChange('status')">
-            Status
-            <ng-container *ngIf="sortField === 'status'; else defaultIcon3">
-              <mat-icon class="sort-icon">
-                {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-              </mat-icon>
-            </ng-container>
-            <ng-template #defaultIcon3>
-              <mat-icon class="sort-icon default-icon">arrow_upward</mat-icon>
-            </ng-template>
-          </span>
-        </th>
-        <td class="table-cell-spacing px-4" mat-cell *matCellDef="let element">
-          <span class="status-badge" [ngClass]="element.status?.toLowerCase()">
-            {{ element.status }}
-          </span>
-        </td>
-      </ng-container>
-
-      <!-- Visibility Column -->
-      <ng-container matColumnDef="visibility">
-        <th class="table-header-spacing" mat-header-cell *matHeaderCellDef>
-          <span class="sortable-header" (click)="onSortChange('visibility')">
-            Visibility
-            <ng-container *ngIf="sortField === 'visibility'; else defaultIcon4">
-              <mat-icon class="sort-icon">
-                {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-              </mat-icon>
-            </ng-container>
-            <ng-template #defaultIcon4>
-              <mat-icon class="sort-icon default-icon">arrow_upward</mat-icon>
-            </ng-template>
-          </span>
-        </th>
-        <td class="table-cell-spacing px-4" mat-cell *matCellDef="let element">
-          <span class="visibility-badge" [ngClass]="element.visibility?.toLowerCase()">
-            {{ element.visibility }}
-          </span>
-        </td>
-      </ng-container>
-
-      <!-- Action Column -->
-      <ng-container matColumnDef="actions">
-        <th class="table-header-spacing" mat-header-cell *matHeaderCellDef>
-          <span>Actions</span>
-        </th>
-        <td class="table-cell-spacing px-4" mat-cell *matCellDef="let element">
-          <mat-icon class="action-menu-icon cursor-pointer" [matMenuTriggerFor]="actionMenu"
-            [matMenuTriggerData]="{ article: element }">
-            more_horiz
-          </mat-icon>
         </td>
       </ng-container>
 
@@ -149,9 +85,11 @@
 
     <!-- Pagination -->
     <ng-container *ngIf="showPagination && totalItemsCount > 0">
-      <ws-widget-pagination [defaultPaginationSize]="paginationSize" [defaultPaginationSizeOptions]="pageSizeOptions"
-        [totalItemsCount]="totalItemsCount" [currentPage]="currentPage"
-        (pageChange)="onPageChange($event)"></ws-widget-pagination>
+      <div class="pagiantion-row">
+        <ws-widget-pagination [defaultPaginationSize]="paginationSize" [defaultPaginationSizeOptions]="pageSizeOptions"
+          [totalItemsCount]="totalItemsCount" [currentPage]="currentPage" (pageChange)="onPageChange($event)">
+        </ws-widget-pagination>
+      </div>
     </ng-container>
   </div>
 </div>

@@ -1,7 +1,10 @@
-import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
+import { FormControl } from '@angular/forms'
 import { MatTableDataSource } from '@angular/material/table'
 import { PageChangeEmitter } from '@sunbird-cb/consumption'
+import { Router } from '@angular/router'
 import * as _ from 'lodash'
+import { DeveloperDocService } from '../../services/developer-doc.service'
 
 interface MenuItem {
   label: string
@@ -11,12 +14,18 @@ interface MenuItem {
 
 interface Article {
   id?: string
-  title: string
-  author: string
-  category: string
-  lastUpdated: Date
-  status: 'Draft' | 'Published' | 'Archived'
-  visibility: 'Public' | 'Private' | 'Internal'
+  title?: string
+  summary?: string
+  category?: string
+  lastUpdated?: Date | string
+  status?: string
+  visibility?: string
+  type?: string
+  createdBy?: string
+  updatedBy?: string
+  createdOn?: string
+  updatedOn?: string
+  [key: string]: any
 }
 
 @Component({
@@ -25,25 +34,35 @@ interface Article {
   styleUrls: ['./knowledge-center-list.component.scss'],
   standalone: false,
 })
-export class KnowledgeCenterListComponent implements OnInit, OnChanges {
+export class KnowledgeCenterListComponent implements OnInit {
+  // Form controls
+  searchControl = new FormControl()
+
+  // Table properties
+  displayedColumns: string[] = []
+  dataSource!: MatTableDataSource<any>
+  columnsList: any[] = []
+  tableColumns: any[] = []
+
   // Table data properties
   articlesList: Article[] = []
-  dataSource!: MatTableDataSource<Article>
-  displayedColumns: string[] = ['title', 'category', 'lastUpdated', 'status', 'visibility', 'actions']
 
   // Sorting properties
-  sortField: string = 'lastUpdated'
-  sortDirection: 'asc' | 'desc' = 'desc'
+  sortField: string = ''
+  sortDirection: 'asc' | 'desc' = 'asc'
 
   // Pagination properties
   paginationSize: number = 10
   currentPage: number = 0
   totalItemsCount: number = 0
-  pageSizeOptions: number[] = [5, 10, 20, 50]
+  pageSizeOptions: number[] = [10, 20, 50, 100]
   showPagination: boolean = true
+  paginationDetails: any
 
   // UI properties
   noDataMessage: string = 'No articles found'
+  searchQuery: string = ''
+  showLoader: boolean = false
 
   // Menu items for action dropdown
   menuItems: MenuItem[] = [
@@ -52,8 +71,43 @@ export class KnowledgeCenterListComponent implements OnInit, OnChanges {
     { label: 'Delete', action: 'delete', icon: 'delete' },
   ]
 
-  constructor() {
-    this.dataSource = new MatTableDataSource<Article>([])
+  // Table configuration
+  tableData: any = {
+    columns: [
+      {
+        displayName: 'Title / Summary',
+        key: 'title',
+        cellType: 'text',
+        imageKey: null,
+      },
+      {
+        displayName: 'Category',
+        key: 'category',
+        cellType: 'text',
+      },
+      {
+        displayName: 'Status',
+        key: 'status',
+        cellType: 'status',
+      },
+      {
+        displayName: 'Type',
+        key: 'type',
+        cellType: 'text',
+      },
+      {
+        displayName: 'Updated On',
+        key: 'updatedOn',
+        cellType: 'text',
+      },
+    ]
+  }
+
+  constructor(
+    private developerDocService: DeveloperDocService,
+    private router: Router
+  ) {
+    this.dataSource = new MatTableDataSource<any>([])
   }
 
   ngOnInit(): void {
@@ -61,81 +115,95 @@ export class KnowledgeCenterListComponent implements OnInit, OnChanges {
     this.loadArticles()
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.articlesList) {
-      this.loadArticles()
-    }
-  }
-
-  /**
-   * Initialize table data
-   */
   private initializeTable(): void {
-    // Sample data - replace with API call
-    this.articlesList = [
-      {
-        id: '1',
-        title: 'Getting Started with Angular',
-        author: 'John Doe',
-        category: 'Web Development',
-        lastUpdated: new Date('2024-02-20'),
-        status: 'Published',
-        visibility: 'Public',
-      },
-      {
-        id: '2',
-        title: 'TypeScript Best Practices',
-        author: 'Jane Smith',
-        category: 'Programming',
-        lastUpdated: new Date('2024-02-18'),
-        status: 'Published',
-        visibility: 'Public',
-      },
-      {
-        id: '3',
-        title: 'Advanced Routing Techniques',
-        author: 'Mike Johnson',
-        category: 'Web Development',
-        lastUpdated: new Date('2024-02-15'),
-        status: 'Draft',
-        visibility: 'Private',
-      },
-      {
-        id: '4',
-        title: 'State Management with NGRX',
-        author: 'Sarah Williams',
-        category: 'Angular',
-        lastUpdated: new Date('2024-02-10'),
-        status: 'Published',
-        visibility: 'Internal',
-      },
-      {
-        id: '5',
-        title: 'RESTful API Design',
-        author: 'Robert Brown',
-        category: 'Backend',
-        lastUpdated: new Date('2024-02-05'),
-        status: 'Archived',
-        visibility: 'Public',
-      },
-    ]
-
-    this.loadArticles()
+    if (this.tableData && this.tableData.columns) {
+      this.noDataMessage = _.get(this.tableData, 'noDataMessage', 'No articles found')
+      this.getColumnConfiguration()
+    }
   }
 
   /**
-   * Load articles into table
+   * Get column configuration
    */
+  private getColumnConfiguration(): void {
+    this.columnsList = []
+    this.displayedColumns = []
+    const columns = JSON.parse(JSON.stringify(this.tableData.columns))
+
+    // Add action column
+    const actionColumn = { displayName: 'Actions', key: 'actions', cellType: 'menu' }
+    columns.push(actionColumn)
+
+    this.tableColumns = columns
+    this.columnsList = columns
+    this.displayedColumns = _.map(columns, c => c.key)
+  }
+
   private loadArticles(): void {
-    if (this.articlesList && this.articlesList.length > 0) {
-      // Sort data on load
-      const sortedData = _.orderBy(this.articlesList, [this.sortField], [this.sortDirection])
-      this.dataSource = new MatTableDataSource<Article>(sortedData)
-      this.totalItemsCount = this.articlesList.length
-    } else {
-      this.dataSource = new MatTableDataSource<Article>([])
-      this.totalItemsCount = 0
+    this.showLoader = true
+    const formBody = {
+      filterCriteriaMap: {
+        showUnderDeveloperDocs: true,
+        type: 'CATEGORY'
+      },
+      requestedFields: [],
+      pageNumber: this.currentPage,
+      pageSize: this.paginationSize,
+      facets: []
     }
+
+    this.developerDocService.getArticles(formBody).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          // Transform API response to article format
+          this.articlesList = response.data.map((item: any) => ({
+            id: item.id,
+            title: item.title,
+            summary: item.summary,
+            category: item.type,
+            status: item.status,
+            type: item.type,
+            createdBy: item.createdBy,
+            updatedBy: item.updatedBy,
+            createdOn: item.createdOn,
+            updatedOn: item.updatedOn,
+          }))
+
+          this.totalItemsCount = response.totalCount || 0
+          this.dataSource = new MatTableDataSource<any>(this.articlesList)
+        } else {
+          this.articlesList = []
+          this.dataSource = new MatTableDataSource<any>([])
+        }
+        this.showLoader = false
+      },
+      (error: any) => {
+        console.error('Error loading articles:', error)
+        this.showLoader = false
+        this.dataSource = new MatTableDataSource<any>([])
+      }
+    )
+  }
+
+  onSearchInput(): void {
+    const searchValue = this.searchControl.value ? this.searchControl.value.toLowerCase() : ''
+
+    if (searchValue) {
+      const filteredData = this.articlesList.filter(article => {
+        return (
+          article.title?.toLowerCase().includes(searchValue) ||
+          article.summary?.toLowerCase().includes(searchValue) ||
+          article.category?.toLowerCase().includes(searchValue) ||
+          article.status?.toLowerCase().includes(searchValue) ||
+          JSON.stringify(article).toLowerCase().includes(searchValue)
+        )
+      })
+      this.dataSource = new MatTableDataSource<any>(filteredData)
+    } else {
+      this.dataSource = new MatTableDataSource<any>(this.articlesList)
+    }
+
+    this.searchQuery = searchValue
   }
 
   /**
@@ -151,41 +219,37 @@ export class KnowledgeCenterListComponent implements OnInit, OnChanges {
     this.sortData()
   }
 
-  /**
-   * Sort table data
-   */
   private sortData(): void {
     const sorted = _.orderBy(this.dataSource.data, [this.sortField], [this.sortDirection])
-    this.dataSource = new MatTableDataSource<Article>(sorted)
+    this.dataSource = new MatTableDataSource<any>(sorted)
   }
 
-  /**
-   * Handle pagination change
-   */
   onPageChange(event: PageChangeEmitter): void {
     this.currentPage = event.currentPage
     this.paginationSize = event.limit
 
-    // You can emit this to parent or call API with pagination details
-    console.log('Page changed:', {
+    this.paginationDetails = {
       pageSize: event.limit,
+      totalCount: this.totalItemsCount,
       currentPage: event.currentPage,
       previousPage: event.previousPage,
-    })
+      limit: event.limit,
+    }
+
+    // Reload articles with new pagination
+    this.loadArticles()
   }
 
   /**
    * Handle action menu click
    */
   takeAction(action: string, article: Article): void {
-    console.log(`Action: ${action}`, article)
-
     switch (action) {
       case 'view':
-        this.viewArticle(article)
-        break
       case 'edit':
-        this.editArticle(article)
+        this.router.navigate(['/app/home/knowledge-center/developer-doc'], {
+          queryParams: { id: article.id, mode: action }
+        })
         break
       case 'delete':
         this.deleteArticle(article)
@@ -195,39 +259,19 @@ export class KnowledgeCenterListComponent implements OnInit, OnChanges {
     }
   }
 
-  /**
-   * View article
-   */
-  private viewArticle(article: Article): void {
-    console.log('Viewing article:', article)
-    // TODO: Navigate to view page or open dialog
-  }
-
-  /**
-   * Edit article
-   */
-  private editArticle(article: Article): void {
-    console.log('Editing article:', article)
-    // TODO: Navigate to edit page or open dialog
-  }
-
-  /**
-   * Delete article
-   */
   private deleteArticle(article: Article): void {
     if (confirm(`Are you sure you want to delete "${article.title}"?`)) {
-      console.log('Deleting article:', article)
-      // TODO: Call API to delete article and refresh table
       this.articlesList = this.articlesList.filter(a => a.id !== article.id)
       this.loadArticles()
     }
   }
 
-  /**
-   * Add new article
-   */
   addNewArticle(): void {
-    console.log('Add new article clicked')
-    // TODO: Navigate to create article page or open dialog
+    this.router.navigate(['/app/home/knowledge-center/developer-doc'])
+  }
+
+  capitalizeText(text: string): string {
+    if (!text) return ''
+    return text?.charAt(0)?.toUpperCase() + text.slice(1)?.toLowerCase()
   }
 }
