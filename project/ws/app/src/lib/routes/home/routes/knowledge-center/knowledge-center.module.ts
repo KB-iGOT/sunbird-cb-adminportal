@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http'
+import { CKEditorModule } from 'ng2-ckeditor'
 
 // Angular Material Modules
 import { MatTableModule } from '@angular/material/table'
@@ -27,11 +28,13 @@ import { KnowledgeCenterRoutingModule } from './knowledge-center-routing.module'
 // Components
 import { DeveloperDocCreationComponent } from './components/developer-doc-creation/developer-doc-creation.component'
 import { KnowledgeCenterListComponent } from './components/knowledge-center-list/knowledge-center-list.component'
+import { PlainCkeditorComponent } from './components/plain-ckeditor/plain-ckeditor.component'
 
 @NgModule({
   declarations: [
     DeveloperDocCreationComponent,
     KnowledgeCenterListComponent,
+    PlainCkeditorComponent
   ],
   imports: [
     CommonModule,
@@ -39,6 +42,7 @@ import { KnowledgeCenterListComponent } from './components/knowledge-center-list
     ReactiveFormsModule,
     HttpClientModule,
     KnowledgeCenterRoutingModule,
+    CKEditorModule,
     MatTableModule,
     MatIconModule,
     MatMenuModule,

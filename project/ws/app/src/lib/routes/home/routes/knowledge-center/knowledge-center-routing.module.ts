@@ -18,10 +18,11 @@ const routes: Routes = [
     path: 'developer-doc',
     component: DeveloperDocCreationComponent,
     data: {
-      pageId: 'home/knowledge-centre/developer-doc',
-      module: 'KnowledgeCenter',
-      pageType: 'feature',
-      pageKey: 'DeveloperDocCreation',
+      // pageId: 'home/knowledge-centre/developer-doc',
+      // module: 'KnowledgeCenter',
+      // pageType: 'feature',
+      // pageKey: 'DeveloperDocCreation',
+      load: ['ckeditor']
     }
   },
 ]
