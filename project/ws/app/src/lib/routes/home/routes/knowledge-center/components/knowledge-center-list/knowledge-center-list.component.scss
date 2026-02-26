@@ -122,44 +122,24 @@
 
 // Status Badge Styling
 .status-badge {
-  .draft,
-  .pending {
+  .draft {
     @include status-badge(#f3962f, true);
     color: #1b2133;
   }
 
-  .published,
-  .live,
-  .active,
-  .approved {
+  .published {
     @include status-badge(#00a650, true);
     color: #00a650;
   }
 
-  .archived,
-  .retired,
-  .inactive,
-  .rejected {
-    @include status-badge(#d13924, true);
-  }
+  // .archived,
+  // .retired,
+  // .inactive,
+  // .rejected {
+  //   @include status-badge(#d13924, true);
+  // }
 }
 
-// Visibility Badge Styling
-.visibility-badge {
-  .public {
-    @include status-badge(#00a650, true);
-    color: #00a650;
-  }
-
-  .private {
-    @include status-badge(#f3962f, true);
-    color: #1b2133;
-  }
-
-  .internal {
-    @include status-badge(#1b4ca1, true);
-  }
-}
 
 .status-icon {
   font-size: 12px;

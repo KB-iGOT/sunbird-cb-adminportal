@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, OnDestroy } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { MatTableDataSource } from '@angular/material/table'
 import { PageChangeEmitter } from '@sunbird-cb/consumption'
 import { Router } from '@angular/router'
 import * as _ from 'lodash'
+import { debounceTime, map } from 'rxjs/operators'
+import { Subject, Subscription } from 'rxjs'
 import { DeveloperDocService } from '../../services/developer-doc.service'
 
 interface MenuItem {
@@ -34,9 +36,14 @@ interface Article {
   styleUrls: ['./knowledge-center-list.component.scss'],
   standalone: false,
 })
-export class KnowledgeCenterListComponent implements OnInit {
+export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
   // Form controls
   searchControl = new FormControl()
+
+  // Search properties
+  searchSubject$ = new Subject<string>()
+  searchSubscription: Subscription | null = null
+  articleApiSubscription: Subscription | null = null
 
   // Table properties
   displayedColumns: string[] = []
@@ -75,14 +82,13 @@ export class KnowledgeCenterListComponent implements OnInit {
   tableData: any = {
     columns: [
       {
-        displayName: 'Title / Summary',
+        displayName: 'Title',
         key: 'title',
         cellType: 'text',
-        imageKey: null,
       },
       {
         displayName: 'Category',
-        key: 'category',
+        key: 'categoryName',
         cellType: 'text',
       },
       {
@@ -91,13 +97,8 @@ export class KnowledgeCenterListComponent implements OnInit {
         cellType: 'status',
       },
       {
-        displayName: 'Type',
-        key: 'type',
-        cellType: 'text',
-      },
-      {
-        displayName: 'Updated On',
-        key: 'updatedOn',
+        displayName: 'Visibility',
+        key: 'visibility',
         cellType: 'text',
       },
     ]
@@ -112,7 +113,19 @@ export class KnowledgeCenterListComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeTable()
+    this.setupSearchListener()
     this.loadArticles()
+  }
+
+  ngOnDestroy(): void {
+    // Unsubscribe from search and article API calls
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe()
+    }
+    if (this.articleApiSubscription) {
+      this.articleApiSubscription.unsubscribe()
+    }
+    this.searchSubject$.complete()
   }
 
   private initializeTable(): void {
@@ -122,9 +135,19 @@ export class KnowledgeCenterListComponent implements OnInit {
     }
   }
 
-  /**
-   * Get column configuration
-   */
+  private setupSearchListener(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe()
+    }
+
+    this.searchSubscription = this.searchControl.valueChanges
+      .pipe(debounceTime(2000))
+      .subscribe((searchValue: string) => {
+        this.currentPage = 0
+        this.onSearchInput(searchValue)
+      })
+  }
+
   private getColumnConfiguration(): void {
     this.columnsList = []
     this.displayedColumns = []
@@ -139,76 +162,115 @@ export class KnowledgeCenterListComponent implements OnInit {
     this.displayedColumns = _.map(columns, c => c.key)
   }
 
-  private loadArticles(): void {
+  private loadArticles(searchString: string = ''): void {
     this.showLoader = true
-    const formBody = {
-      filterCriteriaMap: {
-        showUnderDeveloperDocs: true,
-        type: 'CATEGORY'
-      },
-      requestedFields: [],
-      pageNumber: this.currentPage,
-      pageSize: this.paginationSize,
-      facets: []
+
+    // Cancel any existing API call
+    if (this.articleApiSubscription) {
+      this.articleApiSubscription.unsubscribe()
     }
 
-    this.developerDocService.getArticles(formBody).subscribe(
-      (response: any) => {
-        if (response && response.data) {
-          // Transform API response to article format
-          this.articlesList = response.data.map((item: any) => ({
-            id: item.id,
-            title: item.title,
-            summary: item.summary,
-            category: item.type,
-            status: item.status,
-            type: item.type,
-            createdBy: item.createdBy,
-            updatedBy: item.updatedBy,
-            createdOn: item.createdOn,
-            updatedOn: item.updatedOn,
-          }))
+    // Build form body with proper structure
+    const formBody: any = {
+      filterCriteriaMap: {
+        type: ['subcategory'],
+      },
+      pageNumber: this.currentPage,
+      pageSize: this.paginationSize,
+      requestedFields: [
+        'type',
+        'title',
+        'status',
+        'isPublic',
+        'createdOn',
+        'createdBy',
+        'updatedBy',
+        'updatedOn',
+        'subCategoryId',
+        'categoryId'
+      ]
+    }
 
-          this.totalItemsCount = response.totalCount || 0
-          this.dataSource = new MatTableDataSource<any>(this.articlesList)
-        } else {
+    if (searchString) {
+      formBody.searchString = searchString
+    }
+
+    this.articleApiSubscription = this.developerDocService.getArticles(formBody)
+      .pipe(
+        map((response: any) => {
+          // Extract all needed data from response
+          const data = _.get(response, 'result.data', [])
+          const totalCount = _.get(response, 'result.totalCount', 0)
+          const userDetails = _.get(response, 'result.userDetails', [])
+          const categoryDetails = _.get(response, 'result.categoryDetails', [])
+
+          return {
+            data: data.map((item: any) => {
+              // Get createdBy and categoryId with null checks
+              const createdBy = _.get(item, 'createdBy', null)
+              const categoryId = _.get(item, 'categoryId', null)
+
+              // Find matching user and category records
+              const creator = createdBy ? _.find(userDetails, { id: createdBy }) : null
+              const category = categoryId ? _.find(categoryDetails, { id: categoryId }) : null
+
+              return {
+                ...item,
+                visibility: _.get(item, 'isPublic', false) ? 'Public' : 'Members',
+                ...(creator && { creatorName: _.get(creator, 'name', '') }),
+                ...(category && { categoryName: _.get(category, 'name', '') }),
+              }
+            }),
+            totalCount,
+          }
+        })
+      )
+      .subscribe(
+        (transformedResponse: any) => {
+          const data = _.get(transformedResponse, 'data', [])
+          const totalCount = _.get(transformedResponse, 'totalCount', 0)
+
+          if (data && Array.isArray(data)) {
+            this.articlesList = data
+            this.totalItemsCount = totalCount
+            this.dataSource = new MatTableDataSource<any>(this.articlesList)
+          } else {
+            this.articlesList = []
+            this.dataSource = new MatTableDataSource<any>([])
+          }
+          this.showLoader = false
+        },
+        (error: any) => {
+          console.error('Error loading articles:', error)
+          this.showLoader = false
           this.articlesList = []
           this.dataSource = new MatTableDataSource<any>([])
         }
-        this.showLoader = false
-      },
-      (error: any) => {
-        console.error('Error loading articles:', error)
-        this.showLoader = false
-        this.dataSource = new MatTableDataSource<any>([])
-      }
-    )
+      )
   }
 
-  onSearchInput(): void {
-    const searchValue = this.searchControl.value ? this.searchControl.value.toLowerCase() : ''
+  onSearchInput(searchValue?: string): void {
+    const value = searchValue !== undefined ? searchValue : (this.searchControl.value || '')
+    const trimmedSearch = value.trim().toLowerCase()
 
-    if (searchValue) {
-      const filteredData = this.articlesList.filter(article => {
-        return (
-          article.title?.toLowerCase().includes(searchValue) ||
-          article.summary?.toLowerCase().includes(searchValue) ||
-          article.category?.toLowerCase().includes(searchValue) ||
-          article.status?.toLowerCase().includes(searchValue) ||
-          JSON.stringify(article).toLowerCase().includes(searchValue)
-        )
-      })
-      this.dataSource = new MatTableDataSource<any>(filteredData)
-    } else {
-      this.dataSource = new MatTableDataSource<any>(this.articlesList)
+    this.searchQuery = trimmedSearch
+
+    if (!trimmedSearch) {
+      this.currentPage = 0
+      this.loadArticles()
+      return
     }
 
-    this.searchQuery = searchValue
+    if (trimmedSearch.length < 3 && trimmedSearch.length !== 0) {
+      this.articlesList = []
+      this.dataSource = new MatTableDataSource<any>([])
+      return
+    }
+
+    this.currentPage = 0
+    this.loadArticles(trimmedSearch)
   }
 
-  /**
-   * Handle sort change
-   */
   onSortChange(field: string): void {
     if (this.sortField === field) {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc'
@@ -225,19 +287,18 @@ export class KnowledgeCenterListComponent implements OnInit {
   }
 
   onPageChange(event: PageChangeEmitter): void {
-    this.currentPage = event.currentPage
-    this.paginationSize = event.limit
+    this.currentPage = _.get(event, 'currentPage', 0)
+    this.paginationSize = _.get(event, 'limit', 10)
 
     this.paginationDetails = {
-      pageSize: event.limit,
+      pageSize: _.get(event, 'limit', 10),
       totalCount: this.totalItemsCount,
-      currentPage: event.currentPage,
-      previousPage: event.previousPage,
-      limit: event.limit,
+      currentPage: _.get(event, 'currentPage', 0),
+      previousPage: _.get(event, 'previousPage', 0),
+      limit: _.get(event, 'limit', 10),
     }
 
-    // Reload articles with new pagination
-    this.loadArticles()
+    this.loadArticles(this.searchQuery)
   }
 
   /**
@@ -248,7 +309,7 @@ export class KnowledgeCenterListComponent implements OnInit {
       case 'view':
       case 'edit':
         this.router.navigate(['/app/home/knowledge-center/developer-doc'], {
-          queryParams: { id: article.id, mode: action }
+          queryParams: { id: article.subCategoryId, mode: action }
         })
         break
       case 'delete':
@@ -260,9 +321,9 @@ export class KnowledgeCenterListComponent implements OnInit {
   }
 
   private deleteArticle(article: Article): void {
-    if (confirm(`Are you sure you want to delete "${article.title}"?`)) {
+    if (confirm(`Are you sure you want to delete "${_.get(article, 'title', 'this article')}"`)) {
       this.articlesList = this.articlesList.filter(a => a.id !== article.id)
-      this.loadArticles()
+      this.loadArticles(this.searchQuery)
     }
   }
 
