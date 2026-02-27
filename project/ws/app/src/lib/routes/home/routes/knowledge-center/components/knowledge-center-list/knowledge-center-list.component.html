@@ -1,0 +1,109 @@
+<div class="knowledge-center-container">
+  <!-- Header Section -->
+  <div class="knowledge-center-header">
+    <div class="header-content">
+      <h1 class="header-title">Knowledge Center</h1>
+      <p class="header-description">Manage and organize your knowledge base articles</p>
+    </div>
+    <button mat-raised-button class="add-article-btn flex items-center" (click)="addNewArticle()">
+      <span>Add Article</span>
+    </button>
+  </div>
+
+  <!-- Search and Filter Section -->
+  <div class="mt-4 flex items-center justify-between">
+    <div class="content-search w-full">
+      <div class="search-wrapper w-1/2">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input type="text" placeholder="Type here to search..." class="search-input" (input)="onSearchInput()"
+          [formControl]="searchControl" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="mat-elevation-z8 knowledge-center-table seperate-tab-table">
+    <table mat-table [dataSource]="dataSource" class="table-container w-full mt-4">
+      <!-- Dynamic Columns -->
+      <ng-container *ngFor="let col of tableColumns" [matColumnDef]="col.key">
+        <th class="table-header-spacing" mat-header-cell *matHeaderCellDef [ngSwitch]="col.cellType">
+          <!-- Regular Column Header -->
+          <span *ngSwitchDefault class="sortable-header" (click)="onSortChange(col.key)">
+            {{ col.displayName }}
+            <mat-icon class="sort-icon" *ngIf="sortField === col.key; else defaultIcon">
+              {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+            </mat-icon>
+            <ng-template #defaultIcon>
+              <mat-icon class="sort-icon default-icon">arrow_upward</mat-icon>
+            </ng-template>
+          </span>
+        </th>
+
+        <td class="table-cell-spacing px-4" mat-cell *matCellDef="let element" [ngSwitch]="col.key">
+          <!-- Title/Summary Column -->
+          <div *ngSwitchCase="'title'" class="article-info py-4 pl-6 gap-2">
+            <span class="article-title">{{ element['title'] }}</span>
+            <span class="article-author">{{ element['creatorName'] }}</span>
+          </div>
+
+          <!-- Status Column -->
+          <div *ngSwitchCase="'status'" class="status-badge">
+            <span class="{{ element?.status?.toLowerCase() }}">
+              {{ capitalizeText(element?.status) }}
+            </span>
+          </div>
+
+          <!-- Menu/Actions Column -->
+          <div *ngSwitchCase="'actions'">
+            <mat-icon class="cursor-pointer" [matMenuTriggerFor]="actionMenu"
+              [matMenuTriggerData]="{ article: element }">
+              more_horiz
+            </mat-icon>
+          </div>
+
+          <!-- Regular Text Column -->
+          <span *ngSwitchDefault [ngClass]="col.cellClass">
+            <ng-container *ngIf="col.imageKey">
+              <img class="imageCell" [src]="element[col.imageKey]" alt="logo" />
+            </ng-container>
+            {{ element[col.key] }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- No Data Row -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="table-cell-spacing mat-cell no-data-cell" [attr.colspan]="displayedColumns?.length">
+          {{ noDataMessage }}
+        </td>
+      </tr>
+
+      <!-- Header and Data Rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" class="element-row"></tr>
+    </table>
+
+    <!-- Pagination -->
+    <ng-container *ngIf="showPagination && totalItemsCount > 0">
+      <div class="pagiantion-row">
+        <ws-widget-pagination [defaultPaginationSize]="paginationSize" [defaultPaginationSizeOptions]="pageSizeOptions"
+          [totalItemsCount]="totalItemsCount" [currentPage]="currentPage" (pageChange)="onPageChange($event)">
+        </ws-widget-pagination>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<!-- Action Menu -->
+<mat-menu #actionMenu="matMenu" class="action-menu">
+  <ng-template matMenuContent let-articleData="article">
+    <ng-container *ngFor="let menuItem of menuItems">
+      <a class="flex items-center" mat-menu-item (click)="takeAction(menuItem.action, articleData)">
+        <ng-container *ngIf="menuItem.icon">
+          <mat-icon class="menu-icon">{{ menuItem.icon }}</mat-icon>
+        </ng-container>
+        <span class="menu-text">{{ menuItem.label }}</span>
+      </a>
+    </ng-container>
+  </ng-template>
+</mat-menu>

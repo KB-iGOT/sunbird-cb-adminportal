@@ -1,0 +1,406 @@
+// Developer Documentation Component Styles
+
+.dev-doc-container {
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.dev-doc-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+// Mat Card
+.dev-doc-card {
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dev-doc-card-header {
+  padding: 24px;
+
+  ::ng-deep .mat-mdc-card-header-text {
+    display: none;
+  }
+}
+
+.dev-doc-back-icon {
+  font-size: 35px;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.dev-doc-card-content {
+  padding: 24px;
+
+  ::ng-deep .mat-mdc-card-content {
+    padding: 0;
+  }
+}
+
+
+.dev-doc-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  flex: 1;
+}
+
+.dev-doc-header-actions {
+  display: flex;
+  gap: 16px;
+}
+
+// Form
+.dev-doc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+// Sections
+.dev-doc-section {
+  background-color: #ffffff;
+}
+
+.save-btn {
+  height: 36px;
+  padding: 0px 24px;
+  border-radius: 18px;
+  border: 1px solid #1b4ca1 !important;
+  background-color: #ffffff !important;
+  color: #1b4ca1 !important;
+  font: 600 14px Montserrat;
+}
+
+.publish-btn {
+  height: 36px;
+  padding: 0px 24px;
+  border-radius: 18px;
+  background-color: #1b4ca1 !important;
+  color: #ffffff !important;
+  font: 600 14px Montserrat;
+}
+
+.dev-doc-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.dev-doc-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.dev-doc-section-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+// Form Group
+.dev-doc-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dev-doc-label {
+  // stylelint-disable-next-line font-shorthand-values
+  font: 700 14px/21px Lato;
+  letter-spacing: normal;
+}
+
+.dev-doc-form-field {
+  width: 100%;
+
+  ::ng-deep {
+    .mdc-text-field {
+      background-color: #ffffff;
+    }
+
+    .mdc-text-field--outlined {
+      border-color: #d1d5db;
+    }
+
+    .mat-mdc-form-field-label {
+      color: #6b7280;
+    }
+
+    .mat-error {
+      color: #dc2626;
+      font-size: 12px;
+    }
+
+    .mat-hint {
+      color: #6b7280;
+      font-size: 12px;
+    }
+  }
+
+  textarea {
+    font-family: inherit;
+    line-height: 1.5;
+  }
+}
+
+// Accordion (Mat Accordion)
+.dev-doc-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  ::ng-deep .mat-mdc-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+.dev-doc-expansion-panel {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+
+  ::ng-deep {
+    .mat-expansion-panel-header {
+      padding: 0 24px !important;
+    }
+
+    .mat-expansion-panel-body {
+      padding: 0 !important;
+    }
+  }
+}
+
+.dev-doc-expansion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+
+  &:hover {
+    background-color: #f9fafb;
+  }
+}
+
+.dev-doc-panel-title {
+  flex: 1;
+  // font-weight: 500;
+  // color: #1f2937;
+  // font-size: 14px;
+}
+
+.dev-doc-delete-icon {
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 20px;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #dc2626;
+  }
+
+  &:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+}
+
+.dev-doc-delete-icon-disabled {
+  cursor: not-allowed;
+  color: #d1d5db;
+  opacity: 0.5;
+
+  &:hover {
+    color: #d1d5db;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.dev-doc-panel-content {
+  padding: 24px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+// Textarea Wrapper
+.dev-doc-textarea-wrapper {
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 12px;
+  background-color: #ffffff;
+}
+
+.dev-doc-textarea-wrapper.dev-doc-readonly {
+  background-color: #f9fafb;
+}
+
+.dev-doc-textarea {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 256px;
+
+  &:readonly {
+    background-color: #f9fafb;
+    cursor: not-allowed;
+  }
+}
+
+// Publishing Grid
+.dev-doc-publishing-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// Error and Hint
+.dev-doc-error {
+  display: block;
+  margin-top: 8px;
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.dev-doc-hint {
+  display: block;
+  margin-top: 8px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+// Empty State
+.dev-doc-empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: #6b7280;
+  font-size: 16px;
+}
+
+// Tags Section
+.dev-doc-tags-section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+  border: none;
+  padding: 0;
+  margin: 24px 0 0 0;
+}
+
+.dev-doc-tags-legend {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 16px;
+  padding: 0;
+}
+
+.dev-doc-tags-header {
+  margin-bottom: 16px;
+
+  mat-icon-button {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+  }
+}
+
+.dev-doc-tags-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dev-doc-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.dev-doc-tag-field {
+  flex: 1;
+  width: 100%;
+
+  ::ng-deep {
+    .mdc-text-field {
+      background-color: #ffffff;
+    }
+
+    .mdc-text-field--outlined {
+      border-color: #d1d5db;
+    }
+  }
+}
+
+.dev-doc-tag-delete {
+  flex-shrink: 0;
+  color: #6b7280;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #dc2626;
+  }
+
+  &:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+}
+
+.addtips-btn {
+    width: fit-content;
+    padding: 6px 12px;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+
+    .addtips-icon {
+    color: #1b4ca1;
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+    margin-right: 4px;
+  }
+
+  .addtips-text {
+    font-family: Montserrat;
+    font-weight: 600;
+    font-size: 14px;
+    color: #1b4ca1;
+  }
+  }
+
+  .removeItem {
+    cursor: pointer;
+    min-width: 30px;
+
+    .removeIcon {
+      width: 24px;
+      height: 24px;
+      font-size: 24px;
+    }
+  }

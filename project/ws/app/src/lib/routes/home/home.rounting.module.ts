@@ -306,6 +306,16 @@ const routes: Routes = [
         },
       },
       {
+        path: 'knowledge-center',
+        loadChildren: () => import('./routes/knowledge-center/knowledge-center.module').then(u => u.KnowledgeCenterModule),
+        data: {
+          pageId: 'home/knowledge-center',
+          module: 'KnowledgeCenter',
+          pageType: 'feature',
+          pageKey: 'KnowledgeCenter',
+        }
+      },
+      {
         path: 'sectors',
         component: SectorsComponent,
         data: {

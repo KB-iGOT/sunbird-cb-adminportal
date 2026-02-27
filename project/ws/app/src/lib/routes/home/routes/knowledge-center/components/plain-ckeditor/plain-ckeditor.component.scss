@@ -1,0 +1,44 @@
+@import 'ws-mixins';
+
+.ckeditor-wrapper {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+
+  ::ng-deep .cke {
+    width: 100% !important;
+    background: transparent;
+  }
+
+  ::ng-deep .cke_contents {
+    min-height: 400px !important;
+  }
+
+  ::ng-deep .cke_wysiwyg_frame {
+    min-height: 400px !important;
+  }
+
+  ::ng-deep .cke_button__uploadimage_icon {
+    background-position: 0 -672px !important;
+  }
+
+  ::ng-deep .cke_button__uploadfile_icon {
+    background-position: 0 -1176px !important;
+  }
+
+  ::ng-deep .cke_button__blank_icon {
+    background-position: 0 -782px !important;
+  }
+
+  ::ng-deep .cke_dialog_container {
+    z-index: 10010 !important;
+  }
+
+  ::ng-deep .cke_bottom {
+    display: none !important;
+  }
+
+  ::ng-deep .show-error .cke {
+    border-color: red !important;
+  }
+}
