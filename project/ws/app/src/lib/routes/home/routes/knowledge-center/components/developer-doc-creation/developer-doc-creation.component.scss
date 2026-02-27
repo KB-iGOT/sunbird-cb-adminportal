@@ -19,10 +19,19 @@
 }
 
 .dev-doc-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   padding: 24px;
+
+  ::ng-deep .mat-mdc-card-header-text {
+    display: none;
+  }
+}
+
+.dev-doc-back-icon {
+  font-size: 35px;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  font-weight: 600;
 }
 
 .dev-doc-card-content {

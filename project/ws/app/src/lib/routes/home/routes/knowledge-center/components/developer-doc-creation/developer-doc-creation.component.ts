@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { DeveloperDocService } from '../../services/developer-doc.service'
 import * as _ from 'lodash'
 import { map } from 'rxjs/operators'
@@ -26,6 +27,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   isSaving: boolean = false
   expandedAccordionIndex: number | null = null
   headerText: string = 'Create Article'
+  showPublishButton: boolean = false
 
   // Dropdown options
   visibilityOptions = [
@@ -39,7 +41,8 @@ export class DeveloperDocCreationComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private developerDocService: DeveloperDocService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar
   ) {
     this.initializeForm()
   }
@@ -52,7 +55,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   /**
    * Initialize form structure
    */
-  private initializeForm(): void {
+  initializeForm(): void {
     this.subCategoryForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(50), Validators.maxLength(100)]],
       excerpt: ['', [Validators.required, Validators.minLength(10)]],
@@ -66,7 +69,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   /**
    * Create article form group
    */
-  private createArticleForm(article?: any): FormGroup {
+  createArticleForm(article?: any): FormGroup {
     return this.fb.group({
       articleId: [article?.articleId || ''],
       title: [article?.title || '', [Validators.required, Validators.minLength(3)]],
@@ -77,7 +80,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   /**
    * Create tag form group
    */
-  private createTagForm(value: string = ''): FormGroup {
+  createTagForm(value: string = ''): FormGroup {
     return this.fb.group({
       value: [value, [Validators.minLength(3)]]
     })
@@ -94,7 +97,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   /**
    * Initialize component based on query parameters
    */
-  private initializeComponent(): void {
+  initializeComponent(): void {
     this.activatedRoute.queryParams.subscribe((queryParams: any) => {
       this.articleId = queryParams['id'] || null
 
@@ -134,7 +137,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   /**
    * Load article data from service
    */
-  private loadArticle(id: string): void {
+  loadArticle(id: string): void {
     this.isLoading = true
 
     const formBody = {
@@ -174,7 +177,7 @@ export class DeveloperDocCreationComponent implements OnInit {
     )
   }
 
-  private populateForm(subCategoryDetails: any): void {
+  populateForm(subCategoryDetails: any): void {
     switch (this.mode) {
       case 'create':
         this.headerText = 'Create Article'
@@ -286,16 +289,35 @@ export class DeveloperDocCreationComponent implements OnInit {
   }
 
   /**
-   * Save/Publish article with specified status
-   * @param status 'DRAFT' for saving as draft, 'PUBLISHED' for publishing
+   * Save without validation
+   * Saves as draft status
    */
-  saveArticle(status: string = 'DRAFT'): void {
+  save(): void {
+    this.performSave('DRAFT', false)
+  }
+
+  /**
+   * Next - Validate and save
+   * Validates form, then calls save with next action flag
+   * After success, refreshes data and shows publish button
+   */
+  next(): void {
     if (!this.subCategoryForm.valid) {
       this.markFormGroupTouched(this.subCategoryForm)
       console.warn('Form is invalid')
+      this.showSnackBar('Please fill all required fields', 'error')
       return
     }
 
+    // Store the isNextAction flag so saveArticlesData can use it
+    const isNextAction = true
+    this.performSave('DRAFT', isNextAction)
+  }
+
+  /**
+   * Internal method to perform save with optional isNextAction flag
+   */
+  performSave(status: string = 'DRAFT', isNextAction: boolean = false): void {
     this.isSaving = true
 
     // Extract tags as string array (filter out empty values)
@@ -307,6 +329,7 @@ export class DeveloperDocCreationComponent implements OnInit {
     const subCategoryPayload = {
       title: this.subCategoryForm.get('title')?.value,
       summary: this.subCategoryForm.get('excerpt')?.value,
+      content: this.subCategoryForm.get('excerpt')?.value,
       categoryId: this.subCategoryForm.get('category')?.value,
       isPublic: this.subCategoryForm.get('visibility')?.value,
       tags: tagsArray
@@ -322,8 +345,12 @@ export class DeveloperDocCreationComponent implements OnInit {
         const subCategoryId = this.articleId || _.get(response, 'result.subCategoryId', '')
 
         if (subCategoryId) {
+          // Update articleId if it was a new subcategory
+          if (!this.articleId) {
+            this.articleId = subCategoryId
+          }
           // Save all articles
-          this.saveArticlesData(subCategoryId, status)
+          this.saveArticlesData(subCategoryId, status, isNextAction)
         } else {
           this.isSaving = false
           console.error('Failed to get subCategoryId from response')
@@ -331,7 +358,79 @@ export class DeveloperDocCreationComponent implements OnInit {
       },
       (error: any) => {
         this.isSaving = false
-        console.error(`Error saving subcategory with status ${status}:`, error)
+        console.error('Error saving subcategory:', error)
+        this.showSnackBar('Error saving document', 'error')
+      }
+    )
+  }
+
+  /**
+   * Publish articles and subcategory
+   * First publishes all articles, then publishes subcategory
+   */
+  publish(): void {
+    if (!this.articleId) {
+      this.showSnackBar('No document selected for publishing', 'error')
+      return
+    }
+
+    this.isSaving = true
+
+    // Get all article IDs
+    const articles = this.articlesArray.value
+    const articleIds = articles
+      .filter((article: any) => article.articleId)
+      .map((article: any) => article.articleId)
+
+    // Publish all articles first
+    const articlePublishPromises = articleIds.map((articleId: string) =>
+      this.developerDocService.publishArticle({ id: articleId })
+    )
+
+    if (articlePublishPromises.length > 0) {
+      forkJoin(articlePublishPromises).subscribe(
+        (responses: any) => {
+          // After all articles are published, publish the subcategory
+          if (responses) {
+            this.publishSubCategory()
+          }
+        },
+        (error: any) => {
+          this.isSaving = false
+          console.error('Error publishing articles:', error)
+          this.showSnackBar('Error publishing articles', 'error')
+        }
+      )
+    } else {
+      // No articles to publish, publish subcategory directly
+      this.publishSubCategory()
+    }
+  }
+
+  /**
+   * Publish the subcategory
+   */
+  publishSubCategory(): void {
+    if (!this.articleId) {
+      this.isSaving = false
+      return
+    }
+
+    this.developerDocService.publishSubCategory({ id: this.articleId }).subscribe(
+      (response: any) => {
+        if (response) {
+          this.isSaving = false
+          this.showSnackBar('Document published successfully', 'success')
+          // Navigate back after successful publish
+          setTimeout(() => {
+            this.router.navigate(['/app/home/knowledge-center'])
+          }, 2000)
+        }
+      },
+      (error: any) => {
+        this.isSaving = false
+        console.error('Error publishing subcategory:', error)
+        this.showSnackBar('Error publishing document', 'error')
       }
     )
   }
@@ -339,7 +438,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   /**
    * Create a new subcategory with specified status
    */
-  private createNewSubCategory(payload: any, status: string): Observable<any> {
+  createNewSubCategory(payload: any, status: string): Observable<any> {
     const createPayload = {
       ...payload,
       type: 'subcategory',
@@ -353,7 +452,7 @@ export class DeveloperDocCreationComponent implements OnInit {
    * Update existing subcategory with specified status
    * Merge existing data from subCategoryDetails with form values
    */
-  private saveExistingSubCategory(payload: any, status: string): Observable<any> {
+  saveExistingSubCategory(payload: any, status: string): Observable<any> {
     // Start with all fields from subCategoryDetails except updatedBy, updatedOn, and articles
     const existingData = { ...this.subCategoryDetails }
     delete existingData.updatedBy
@@ -364,8 +463,7 @@ export class DeveloperDocCreationComponent implements OnInit {
     const updatePayload = {
       ...existingData,
       ...payload,
-      status: status,
-      id: this.articleId
+      status: status
     }
 
     return this.developerDocService.updateSubCategory(updatePayload)
@@ -375,18 +473,21 @@ export class DeveloperDocCreationComponent implements OnInit {
    * Save articles for the subcategory with specified status
    * For existing articles: merge with original data, update modified fields
    * For new articles: create with form data
+   * @param isNextAction if true, refresh data after save and show publish button
    */
-  private saveArticlesData(subCategoryId: string, status: string): void {
+  saveArticlesData(subCategoryId: string, status: string, isNextAction: boolean = false): void {
     const articles = this.articlesArray.value
     const articlePromises: Observable<any>[] = []
 
     articles.forEach((article: any) => {
       // If article has an ID, it's an existing record
+      const tagsArray = this.tagsArray.value
       if (article.articleId) {
         // Find original article from subCategoryDetails
         const originalArticle = this.subCategoryDetails.articles?.find(
           (art: any) => art.articleId === article.articleId
         )
+
 
         if (originalArticle) {
           // Keep all fields except updatedBy and updatedOn
@@ -399,8 +500,9 @@ export class DeveloperDocCreationComponent implements OnInit {
             ...existingData,
             title: article.title,
             content: article.content,
+            summary: article.content,
             status: status,
-            id: article.articleId
+            tags: tagsArray,
           }
 
           articlePromises.push(
@@ -412,12 +514,14 @@ export class DeveloperDocCreationComponent implements OnInit {
         const articlePayload = {
           title: article.title,
           content: article.content,
+          summary: article.content,
           subCategoryId: subCategoryId,
           categoryId: this.subCategoryForm.get('category')?.value,
           isPublic: this.subCategoryForm.get('visibility')?.value,
           type: 'article',
           status: status,
-          showUnderDeveloperDocs: true
+          showUnderDeveloperDocs: true,
+          tags: tagsArray,
         }
 
         articlePromises.push(
@@ -431,20 +535,35 @@ export class DeveloperDocCreationComponent implements OnInit {
         (responses: any) => {
           if (responses.some((res: any) => !res || res.error)) {
             console.error('Error saving some articles:', responses)
+            this.showSnackBar('Error saving some articles', 'error')
           } else {
             console.log('All articles saved successfully')
+            this.showSnackBar('Document saved successfully', 'success')
+            this.loadArticle(this.articleId!)
+
+            // If this is from next() action, refresh data and show publish button
+            if (isNextAction) {
+              this.showPublishButton = true
+            }
           }
           this.isSaving = false
-          // Optionally navigate back after successful save
-          this.router.navigate(['/app/home/knowledge-center'])
         },
         (error: any) => {
           this.isSaving = false
           console.error('Error saving articles:', error)
+          this.showSnackBar('Error saving articles', 'error')
         }
       )
     } else {
       this.isSaving = false
+      this.showSnackBar('Document saved successfully', 'success')
+
+      // If this is from next() action, refresh data and show publish button
+      if (isNextAction) {
+        this.getCategories()
+        this.loadArticle(this.articleId!)
+        this.showPublishButton = true
+      }
     }
   }
 
@@ -461,7 +580,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   /**
    * Mark all fields as touched
    */
-  private markFormGroupTouched(formGroup: FormGroup): void {
+  markFormGroupTouched(formGroup: FormGroup): void {
     Object.keys(formGroup.controls).forEach(key => {
       const control = formGroup.get(key)
       control?.markAsTouched()
@@ -536,5 +655,17 @@ export class DeveloperDocCreationComponent implements OnInit {
       control.markAsTouched()
       control.markAsDirty()
     }
+  }
+
+  /**
+   * Show snackbar notification
+   */
+  showSnackBar(message: string, type: 'success' | 'error' = 'success', duration: number = 3000): void {
+    this.snackBar.open(message, 'X', {
+      duration,
+      panelClass: [`snackbar-${type}`],
+      horizontalPosition: 'right',
+      verticalPosition: 'top'
+    })
   }
 }

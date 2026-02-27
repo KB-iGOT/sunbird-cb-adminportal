@@ -6,13 +6,13 @@ import { HttpClient } from '@angular/common/http'
 
 const API_END_POINTS = {
   SEARCH_ARTICLES: `/apis/proxies/v8/knowledge/centre/spv/search`,
-  CREATE_SUB_CATEGORY: `/apis/proxies/v8/knowledge/create/subcategory`,
-  UPDATE_SUB_CATEGORY: (id: string) => `/apis/proxies/v8/knowledge/update/subcategory/${id}`,
-  CREATE_ARTICLE: `/apis/proxies/v8/knowledge/create/article`,
-  UPDATE_ARTICLE: (id: string) => `/apis/proxies/v8/knowledge/update/article/${id}`,
-  DELETE_ARTICLE: (id: string) => `/apis/proxies/v8/knowledge/delete/article/${id}`,
-  PUBLISH_ARTICLE: `/apis/proxies/v8/knowledge/publish/article`,
-  PUBLISH_SUB_CATEGORY: `/apis/proxies/v8/knowledge/publish/subcategory`,
+  CREATE_SUB_CATEGORY: `/apis/proxies/v8/knowledge/centre/create/subcategory`,
+  UPDATE_SUB_CATEGORY: (id: string) => `/apis/proxies/v8/knowledge/centre/update/subcategory/${id}`,
+  CREATE_ARTICLE: `/apis/proxies/v8/knowledge/centre/create/article`,
+  UPDATE_ARTICLE: (id: string) => `/apis/proxies/v8/knowledge/centre/update/article/${id}`,
+  DELETE_ARTICLE: (id: string) => `/apis/proxies/v8/knowledge/centre/delete/article/${id}`,
+  PUBLISH_ARTICLE: `/apis/proxies/v8/knowledge/centre/publish/article`,
+  PUBLISH_SUB_CATEGORY: `/apis/proxies/v8/knowledge/centre/publish/subcategory`,
 }
 
 @Injectable({
@@ -33,7 +33,7 @@ export class DeveloperDocService {
   }
 
   updateSubCategory(formBody: any): Observable<any> {
-    return this.http.post(`${API_END_POINTS.UPDATE_SUB_CATEGORY(formBody.id)}`, formBody)
+    return this.http.put(`${API_END_POINTS.UPDATE_SUB_CATEGORY(formBody.subCategoryId)}`, formBody)
   }
 
   createArticle(formBody: any): Observable<any> {
@@ -41,7 +41,7 @@ export class DeveloperDocService {
   }
 
   updateArticle(formBody: any): Observable<any> {
-    return this.http.put(`${API_END_POINTS.UPDATE_ARTICLE(formBody.id)}`, formBody)
+    return this.http.put(`${API_END_POINTS.UPDATE_ARTICLE(formBody.articleId)}`, formBody)
   }
 
   deleteArticle(articleId: string): Observable<any> {

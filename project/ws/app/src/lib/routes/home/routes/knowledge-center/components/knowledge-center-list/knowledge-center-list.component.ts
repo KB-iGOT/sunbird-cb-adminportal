@@ -211,14 +211,14 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
               const categoryId = _.get(item, 'categoryId', null)
 
               // Find matching user and category records
-              const creator = createdBy ? _.find(userDetails, { id: createdBy }) : null
+              const creator = createdBy ? _.find(userDetails, { user_id: createdBy }) : null
               const category = categoryId ? _.find(categoryDetails, { id: categoryId }) : null
 
               return {
                 ...item,
                 visibility: _.get(item, 'isPublic', false) ? 'Public' : 'Members',
-                ...(creator && { creatorName: _.get(creator, 'name', '') }),
-                ...(category && { categoryName: _.get(category, 'name', '') }),
+                ...(creator && { creatorName: _.get(creator, 'first_name', '') }),
+                ...(category && { categoryName: _.get(category, 'title', '') }),
               }
             }),
             totalCount,

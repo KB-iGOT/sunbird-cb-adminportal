@@ -11,17 +11,28 @@
   <ng-container *ngIf="!isLoading">
     <mat-card class="dev-doc-card">
       <!-- Card Header -->
-      <mat-card-header class="dev-doc-card-header">
-        <h1 class="dev-doc-title">{{ headerText }}</h1>
+      <mat-card-header class="dev-doc-card-header flex items-center justify-between">
+        <div class="flex items-center gap-6">
+          <mat-icon class="dev-doc-back-icon" (click)="cancel()"> arrow_back</mat-icon>
+          <h1 class="dev-doc-title">{{ headerText }}</h1>
+        </div>
         <div class="dev-doc-header-actions">
           <button mat-raised-button class="save-btn flex justify-center items-center"
-            [disabled]="(subCategoryForm.invalid || isSaving)" (click)="saveArticle('DRAFT')">
-            Save
+            [disabled]="(subCategoryForm.invalid || isSaving)" (click)="save()">
+            Save as Draft
           </button>
-          <button class="publish-btn" [disabled]="(subCategoryForm.invalid || isSaving)" mat-raised-button
-            (click)="saveArticle('PUBLISHED')">
-            Publish
-          </button>
+          <ng-container *ngIf="!showPublishButton; else publishAction">
+            <button class="publish-btn" [disabled]="(subCategoryForm.invalid || isSaving)" mat-raised-button
+              (click)="next()">
+              Next
+            </button>
+          </ng-container>
+          <ng-template #publishAction>
+            <button class="publish-btn" [disabled]="isSaving || subCategoryForm.invalid || isSaving" mat-raised-button
+              (click)="publish()">
+              Publish
+            </button>
+          </ng-template>
         </div>
       </mat-card-header>
 
