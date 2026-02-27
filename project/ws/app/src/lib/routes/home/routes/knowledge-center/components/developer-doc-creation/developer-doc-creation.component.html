@@ -16,24 +16,26 @@
           <mat-icon class="dev-doc-back-icon" (click)="cancel()"> arrow_back</mat-icon>
           <h1 class="dev-doc-title">{{ headerText }}</h1>
         </div>
-        <div class="dev-doc-header-actions">
-          <button mat-raised-button class="save-btn flex justify-center items-center"
-            [disabled]="(subCategoryForm.invalid || isSaving)" (click)="save()">
-            Save as Draft
-          </button>
-          <ng-container *ngIf="!showPublishButton; else publishAction">
-            <button class="publish-btn" [disabled]="(subCategoryForm.invalid || isSaving)" mat-raised-button
-              (click)="next()">
-              Next
-            </button>
-          </ng-container>
-          <ng-template #publishAction>
-            <button class="publish-btn" [disabled]="isSaving || subCategoryForm.invalid || isSaving" mat-raised-button
-              (click)="publish()">
-              Publish
-            </button>
-          </ng-template>
-        </div>
+        <ng-container *ngIf="mode !== 'view'">
+          <div class="dev-doc-header-actions">
+            <ng-container *ngIf="!showPublishButton; else publishAction">
+              <button mat-raised-button class="save-btn flex justify-center items-center"
+                [disabled]="(subCategoryForm.invalid || isSaving)" (click)="save()">
+                Save as Draft
+              </button>
+              <button class="publish-btn" [disabled]="(subCategoryForm.invalid || isSaving)" mat-raised-button
+                (click)="next()">
+                Next
+              </button>
+            </ng-container>
+            <ng-template #publishAction>
+              <button class="publish-btn" [disabled]="isSaving || subCategoryForm.invalid || isSaving" mat-raised-button
+                (click)="publish()">
+                Publish
+              </button>
+            </ng-template>
+          </div>
+        </ng-container>
       </mat-card-header>
 
       <!-- Card Content -->
@@ -113,7 +115,7 @@
                     <mat-expansion-panel [formGroupName]="i" class="dev-doc-expansion-panel" [hideToggle]="true">
                       <!-- Expansion Panel Header -->
                       <mat-expansion-panel-header class="dev-doc-expansion-header">
-                        <mat-panel-title class="dev-doc-panel-title">
+                        <mat-panel-title class="dev-doc-panel-title dev-doc-label">
                           {{ articlesArray.at(i)?.get('title')?.value }}
                         </mat-panel-title>
                         <ng-container *ngIf="mode !== 'view'">

@@ -73,9 +73,9 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
 
   // Menu items for action dropdown
   menuItems: MenuItem[] = [
-    { label: 'View', action: 'view', icon: 'visibility' },
-    { label: 'Edit', action: 'edit', icon: 'edit' },
-    { label: 'Delete', action: 'delete', icon: 'delete' },
+    { label: 'View', action: 'view', icon: '' },
+    { label: 'Edit', action: 'edit', icon: '' },
+    { label: 'Delete', action: 'delete', icon: '' },
   ]
 
   // Table configuration

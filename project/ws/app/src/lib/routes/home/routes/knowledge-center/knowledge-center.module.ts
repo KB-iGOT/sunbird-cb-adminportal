@@ -29,6 +29,7 @@ import { KnowledgeCenterRoutingModule } from './knowledge-center-routing.module'
 import { DeveloperDocCreationComponent } from './components/developer-doc-creation/developer-doc-creation.component'
 import { KnowledgeCenterListComponent } from './components/knowledge-center-list/knowledge-center-list.component'
 import { PlainCkeditorComponent } from './components/plain-ckeditor/plain-ckeditor.component'
+import { MatSnackBarModule } from '@angular/material/snack-bar'
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { PlainCkeditorComponent } from './components/plain-ckeditor/plain-ckedit
     MatCardModule,
     MatExpansionModule,
     PaginationModule,
+    MatSnackBarModule
   ],
 })
 export class KnowledgeCenterModule { }
