@@ -57,8 +57,14 @@ export class DeveloperDocCreationComponent implements OnInit {
    */
   initializeForm(): void {
     this.subCategoryForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(50), Validators.maxLength(100)]],
-      excerpt: ['', [Validators.required, Validators.minLength(10)]],
+      title: ['', [
+        Validators.required,
+        Validators.minLength(10),
+        Validators.maxLength(100)]],
+      excerpt: ['', [
+        Validators.required,
+        Validators.minLength(250),
+        Validators.maxLength(1000)]],
       category: ['technical', Validators.required],
       visibility: [true, Validators.required],
       articles: this.fb.array([this.createArticleForm()], Validators.minLength(1)),
@@ -72,7 +78,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   createArticleForm(article?: any): FormGroup {
     return this.fb.group({
       articleId: [article?.articleId || ''],
-      title: [article?.title || '', [Validators.required, Validators.minLength(3)]],
+      title: [article?.title || '', [Validators.required, Validators.minLength(10), Validators.maxLength(100)]],
       content: [article?.content || '', [Validators.required, Validators.minLength(20)]]
     })
   }
@@ -121,7 +127,7 @@ export class DeveloperDocCreationComponent implements OnInit {
         'categoryId'
       ],
       pageNumber: 0,
-      pageSize: 500
+      pageSize: 50
     }
 
     this.developerDocService.getArticles(formBody).subscribe(
@@ -145,7 +151,7 @@ export class DeveloperDocCreationComponent implements OnInit {
         subCategoryId: id
       },
       pageNumber: 0,
-      pageSize: 500
+      pageSize: 50
     }
 
     this.developerDocService.getArticles(formBody).pipe(
@@ -180,7 +186,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   populateForm(subCategoryDetails: any): void {
     switch (this.mode) {
       case 'create':
-        this.headerText = 'Create Article'
+        this.headerText = 'New Article'
         break
       case 'edit':
         this.headerText = 'Edit Article'
@@ -227,7 +233,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   }
 
   /**
-   * Remove article
+   * Remove article from form array
    */
   removeArticle(index: number): void {
     const articlesArray = this.subCategoryForm.get('articles') as FormArray
@@ -240,11 +246,42 @@ export class DeveloperDocCreationComponent implements OnInit {
 
   /**
    * Delete article with event handling
+   * If article has articleId: call delete API and refresh
+   * If article is new (no articleId): just remove from array
    */
   deleteArticle(index: number, event: Event): void {
     event.stopPropagation()
-    if (this.articlesArray.length > 1) {
+
+    const articlesArray = this.subCategoryForm.get('articles') as FormArray
+    if (articlesArray.length <= 1) {
+      this.showSnackBar('At least one article is required', 'error')
+      return
+    }
+
+    const article = articlesArray.at(index).value
+
+    // Check if article has ID (existing article in database)
+    if (article.articleId) {
+      // Call delete API
+      this.isSaving = true
+      this.developerDocService.deleteArticle(article.articleId).subscribe(
+        (response: any) => {
+          if (response) {
+            this.isSaving = false
+            this.showSnackBar('Article deleted successfully', 'success')
+            this.removeArticle(index)
+          }
+        },
+        (error: any) => {
+          this.isSaving = false
+          console.error('Error deleting article:', error)
+          this.showSnackBar('Error deleting article', 'error')
+        }
+      )
+    } else {
+      // New article (not saved yet), just remove from array
       this.removeArticle(index)
+      this.showSnackBar('Article deleted successfully', 'success')
     }
   }
 
@@ -439,11 +476,15 @@ export class DeveloperDocCreationComponent implements OnInit {
    * Create a new subcategory with specified status
    */
   createNewSubCategory(payload: any, status: string): Observable<any> {
+    const tagsArray = this.tagsArray.value
+      .map((tag: any) => tag.value)
+      .filter((value: string) => value && value.trim())
     const createPayload = {
       ...payload,
       type: 'subcategory',
       status: status,
-      showUnderDeveloperDocs: true
+      showUnderDeveloperDocs: true,
+      tags: tagsArray
     }
     return this.developerDocService.createSubCategory(createPayload)
   }
@@ -458,30 +499,29 @@ export class DeveloperDocCreationComponent implements OnInit {
     delete existingData.updatedBy
     delete existingData.updatedOn
     delete existingData.articles
+    const tagsArray = this.tagsArray.value
+      .map((tag: any) => tag.value)
+      .filter((value: string) => value && value.trim())
 
     // Merge with form values (form values override existing data)
     const updatePayload = {
       ...existingData,
       ...payload,
-      status: status
+      status: status,
+      tags: tagsArray
     }
 
     return this.developerDocService.updateSubCategory(updatePayload)
   }
 
-  /**
-   * Save articles for the subcategory with specified status
-   * For existing articles: merge with original data, update modified fields
-   * For new articles: create with form data
-   * @param isNextAction if true, refresh data after save and show publish button
-   */
   saveArticlesData(subCategoryId: string, status: string, isNextAction: boolean = false): void {
     const articles = this.articlesArray.value
     const articlePromises: Observable<any>[] = []
+    const tagsArray = this.tagsArray.value
+      .map((tag: any) => tag.value)
+      .filter((value: string) => value && value.trim())
 
     articles.forEach((article: any) => {
-      // If article has an ID, it's an existing record
-      const tagsArray = this.tagsArray.value
       if (article.articleId) {
         // Find original article from subCategoryDetails
         const originalArticle = this.subCategoryDetails.articles?.find(
