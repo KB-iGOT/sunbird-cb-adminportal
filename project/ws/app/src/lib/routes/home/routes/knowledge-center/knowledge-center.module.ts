@@ -30,6 +30,7 @@ import { DeveloperDocCreationComponent } from './components/developer-doc-creati
 import { KnowledgeCenterListComponent } from './components/knowledge-center-list/knowledge-center-list.component'
 import { PlainCkeditorComponent } from './components/plain-ckeditor/plain-ckeditor.component'
 import { MatSnackBarModule } from '@angular/material/snack-bar'
+import { BreadcrumbsOrgModule } from '@sunbird-cb/collection'
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar'
     ReactiveFormsModule,
     HttpClientModule,
     KnowledgeCenterRoutingModule,
+    BreadcrumbsOrgModule,
     CKEditorModule,
     MatTableModule,
     MatIconModule,

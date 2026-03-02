@@ -7,6 +7,7 @@ import * as _ from 'lodash'
 import { debounceTime, map } from 'rxjs/operators'
 import { Subject, Subscription } from 'rxjs'
 import { DeveloperDocService } from '../../services/developer-doc.service'
+import { MatSnackBar } from '@angular/material/snack-bar'
 
 interface MenuItem {
   label: string
@@ -106,7 +107,8 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
 
   constructor(
     private developerDocService: DeveloperDocService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
     this.dataSource = new MatTableDataSource<any>([])
   }
@@ -321,9 +323,22 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
   }
 
   private deleteArticle(article: Article): void {
-    if (confirm(`Are you sure you want to delete "${_.get(article, 'title', 'this article')}"`)) {
-      this.articlesList = this.articlesList.filter(a => a.id !== article.id)
-      this.loadArticles(this.searchQuery)
+    // if (confirm(`Are you sure you want to delete "${_.get(article, 'title', 'this article')}"`)) {
+    //   this.articlesList = this.articlesList.filter(a => a.id !== article.id)
+    //   this.loadArticles(this.searchQuery)
+    // }
+    if (article.subCategoryId) {
+      this.developerDocService.deleteSubCategory(article.subCategoryId).subscribe(
+        () => {
+          this.snackBar.open('Article deleted successfully')
+          this.loadArticles(this.searchQuery)
+        },
+        (error: any) => {
+          if (error) {
+            this.snackBar.open('Something went wrong while deleting the article, please try again ')
+          }
+        }
+      )
     }
   }
 

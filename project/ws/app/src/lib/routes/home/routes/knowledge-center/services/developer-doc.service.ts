@@ -1,7 +1,7 @@
 // import { HttpClient } from '@angular/common/http'
 import { APP_BASE_HREF } from '@angular/common'
 import { Inject, Injectable } from '@angular/core'
-import { Observable, of } from 'rxjs'
+import { Observable } from 'rxjs'
 import { HttpClient } from '@angular/common/http'
 
 const API_END_POINTS = {
@@ -11,6 +11,7 @@ const API_END_POINTS = {
   CREATE_ARTICLE: `/apis/proxies/v8/knowledge/centre/create/article`,
   UPDATE_ARTICLE: (id: string) => `/apis/proxies/v8/knowledge/centre/update/article/${id}`,
   DELETE_ARTICLE: (id: string) => `/apis/proxies/v8/knowledge/centre/delete/article/${id}`,
+  DELETE_SUB_CATEGORY: (id: string) => `/apis/proxies/v8/knowledge/centre/delete/subcategory/${id}`,
   PUBLISH_ARTICLE: `/apis/proxies/v8/knowledge/centre/publish/article`,
   PUBLISH_SUB_CATEGORY: `/apis/proxies/v8/knowledge/centre/publish/subcategory`,
 }
@@ -45,11 +46,7 @@ export class DeveloperDocService {
   }
 
   deleteArticle(articleId: string): Observable<any> {
-    if (articleId) { }
-    // For now, return mock success response
-    // TODO: Uncomment below to use actual API call
-    // return this.http.delete(`${API_END_POINTS.DELETE_ARTICLE}/${articleId}`)
-    return of({ success: true, message: 'Article deleted successfully' })
+    return this.http.delete(`${API_END_POINTS.DELETE_ARTICLE(articleId)}`)
   }
 
   publishSubCategory(formBody: any): Observable<any> {
@@ -58,6 +55,10 @@ export class DeveloperDocService {
 
   publishArticle(formBody: any): Observable<any> {
     return this.http.post(`${API_END_POINTS.PUBLISH_ARTICLE}`, formBody)
+  }
+
+  deleteSubCategory(subCategoryId: string): Observable<any> {
+    return this.http.delete(`${API_END_POINTS.DELETE_SUB_CATEGORY(subCategoryId)}`)
   }
 
   get locale(): string {

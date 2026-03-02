@@ -27,9 +27,6 @@
 }
 
 .dev-doc-back-icon {
-  font-size: 35px;
-  width: 35px;
-  height: 35px;
   cursor: pointer;
   font-weight: 600;
 }
@@ -44,8 +41,8 @@
 
 
 .dev-doc-title {
-  font-size: 32px;
-  font-weight: 700;
+  // stylelint-disable-next-line font-shorthand-values
+  font: 600 20px/normal "Montserrat", sans-serif;
   color: #1f2937;
   margin: 0;
   flex: 1;
@@ -392,15 +389,22 @@
     font-size: 14px;
     color: #1b4ca1;
   }
-  }
+}
 
-  .removeItem {
-    cursor: pointer;
-    min-width: 30px;
+.removeItem {
+  cursor: pointer;
+  min-width: 30px;
 
-    .removeIcon {
-      width: 24px;
-      height: 24px;
-      font-size: 24px;
-    }
+  .removeIcon {
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
   }
+}
+
+// Disable form in view mode
+.disable-form {
+  mat-form-field {
+    pointer-events: none;
+  }
+}

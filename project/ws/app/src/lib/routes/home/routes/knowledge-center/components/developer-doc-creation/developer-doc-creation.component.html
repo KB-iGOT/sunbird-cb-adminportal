@@ -40,7 +40,7 @@
 
       <!-- Card Content -->
       <mat-card-content class="dev-doc-card-content">
-        <form [formGroup]="subCategoryForm" class="dev-doc-form">
+        <form [formGroup]="subCategoryForm" class="dev-doc-form" [ngClass]="{'disable-form': mode === 'view'}">
           <!-- Article Details Section -->
           <ng-container *ngTemplateOutlet="articleDetailsSection"></ng-container>
 
@@ -60,13 +60,13 @@
                   <mat-form-field class="dev-doc-form-field" appearance="outline">
                     <input id="title-input" matInput formControlName="title" placeholder="Enter article title"
                       [readonly]="mode === 'view'" aria-label="Title" />
-                    <mat-error *ngIf="hasError('title', 'required')">
+                    <mat-error *ngIf="mode !== 'view' && hasError('title', 'required')">
                       Article Name is required
                     </mat-error>
-                    <mat-error *ngIf="hasError('title', 'minlength')">
-                      Minimum characters left to create {{ getRemainingCharacters('title', 50) }}
+                    <mat-error *ngIf="mode !== 'view' && hasError('title', 'minlength')">
+                      Minimum characters left to create {{ getRemainingCharacters('title', 10) }}
                     </mat-error>
-                    <mat-error *ngIf="hasError('title', 'maxlength')">
+                    <mat-error *ngIf="mode !== 'view' && hasError('title', 'maxlength')">
                       Article Name must not exceed 100 characters
                     </mat-error>
                     <mat-hint align="end">
@@ -81,11 +81,11 @@
                   <mat-form-field class="dev-doc-form-field" appearance="outline">
                     <textarea id="excerpt-input" matInput formControlName="excerpt" placeholder="Enter article excerpt"
                       rows="5" [readonly]="mode === 'view'" aria-label="Excerpt"></textarea>
-                    <mat-error *ngIf="hasError('excerpt', 'required')">
+                    <mat-error *ngIf="mode !== 'view' && hasError('excerpt', 'required')">
                       Article Brief Description is required
                     </mat-error>
-                    <mat-error *ngIf="hasError('excerpt', 'minlength')">
-                      Minimum characters left to create {{ getRemainingCharacters('excerpt', 10) }}
+                    <mat-error *ngIf="mode !== 'view' && hasError('excerpt', 'minlength')">
+                      Minimum characters left to create {{ getRemainingCharacters('excerpt', 250) }}
                     </mat-error>
                     <mat-hint align="end">
                       {{ subCategoryForm.get('excerpt')?.value?.length || 0 }} / 1000
@@ -138,10 +138,10 @@
                             <input [id]="'content-title-' + i" matInput formControlName="title"
                               placeholder="Enter article section name" [readonly]="mode === 'view'"
                               [attr.aria-label]="'Article Section Name ' + (i + 1)" />
-                            <mat-error *ngIf="articleHasError(i, 'title', 'required')">
+                            <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'title', 'required')">
                               Article Section Name is required
                             </mat-error>
-                            <mat-error *ngIf="articleHasError(i, 'title', 'minlength')">
+                            <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'title', 'minlength')">
                               Minimum characters left to create {{ getArticleRemainingCharacters(i, 'title', 3) }}
                             </mat-error>
                           </mat-form-field>
@@ -155,18 +155,20 @@
                             <textarea [id]="'content-' + i" matInput formControlName="content"
                               placeholder="Enter article section description" rows="10" [readonly]="mode === 'view'"
                               [attr.aria-label]="'Article Section Description ' + (i + 1)"></textarea>
+                            <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'content', 'required')"
+                              class="dev-doc-error">
+                              Article Section Description is required
+                            </mat-error>
+                            <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'content', 'minlength')"
+                              class="dev-doc-error">
+                              Minimum characters left to create {{ getArticleRemainingCharacters(i, 'content', 10) }}
+                            </mat-error>
+                            <mat-hint align="end" class="dev-doc-hint">
+                              {{ articlesArray.at(i)?.get('content')?.value?.length || 0 }} / 1000
+                            </mat-hint>
                           </mat-form-field>
                           <!-- <ws-app-plain-ckeditor [content]="articlesArray.at(i)?.get('content')?.value || ''"
                             (value)="onCKEditorChange(i, $event)" [doRegex]="false"></ws-app-plain-ckeditor> -->
-                          <mat-error *ngIf="articleHasError(i, 'content', 'required')" class="dev-doc-error">
-                            Article Section Description is required
-                          </mat-error>
-                          <mat-error *ngIf="articleHasError(i, 'content', 'minlength')" class="dev-doc-error">
-                            Minimum characters left to create {{ getArticleRemainingCharacters(i, 'content', 20) }}
-                          </mat-error>
-                          <mat-hint align="end" class="dev-doc-hint">
-                            {{ articlesArray.at(i)?.get('content')?.value?.length || 0 }} / 1000
-                          </mat-hint>
                         </div>
                       </div>
                     </mat-expansion-panel>
@@ -232,7 +234,7 @@
                       <mat-form-field class="dev-doc-form-field dev-doc-tag-field" appearance="outline">
                         <input matInput formControlName="value" placeholder="Enter tag" [readonly]="mode === 'view'"
                           (change)="onTagChange()" [attr.aria-label]="'Tag ' + (i + 1)" />
-                        <mat-error *ngIf="tagsArray.at(i)?.hasError('minlength')">
+                        <mat-error *ngIf="mode !== 'view' && tagsArray.at(i)?.hasError('minlength')">
                           Minimum characters left to create {{ getTagRemainingCharacters(i, 3) }}
                         </mat-error>
                       </mat-form-field>
