@@ -27,12 +27,11 @@ export class DeveloperDocCreationComponent implements OnInit {
   isSaving: boolean = false
   expandedAccordionIndex: number | null = null
   headerText: string = 'Create Article'
-  showPublishButton: boolean = false
 
   // Dropdown options
   visibilityOptions = [
     { value: true, label: 'Public' },
-    { value: false, label: 'Member' }
+    { value: false, label: 'Private' }
   ]
 
   categoryOptions: any = []
@@ -65,7 +64,7 @@ export class DeveloperDocCreationComponent implements OnInit {
         Validators.required,
         Validators.minLength(250),
         Validators.maxLength(1000)]],
-      category: ['technical', Validators.required],
+      category: ['', Validators.required],
       visibility: [true, Validators.required],
       articles: this.fb.array([this.createArticleForm()], Validators.minLength(1)),
       tags: this.fb.array([this.createTagForm()])
@@ -79,7 +78,7 @@ export class DeveloperDocCreationComponent implements OnInit {
     return this.fb.group({
       articleId: [article?.articleId || ''],
       title: [article?.title || '', [Validators.required, Validators.minLength(10), Validators.maxLength(100)]],
-      content: [article?.content || '', [Validators.required, Validators.minLength(20)]]
+      content: [article?.content || '', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]]
     })
   }
 
@@ -133,6 +132,13 @@ export class DeveloperDocCreationComponent implements OnInit {
     this.developerDocService.getArticles(formBody).subscribe(
       (response: any) => {
         this.categoryOptions = _.get(response, 'result.data', [])
+        // Set first category as default if category field is empty
+        const currentCategory = this.subCategoryForm.get('category')?.value
+        if (!currentCategory && this.categoryOptions.length > 0) {
+          this.subCategoryForm.patchValue({
+            category: this.categoryOptions[0].categoryId
+          })
+        }
       },
       (error: any) => {
         console.error('Error fetching categories:', error)
@@ -330,7 +336,7 @@ export class DeveloperDocCreationComponent implements OnInit {
    * Saves as draft status
    */
   save(): void {
-    this.performSave('DRAFT', false)
+    this.performSave('DRAFT')
   }
 
   /**
@@ -345,16 +351,10 @@ export class DeveloperDocCreationComponent implements OnInit {
       this.showSnackBar('Please fill all required fields', 'error')
       return
     }
-
-    // Store the isNextAction flag so saveArticlesData can use it
-    const isNextAction = true
-    this.performSave('DRAFT', isNextAction)
+    this.performSave('PUBLISHED')
   }
 
-  /**
-   * Internal method to perform save with optional isNextAction flag
-   */
-  performSave(status: string = 'DRAFT', isNextAction: boolean = false): void {
+  performSave(status: string = 'DRAFT',): void {
     this.isSaving = true
 
     // Extract tags as string array (filter out empty values)
@@ -387,16 +387,17 @@ export class DeveloperDocCreationComponent implements OnInit {
             this.articleId = subCategoryId
           }
           // Save all articles
-          this.saveArticlesData(subCategoryId, status, isNextAction)
+          this.saveArticlesData(subCategoryId, status)
         } else {
           this.isSaving = false
-          console.error('Failed to get subCategoryId from response')
+          this.showSnackBar('Something went wrong please try again', 'error')
         }
       },
       (error: any) => {
         this.isSaving = false
-        console.error('Error saving subcategory:', error)
-        this.showSnackBar('Error saving document', 'error')
+        if (error) {
+          this.showSnackBar('Something went wrong please try again', 'error')
+        }
       }
     )
   }
@@ -438,9 +439,6 @@ export class DeveloperDocCreationComponent implements OnInit {
           this.showSnackBar('Error publishing articles', 'error')
         }
       )
-    } else {
-      // No articles to publish, publish subcategory directly
-      this.publishSubCategory()
     }
   }
 
@@ -514,7 +512,7 @@ export class DeveloperDocCreationComponent implements OnInit {
     return this.developerDocService.updateSubCategory(updatePayload)
   }
 
-  saveArticlesData(subCategoryId: string, status: string, isNextAction: boolean = false): void {
+  saveArticlesData(subCategoryId: string, status: string): void {
     const articles = this.articlesArray.value
     const articlePromises: Observable<any>[] = []
     const tagsArray = this.tagsArray.value
@@ -574,17 +572,14 @@ export class DeveloperDocCreationComponent implements OnInit {
       forkJoin(articlePromises).subscribe(
         (responses: any) => {
           if (responses.some((res: any) => !res || res.error)) {
-            console.error('Error saving some articles:', responses)
             this.showSnackBar('Error saving some articles', 'error')
           } else {
             console.log('All articles saved successfully')
             this.showSnackBar('Document saved successfully', 'success')
             this.loadArticle(this.articleId!)
-
-            // If this is from next() action, refresh data and show publish button
-            if (isNextAction) {
-              this.showPublishButton = true
-            }
+          }
+          if (status === 'PUBLISHED') {
+            this.publish()
           }
           this.isSaving = false
         },
@@ -597,13 +592,6 @@ export class DeveloperDocCreationComponent implements OnInit {
     } else {
       this.isSaving = false
       this.showSnackBar('Document saved successfully', 'success')
-
-      // If this is from next() action, refresh data and show publish button
-      if (isNextAction) {
-        this.getCategories()
-        this.loadArticle(this.articleId!)
-        this.showPublishButton = true
-      }
     }
   }
 

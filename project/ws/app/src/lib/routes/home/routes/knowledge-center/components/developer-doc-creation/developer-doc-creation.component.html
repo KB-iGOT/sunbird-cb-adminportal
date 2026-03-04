@@ -18,22 +18,14 @@
         </div>
         <ng-container *ngIf="mode !== 'view'">
           <div class="dev-doc-header-actions">
-            <ng-container *ngIf="!showPublishButton; else publishAction">
-              <button mat-raised-button class="save-btn flex justify-center items-center"
-                [disabled]="(subCategoryForm.invalid || isSaving)" (click)="save()">
-                Save as Draft
-              </button>
-              <button class="publish-btn" [disabled]="(subCategoryForm.invalid || isSaving)" mat-raised-button
-                (click)="next()">
-                Next
-              </button>
-            </ng-container>
-            <ng-template #publishAction>
-              <button class="publish-btn" [disabled]="isSaving || subCategoryForm.invalid || isSaving" mat-raised-button
-                (click)="publish()">
-                Publish
-              </button>
-            </ng-template>
+            <button mat-raised-button class="save-btn flex justify-center items-center" [disabled]="isSaving"
+              (click)="save()">
+              Save as Draft
+            </button>
+            <button class="publish-btn" [disabled]="(subCategoryForm.invalid || isSaving)" mat-raised-button
+              (click)="next()">
+              Publish
+            </button>
           </div>
         </ng-container>
       </mat-card-header>
@@ -59,7 +51,7 @@
                   <label class="dev-doc-label required" htmlFor="title-input">Article Name</label>
                   <mat-form-field class="dev-doc-form-field" appearance="outline">
                     <input id="title-input" matInput formControlName="title" placeholder="Enter article title"
-                      [readonly]="mode === 'view'" aria-label="Title" />
+                      [readonly]="mode === 'view'" aria-label="Title" maxlength="100" />
                     <mat-error *ngIf="mode !== 'view' && hasError('title', 'required')">
                       Article Name is required
                     </mat-error>
@@ -80,7 +72,7 @@
                   <label class="dev-doc-label required" htmlFor="excerpt-input">Article Brief Description</label>
                   <mat-form-field class="dev-doc-form-field" appearance="outline">
                     <textarea id="excerpt-input" matInput formControlName="excerpt" placeholder="Enter article excerpt"
-                      rows="5" [readonly]="mode === 'view'" aria-label="Excerpt"></textarea>
+                      rows="5" [readonly]="mode === 'view'" aria-label="Excerpt" maxlength="1000"></textarea>
                     <mat-error *ngIf="mode !== 'view' && hasError('excerpt', 'required')">
                       Article Brief Description is required
                     </mat-error>
@@ -100,7 +92,7 @@
           <ng-template #contentsSection>
             <div class="dev-doc-section">
               <div class="dev-doc-section-header">
-                <div class="dev-doc-label">Article Sections</div>
+                <div class="dev-doc-label required">Article Sections</div>
               </div>
 
               <div class="dev-doc-section-content">
@@ -137,13 +129,19 @@
                           <mat-form-field class="dev-doc-form-field" appearance="outline">
                             <input [id]="'content-title-' + i" matInput formControlName="title"
                               placeholder="Enter article section name" [readonly]="mode === 'view'"
-                              [attr.aria-label]="'Article Section Name ' + (i + 1)" />
+                              [attr.aria-label]="'Article Section Name ' + (i + 1)" maxlength="100" />
                             <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'title', 'required')">
                               Article Section Name is required
                             </mat-error>
                             <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'title', 'minlength')">
-                              Minimum characters left to create {{ getArticleRemainingCharacters(i, 'title', 3) }}
+                              Minimum characters left to create {{ getArticleRemainingCharacters(i, 'title', 10) }}
                             </mat-error>
+                            <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'title', 'maxlength')">
+                              Article Section Name must not exceed 100 characters
+                            </mat-error>
+                            <mat-hint align="end">
+                              {{ articlesArray.at(i)?.get('title')?.value?.length || 0 }} / 100
+                            </mat-hint>
                           </mat-form-field>
                         </div>
 
@@ -154,7 +152,7 @@
                           <mat-form-field class="dev-doc-form-field" appearance="outline">
                             <textarea [id]="'content-' + i" matInput formControlName="content"
                               placeholder="Enter article section description" rows="10" [readonly]="mode === 'view'"
-                              [attr.aria-label]="'Article Section Description ' + (i + 1)"></textarea>
+                              [attr.aria-label]="'Article Section Description ' + (i + 1)" maxlength="1000"></textarea>
                             <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'content', 'required')"
                               class="dev-doc-error">
                               Article Section Description is required
@@ -162,6 +160,10 @@
                             <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'content', 'minlength')"
                               class="dev-doc-error">
                               Minimum characters left to create {{ getArticleRemainingCharacters(i, 'content', 10) }}
+                            </mat-error>
+                            <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'content', 'maxlength')"
+                              class="dev-doc-error">
+                              Article Section Description must not exceed 1000 characters
                             </mat-error>
                             <mat-hint align="end" class="dev-doc-hint">
                               {{ articlesArray.at(i)?.get('content')?.value?.length || 0 }} / 1000

@@ -190,6 +190,10 @@
 
 .dev-doc-panel-title {
   flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   // font-weight: 500;
   // color: #1f2937;
   // font-size: 14px;
