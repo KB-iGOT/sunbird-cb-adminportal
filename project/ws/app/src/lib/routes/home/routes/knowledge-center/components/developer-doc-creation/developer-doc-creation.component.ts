@@ -236,6 +236,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   addArticle(): void {
     const articlesArray = this.subCategoryForm.get('articles') as FormArray
     articlesArray.push(this.createArticleForm())
+    this.expandedAccordionIndex = articlesArray.length - 1
   }
 
   /**

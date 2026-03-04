@@ -61,7 +61,7 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
 
   // Pagination properties
   paginationSize: number = 10
-  currentPage: number = 0
+  currentPage: number = 1
   totalItemsCount: number = 0
   pageSizeOptions: number[] = [10, 20, 50, 100]
   showPagination: boolean = true
@@ -145,7 +145,7 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
     this.searchSubscription = this.searchControl.valueChanges
       .pipe(debounceTime(2000))
       .subscribe((searchValue: string) => {
-        this.currentPage = 0
+        this.currentPage = 1
         this.onSearchInput(searchValue)
       })
   }
@@ -177,7 +177,7 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
       filterCriteriaMap: {
         type: ['subcategory'],
       },
-      pageNumber: this.currentPage,
+      pageNumber: this.currentPage - 1,
       pageSize: this.paginationSize,
       requestedFields: [
         'type',
@@ -218,6 +218,7 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
 
               return {
                 ...item,
+                status: _.get(item, 'status', '').toUpperCase() === 'ARCHIVED' ? 'DELETED' : _.get(item, 'status', ''),
                 visibility: _.get(item, 'isPublic', false) ? 'Public' : 'Members',
                 ...(creator && { creatorName: _.get(creator, 'first_name', '') }),
                 ...(category && { categoryName: _.get(category, 'title', '') }),
@@ -258,7 +259,7 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
     this.searchQuery = trimmedSearch
 
     if (!trimmedSearch) {
-      this.currentPage = 0
+      this.currentPage = 1
       this.loadArticles()
       return
     }
@@ -269,7 +270,7 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
       return
     }
 
-    this.currentPage = 0
+    this.currentPage = 1
     this.loadArticles(trimmedSearch)
   }
 
@@ -289,14 +290,14 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
   }
 
   onPageChange(event: PageChangeEmitter): void {
-    this.currentPage = _.get(event, 'currentPage', 0)
+    this.currentPage = _.get(event, 'currentPage', 1)
     this.paginationSize = _.get(event, 'limit', 10)
 
     this.paginationDetails = {
       pageSize: _.get(event, 'limit', 10),
       totalCount: this.totalItemsCount,
-      currentPage: _.get(event, 'currentPage', 0),
-      previousPage: _.get(event, 'previousPage', 0),
+      currentPage: _.get(event, 'currentPage', 1),
+      previousPage: _.get(event, 'previousPage', 1),
       limit: _.get(event, 'limit', 10),
     }
 

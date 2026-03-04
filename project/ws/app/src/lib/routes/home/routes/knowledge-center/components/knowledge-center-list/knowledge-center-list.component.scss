@@ -132,12 +132,11 @@
     color: #00a650;
   }
 
-  // .archived,
-  // .retired,
-  // .inactive,
-  // .rejected {
-  //   @include status-badge(#d13924, true);
-  // }
+  .deleted,
+  .archived {
+    @include status-badge(#d13924, true);
+    color: #d13924;
+  }
 }
 
 

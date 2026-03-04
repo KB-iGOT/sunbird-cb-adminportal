@@ -19,11 +19,11 @@
         <ng-container *ngIf="mode !== 'view'">
           <div class="dev-doc-header-actions">
             <button mat-raised-button class="save-btn flex justify-center items-center" [disabled]="isSaving"
-              (click)="save()">
+              [class.disable-btn]="isSaving" (click)="save()">
               Save as Draft
             </button>
             <button class="publish-btn" [disabled]="(subCategoryForm.invalid || isSaving)" mat-raised-button
-              (click)="next()">
+              [class.disable-btn]="subCategoryForm.invalid || isSaving" (click)="next()">
               Publish
             </button>
           </div>
@@ -99,12 +99,14 @@
                 <ng-container *ngIf="mode !== 'view'">
                   <a (click)="addArticle()" class="addtips-btn" matRipple>
                     <mat-icon class="addtips-icon">add</mat-icon>
-                    <span class="addtips-text">Add Article</span>
+                    <span class="addtips-text">Add Article Section</span>
                   </a>
                 </ng-container>
                 <mat-accordion formArrayName="articles" class="dev-doc-accordion">
                   <ng-container *ngFor="let article of articlesArray.controls; let i = index">
-                    <mat-expansion-panel [formGroupName]="i" class="dev-doc-expansion-panel" [hideToggle]="true">
+                    <mat-expansion-panel [formGroupName]="i" class="dev-doc-expansion-panel" [hideToggle]="true"
+                      [expanded]="expandedAccordionIndex === i" (opened)="expandedAccordionIndex = i"
+                      (closed)="expandedAccordionIndex = expandedAccordionIndex === i ? null : expandedAccordionIndex">
                       <!-- Expansion Panel Header -->
                       <mat-expansion-panel-header class="dev-doc-expansion-header">
                         <mat-panel-title class="dev-doc-panel-title dev-doc-label">

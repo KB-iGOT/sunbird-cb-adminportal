@@ -98,7 +98,8 @@
 <mat-menu #actionMenu="matMenu" class="action-menu">
   <ng-template matMenuContent let-articleData="article">
     <ng-container *ngFor="let menuItem of menuItems">
-      <a class="flex items-center" mat-menu-item (click)="takeAction(menuItem.action, articleData)">
+      <a class="flex items-center" mat-menu-item (click)="takeAction(menuItem.action, articleData)"
+        *ngIf="menuItem.action !== 'delete' || !['deleted', 'archived'].includes(articleData?.status?.toLowerCase())">
         <ng-container *ngIf="menuItem.icon">
           <mat-icon class="menu-icon">{{ menuItem.icon }}</mat-icon>
         </ng-container>
