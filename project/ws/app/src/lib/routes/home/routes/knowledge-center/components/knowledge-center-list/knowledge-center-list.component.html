@@ -15,8 +15,9 @@
     <div class="content-search w-full">
       <div class="search-wrapper w-1/2">
         <mat-icon class="search-icon">search</mat-icon>
-        <input type="text" placeholder="Type here to search..." class="search-input" (input)="onSearchInput()"
-          [formControl]="searchControl" />
+        <input type="text" placeholder="Type here to search..." class="search-input" [formControl]="searchControl" />
+        <mat-icon class="clear-icon cursor-pointer" *ngIf="searchControl.value" (click)="searchControl.reset()"
+          (keydown.enter)="searchControl.reset()" tabindex="0">close</mat-icon>
       </div>
     </div>
   </div>
