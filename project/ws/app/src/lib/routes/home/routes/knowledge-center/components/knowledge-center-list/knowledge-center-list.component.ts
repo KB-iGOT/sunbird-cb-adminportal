@@ -179,6 +179,8 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
       },
       pageNumber: this.currentPage - 1,
       pageSize: this.paginationSize,
+      orderBy: 'createdOn',
+      orderDirection: 'desc',
       requestedFields: [
         'type',
         'title',

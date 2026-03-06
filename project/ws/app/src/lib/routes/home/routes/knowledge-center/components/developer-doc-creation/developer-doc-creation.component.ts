@@ -126,7 +126,9 @@ export class DeveloperDocCreationComponent implements OnInit {
         'categoryId'
       ],
       pageNumber: 0,
-      pageSize: 50
+      pageSize: 50,
+      orderBy: 'createdOn',
+      orderDirection: 'asc'
     }
 
     this.developerDocService.getArticles(formBody).subscribe(
@@ -157,7 +159,9 @@ export class DeveloperDocCreationComponent implements OnInit {
         subCategoryId: id
       },
       pageNumber: 0,
-      pageSize: 50
+      pageSize: 50,
+      orderBy: 'createdOn',
+      orderDirection: 'asc'
     }
 
     this.developerDocService.getArticles(formBody).pipe(
