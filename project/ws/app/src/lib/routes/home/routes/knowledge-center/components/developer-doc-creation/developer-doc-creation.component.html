@@ -70,7 +70,7 @@
                     Article Brief Description is required
                   </mat-error>
                   <mat-error *ngIf="mode !== 'view' && hasError('excerpt', 'minlength')">
-                    Minimum characters left to create {{ getRemainingCharacters('excerpt', 250) }}
+                    Minimum characters left to create {{ getRemainingCharacters('excerpt', 50) }}
                   </mat-error>
                   <mat-hint align="end">
                     {{ subCategoryForm.get('excerpt')?.value?.length || 0 }} / 1000
@@ -154,7 +154,7 @@
                           </mat-error>
                           <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'content', 'minlength')"
                             class="dev-doc-error">
-                            Minimum characters left to create {{ getArticleRemainingCharacters(i, 'content', 10) }}
+                            Minimum characters left to create {{ getArticleRemainingCharacters(i, 'content', 50) }}
                           </mat-error>
                           <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'content', 'maxlength')"
                             class="dev-doc-error">

@@ -65,7 +65,7 @@ export class DeveloperDocCreationComponent implements OnInit {
         Validators.maxLength(100)]],
       excerpt: ['', [
         Validators.required,
-        Validators.minLength(250),
+        Validators.minLength(50),
         Validators.maxLength(1000)]],
       category: ['', Validators.required],
       visibility: [true, Validators.required],
@@ -81,7 +81,7 @@ export class DeveloperDocCreationComponent implements OnInit {
     return this.fb.group({
       articleId: [article?.articleId || ''],
       title: [article?.title || '', [Validators.required, Validators.minLength(10), Validators.maxLength(100)]],
-      content: [article?.content || '', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]]
+      content: [article?.content || '', [Validators.required, Validators.minLength(50), Validators.maxLength(1000)]]
     })
   }
 
