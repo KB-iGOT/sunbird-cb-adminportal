@@ -24,7 +24,7 @@
             </button>
             <button class="publish-btn" [disabled]="(subCategoryForm.invalid || isSaving)" mat-raised-button
               [class.disable-btn]="subCategoryForm.invalid || isSaving" (click)="next()">
-              Publish
+              {{ isPublicDocument ? 'Republish' : 'Publish' }}
             </button>
           </div>
         </ng-container>

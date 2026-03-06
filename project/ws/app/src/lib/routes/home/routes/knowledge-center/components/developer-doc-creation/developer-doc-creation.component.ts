@@ -35,6 +35,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   ]
 
   categoryOptions: any = []
+  isPublicDocument: boolean = false
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -156,7 +157,8 @@ export class DeveloperDocCreationComponent implements OnInit {
 
     const formBody = {
       filterCriteriaMap: {
-        subCategoryId: id
+        subCategoryId: id,
+        status: ['DRAFT', 'PUBLISHED']
       },
       pageNumber: 0,
       pageSize: 50,
@@ -212,6 +214,8 @@ export class DeveloperDocCreationComponent implements OnInit {
       category: subCategoryDetails.categoryId,
       visibility: subCategoryDetails.isPublic,
     })
+
+    this.isPublicDocument = subCategoryDetails.status.toLowerCase() === 'published'
 
     const articlesArray = this.subCategoryForm.get('articles') as FormArray
     articlesArray.clear()
@@ -369,7 +373,7 @@ export class DeveloperDocCreationComponent implements OnInit {
 
     // Build subcategory payload
     const subCategoryPayload = {
-      title: this.subCategoryForm.get('title')?.value,
+      title: this.subCategoryForm.get('title')?.value.trim(),
       summary: this.subCategoryForm.get('excerpt')?.value,
       content: this.subCategoryForm.get('excerpt')?.value,
       categoryId: this.subCategoryForm.get('category')?.value,
@@ -461,7 +465,7 @@ export class DeveloperDocCreationComponent implements OnInit {
         if (response) {
           this.isSaving = false
           this.showSnackBar('Document published successfully', 'success')
-          // Navigate back after successful publish
+          this.cancel()
           setTimeout(() => {
             this.router.navigate(['/app/home/knowledge-center'])
           }, 2000)
@@ -541,7 +545,7 @@ export class DeveloperDocCreationComponent implements OnInit {
           // Merge with form values (form values override existing data)
           const articlePayload = {
             ...existingData,
-            title: article.title,
+            title: article.title.trim(),
             content: article.content,
             summary: article.content,
             status: status,
@@ -555,7 +559,7 @@ export class DeveloperDocCreationComponent implements OnInit {
       } else {
         // New article
         const articlePayload = {
-          title: article.title,
+          title: article.title.trim(),
           content: article.content,
           summary: article.content,
           subCategoryId: subCategoryId,
