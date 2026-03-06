@@ -6,6 +6,8 @@ import { DeveloperDocService } from '../../services/developer-doc.service'
 import * as _ from 'lodash'
 import { map } from 'rxjs/operators'
 import { forkJoin, Observable } from 'rxjs'
+import { GlobalEventsService } from '../../../../../../../../../../../src/app/services/global-events.service'
+import { SnackbarComponent } from '@sunbird-cb/consumption'
 
 @Component({
   selector: 'ws-app-developer-doc-creation',
@@ -23,7 +25,6 @@ export class DeveloperDocCreationComponent implements OnInit {
   mode: 'create' | 'edit' | 'view' = 'create'
 
   // UI properties
-  isLoading: boolean = false
   isSaving: boolean = false
   expandedAccordionIndex: number | null = null
   headerText: string = 'Create Article'
@@ -42,7 +43,8 @@ export class DeveloperDocCreationComponent implements OnInit {
     private router: Router,
     private developerDocService: DeveloperDocService,
     private fb: FormBuilder,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private loaderService: GlobalEventsService
   ) {
     this.initializeForm()
   }
@@ -153,7 +155,7 @@ export class DeveloperDocCreationComponent implements OnInit {
    * Load article data from service
    */
   loadArticle(id: string): void {
-    this.isLoading = true
+    this.loaderService.setLoaderState(true)
 
     const formBody = {
       filterCriteriaMap: {
@@ -185,11 +187,11 @@ export class DeveloperDocCreationComponent implements OnInit {
           console.warn('Article not found')
           this.router.navigate(['/app/home/knowledge-center'])
         }
-        this.isLoading = false
+        this.loaderService.setLoaderState(false)
       },
       (error: any) => {
         console.error('Error loading article:', error)
-        this.isLoading = false
+        this.loaderService.setLoaderState(false)
         this.router.navigate(['/app/home/knowledge-center'])
       }
     )
@@ -694,15 +696,11 @@ export class DeveloperDocCreationComponent implements OnInit {
     }
   }
 
-  /**
-   * Show snackbar notification
-   */
-  showSnackBar(message: string, type: 'success' | 'error' = 'success', duration: number = 3000): void {
-    this.snackBar.open(message, 'X', {
-      duration,
-      panelClass: [`snackbar-${type}`],
-      horizontalPosition: 'right',
-      verticalPosition: 'top'
+  showSnackBar(message: string, type: 'error' | 'success') {
+    this.snackBar.openFromComponent(SnackbarComponent, {
+      data: {
+        message: message, type: type,
+      }, duration: 5000, panelClass: type,
     })
   }
 }

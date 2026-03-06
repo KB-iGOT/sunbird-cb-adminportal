@@ -31,6 +31,7 @@ import { KnowledgeCenterListComponent } from './components/knowledge-center-list
 import { PlainCkeditorComponent } from './components/plain-ckeditor/plain-ckeditor.component'
 import { MatSnackBarModule } from '@angular/material/snack-bar'
 import { BreadcrumbsOrgModule } from '@sunbird-cb/collection'
+import { LoaderService } from '../../services/loader.service'
 
 @NgModule({
   declarations: [
@@ -62,5 +63,6 @@ import { BreadcrumbsOrgModule } from '@sunbird-cb/collection'
     PaginationModule,
     MatSnackBarModule
   ],
+  providers: [LoaderService]
 })
 export class KnowledgeCenterModule { }
