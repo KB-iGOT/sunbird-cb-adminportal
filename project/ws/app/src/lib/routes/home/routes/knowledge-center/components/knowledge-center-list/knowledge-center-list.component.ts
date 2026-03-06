@@ -143,10 +143,12 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
     }
 
     this.searchSubscription = this.searchControl.valueChanges
-      .pipe(debounceTime(2000))
+      .pipe(debounceTime(1000))
       .subscribe((searchValue: string) => {
         this.currentPage = 1
-        this.onSearchInput(searchValue)
+        if (!searchValue || searchValue.trim().length >= 3) {
+          this.onSearchInput(searchValue || '')
+        }
       })
   }
 
@@ -255,7 +257,7 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
   }
 
   onSearchInput(searchValue?: string): void {
-    const value = searchValue !== undefined ? searchValue : (this.searchControl.value || '')
+    const value = searchValue !== undefined ? searchValue : (this.searchControl.value ? this.searchControl.value.trim() : '')
     const trimmedSearch = value.trim().toLowerCase()
 
     this.searchQuery = trimmedSearch

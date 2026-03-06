@@ -387,7 +387,7 @@
         height: 32px;
         border: none;
         border-radius: 100px;
-        padding: 0 16px 0 56px;
+        padding: 0 40px 0 56px;
         font-size: 16px;
         outline: none;
         color: rgba(0, 0, 0, 0.87);
@@ -407,6 +407,19 @@
 
         &:focus {
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+      }
+
+      .clear-icon {
+        position: absolute;
+        right: 12px;
+        color: rgba(0, 0, 0, 0.54);
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+
+        &:hover {
+          color: rgba(0, 0, 0, 0.87);
         }
       }
     }
