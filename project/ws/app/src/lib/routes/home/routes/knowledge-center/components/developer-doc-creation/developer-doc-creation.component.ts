@@ -271,7 +271,7 @@ export class DeveloperDocCreationComponent implements OnInit {
 
     const articlesArray = this.subCategoryForm.get('articles') as FormArray
     if (articlesArray.length <= 1) {
-      this.showSnackBar('At least one article is required', 'error')
+      this.showSnackBar('At least one article section is required', 'error')
       return
     }
 
@@ -285,20 +285,20 @@ export class DeveloperDocCreationComponent implements OnInit {
         (response: any) => {
           if (response) {
             this.isSaving = false
-            this.showSnackBar('Article deleted successfully', 'success')
+            this.showSnackBar('Article section deleted successfully', 'success')
             this.removeArticle(index)
           }
         },
         (error: any) => {
           this.isSaving = false
-          console.error('Error deleting article:', error)
-          this.showSnackBar('Error deleting article', 'error')
+          const errorMessage = _.get(error, 'error.params.errMsg', 'Some thing went wrong please try again')
+          this.showSnackBar(errorMessage, 'error')
         }
       )
     } else {
       // New article (not saved yet), just remove from array
       this.removeArticle(index)
-      this.showSnackBar('Article deleted successfully', 'success')
+      this.showSnackBar('Article section deleted successfully', 'success')
     }
   }
 
@@ -358,17 +358,21 @@ export class DeveloperDocCreationComponent implements OnInit {
   next(): void {
     if (!this.subCategoryForm.valid) {
       this.markFormGroupTouched(this.subCategoryForm)
-      console.warn('Form is invalid')
       this.showSnackBar('Please fill all required fields', 'error')
       return
     }
     this.performSave('PUBLISHED')
   }
 
+  // Save subcategory (Article)
   performSave(status: string = 'DRAFT',): void {
+    const titleControl = this.subCategoryForm.get('title')
+    if (!titleControl || titleControl.invalid) {
+      titleControl?.markAsTouched()
+      return
+    }
     this.isSaving = true
 
-    // Extract tags as string array (filter out empty values)
     const tagsArray = this.tagsArray.value
       .map((tag: any) => tag.value)
       .filter((value: string) => value && value.trim())
@@ -397,7 +401,8 @@ export class DeveloperDocCreationComponent implements OnInit {
           if (!this.articleId) {
             this.articleId = subCategoryId
           }
-          // Save all articles
+          // Save all articles (article sections)
+          this.showSnackBar('Article saved successfully', 'success')
           this.saveArticlesData(subCategoryId, status)
         } else {
           this.isSaving = false
@@ -407,14 +412,14 @@ export class DeveloperDocCreationComponent implements OnInit {
       (error: any) => {
         this.isSaving = false
         if (error) {
-          this.showSnackBar('Something went wrong please try again', 'error')
+          const errorMessage = _.get(error, 'error.params.errMsg', 'Some thing went wrong please try again')
+          this.showSnackBar(errorMessage, 'error')
         }
       }
     )
   }
 
   /**
-   * Publish articles and subcategory
    * First publishes all articles, then publishes subcategory
    */
   publish(): void {
@@ -446,8 +451,8 @@ export class DeveloperDocCreationComponent implements OnInit {
         },
         (error: any) => {
           this.isSaving = false
-          console.error('Error publishing articles:', error)
-          this.showSnackBar('Error publishing articles', 'error')
+          const errorMessage = _.get(error, 'error.params.errMsg', 'Some thing went wrong while publishing article. Please try again')
+          this.showSnackBar(errorMessage, 'error')
         }
       )
     }
@@ -466,7 +471,7 @@ export class DeveloperDocCreationComponent implements OnInit {
       (response: any) => {
         if (response) {
           this.isSaving = false
-          this.showSnackBar('Document published successfully', 'success')
+          this.showSnackBar('Article published successfully', 'success')
           this.cancel()
           setTimeout(() => {
             this.router.navigate(['/app/home/knowledge-center'])
@@ -475,8 +480,8 @@ export class DeveloperDocCreationComponent implements OnInit {
       },
       (error: any) => {
         this.isSaving = false
-        console.error('Error publishing subcategory:', error)
-        this.showSnackBar('Error publishing document', 'error')
+        const errorMessage = _.get(error, 'error.params.errMsg', 'Some thing went wrong please try again')
+        this.showSnackBar(errorMessage, 'error')
       }
     )
   }
@@ -583,10 +588,9 @@ export class DeveloperDocCreationComponent implements OnInit {
       forkJoin(articlePromises).subscribe(
         (responses: any) => {
           if (responses.some((res: any) => !res || res.error)) {
-            this.showSnackBar('Error saving some articles', 'error')
+            this.showSnackBar('Error saving some article sections', 'error')
           } else {
-            console.log('All articles saved successfully')
-            this.showSnackBar('Document saved successfully', 'success')
+            this.showSnackBar('Article sections saved successfully', 'success')
             this.loadArticle(this.articleId!)
           }
           if (status === 'PUBLISHED') {
@@ -596,13 +600,10 @@ export class DeveloperDocCreationComponent implements OnInit {
         },
         (error: any) => {
           this.isSaving = false
-          console.error('Error saving articles:', error)
-          this.showSnackBar('Error saving articles', 'error')
+          const errorMessage = _.get(error, 'error.params.errMsg', 'Some thing went wrong while saving article section. Please try again')
+          this.showSnackBar(errorMessage, 'error')
         }
       )
-    } else {
-      this.isSaving = false
-      this.showSnackBar('Document saved successfully', 'success')
     }
   }
 

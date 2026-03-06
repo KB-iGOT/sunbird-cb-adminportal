@@ -10,8 +10,9 @@
       </div>
       <ng-container *ngIf="mode !== 'view'">
         <div class="dev-doc-header-actions">
-          <button mat-raised-button class="save-btn flex justify-center items-center" [disabled]="isSaving"
-            [class.disable-btn]="isSaving" (click)="save()">
+          <button mat-raised-button class="save-btn flex justify-center items-center"
+            [disabled]="isSaving || subCategoryForm.get('title')?.invalid"
+            [class.disable-btn]="isSaving || subCategoryForm.get('title')?.invalid" (click)="save()">
             Save as Draft
           </button>
           <button class="publish-btn" [disabled]="(subCategoryForm.invalid || isSaving)" mat-raised-button
