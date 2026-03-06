@@ -223,7 +223,7 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
               return {
                 ...item,
                 status: _.get(item, 'status', '').toUpperCase() === 'ARCHIVED' ? 'DELETED' : _.get(item, 'status', ''),
-                visibility: _.get(item, 'isPublic', false) ? 'Public' : 'Members',
+                visibility: _.get(item, 'isPublic', false) ? 'Public' : 'Private',
                 ...(creator && { creatorName: _.get(creator, 'first_name', '') }),
                 ...(category && { categoryName: _.get(category, 'title', '') }),
               }

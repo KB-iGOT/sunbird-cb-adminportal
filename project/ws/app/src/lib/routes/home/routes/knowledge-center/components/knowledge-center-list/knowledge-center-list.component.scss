@@ -183,6 +183,10 @@
     &:last-child::after {
       display: none;
     }
+
+    &:first-child {
+      padding-left: 30px;
+    }
   }
 }
 
