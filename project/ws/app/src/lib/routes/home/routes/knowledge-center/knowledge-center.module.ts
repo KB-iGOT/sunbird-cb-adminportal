@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http'
-import { CKEditorModule } from 'ng2-ckeditor'
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular'
 
 // Angular Material Modules
 import { MatTableModule } from '@angular/material/table'

@@ -72,6 +72,7 @@
   border: 1px solid #1b4ca1 !important;
   background-color: #ffffff !important;
   color: #1b4ca1 !important;
+  // stylelint-disable-next-line font-family-no-missing-generic-family-keyword
   font: 600 14px Montserrat;
 }
 
@@ -81,6 +82,7 @@
   border-radius: 18px;
   background-color: #1b4ca1 !important;
   color: #ffffff !important;
+  // stylelint-disable-next-line font-family-no-missing-generic-family-keyword
   font: 600 14px Montserrat;
 }
 
@@ -97,8 +99,8 @@
 }
 
 .dev-doc-section-title {
-  font-size: 18px;
-  font-weight: 600;
+  // stylelint-disable-next-line font-family-no-missing-generic-family-keyword
+  font: 600 18px/normal inherit;
   color: #1f2937;
   margin: 0;
 }
@@ -259,6 +261,7 @@
   height: 100%;
   border: none;
   padding: 0;
+  // stylelint-disable-next-line font-family-no-missing-generic-family-keyword
   font-family: inherit;
   line-height: 1.5;
   resize: vertical;
@@ -283,17 +286,33 @@
 
 // Error and Hint
 .dev-doc-error {
-  display: block;
-  margin-top: 8px;
   color: #dc2626;
   font-size: 12px;
+  line-height: 1.25;
 }
 
 .dev-doc-hint {
-  display: block;
-  margin-top: 8px;
-  color: #6b7280;
   font-size: 12px;
+  line-height: 1.25;
+  margin-right: 20px;
+}
+
+.ckeditor-validation-wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  min-height: 18px;
+  margin-top: 4px;
+
+  .dev-doc-hint {
+    margin-left: auto;
+  }
+
+  // When an error is present, hide the hint
+  mat-error ~ .dev-doc-hint,
+  .dev-doc-error ~ .dev-doc-hint {
+    visibility: hidden;
+  }
 }
 
 // Empty State
@@ -315,8 +334,8 @@
 }
 
 .dev-doc-tags-legend {
-  font-size: 14px;
-  font-weight: 500;
+  // stylelint-disable-next-line font-family-no-missing-generic-family-keyword
+  font: 500 14px/normal inherit;
   color: #374151;
   margin-bottom: 16px;
   padding: 0;
@@ -393,9 +412,8 @@
   }
 
   .addtips-text {
-    font-family: Montserrat;
-    font-weight: 600;
-    font-size: 14px;
+    // stylelint-disable-next-line font-family-no-missing-generic-family-keyword
+    font: 600 14px Montserrat;
     color: #1b4ca1;
   }
 }
