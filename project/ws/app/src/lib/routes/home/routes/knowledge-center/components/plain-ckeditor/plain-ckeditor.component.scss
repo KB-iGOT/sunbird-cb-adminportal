@@ -4,41 +4,101 @@
   width: 100%;
   margin: 0;
   padding: 0;
+}
 
-  ::ng-deep .cke {
-    width: 100% !important;
-    background: transparent;
+// All CKEditor 5 overrides are scoped under .plain-ck to prevent
+// bleeding into other editor instances on the page.
+.plain-ck {
+  ::ng-deep .ck.ck-editor {
+    --ck-font-size-base: 12px;
+    --ck-spacing-unit: 0.35em;
+    --ck-icon-size: 14px;
+    --ck-color-button-default-background: #ffffff;
+    --ck-color-button-default-hover-background: hsl(0, 0%, 90%);
+    --ck-color-button-default-active-background: hsl(0, 0%, 87%);
+    --ck-color-toolbar-background: #ffffff;
+    --ck-border-radius: 0px;
+    border: 1px solid hsl(220, 6%, 81%);
   }
 
-  ::ng-deep .cke_contents {
-    min-height: 400px !important;
-  }
-
-  ::ng-deep .cke_wysiwyg_frame {
-    min-height: 400px !important;
-  }
-
-  ::ng-deep .cke_button__uploadimage_icon {
-    background-position: 0 -672px !important;
-  }
-
-  ::ng-deep .cke_button__uploadfile_icon {
-    background-position: 0 -1176px !important;
-  }
-
-  ::ng-deep .cke_button__blank_icon {
-    background-position: 0 -782px !important;
-  }
-
-  ::ng-deep .cke_dialog_container {
-    z-index: 10010 !important;
-  }
-
-  ::ng-deep .cke_bottom {
+  // Hide the visible "Rich Text Editor" voice/aria label above the toolbar
+  ::ng-deep .ck-voice-label,
+  ::ng-deep .ck.ck-editor__aria-label {
     display: none !important;
   }
 
-  ::ng-deep .show-error .cke {
+  // Hide button text — icons only; native CKEditor tooltips appear on hover
+  ::ng-deep .ck.ck-button .ck-button__label {
+    display: none !important;
+  }
+
+  // Toolbar: no outer border, only a bottom separator line
+  ::ng-deep .ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content {
+    border: none !important;
+  }
+
+  ::ng-deep .ck.ck-toolbar {
+    border-bottom: 1px solid #d1d1d1 !important;
+    border-radius: 2px;
+    padding: 2px 0px 0px 8px !important;
+    height: 39px;
+    background-color: #f8f8f8;
+    display: flex;
+    align-items: center;
+  }
+
+  // Compact toolbar items wrapper
+  ::ng-deep .ck.ck-toolbar__items {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  // Thin vertical separator between groups
+  ::ng-deep .ck.ck-toolbar__separator {
+    width: 1px !important;
+    min-width: 1px !important;
+    background: hsl(220, 6%, 81%) !important;
+    align-self: stretch;
+    margin: 3px 3px !important;
+    padding: 0 !important;
+  }
+
+  // Compact buttons
+  ::ng-deep .ck.ck-button {
+    padding: 2px 3px !important;
+    min-width: unset !important;
+    min-height: unset !important;
+    border: none !important;
+    border-radius: 2px !important;
+    cursor: pointer;
+    background-color: #f8f8f8;
+  }
+
+  // Force icon SVG size
+  ::ng-deep .ck.ck-icon,
+  ::ng-deep .ck.ck-button .ck-icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  // Content area: no duplicate border, no glow on focus
+  ::ng-deep .ck.ck-editor__editable {
+    min-height: 150px;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 8px 10px !important;
+  }
+
+  ::ng-deep .ck.ck-editor__editable.ck-focused {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  // Error state: red border on the outer box
+  &.show-error ::ng-deep .ck.ck-editor {
     border-color: red !important;
   }
 }

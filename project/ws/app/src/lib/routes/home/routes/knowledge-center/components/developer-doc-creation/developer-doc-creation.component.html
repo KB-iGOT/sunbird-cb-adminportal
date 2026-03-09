@@ -144,28 +144,27 @@
                       <div class="dev-doc-form-group">
                         <label class="dev-doc-label required" [htmlFor]="'content-' + i">Article Section
                           Description</label>
-                        <mat-form-field class="dev-doc-form-field" appearance="outline">
-                          <textarea [id]="'content-' + i" matInput formControlName="content"
-                            placeholder="Enter article section description" rows="10" [readonly]="mode === 'view'"
-                            [attr.aria-label]="'Article Section Description ' + (i + 1)" maxlength="1000"></textarea>
-                          <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'content', 'required')"
-                            class="dev-doc-error">
-                            Article Section Description is required
-                          </mat-error>
-                          <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'content', 'minlength')"
-                            class="dev-doc-error">
-                            Minimum characters left to create {{ getArticleRemainingCharacters(i, 'content', 50) }}
-                          </mat-error>
-                          <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'content', 'maxlength')"
-                            class="dev-doc-error">
-                            Article Section Description must not exceed 1000 characters
-                          </mat-error>
-                          <mat-hint align="end" class="dev-doc-hint">
-                            {{ articlesArray.at(i)?.get('content')?.value?.length || 0 }} / 1000
-                          </mat-hint>
-                        </mat-form-field>
-                        <!-- <ws-app-plain-ckeditor [content]="articlesArray.at(i)?.get('content')?.value || ''"
-                          (value)="onCKEditorChange(i, $event)" [doRegex]="false"></ws-app-plain-ckeditor> -->
+                          <div>
+                        <ws-app-plain-ckeditor [content]="articlesArray.at(i)?.get('content')?.value || ''"
+                          (value)="onCKEditorChange(i, $event)" [doRegex]="false"
+                          [showError]="mode !== 'view' && articleHasError(i, 'content', 'required')"></ws-app-plain-ckeditor>
+                        <div class="ckeditor-validation-wrapper">
+                          <ng-container *ngIf="mode !== 'view'">
+                            <mat-error *ngIf="articleHasError(i, 'content', 'required')" class="dev-doc-error">
+                              Article Section Description is required
+                            </mat-error>
+                            <mat-error *ngIf="articleHasError(i, 'content', 'minlength')" class="dev-doc-error">
+                              Minimum characters left to create {{ getArticleRemainingCharacters(i, 'content', 50) }}
+                            </mat-error>
+                            <mat-error *ngIf="articleHasError(i, 'content', 'maxlength')" class="dev-doc-error">
+                              Article Section Description must not exceed 1000 characters
+                            </mat-error>
+                          </ng-container>
+                          <span class="dev-doc-hint">
+                            {{ getArticleContentPlainTextLength(i) }} / 1000
+                          </span>
+                        </div>
+                        </div>
                       </div>
                     </div>
                   </mat-expansion-panel>

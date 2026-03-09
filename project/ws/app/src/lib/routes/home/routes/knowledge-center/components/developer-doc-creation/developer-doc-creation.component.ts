@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms'
+import { AbstractControl, FormBuilder, FormArray, FormGroup, ValidatorFn, Validators } from '@angular/forms'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { DeveloperDocService } from '../../services/developer-doc.service'
 import * as _ from 'lodash'
@@ -74,6 +74,43 @@ export class DeveloperDocCreationComponent implements OnInit {
     })
   }
 
+  // ── Plain-text validators for CKEditor rich-text fields ──────────────────
+
+  /** Strip all HTML tags and decode &nbsp; to measure plain text length */
+  stripHtml(html: string): string {
+    return (html || '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim()
+  }
+
+  /** Trim and collapse multiple consecutive spaces between words to a single space */
+  normalizeSpaces(value: string): string {
+    return (value || '').replace(/\s+/g, ' ').trim()
+  }
+
+  // Arrow function field — keeps `this` bound when Angular calls it as a validator reference
+  plainTextRequired = (control: AbstractControl): { [key: string]: any } | null => {
+    const plain = this.stripHtml(control.value)
+    return plain.length === 0 ? { required: true } : null
+  }
+
+  plainTextMinLength(min: number): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const plain = this.stripHtml(control.value)
+      if (plain.length === 0) { return null } // let required handle empty
+      return plain.length < min
+        ? { minlength: { requiredLength: min, actualLength: plain.length } }
+        : null
+    }
+  }
+
+  plainTextMaxLength(max: number): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const plain = this.stripHtml(control.value)
+      return plain.length > max
+        ? { maxlength: { requiredLength: max, actualLength: plain.length } }
+        : null
+    }
+  }
+
   /**
    * Create article form group
    */
@@ -81,7 +118,11 @@ export class DeveloperDocCreationComponent implements OnInit {
     return this.fb.group({
       articleId: [article?.articleId || ''],
       title: [article?.title || '', [Validators.required, Validators.minLength(10), Validators.maxLength(100)]],
-      content: [article?.content || '', [Validators.required, Validators.minLength(50), Validators.maxLength(1000)]]
+      content: [article?.content || '', [
+        this.plainTextRequired,
+        this.plainTextMinLength(50),
+        this.plainTextMaxLength(1000),
+      ]]
     })
   }
 
@@ -165,7 +206,7 @@ export class DeveloperDocCreationComponent implements OnInit {
       pageNumber: 0,
       pageSize: 50,
       orderBy: 'createdOn',
-      orderDirection: 'asc'
+      orderDirection: 'desc'
     }
 
     this.developerDocService.getArticles(formBody).pipe(
@@ -379,7 +420,7 @@ export class DeveloperDocCreationComponent implements OnInit {
 
     // Build subcategory payload
     const subCategoryPayload = {
-      title: this.subCategoryForm.get('title')?.value.trim(),
+      title: this.normalizeSpaces(this.subCategoryForm.get('title')?.value),
       summary: this.subCategoryForm.get('excerpt')?.value,
       content: this.subCategoryForm.get('excerpt')?.value,
       categoryId: this.subCategoryForm.get('category')?.value,
@@ -531,9 +572,6 @@ export class DeveloperDocCreationComponent implements OnInit {
   saveArticlesData(subCategoryId: string, status: string): void {
     const articles = this.articlesArray.value
     const articlePromises: Observable<any>[] = []
-    const tagsArray = this.tagsArray.value
-      .map((tag: any) => tag.value)
-      .filter((value: string) => value && value.trim())
 
     articles.forEach((article: any) => {
       if (article.articleId) {
@@ -552,11 +590,10 @@ export class DeveloperDocCreationComponent implements OnInit {
           // Merge with form values (form values override existing data)
           const articlePayload = {
             ...existingData,
-            title: article.title.trim(),
+            title: this.normalizeSpaces(article.title),
             content: article.content,
             summary: article.content,
-            status: status,
-            tags: tagsArray,
+            status: status
           }
 
           articlePromises.push(
@@ -566,7 +603,7 @@ export class DeveloperDocCreationComponent implements OnInit {
       } else {
         // New article
         const articlePayload = {
-          title: article.title.trim(),
+          title: this.normalizeSpaces(article.title),
           content: article.content,
           summary: article.content,
           subCategoryId: subCategoryId,
@@ -574,8 +611,7 @@ export class DeveloperDocCreationComponent implements OnInit {
           isPublic: this.subCategoryForm.get('visibility')?.value,
           type: 'article',
           status: status,
-          showUnderDeveloperDocs: true,
-          tags: tagsArray,
+          showUnderDeveloperDocs: true
         }
 
         articlePromises.push(
@@ -666,13 +702,23 @@ export class DeveloperDocCreationComponent implements OnInit {
   }
 
   /**
-   * Get remaining characters needed for article field minimum length
+   * Get remaining characters needed for article field minimum length.
+   * For the 'content' field, measures plain-text length (HTML stripped).
    */
   getArticleRemainingCharacters(index: number, fieldName: string, minLength: number = 0): number {
     const control = this.articlesArray.at(index).get(fieldName)
-    const currentLength = control?.value?.length || 0
+    const rawValue: string = control?.value || ''
+    const currentLength = fieldName === 'content'
+      ? this.stripHtml(rawValue).length
+      : rawValue.length
     const remaining = minLength - currentLength
     return remaining > 0 ? remaining : 0
+  }
+
+  /** Plain-text character count for article content (used by the hint). */
+  getArticleContentPlainTextLength(index: number): number {
+    const control = this.articlesArray.at(index).get('content')
+    return this.stripHtml(control?.value || '').length
   }
 
   /**
