@@ -37,6 +37,10 @@
                 "bundleName": "libraries",
                 "inject": true
               },
+              {
+                "input": "node_modules/@sunbird-cb/design-system/src/styles/round-controls.scss",
+                "inject": true
+              },
               "node_modules/material-icons/iconfont/material-icons.scss",
               "src/styles/mat-typography.scss",
               "src/styles/styles.scss",
@@ -89,7 +93,8 @@
               },
               "node_modules/pdfjs-dist/web/pdf_viewer.css",
               "src/spv-assets/fonts/lato/stylesheet.css",
-              "src/spv-assets/fonts/montserrat/stylesheet.css"
+              "src/spv-assets/fonts/montserrat/stylesheet.css",
+              "node_modules/ckeditor5/ckeditor5.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
