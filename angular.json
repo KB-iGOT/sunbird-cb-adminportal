@@ -93,8 +93,7 @@
               },
               "node_modules/pdfjs-dist/web/pdf_viewer.css",
               "src/spv-assets/fonts/lato/stylesheet.css",
-              "src/spv-assets/fonts/montserrat/stylesheet.css",
-              "node_modules/ckeditor5/ckeditor5.css"
+              "src/spv-assets/fonts/montserrat/stylesheet.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
