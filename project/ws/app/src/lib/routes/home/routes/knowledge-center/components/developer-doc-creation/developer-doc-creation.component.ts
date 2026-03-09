@@ -4,7 +4,6 @@ import { AbstractControl, FormBuilder, FormArray, FormGroup, ValidatorFn, Valida
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { DeveloperDocService } from '../../services/developer-doc.service'
 import * as _ from 'lodash'
-import { map } from 'rxjs/operators'
 import { forkJoin, Observable } from 'rxjs'
 import { GlobalEventsService } from '../../../../../../../../../../../src/app/services/global-events.service'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
@@ -201,7 +200,7 @@ export class DeveloperDocCreationComponent implements OnInit {
     const formBody = {
       filterCriteriaMap: {
         subCategoryId: id,
-        status: ['DRAFT', 'PUBLISHED']
+        type: 'subcategory'
       },
       pageNumber: 0,
       pageSize: 50,
@@ -209,31 +208,49 @@ export class DeveloperDocCreationComponent implements OnInit {
       orderDirection: 'desc'
     }
 
-    this.developerDocService.getArticles(formBody).pipe(
-      map((responce: any) => {
-        const data = _.get(responce, 'result.data', [])
-        const subCategoryDetails = data.find((item: any) => item.type === 'subcategory')
-        const articlesList = data.filter((item: any) => item.type === 'article')
-        return {
-          ...subCategoryDetails,
-          articles: articlesList
-        }
-      })
-    ).subscribe(
+    this.developerDocService.getArticles(formBody).subscribe(
       (response: any) => {
         if (response) {
-          this.subCategoryDetails = response
-          this.populateForm(this.subCategoryDetails)
+          this.subCategoryDetails = _.get(response, 'result.data[0]', {})
+          this.loadArticleSections(id)
         } else {
-          console.warn('Article not found')
           this.router.navigate(['/app/home/knowledge-center'])
         }
-        this.loaderService.setLoaderState(false)
       },
       (error: any) => {
         console.error('Error loading article:', error)
         this.loaderService.setLoaderState(false)
         this.router.navigate(['/app/home/knowledge-center'])
+      }
+    )
+  }
+
+  loadArticleSections(id: string): void {
+    const formBody = {
+      filterCriteriaMap: {
+        subCategoryId: id,
+        status: ['DRAFT', 'PUBLISHED'],
+        type: 'article'
+      },
+      pageNumber: 0,
+      pageSize: 50,
+      orderBy: 'createdOn',
+      orderDirection: 'desc'
+    }
+
+    this.developerDocService.getArticles(formBody).subscribe(
+      (response: any) => {
+        if (response) {
+          this.subCategoryDetails['articles'] = _.get(response, 'result.data', [])
+          this.populateForm(this.subCategoryDetails)
+        }
+        this.loaderService.setLoaderState(false)
+      },
+      (error: any) => {
+        if (error) {
+          this.loaderService.setLoaderState(false)
+          this.router.navigate(['/app/home/knowledge-center'])
+        }
       }
     )
   }

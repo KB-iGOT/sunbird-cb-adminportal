@@ -37,6 +37,10 @@
                 "bundleName": "libraries",
                 "inject": true
               },
+              {
+                "input": "node_modules/@sunbird-cb/design-system/src/styles/round-controls.scss",
+                "inject": true
+              },
               "node_modules/material-icons/iconfont/material-icons.scss",
               "src/styles/mat-typography.scss",
               "src/styles/styles.scss",
