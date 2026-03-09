@@ -235,7 +235,7 @@ export class DeveloperDocCreationComponent implements OnInit {
       pageNumber: 0,
       pageSize: 50,
       orderBy: 'createdOn',
-      orderDirection: 'desc'
+      orderDirection: 'asc'
     }
 
     this.developerDocService.getArticles(formBody).subscribe(
@@ -448,7 +448,7 @@ export class DeveloperDocCreationComponent implements OnInit {
     // Determine if create or update
     const subCategoryRequest = this.articleId
       ? this.saveExistingSubCategory(subCategoryPayload, status)
-      : this.createNewSubCategory(subCategoryPayload, status)
+      : this.createNewSubCategory(subCategoryPayload, 'DRAFT')
 
     subCategoryRequest.subscribe(
       (response: any) => {
@@ -589,8 +589,10 @@ export class DeveloperDocCreationComponent implements OnInit {
   saveArticlesData(subCategoryId: string, status: string): void {
     const articles = this.articlesArray.value
     const articlePromises: Observable<any>[] = []
+    // Maps promise index → form array index for newly created articles
+    const newArticleMap: { promiseIndex: number; formIndex: number }[] = []
 
-    articles.forEach((article: any) => {
+    articles.forEach((article: any, index: number) => {
       if (article.articleId) {
         // Find original article from subCategoryDetails
         const originalArticle = this.subCategoryDetails.articles?.find(
@@ -627,10 +629,11 @@ export class DeveloperDocCreationComponent implements OnInit {
           categoryId: this.subCategoryForm.get('category')?.value,
           isPublic: this.subCategoryForm.get('visibility')?.value,
           type: 'article',
-          status: status,
+          status: 'DRAFT',
           showUnderDeveloperDocs: true
         }
 
+        newArticleMap.push({ promiseIndex: articlePromises.length, formIndex: index })
         articlePromises.push(
           this.developerDocService.createArticle(articlePayload)
         )
@@ -639,7 +642,15 @@ export class DeveloperDocCreationComponent implements OnInit {
 
     if (articlePromises.length > 0) {
       forkJoin(articlePromises).subscribe(
-        (responses: any) => {
+        (responses: any[]) => {
+          // Assign returned articleId back to each newly created article's form control
+          newArticleMap.forEach(({ promiseIndex, formIndex }) => {
+            const newArticleId = _.get(responses[promiseIndex], 'result.articleId', '')
+            if (newArticleId) {
+              this.articlesArray.at(formIndex).get('articleId')?.setValue(newArticleId)
+            }
+          })
+
           if (responses.some((res: any) => !res || res.error)) {
             this.showSnackBar('Error saving some article sections', 'error')
           } else {
