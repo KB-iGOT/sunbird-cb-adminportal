@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { MatTableDataSource } from '@angular/material/table'
-import { PageChangeEmitter } from '@sunbird-cb/consumption'
+import { ConfirmationDialogComponent, PageChangeEmitter } from '@sunbird-cb/consumption'
 import { Router } from '@angular/router'
 import * as _ from 'lodash'
 import { debounceTime, map } from 'rxjs/operators'
 import { Subject, Subscription } from 'rxjs'
 import { DeveloperDocService } from '../../services/developer-doc.service'
 import { MatSnackBar } from '@angular/material/snack-bar'
+import { MatDialog } from '@angular/material/dialog'
 
 interface MenuItem {
   label: string
@@ -108,7 +109,8 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
   constructor(
     private developerDocService: DeveloperDocService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) {
     this.dataSource = new MatTableDataSource<any>([])
   }
@@ -328,22 +330,44 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
   }
 
   private deleteArticle(article: Article): void {
-    // if (confirm(`Are you sure you want to delete "${_.get(article, 'title', 'this article')}"`)) {
-    //   this.articlesList = this.articlesList.filter(a => a.id !== article.id)
-    //   this.loadArticles(this.searchQuery)
-    // }
     if (article.subCategoryId) {
-      this.developerDocService.deleteSubCategory(article.subCategoryId).subscribe(
-        () => {
-          this.snackBar.open('Article deleted successfully')
-          this.loadArticles(this.searchQuery)
-        },
-        (error: any) => {
-          if (error) {
-            this.snackBar.open('Something went wrong while deleting the article, please try again ')
-          }
+      const dialogData = {
+        // messages: [
+        //   {
+        //     message: `Are you sure you want to delete "${_.get(article, 'title', 'this article')}"?`,
+        //     classes: 'my-8'
+        //   }
+        // ],
+        iconName: 'info_outlined',
+        description: `Are you sure you want to delete "${_.get(article, 'title', 'this article')}"?`,
+        type: 'warning',
+        buttonsPositionClass: 'justify-center items-center mt-4 mb-2',
+        buttons: [
+          { text: 'No', classes: 'btn-out-line', response: false },
+          { text: 'Yes', classes: 'succes-button', response: true },
+        ],
+      }
+      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+        width: '500px',
+        data: dialogData,
+        autoFocus: false,
+        disableClose: true,
+      })
+      dialogRef.afterClosed().subscribe((response: any) => {
+        if (response) {
+          this.developerDocService.deleteSubCategory(article.subCategoryId).subscribe(
+            () => {
+              this.snackBar.open('Article deleted successfully')
+              this.loadArticles(this.searchQuery)
+            },
+            (error: any) => {
+              if (error) {
+                this.snackBar.open('Something went wrong while deleting the article, please try again')
+              }
+            }
+          )
         }
-      )
+      })
     }
   }
 
