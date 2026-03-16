@@ -18,9 +18,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatTooltipModule } from '@angular/material/tooltip'
 import { MatCardModule } from '@angular/material/card'
 import { MatExpansionModule } from '@angular/material/expansion'
+import { MatDialogModule } from '@angular/material/dialog'
 
 // Sunbird CB Modules
-import { PaginationModule } from '@sunbird-cb/consumption'
+import { DialogComponentsModule, PaginationModule } from '@sunbird-cb/consumption'
 
 // Routing
 import { KnowledgeCenterRoutingModule } from './knowledge-center-routing.module'
@@ -60,8 +61,10 @@ import { LoaderService } from '../../services/loader.service'
     MatTooltipModule,
     MatCardModule,
     MatExpansionModule,
+    MatDialogModule,
     PaginationModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    DialogComponentsModule
   ],
   providers: [LoaderService]
 })

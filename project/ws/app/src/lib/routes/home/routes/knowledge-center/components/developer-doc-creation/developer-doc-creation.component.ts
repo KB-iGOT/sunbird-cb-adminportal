@@ -31,7 +31,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   // Dropdown options
   visibilityOptions = [
     { value: true, label: 'Public' },
-    { value: false, label: 'Private' }
+    // { value: false, label: 'Private' }
   ]
 
   categoryOptions: any = []
