@@ -47,7 +47,7 @@
     "@ngx-translate/http-loader": "8.0.0",
     "@project-sunbird/telemetry-sdk": "0.0.26",
     "@sunbird-cb/collection": "0.0.5-ang-17-20",
-    "@sunbird-cb/consumption": "0.0.6-ang-17-20",
+    "@sunbird-cb/consumption": "0.0.7-ang-17-20",
     "@sunbird-cb/resolver-v2": "0.0.1-ang-17-20",
     "@sunbird-cb/taxonomy-editor": "0.0.1-ang-17-20",
     "@sunbird-cb/utils-v2": "0.0.1-ang-17-20",

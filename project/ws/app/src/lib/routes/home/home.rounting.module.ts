@@ -427,7 +427,16 @@ const routes: Routes = [
         path: 'marketplace-providers',
         loadChildren: () => import('./routes/marketplace-provider/marketplace-provider.module').then(u => u.MarketplaceProviderModule),
       },
-
+      {
+        path: 'spv/peer-validation',
+        loadChildren: () => import('./routes/peer-validation/peer-validation.module').then(m => m.PeerValidationModule),
+        data: {
+          pageKey: 'peer-validation',
+        },
+        resolve: {
+          configService: ConfigResolveService,
+        },
+      },
     ],
   },
 ]
