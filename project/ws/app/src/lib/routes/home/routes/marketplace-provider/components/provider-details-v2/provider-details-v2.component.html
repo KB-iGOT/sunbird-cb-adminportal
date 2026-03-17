@@ -141,7 +141,7 @@
       </div>
       <mat-form-field class="w-full">
         <textarea matInput formControlName="description" placeholder="Add description" rows="4"></textarea>
-        <mat-hint class="flex items-center justify-between w-full">
+        <mat-hint class="flex items-center  w-full">
           <span class="hint-text-style">Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported</span>
           <span class="hint-text-style">{{ getTextLength('description') }}/500</span>
         </mat-hint>
@@ -165,20 +165,36 @@
     <div class="flex flex-column gap-2 mt-3" *ngIf="!isPendingProvider">
       <div class="flex items-center gap-1">
         <span class="label">Provider Specific Tips</span>
+        <mat-icon matTooltip="Tips added will be available for learners accessing any course from this provider"
+          class="info-icon">info_outline</mat-icon>
       </div>
 
-      <a (click)="isPendingProvider ? null : addTips()" [ngClass]="{ 'disabled': isPendingProvider }"
-        class="addtips-btn" matRipple>
-        <mat-icon class="addtips-icon">add</mat-icon>
-        <span class="addtips-text">Add tips</span>
-      </a>
+      <ng-container *ngIf="!disableAddTips; else addTipsDisabled">
+        <a (click)="addTips()" class="addtips-btn" matRipple>
+          <mat-icon class="addtips-icon">add</mat-icon>
+          <span class="addtips-text">Add tips</span>
+        </a>
+      </ng-container>
+
+      <ng-template #addTipsDisabled>
+        <a class="addtips-btn disabled" matRipple matTooltip="Maximum number of tips added">
+          <mat-icon class="addtips-icon">add</mat-icon>
+          <span class="addtips-text">Add tips</span>
+        </a>
+      </ng-template>
 
       <div class="flex flex-column gap-2" formArrayName="providerTips">
         <ng-container *ngFor="let tip of getTipsList?.controls; let i = index">
           <div class="flex gap-0 mat-field-rounded">
-            <div class="tips-form-control flex items-center">
+            <div class="w-full flex items-center">
               <mat-form-field class="w-full">
-                <input [id]="'item-' + i" [formControlName]="i" matInput placeholder="Type here" />
+                <input [id]="'item-' + i" [formControlName]="i" matInput placeholder="Type here" maxlength="250" />
+                <mat-hint align="end">
+                  {{tip?.value?.length || 0}}/250
+                </mat-hint>
+                <mat-error *ngIf="tip?.hasError('required') && tip?.touched">
+                  Please enter a valid tip
+                </mat-error>
               </mat-form-field>
             </div>
             <button type="button" mat-button (click)="isPendingProvider ? null : removeTipAtIndex(i)"

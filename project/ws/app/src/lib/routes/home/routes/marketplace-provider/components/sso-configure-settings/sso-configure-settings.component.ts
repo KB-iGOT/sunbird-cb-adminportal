@@ -10,10 +10,10 @@ import { ActivatedRoute, Router } from '@angular/router'
 import * as _ from 'lodash'
 
 @Component({
-    selector: 'ws-app-sso-configure-settings',
-    templateUrl: './sso-configure-settings.component.html',
-    styleUrls: ['./sso-configure-settings.component.scss'],
-    standalone: false
+  selector: 'ws-app-sso-configure-settings',
+  templateUrl: './sso-configure-settings.component.html',
+  styleUrls: ['./sso-configure-settings.component.scss'],
+  standalone: false
 })
 export class SsoConfigureSettingsComponent implements OnInit {
   @Input() providerDetails: any
@@ -76,6 +76,8 @@ export class SsoConfigureSettingsComponent implements OnInit {
     if (this.isLastMapperFilled()) {
       const mappers = this.mappersFormArray
       mappers.push(this.createMapperGroup())
+      this.ssoSettingsForm.markAsTouched()
+      this.ssoSettingsForm.markAsDirty()
     }
   }
 
@@ -96,6 +98,8 @@ export class SsoConfigureSettingsComponent implements OnInit {
 
   removeMapper(index: number) {
     this.mappersFormArray.removeAt(index)
+    this.ssoSettingsForm.markAsTouched()
+    this.ssoSettingsForm.markAsDirty()
   }
 
   createMapperGroup(): FormGroup {
@@ -231,6 +235,16 @@ export class SsoConfigureSettingsComponent implements OnInit {
     this.loaderService.setLoaderState(true)
 
     const formValues = this.ssoSettingsForm.getRawValue()
+
+    // Check if any control (except status) is touched or dirty
+    const anyOtherControlTouchedOrDirty =
+      this.ssoSettingsForm.touched ||
+      this.ssoSettingsForm.dirty ||
+      this.acsUrl.touched ||
+      this.acsUrl.dirty ||
+      this.ssoTestUrl.touched ||
+      this.ssoTestUrl.dirty
+
     const payload = {
       ...formValues,
       mappers: this.getMappersValue(),
@@ -239,7 +253,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
       ssoTestUrl: this.ssoTestUrl.value,
       ssoId: this.SSOConfigurationData?.ssoId || '',
       // configuration: this.SSOConfigurationData?.configuration || '',
-      configuration: 'incomplete',
+      configuration: anyOtherControlTouchedOrDirty ? 'incomplete' : this.SSOConfigurationData?.configuration,
 
       includeAuthnStatement: this.SSOConfigurationData?.includeAuthnStatement,
       signDocuments: this.SSOConfigurationData?.signDocuments,
@@ -257,8 +271,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
     }
 
     if (this.SSOConfigurationData?.ssoTested !== undefined) {
-      // payload['ssoTested'] = this.SSOConfigurationData.ssoTested
-      payload['ssoTested'] = false
+      payload['ssoTested'] = anyOtherControlTouchedOrDirty ? false : this.SSOConfigurationData.ssoTested
     }
 
     this.marketplaceService.updateSSOConfiguration(this.providerDetails.id, payload).subscribe({
@@ -266,6 +279,16 @@ export class SsoConfigureSettingsComponent implements OnInit {
         if (response && response.params?.status === 'success') {
           this.fetchSSOSettings()
           this.showSnackBar('SSO Configuration updated successfully', 'success')
+
+          // Mark all controls as not touched and not dirty
+          this.ssoSettingsForm.markAsUntouched()
+          this.ssoSettingsForm.markAsPristine()
+          this.acsUrl.markAsUntouched()
+          this.acsUrl.markAsPristine()
+          this.ssoTestUrl.markAsUntouched()
+          this.ssoTestUrl.markAsPristine()
+          this.status.markAsUntouched()
+          this.status.markAsPristine()
         } else {
           this.showSnackBar(response?.params?.errmsg || 'Failed to update SSO Configuration', 'error')
         }

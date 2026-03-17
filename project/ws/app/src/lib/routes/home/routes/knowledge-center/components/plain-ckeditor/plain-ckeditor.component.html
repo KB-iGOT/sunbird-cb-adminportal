@@ -1,0 +1,5 @@
+<div class="ckeditor-wrapper plain-ck" [class.show-error]="showError">
+  <ckeditor [editor]="Editor" [config]="config" [(ngModel)]="html" (change)="onContentChanged($event)"
+    (blur)="onBlur()">
+  </ckeditor>
+</div>

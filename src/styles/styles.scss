@@ -768,3 +768,163 @@ h3.shepherd-title {
     padding: 24px !important;
   }
 }
+
+.mat-body, .mat-body-1, .mat-typography .mat-body, .mat-typography .mat-body-1, .mat-typography {
+  font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    font-family: Lato !important;
+    letter-spacing: normal;
+}
+
+.mat-mdc-menu-item  {
+  .mat-mdc-menu-item-text {
+    height: 38px;
+    font: 400 14px / 21px Lato !important;
+}
+}
+
+.mdc-button__label {
+  font-family: Lato !important;
+}
+
+.mat-mdc-card {
+    transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+    display: block;
+    position: relative;
+    padding: 16px;
+    border-radius: 4px;
+    }
+
+    .mat-h3, .mat-subheading-2, .mat-typography .mat-h3, .mat-typography .mat-subheading-2, .mat-typography h3 {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 21px;
+    font-family: Lato;
+    letter-spacing: normal;
+    margin: 0 0 16px;
+}
+
+.mat-list-base .mat-list-option {
+    font-size: 14px;
+}
+
+.mdc-list-item__primary-text {
+   font-size: 14px !important;
+
+}
+
+.mat-mdc-list-option .mdc-checkbox__checkmark-path {
+  stroke: #fff !important;
+}
+
+.mat-mdc-form-field-input-control.mat-mdc-form-field-input-control {
+  font-size: 14px !important;
+  font-weight: normal !important;
+}
+
+.mat-mdc-select {
+  font-size: 14px !important;
+  font-weight: normal !important;
+}
+
+.mat-mdc-header-row {
+  background: #eee !important;
+}
+
+/* Fix tab text color */
+.mat-mdc-tab-group .mdc-tab__text-label {
+  color: #555 !important;
+}
+
+/* Active tab color */
+.mat-mdc-tab-group .mdc-tab--active .mdc-tab__text-label {
+  color: #1b4ca1  !important; /* your blue */
+}
+
+/* Fix underline color */
+.mat-mdc-tab-group .mdc-tab-indicator__content--underline {
+  border-color: #1b4ca1  !important;
+}
+
+input.mat-input-element {
+    color: #5F5F5F;
+}
+
+.form-input {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    font-family: "Lato" !important;
+    line-height: 1.5 !important;
+}
+
+.mat-mdc-nav-list {
+  padding: 0 8px !important;
+}
+
+.mdc-list-item__primary-text {
+  font-weight: normal !important;
+}
+
+
+
+
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: #1b4ca1 !important;
+  border-width: 2px !important;
+}
+
+/* Ensure caret visible */
+.mat-mdc-input-element {
+  caret-color: auto !important;
+}
+
+/* Remove custom outline to prevent double border */
+.mat-mdc-input-element:focus-visible,
+.mat-mdc-form-field:focus-within {
+  outline: none !important;
+}
+
+/* Proper single focus border */
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: #1b4ca1 !important; // your brand blue
+  border-width: 2px !important;
+}
+
+/* Selected option text color */
+.mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text {
+  color: #fff !important; /* your blue */
+}
+
+/* Selected option background (optional light blue) */
+.mat-mdc-option.mdc-list-item--selected {
+  background-color: #1B4CA1 !important;
+}
+
+.mat-mdc-option {
+  padding:0 10px !important;
+}
+
+/* Selected radio outer circle */
+.mat-mdc-radio-button.mat-mdc-radio-checked
+  .mdc-radio__outer-circle {
+  border-color: #1B4CA1 !important; /* brand color */
+}
+
+/* Selected radio inner circle (fill) */
+.mat-mdc-radio-button.mat-mdc-radio-checked
+  .mdc-radio__inner-circle {
+  background-color: #1B4CA1 !important; /* brand color */
+  border-color: #1B4CA1 !important;
+}
+
+/* Remove ripple overlay color interference (optional but cleaner) */
+.mat-mdc-radio-button .mdc-radio__background::before {
+  background-color: transparent !important;
+}
+
+

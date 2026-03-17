@@ -13,10 +13,10 @@ import { GlobalEventsService } from '../../../../../../../../../../../src/app/se
 import { NavigationExternalService } from '../../../../../../../../../../../src/app/services/navigation-external.service'
 import { ConformationPopupComponent } from '../../dialogs/conformation-popup/conformation-popup.component'
 @Component({
-    selector: 'ws-app-provider-details-v2',
-    templateUrl: './provider-details-v2.component.html',
-    styleUrls: ['./provider-details-v2.component.scss'],
-    standalone: false
+  selector: 'ws-app-provider-details-v2',
+  templateUrl: './provider-details-v2.component.html',
+  styleUrls: ['./provider-details-v2.component.scss'],
+  standalone: false
 })
 export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit {
   @Input() providerDetails: any
@@ -46,6 +46,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
   providerDetailsBeforeUpdate: any
   isPendingProvider = false
   hasPartnerCode = false
+  maxNumberOfTipsCanAdd = 10
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
@@ -119,6 +120,10 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
     return this.providerDetailsForm.get('providerTips') as FormArray
   }
 
+  get disableAddTips() {
+    return this.isPendingProvider || this.getTipsList.length >= this.maxNumberOfTipsCanAdd
+  }
+
   //#region Validation Helpers
   getControlValidation(controlName: string, validator: string): boolean {
     const control = this.providerDetailsForm.get(controlName)
@@ -133,7 +138,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
 
   //#region Provider Tips
   addTips(message = '') {
-    this.getTipsList.push(new FormControl(message, Validators.required))
+    this.getTipsList.push(new FormControl(message, [Validators.required, Validators.maxLength(250)]))
   }
 
   removeTipAtIndex(index: number) {

@@ -18,7 +18,7 @@
                       <p class="margin-remove-bottom" [ngClass]="{ required: checkCondition('name', 'required') }">
                         {{departmentName}} name
                       </p>
-                      <mat-form-field appearance="outline" class="margin-top-xs"
+                      <mat-form-field appearance="outline" class="margin-top-xs w-full"
                         [ngClass]="{ 'mat-form-field-invalid': showError('name') }">
                         <input matInput #name formControlName="name" maxlength="250" placeholder="Type here" type="text"
                           (keyup)="specialCharachters($event, 'cbpProvider')"
@@ -53,7 +53,7 @@
                     </label>
                     <div class="margin-top-s">
                       <!-- {{subDepartments | json}} -->
-                      <mat-form-field appearance="outline" class="margin-top-xs"
+                      <mat-form-field appearance="outline" class="margin-top-xs w-full"
                         [ngClass]="{ 'mat-form-field-invalid': showError('depatmentType') }">
                         <mat-select [(value)]="selected" formControlName="deptSubTypeId"
                           [required]="checkCondition('subTitle', 'required') ? true : null"
