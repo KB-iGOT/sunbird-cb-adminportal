@@ -25,7 +25,7 @@ export class DeveloperDocCreationComponent implements OnInit {
 
   // UI properties
   isSaving: boolean = false
-  expandedAccordionIndex: number | null = null
+  expandedAccordionIndex: number | null = 0
   headerText: string = 'Create Article'
 
   // Dropdown options
