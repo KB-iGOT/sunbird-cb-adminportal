@@ -77,7 +77,7 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
   menuItems: MenuItem[] = [
     { label: 'View', action: 'view', icon: '' },
     { label: 'Edit', action: 'edit', icon: '' },
-    { label: 'Delete', action: 'delete', icon: '' },
+    { label: 'Inactivate', action: 'delete', icon: '' },
   ]
 
   // Table configuration
@@ -224,7 +224,7 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
 
               return {
                 ...item,
-                status: _.get(item, 'status', '').toUpperCase() === 'ARCHIVED' ? 'DELETED' : _.get(item, 'status', ''),
+                status: _.get(item, 'status', '').toUpperCase() === 'ARCHIVED' ? 'Inactive' : _.get(item, 'status', ''),
                 visibility: _.get(item, 'isPublic', false) ? 'Public' : 'Private',
                 ...(creator && { creatorName: _.get(creator, 'first_name', '') }),
                 ...(category && { categoryName: _.get(category, 'title', '') }),
@@ -339,7 +339,7 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
         //   }
         // ],
         iconName: 'info_outlined',
-        description: `Are you sure you want to delete "${_.get(article, 'title', 'this article')}"?`,
+        description: `Are you sure you want to Inactivate "${_.get(article, 'title', 'this article')}"?`,
         type: 'warning',
         buttonsPositionClass: 'justify-center items-center mt-4 mb-2',
         buttons: [
@@ -357,12 +357,13 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
         if (response) {
           this.developerDocService.deleteSubCategory(article.subCategoryId).subscribe(
             () => {
-              this.snackBar.open('Article deleted successfully')
+              this.snackBar.open('Article inactivated successfully')
               this.loadArticles(this.searchQuery)
             },
             (error: any) => {
               if (error) {
-                this.snackBar.open('Something went wrong while deleting the article, please try again')
+                const errorMessage = _.get(error, 'error.error.message', 'Something went wrong while inactivating the article, please try again')
+                this.snackBar.open(errorMessage)
               }
             }
           )

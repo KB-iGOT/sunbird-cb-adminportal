@@ -133,6 +133,7 @@
   }
 
   .deleted,
+  .inactive,
   .archived {
     @include status-badge(#d13924, true);
     color: #d13924;

@@ -24,7 +24,6 @@ describe('CreateUserService', () => {
     const mockUserData: IUserForm = {
       username: 'testuser',
       email: 'testuser@example.com',
-      password: 'Test@1234',
       org: '',
       firstName: ''
     }
