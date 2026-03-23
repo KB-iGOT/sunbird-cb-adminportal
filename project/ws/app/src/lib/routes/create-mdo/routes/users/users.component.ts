@@ -4,16 +4,20 @@ import * as _ from 'lodash'
 import { ProfileV2UtillService } from '../../../home/services/home-utill.service'
 import { ProfileV2Service } from '../../../home/services/home.servive'
 import { UsersService } from '../../../home/services/users.service'
+import { LoaderService } from '../../../home/services/loader.service'
+import { OrgHierarchyService } from '../../../../head/ui-admin-table/services/org-hierarchy.service'
+import { map, switchMap } from 'rxjs/operators'
+import { of } from 'rxjs'
 // import { UsersService } from '../../services/users.service'
 // interface IUSER {
 //   profileDetails: any; isDeleted: boolean; userId: string | null; firstName: any
 //   lastName: any; email: any; active: any; blocked: any; roles: any[]
 // }
 @Component({
-    selector: 'ws-app-users',
-    templateUrl: './users.component.html',
-    styleUrls: ['./users.component.scss'],
-    standalone: false
+  selector: 'ws-app-users',
+  templateUrl: './users.component.html',
+  styleUrls: ['./users.component.scss'],
+  standalone: false
 })
 
 export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -51,11 +55,16 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   isReportsPath = false
   userRoles: any
   allowedCreateRoles = ['DASHBOARD_ADMIN', 'SPV_ADMIN', 'SPV_PUBLISHER', 'STATE_ADMIN']
+  orgDataLoaded: boolean = false
+  orgData: any
+
   constructor(private usersSvc: UsersService, private router: Router,
     private route: ActivatedRoute,
     private profile: ProfileV2Service,
     private profileUtilSvc: ProfileV2UtillService,
     private usersService: UsersService,
+    private orgHieService: OrgHierarchyService,
+    private loaderService: LoaderService,
   ) {
   }
   ngOnInit() {
@@ -85,6 +94,13 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
         render: true,
         enabled: true,
       },
+      {
+        name: 'User Transfer',
+        key: 'user_transfer',
+        render: true,
+        enabled: true,
+      },
+
       // {
       //   name: 'Grade/Group setting',
       //   key: 'grade_setting',
@@ -92,6 +108,13 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
       //   enabled: true,
       // },
     ]
+
+    const queryParam = _.get(this.route, 'snapshot.queryParams')
+    if (queryParam) {
+      this.orgData = queryParam
+    }
+    this.checkAndGetOrgData()
+
 
     const url = this.router.url.split('/')
     this.role = url[url.length - 2]
@@ -147,6 +170,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.currentDept === 'cbp-providers') {
       this.tabsData = this.tabsData.filter(tab => tab?.key !== 'mentormanage' && tab?.key !== 'designation_master')
     }
+
 
   }
   ngAfterViewInit() {
@@ -338,5 +362,48 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
       return allowedRoles.some(role => lowerConfigRoles.has(role.toLowerCase()))
     }
     return false
+  }
+
+  async checkAndGetOrgData() {
+    const orgReadPromise: Promise<any>[] = []
+    orgReadPromise.push(this.getOrgData())
+    await Promise.all(orgReadPromise)
+  }
+
+  getOrgData() {
+    return new Promise<boolean>((resolve) => {
+      const requestBody = {
+        request: {
+          organisationId: this.orgData.roleId,
+        }
+      }
+      this.loaderService.changeLoaderState(true)
+      this.orgHieService.getOrgReadData(requestBody).pipe(
+        switchMap((data: any) => {
+          if (data?.result?.response?.ministryOrStateType === 'ministry' || data?.result?.response?.ministryOrStateType === 'state') {
+            const parentReqBody = {
+              request: {
+                organisationId: data?.result?.response?.ministryOrStateId,
+              }
+            }
+            return this.orgHieService.getOrgReadData(parentReqBody).pipe(
+              map((ministryData: any) => {
+                return {
+                  orgData: data.result.response,
+                  parentOrgData: ministryData.result.response
+                }
+              })
+            )
+          }
+          return of(null)
+        })
+      ).subscribe((_res) => {
+        this.orgHieService.setOrgData(_res?.orgData)
+        this.orgHieService.setParentOrgData(_res?.parentOrgData)
+        this.orgDataLoaded = true
+        resolve(true)
+        this.loaderService.changeLoaderState(false)
+      })
+    })
   }
 }

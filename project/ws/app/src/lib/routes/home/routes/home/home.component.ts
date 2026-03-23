@@ -11,12 +11,12 @@ import { Subscription } from 'rxjs'
 /* tslint:enable */
 
 @Component({
-    selector: 'ws-app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss'],
-    /* tslint:disable */
-    host: { class: 'margin-top-l' },
-    standalone: false
+  selector: 'ws-app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss'],
+  /* tslint:disable */
+  host: { class: 'margin-top-l' },
+  standalone: false
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   sideNavBarOpened = true
@@ -64,7 +64,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
-        const url = event.urlAfterRedirects || event.url;
+        const url = event.urlAfterRedirects || event.url
 
         // for KCM mapping page
         const urlData = _.get(this.activeRoute, 'snapshot._routerState.url')
@@ -94,15 +94,16 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         // this.widgetData = this.activeRoute.snapshot.data &&
         //   this.activeRoute.snapshot.data.pageData.data.menus || []
         if (this.activeRoute.snapshot.data.pageData) {
-          const leftData = this.activeRoute.snapshot.data.pageData.data.menus
+          let leftData = this.activeRoute.snapshot.data.pageData.data.menus
           _.set(leftData, 'widgetData.logo', true)
           _.set(leftData, 'widgetData.logoPath', _.get(this.activeRoute, 'snapshot.data.department.data.logo'))
           _.set(leftData, 'widgetData.name', _.get(this.activeRoute, 'snapshot.data.configService.unMappedUser.rootOrg.orgName'))
           _.set(leftData, 'widgetData.userRoles', this.myRoles)
+
+          leftData.widgetData.menus = this.updateMenuItems(leftData?.widgetData?.menus)
           this.widgetData = leftData
         } else {
           this.widgetData = this.activeRoute.snapshot.data.pageData.data.menus
-
         }
 
         if (url.includes('/marketplace-providers/configure-provider')) {
@@ -187,6 +188,20 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.getChildRouteData(snapshot, firstChild.firstChild)
       }
     }
+  }
+
+  updateMenuItems(menus: any[] = []): any[] {
+    if (!this.myRoles.has('state_admin') || !menus.length) {
+      return menus
+    }
+
+    const updatedMenus = menus.map(item => ({
+      ...item,
+      subMenu: item.subMenu?.map((sub: any) =>
+        sub.key === 'users' ? { ...sub, name: 'All State Users' } : sub
+      )
+    }))
+    return updatedMenus
   }
 
 }
