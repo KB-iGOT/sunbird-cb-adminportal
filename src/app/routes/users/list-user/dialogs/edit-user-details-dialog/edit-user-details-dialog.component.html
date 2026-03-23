@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Edit User Details</h2>
+
+<mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+<mat-dialog-content>
+  <form [formGroup]="editForm" class="edit-form">
+    <mat-form-field *ngFor="let field of fields" class="full-width" appearance="outline" floatLabel="always">
+      <mat-label>{{ field.displayName }}</mat-label>
+      <input matInput [formControlName]="field.identifier">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="isLoading">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="isLoading">
+    Save Changes
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,36 @@
+<button mat-icon-button [matMenuTriggerFor]="actionsMenu" aria-label="User actions">
+  <mat-icon>more_vert</mat-icon>
+</button>
+
+<mat-menu #actionsMenu="matMenu">
+  <button mat-menu-item *ngIf="isNotDeleted && canWrite" (click)="onAction('editDetails')">
+    <mat-icon>edit</mat-icon>
+    <span>Edit User Details</span>
+  </button>
+
+  <button mat-menu-item *ngIf="isNotDeleted && canWrite" (click)="onAction('editPrimary')">
+    <mat-icon>assignment_ind</mat-icon>
+    <span>Edit Primary Details</span>
+  </button>
+
+  <button mat-menu-item *ngIf="isNotDeleted && canWrite" (click)="onAction('manageRoles')">
+    <mat-icon>manage_accounts</mat-icon>
+    <span>Manage User Roles</span>
+  </button>
+
+  <button mat-menu-item *ngIf="isNotDeleted && canWrite" (click)="onAction('resetPassword')">
+    <mat-icon>lock_reset</mat-icon>
+    <span>Reset Password</span>
+  </button>
+
+  <button mat-menu-item *ngIf="isNotDeleted && canWrite" (click)="onAction('migrate')">
+    <mat-icon>swap_horiz</mat-icon>
+    <span>Migrate User</span>
+  </button>
+
+  <button mat-menu-item *ngIf="canWrite && isNotMyUser" (click)="onAction('reassign')">
+    <mat-icon>person_add</mat-icon>
+    <span>Reassign User</span>
+  </button>
+
+</mat-menu>
