@@ -742,6 +742,10 @@ h3.shepherd-title {
   .mat-primary .mat-pseudo-checkbox-checked {
     background-color: var(--mat-theme-primary, #1976d2);
   }
+
+  .mat-pseudo-checkbox ::after {
+    color: black !important;
+  }
 }
 
 .category-edit-container .mat-dialog-container {
@@ -753,6 +757,7 @@ h3.shepherd-title {
 }
 
 .mat-btn-height-32 {
+
   &.mat-btn-outline,
   &.mat-btn-flat {
     height: 32px !important;
@@ -769,19 +774,23 @@ h3.shepherd-title {
   }
 }
 
-.mat-body, .mat-body-1, .mat-typography .mat-body, .mat-typography .mat-body-1, .mat-typography {
+.mat-body,
+.mat-body-1,
+.mat-typography .mat-body,
+.mat-typography .mat-body-1,
+.mat-typography {
   font-size: 16px;
-    font-weight: 400;
-    line-height: 24px;
-    font-family: Lato !important;
-    letter-spacing: normal;
+  font-weight: 400;
+  line-height: 24px;
+  font-family: Lato !important;
+  letter-spacing: normal;
 }
 
-.mat-mdc-menu-item  {
+.mat-mdc-menu-item {
   .mat-mdc-menu-item-text {
     height: 38px;
     font: 400 14px / 21px Lato !important;
-}
+  }
 }
 
 .mdc-button__label {
@@ -789,28 +798,32 @@ h3.shepherd-title {
 }
 
 .mat-mdc-card {
-    transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
-    display: block;
-    position: relative;
-    padding: 16px;
-    border-radius: 4px;
-    }
+  transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+  position: relative;
+  padding: 16px;
+  border-radius: 4px;
+}
 
-    .mat-h3, .mat-subheading-2, .mat-typography .mat-h3, .mat-typography .mat-subheading-2, .mat-typography h3 {
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 21px;
-    font-family: Lato;
-    letter-spacing: normal;
-    margin: 0 0 16px;
+.mat-h3,
+.mat-subheading-2,
+.mat-typography .mat-h3,
+.mat-typography .mat-subheading-2,
+.mat-typography h3 {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 21px;
+  font-family: Lato;
+  letter-spacing: normal;
+  margin: 0 0 16px;
 }
 
 .mat-list-base .mat-list-option {
-    font-size: 14px;
+  font-size: 14px;
 }
 
 .mdc-list-item__primary-text {
-   font-size: 14px !important;
+  font-size: 14px !important;
 
 }
 
@@ -839,23 +852,24 @@ h3.shepherd-title {
 
 /* Active tab color */
 .mat-mdc-tab-group .mdc-tab--active .mdc-tab__text-label {
-  color: #1b4ca1  !important; /* your blue */
+  color: #1b4ca1 !important;
+  /* your blue */
 }
 
 /* Fix underline color */
 .mat-mdc-tab-group .mdc-tab-indicator__content--underline {
-  border-color: #1b4ca1  !important;
+  border-color: #1b4ca1 !important;
 }
 
 input.mat-input-element {
-    color: #5F5F5F;
+  color: #5F5F5F;
 }
 
 .form-input {
-    font-size: 14px !important;
-    font-weight: 400 !important;
-    font-family: "Lato" !important;
-    line-height: 1.5 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  font-family: "Lato" !important;
+  line-height: 1.5 !important;
 }
 
 .mat-mdc-nav-list {
@@ -897,7 +911,8 @@ input.mat-input-element {
 
 /* Selected option text color */
 .mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text {
-  color: #fff !important; /* your blue */
+  color: #fff !important;
+  /* your blue */
 }
 
 /* Selected option background (optional light blue) */
@@ -906,19 +921,19 @@ input.mat-input-element {
 }
 
 .mat-mdc-option {
-  padding:0 10px !important;
+  padding: 0 10px !important;
 }
 
 /* Selected radio outer circle */
-.mat-mdc-radio-button.mat-mdc-radio-checked
-  .mdc-radio__outer-circle {
-  border-color: #1B4CA1 !important; /* brand color */
+.mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio__outer-circle {
+  border-color: #1B4CA1 !important;
+  /* brand color */
 }
 
 /* Selected radio inner circle (fill) */
-.mat-mdc-radio-button.mat-mdc-radio-checked
-  .mdc-radio__inner-circle {
-  background-color: #1B4CA1 !important; /* brand color */
+.mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio__inner-circle {
+  background-color: #1B4CA1 !important;
+  /* brand color */
   border-color: #1B4CA1 !important;
 }
 
@@ -926,5 +941,3 @@ input.mat-input-element {
 .mat-mdc-radio-button .mdc-radio__background::before {
   background-color: transparent !important;
 }
-
-
