@@ -17,6 +17,8 @@ const API_END_POINTS = {
   providedIn: 'root'
 })
 export class OrgHierarchyService {
+  orgData: any
+  parentOrgData: any
 
   constructor(private http: HttpClient) { }
 
@@ -57,5 +59,21 @@ export class OrgHierarchyService {
 
   getBulkuploadProgress(framework: string): Observable<any> {
     return this.http.get<any>(`${API_END_POINTS.BULKUPLOAD_PROGRESS}${framework}`)
+  }
+
+  setOrgData(orgData: any): void {
+    this.orgData = orgData
+  }
+
+  getOrgData(): any {
+    return this.orgData
+  }
+
+  setParentOrgData(parentOrgData: any): void {
+    this.parentOrgData = parentOrgData
+  }
+
+  getParentOrgData(): any {
+    return this.parentOrgData
   }
 }
