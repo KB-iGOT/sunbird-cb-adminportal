@@ -1,0 +1,22 @@
+<mat-form-field class="full-width" appearance="outline" floatLabel="always">
+  <mat-label>{{ label }}</mat-label>
+  <input matInput [formControl]="searchControl" [matAutocomplete]="orgAuto"
+    placeholder="Type to search organizations..." (focus)="onFocus()">
+  <button mat-icon-button matSuffix *ngIf="searchControl.value" (click)="clear()" type="button">
+    <mat-icon>close</mat-icon>
+  </button>
+  <mat-autocomplete #orgAuto="matAutocomplete" [displayWith]="displayFn"
+    (optionSelected)="onOptionSelected($event.option.value)">
+    <mat-option *ngIf="isLoading" disabled>
+      <mat-spinner diameter="20"></mat-spinner> Searching...
+    </mat-option>
+    <mat-option *ngFor="let org of filteredOrgs" [value]="org">
+      <span class="org-name">{{ org.orgName }}</span>
+      <span class="org-channel" *ngIf="org.channel"> ({{ org.channel }})</span>
+    </mat-option>
+    <mat-option *ngIf="!isLoading && filteredOrgs.length === 0 && searchControl.value" disabled>
+      No organizations found
+    </mat-option>
+  </mat-autocomplete>
+  <mat-error *ngIf="required && !selectedOrg">Organization is required</mat-error>
+</mat-form-field>

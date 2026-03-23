@@ -1,0 +1,26 @@
+@import 'ws-common';
+@import 'ws-vars';
+@import 'ws-mixins';
+
+.container-balanced {
+  @extend %page-center;
+  height: auto;
+  min-height: calc(100vh - 120px);
+  padding: 15px;
+  box-sizing: border-box;
+  background-color: #f3f8fe;
+}
+
+.left-nav {
+  min-width: 240px;
+  max-width: 240px;
+
+  @include breakpoint-xs {
+    min-width: 100%;
+    max-width: none;
+  }
+}
+
+::ng-deep .mat-drawer {
+  overflow-y: unset !important;
+}

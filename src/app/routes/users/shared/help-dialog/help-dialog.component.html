@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Help — User Management Actions</h2>
+<mat-dialog-content>
+  <div class="help-list">
+    <div class="help-item" *ngFor="let item of helpItems">
+      <h4 class="help-action">{{ item.action }}</h4>
+      <p class="help-desc">{{ item.description }}</p>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Close</button>
+</mat-dialog-actions>

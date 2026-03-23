@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>Edit Primary Details</h2>
+
+<mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+<mat-dialog-content>
+  <div class="warning-banner" *ngIf="isFormDisabled">
+    <mat-icon>warning</mat-icon>
+    <span>This form is disabled because a transfer request is pending for this user.</span>
+  </div>
+  <div class="warning-banner info" *ngIf="isGroupDisabled && !isFormDisabled">
+    <mat-icon>info</mat-icon>
+    <span>Group field is disabled due to a pending group change request.</span>
+  </div>
+  <div class="warning-banner info" *ngIf="isDesignationDisabled && !isFormDisabled">
+    <mat-icon>info</mat-icon>
+    <span>Designation field is disabled due to a pending designation change request.</span>
+  </div>
+
+  <form [formGroup]="primaryForm" class="primary-form">
+    <mat-form-field class="full-width" appearance="outline" floatLabel="always">
+      <mat-label>Group</mat-label>
+      <mat-select formControlName="group">
+        <mat-option *ngFor="let group of groups" [value]="group">
+          {{ group }}
+        </mat-option>
+      </mat-select>
+      <mat-error>Group is required</mat-error>
+    </mat-form-field>
+
+    <ws-designation-selector [required]="true" [disabled]="isDesignationDisabled || isFormDisabled"
+      [selectedDesignation]="primaryForm.get('designation')?.value"
+      (designationSelected)="onDesignationSelected($event)">
+    </ws-designation-selector>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="isLoading">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()"
+    [disabled]="primaryForm.invalid || isLoading || isFormDisabled">
+    Save Changes
+  </button>
+</mat-dialog-actions>
