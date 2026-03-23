@@ -121,12 +121,7 @@ export class DirectoryViewComponent implements OnInit {
     this.tabledata = []
     if (this.currentFilter === 'organisation') {
       this.tabledata = {
-        columns: [
-          { displayName: 'Organisation', key: 'organisation' },
-          { displayName: 'Type', key: 'type' },
-          { displayName: 'State/Center', key: 'stateOrMinistry' },
-          { displayName: 'Created On', key: 'createdOn' },
-        ],
+        columns: [],
         actions: [{ name: '', label: '', icon: 'remove_red_eye', type: 'menu' }],
         link: { name: 'generate_link', generateLabel: 'Generate Link', column: 'Custom Registration', viewLabel: 'View Link' },
         needCheckBox: false,
@@ -136,6 +131,20 @@ export class DirectoryViewComponent implements OnInit {
         showNewNoContent: true,
         loader: true,
         tableDataCount: this.totalCount
+      }
+
+      if (this.userRoles.has('state_admin')) {
+        this.tabledata.columns.push(
+          { displayName: 'Organisation', key: 'organisation' },
+          { displayName: 'Created On', key: 'createdOn' },
+        )
+      } else {
+        this.tabledata.columns.push(
+          { displayName: 'Organisation', key: 'organisation' },
+          { displayName: 'Type', key: 'type' },
+          { displayName: 'State/Center', key: 'stateOrMinistry' },
+          { displayName: 'Created On', key: 'createdOn' },
+        )
       }
 
       const isAllowed = this.isAllowed(this.allowedCreateRoles)
