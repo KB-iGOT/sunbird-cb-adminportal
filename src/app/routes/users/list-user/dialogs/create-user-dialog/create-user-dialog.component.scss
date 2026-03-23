@@ -1,0 +1,66 @@
+.create-user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 400px;
+  padding-top: 8px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.section-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #1b4ca1;
+  margin-bottom: 4px;
+
+  &.org-label {
+    margin-top: 8px;
+  }
+}
+
+.roles-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.role-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1.5px solid #bbb;
+  background: #f5f5f5;
+  color: #333;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    border-color: #1b4ca1;
+    background: #e8edf5;
+  }
+
+  &.selected {
+    background: #1b4ca1;
+    color: #fff;
+    border-color: #1b4ca1;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: default;
+  }
+
+  .chip-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}

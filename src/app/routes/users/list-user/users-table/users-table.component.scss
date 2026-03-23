@@ -1,0 +1,89 @@
+.table-container {
+  background: white;
+  border-radius: 8px;
+  overflow: auto;
+  border: 1px solid #d6e4f0;
+  box-shadow: 0 1px 4px rgba(27, 76, 161, 0.08);
+
+  .loading-bar {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+}
+
+.users-table {
+  width: 100%;
+
+  .email-cell {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .roles-cell {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+  }
+}
+
+::ng-deep .mat-mdc-header-row {
+  background: #1b4ca1 !important;
+
+  .mat-mdc-header-cell {
+    color: #fff !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+  }
+}
+
+::ng-deep .mat-mdc-row:hover {
+  background-color: #f0f5ff !important;
+}
+
+.status-chip {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+
+  &.active {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.inactive {
+    background-color: #fce4ec;
+    color: #c62828;
+  }
+
+  &.unknown {
+    background-color: #f5f5f5;
+    color: #616161;
+  }
+}
+
+.no-data-cell {
+  text-align: center;
+  padding: 48px 16px !important;
+}
+
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: rgba(0, 0, 0, 0.4);
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+  }
+}

@@ -1,0 +1,25 @@
+<div class="list-user-page">
+  <div class="page-header flex flex-middle flex-between">
+    <h2 class="page-title">User Management</h2>
+    <div class="header-actions flex" style="gap: 12px;">
+      <button mat-raised-button color="primary" *ngIf="canWrite" (click)="openCreateUserDialog()">
+        <mat-icon>person_add</mat-icon> Create User
+      </button>
+      <button mat-stroked-button color="primary" (click)="openHelpDialog()">
+        <mat-icon>help_outline</mat-icon> Help
+      </button>
+    </div>
+  </div>
+
+  <ws-search-panel #searchPanel [initialSearchType]="searchType" [initialSearchQuery]="searchQuery"
+    [initialUserStatus]="userStatus" (search)="onSearch($event)" (clear)="onClear()">
+  </ws-search-panel>
+
+  <div class="results-info" *ngIf="usersCount > 0">
+    <span>{{ usersCount }} user(s) found</span>
+  </div>
+
+  <ws-users-table [users]="users" [totalCount]="usersCount" [pageSize]="rowsPerPage" [pageIndex]="page"
+    [loading]="loading" (pageChange)="onPageChange($event)" (actionSelected)="onUserAction($event)">
+  </ws-users-table>
+</div>

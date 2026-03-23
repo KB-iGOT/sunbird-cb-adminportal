@@ -1,0 +1,77 @@
+<div class="table-container">
+  <div class="loading-bar" *ngIf="loading">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+
+  <table mat-table [dataSource]="dataSource" class="users-table">
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let user">{{ getUserName(user) }}</td>
+    </ng-container>
+
+    <!-- Email Column -->
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef>Email</th>
+      <td mat-cell *matCellDef="let user" class="email-cell">{{ getUserEmail(user) }}</td>
+    </ng-container>
+
+    <!-- Phone Column -->
+    <ng-container matColumnDef="phone">
+      <th mat-header-cell *matHeaderCellDef>Phone</th>
+      <td mat-cell *matCellDef="let user">{{ getUserPhone(user) }}</td>
+    </ng-container>
+
+    <!-- Organization Column -->
+    <ng-container matColumnDef="organization">
+      <th mat-header-cell *matHeaderCellDef>Organization</th>
+      <td mat-cell *matCellDef="let user">{{ user.rootOrgName || 'N/A' }}</td>
+    </ng-container>
+
+    <!-- Status Column -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let user">
+        <span class="status-chip" [ngClass]="getStatusClass(user)">
+          {{ getStatusLabel(user) }}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Roles Column -->
+    <ng-container matColumnDef="roles">
+      <th mat-header-cell *matHeaderCellDef>Roles</th>
+      <td mat-cell *matCellDef="let user" class="roles-cell">
+        <span *ngFor="let role of getUserRoles(user); let last = last">
+          {{ role }}{{ !last ? ', ' : '' }}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let user">
+        <ws-user-actions-menu [user]="user" (actionSelected)="onUserAction($event)">
+        </ws-user-actions-menu>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    <!-- No data row -->
+    <tr class="no-data-row" *matNoDataRow>
+      <td class="no-data-cell" [attr.colspan]="displayedColumns.length">
+        <div class="no-data" *ngIf="!loading">
+          <mat-icon>search_off</mat-icon>
+          <span>No users found. Try adjusting your search criteria.</span>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions"
+    (page)="onPageChange($event)" showFirstLastButtons>
+  </mat-paginator>
+</div>

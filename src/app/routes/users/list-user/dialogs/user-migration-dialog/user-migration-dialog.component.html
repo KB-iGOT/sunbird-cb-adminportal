@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>Migrate User</h2>
+
+<mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+<mat-dialog-content>
+  <div class="user-info">
+    <div class="info-row">
+      <span class="label">User:</span>
+      <span class="value">{{ userName }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Current Organization:</span>
+      <span class="value">{{ user.rootOrgName || user.channel }}</span>
+    </div>
+  </div>
+
+  <div class="migration-form">
+    <div class="section-label">Target Organization</div>
+    <ws-organization-selector [required]="true" [selectedOrg]="selectedOrg" (orgSelected)="onOrgSelected($event)"
+      (orgCleared)="onOrgCleared()">
+    </ws-organization-selector>
+
+    <div class="validation-error" *ngIf="validationError">
+      <mat-icon>error</mat-icon>
+      {{ validationError }}
+    </div>
+
+    <form [formGroup]="migrationForm" class="options-section">
+      <div class="toggle-row">
+        <mat-slide-toggle formControlName="forceMigration">Force Migration</mat-slide-toggle>
+        <span class="toggle-hint">Override migration restrictions</span>
+      </div>
+
+      <div class="toggle-row">
+        <mat-slide-toggle formControlName="softDeleteOldOrg">Soft Delete Old Org</mat-slide-toggle>
+        <span class="toggle-hint">Mark old organization association as deleted</span>
+      </div>
+
+      <div class="toggle-row">
+        <mat-slide-toggle formControlName="notifyMigration">Notify Migration</mat-slide-toggle>
+        <span class="toggle-hint">Send notification to the user about migration</span>
+      </div>
+    </form>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="isLoading">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onConfirm()" [disabled]="!isFormValid || isLoading">
+    Migrate User
+  </button>
+</mat-dialog-actions>

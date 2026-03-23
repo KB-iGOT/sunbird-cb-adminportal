@@ -575,6 +575,84 @@ h3.shepherd-title {
   padding: 0 24px;
 }
 
+/* Dialog title styling */
+[mat-dialog-title], .mat-mdc-dialog-title {
+  color: #1b4ca1 !important;
+  font-weight: 700 !important;
+  font-size: 20px !important;
+  border-bottom: 2px solid #e8edf5;
+  padding-bottom: 12px !important;
+  margin-bottom: 8px !important;
+}
+
+/* Dialog action buttons */
+.mat-mdc-dialog-actions {
+  padding: 12px 0 16px !important;
+  border-top: 1px solid #e8edf5;
+
+  .mat-mdc-raised-button.mat-primary,
+  button[mat-raised-button][color="primary"] {
+    background-color: #1b4ca1 !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+    min-width: 120px;
+
+    .mdc-button__label,
+    .mat-icon,
+    span {
+      color: #fff !important;
+    }
+  }
+
+  button[mat-button] {
+    color: #1b4ca1 !important;
+    font-weight: 600 !important;
+  }
+}
+
+/* All primary raised buttons — ensure white text on blue bg */
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-unelevated-button.mat-primary,
+button.mat-mdc-raised-button[color="primary"],
+.mdc-button--raised.mat-primary {
+  background-color: #1b4ca1 !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+
+  .mdc-button__label,
+  .mat-icon,
+  span {
+    color: #fff !important;
+  }
+}
+
+/* All primary stroked/outlined buttons */
+.mat-mdc-outlined-button.mat-primary,
+button.mat-mdc-outlined-button[color="primary"] {
+  color: #1b4ca1 !important;
+  border-color: #1b4ca1 !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+
+  .mdc-button__label,
+  .mat-icon,
+  span {
+    color: #1b4ca1 !important;
+  }
+}
+
+/* Form field label always visible (no float animation) */
+.mat-mdc-form-field .mdc-floating-label {
+  font-weight: 500 !important;
+  color: #333 !important;
+}
+
+.mat-mdc-form-field.mat-focused .mdc-floating-label {
+  color: #1b4ca1 !important;
+}
+
 .info-dialog {
   .mat-mdc-dialog-container .mdc-dialog__container {
     min-height: 203px;
@@ -614,8 +692,9 @@ h3.shepherd-title {
   border-radius: 9999px !important;
   font-weight: 700;
 
-  mat-icon {
-    color: #1b4ca1;
+  mat-icon,
+  span {
+    color: #fff !important;
   }
 }
 
@@ -828,8 +907,21 @@ h3.shepherd-title {
   font-weight: normal !important;
 }
 
-.mat-mdc-header-row {
-  background: #eee !important;
+/* Global header row — do not override table header set by component */
+
+/* Override Material disabled button styles for our custom btn-waiting class */
+button.mat-mdc-raised-button[disabled].btn-waiting,
+button.mat-mdc-raised-button:disabled.btn-waiting {
+  background-color: #c7cdd6 !important;
+  color: #888 !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+
+  .mdc-button__label,
+  .mat-icon,
+  span {
+    color: #888 !important;
+  }
 }
 
 /* Fix tab text color */
