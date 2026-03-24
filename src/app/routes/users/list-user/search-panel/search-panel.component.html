@@ -29,7 +29,21 @@
     <!-- Row 2: Search inputs -->
     <div class="input-row">
 
-      <!-- Text input (shown for all types except roles-only) -->
+      <!-- Role dropdown (shown only when Search By = Role) -->
+      <div class="input-field" *ngIf="showRoleDropdown">
+        <label class="field-label">
+          Role
+          <span class="required-star">*</span>
+        </label>
+        <mat-form-field appearance="outline" class="full-width-field">
+          <mat-select formControlName="searchQuery" placeholder="Select a role">
+            <mat-option *ngIf="rolesLoading" disabled>Loading roles...</mat-option>
+            <mat-option *ngFor="let role of availableRoles" [value]="role">{{ role }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Text input (shown for all types except roles) -->
       <div class="input-field" *ngIf="showTextInput">
         <label class="field-label">
           {{ currentMapping?.label || 'Search' }}

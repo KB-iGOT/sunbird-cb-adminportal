@@ -19,7 +19,6 @@ export class RoleAssignmentDialogComponent implements OnInit {
   isLoading = false
   isFetchingRoles = true
   mdoLeaderWarning = ''
-
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { user: IUserProfile },
     private dialogRef: MatDialogRef<RoleAssignmentDialogComponent>,
@@ -50,9 +49,15 @@ export class RoleAssignmentDialogComponent implements OnInit {
   }
 
   loadAvailableRoles(): void {
+
+    const EXCLUDED_ROLES = new Set([
+      'CBC_ADMIN', 'CBC_MEMBER', 'DASHBOARD_ADMIN', 'MDO_DASHBOARD_USER',
+      'MDO_REPORT_ACCESSOR', 'PROGRAM_INSTRUCTOR', 'STATE_ADMIN', 'SPV_ADMIN', 'SPV_PUBLISHER', 'WAT_MEMBER',
+    ])
     this.usersService.fetchIgotRoles().subscribe(
       (roles: string[]) => {
-        this.availableRoles = roles
+
+        this.availableRoles = roles.filter(r => !EXCLUDED_ROLES.has(r))
         this.isFetchingRoles = false
         this.cdr.detectChanges()
       },
@@ -63,6 +68,8 @@ export class RoleAssignmentDialogComponent implements OnInit {
       },
     )
   }
+
+
 
   toggleRole(role: string): void {
     const idx = this.selectedRoles.indexOf(role)

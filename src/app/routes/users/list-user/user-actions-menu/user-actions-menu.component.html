@@ -8,11 +8,6 @@
     <span>Edit User Details</span>
   </button>
 
-  <button mat-menu-item *ngIf="isNotDeleted && canWrite" (click)="onAction('editPrimary')">
-    <mat-icon>assignment_ind</mat-icon>
-    <span>Edit Primary Details</span>
-  </button>
-
   <button mat-menu-item *ngIf="isNotDeleted && canWrite" (click)="onAction('manageRoles')">
     <mat-icon>manage_accounts</mat-icon>
     <span>Manage User Roles</span>
