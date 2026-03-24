@@ -65,6 +65,8 @@ export class ListUserComponent implements OnInit {
         }
         this.fetchUsers()
       })
+    } else {
+      this.fetchUsers()
     }
   }
 
