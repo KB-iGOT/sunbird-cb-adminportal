@@ -176,13 +176,13 @@ export class CreateUserComponent implements OnInit {
     // const userOrgName = _.get(this.route, 'snapshot.parent.data.configService.unMappedUser.rootOrg')
     const roles: any[] = _.get(this.route, 'snapshot.parent.data.configService.unMappedUser.roles')
     this.directoryService.getDepartmentTitles().subscribe(res => {
-      const departmentHeaderArray = JSON.parse(res.result.response.value)
-      if (this.rawCurrentDept === 'organisation' && this.createdDepartment && this.createdDepartment.depType === 'organisation') {
+      const departmentHeaderArray = JSON.parse(res?.result?.response?.value)
+      if (this.rawCurrentDept === 'organisation' && this.createdDepartment?.depType === 'organisation') {
         const allRoles: string[] = []
-        departmentHeaderArray.orgTypeList.forEach((ele: { name: any, isHidden: any, roles: string[] }) => {
-          if (ele.roles) {
+        departmentHeaderArray?.orgTypeList?.forEach((ele: { name: any, isHidden: any, roles: string[] }) => {
+          if (ele?.roles) {
             ele.roles.forEach((role: string) => {
-              if (!allRoles.includes(role)) {
+              if (role && !allRoles.includes(role)) {
                 allRoles.push(role)
               }
             })
@@ -190,11 +190,11 @@ export class CreateUserComponent implements OnInit {
         })
         this.roles = allRoles
       } else {
-        departmentHeaderArray.orgTypeList.forEach((ele: { name: any, isHidden: any, roles: [] }) => {
-          if (environment && environment.cbpProviderRoles && environment.cbpProviderRoles.includes(this.currentDept.toLowerCase())) {
+        departmentHeaderArray?.orgTypeList?.forEach((ele: { name: any, isHidden: any, roles: [] }) => {
+          if (environment?.cbpProviderRoles && environment.cbpProviderRoles.includes(this.currentDept.toLowerCase())) {
             this.currentDept = 'CBP'
           }
-          if (ele.name === this.currentDept.toUpperCase()) {
+          if (ele?.name && this.currentDept && ele.name === this.currentDept.toUpperCase()) {
             if (roles && roles.indexOf('STATE_ADMIN') >= 0) {
               this.roles = this.stateAdminRoles
             } else {
