@@ -117,7 +117,7 @@
       </tr>
     </table>
 
-    <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageIndex]="pageIndex"
+    <mat-paginator *ngIf="totalCount > pageSize" [length]="totalCount" [pageSize]="pageSize" [pageIndex]="pageIndex"
       [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)" showFirstLastButtons>
     </mat-paginator>
   </ng-container>

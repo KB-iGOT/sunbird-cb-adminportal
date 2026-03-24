@@ -119,6 +119,7 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
   currentUserRole = ''
   checked = false
   isSPVAdmin = false
+  isStateAdmin = false
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
     private dialog: MatDialog,
     private route: ActivatedRoute,
@@ -152,6 +153,7 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
     // this.department = fullProfile.unMappedUser.rootOrgId
     if (fullProfile) {
       this.isSPVAdmin = fullProfile.has('spv_admin')
+      this.isStateAdmin = fullProfile.has('state_admin')
     }
 
     if (this.usersData && this.usersData.length > 0) {

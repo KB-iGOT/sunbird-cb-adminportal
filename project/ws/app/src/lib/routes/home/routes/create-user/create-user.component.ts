@@ -55,6 +55,7 @@ export class CreateUserComponent implements OnInit {
   disableRequired = false
   stateAdminRoles = ["STATE_ADMIN", "PUBLIC"]
   rawCurrentDept = ''
+  hiddenRolesForOrg = ['DASHBOARD_ADMIN', 'SPV_ADMIN', 'SPV_PUBLISHER', 'CBC_ADMIN', 'CBC_MEMBER', 'PROGRAM_INSTRUCTOR', 'STATE_ADMIN']
   // hideRole: any = []
 
   constructor(
@@ -179,10 +180,11 @@ export class CreateUserComponent implements OnInit {
       const departmentHeaderArray = JSON.parse(res?.result?.response?.value)
       if (this.rawCurrentDept === 'organisation' && this.createdDepartment?.depType === 'organisation') {
         const allRoles: string[] = []
+        const isStateAdmin = roles && roles.indexOf('STATE_ADMIN') >= 0
         departmentHeaderArray?.orgTypeList?.forEach((ele: { name: any, isHidden: any, roles: string[] }) => {
-          if (ele?.roles) {
+          if (!ele?.isHidden && ele?.roles) {
             ele.roles.forEach((role: string) => {
-              if (role && !allRoles.includes(role)) {
+              if (role && !allRoles.includes(role) && !(isStateAdmin && this.hiddenRolesForOrg.includes(role))) {
                 allRoles.push(role)
               }
             })

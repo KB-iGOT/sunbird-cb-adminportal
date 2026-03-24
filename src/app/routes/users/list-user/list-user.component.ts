@@ -35,6 +35,7 @@ export class ListUserComponent implements OnInit {
   searchQuery = ''
   userStatus: UserStatus = 'active'
   selectedOrg: IOrganization | null = null
+  hasSearched = false
 
   constructor(
     private dialog: MatDialog,
@@ -63,10 +64,9 @@ export class ListUserComponent implements OnInit {
         if (this.searchPanel) {
           this.searchPanel.setSearchParams(this.searchType, this.searchQuery)
         }
+        this.hasSearched = true
         this.fetchUsers()
       })
-    } else {
-      this.fetchUsers()
     }
   }
 
@@ -76,6 +76,7 @@ export class ListUserComponent implements OnInit {
     this.userStatus = params.userStatus
     this.selectedOrg = params.selectedOrg
     this.page = 0
+    this.hasSearched = true
     this.fetchUsers()
   }
 
@@ -87,6 +88,7 @@ export class ListUserComponent implements OnInit {
     this.searchQuery = ''
     this.userStatus = 'active'
     this.selectedOrg = null
+    this.hasSearched = false
   }
 
   onPageChange(event: PageEvent): void {

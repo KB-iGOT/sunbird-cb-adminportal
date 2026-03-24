@@ -19,7 +19,9 @@
     <span>{{ usersCount }} user(s) found</span>
   </div>
 
-  <ws-users-table [users]="users" [totalCount]="usersCount" [pageSize]="rowsPerPage" [pageIndex]="page"
-    [loading]="loading" (pageChange)="onPageChange($event)" (actionSelected)="onUserAction($event)">
-  </ws-users-table>
+  <ng-container *ngIf="hasSearched">
+    <ws-users-table [users]="users" [totalCount]="usersCount" [pageSize]="rowsPerPage" [pageIndex]="page"
+      [loading]="loading" (pageChange)="onPageChange($event)" (actionSelected)="onUserAction($event)">
+    </ws-users-table>
+  </ng-container>
 </div>
