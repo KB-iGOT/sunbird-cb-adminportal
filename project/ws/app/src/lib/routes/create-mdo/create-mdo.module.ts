@@ -37,9 +37,10 @@ import { GradeSettingComponent } from './routes/grade-setting/grade-setting.comp
 import { DesignationModule } from './routes/designation/designation.module'
 import { MatSnackBarModule } from '@angular/material/snack-bar'
 import { MatCheckboxModule } from '@angular/material/checkbox'
+import { UserBulkTransferComponent } from '../home/routes/user-bulk-transfer/user-bulk-transfer.component'
 
 @NgModule({
-  declarations: [HomeComponent, UsersComponent, RolesAccessComponent, MentorManageComponent, SearchComponent, UserCardComponent, GradeSettingComponent],
+  declarations: [HomeComponent, UsersComponent, RolesAccessComponent, MentorManageComponent, SearchComponent, UserCardComponent, GradeSettingComponent, UserBulkTransferComponent],
   imports: [CommonModule, CreateMDORoutingModule, BtnPageBackModuleAdmin, LeftMenuModule, SbUiResolverModule,
     MatSidenavModule, MatIconModule, MatProgressSpinnerModule, GroupCheckboxModule, HomeModule, RouterModule, UIAdminTableModule, MatCardModule,
     ScrollspyLeftMenuModule, FormsModule, MatSelectModule, MatChipsModule, MatDatepickerModule, MatAutocompleteModule,
