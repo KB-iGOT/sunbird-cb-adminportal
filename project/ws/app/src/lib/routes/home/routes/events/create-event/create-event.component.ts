@@ -78,7 +78,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   // eventTypes = [
   //   { title: 'Webinar', desc: 'General discussion involving', border: 'rgb(0, 116, 182)', disabled: false },
   // ]
-  evntTypesList = ['Webinar', 'Karmayogi Talks', 'Karmayogi Saptah', 'Rajya Karmayogi Saptah']
+  evntTypesList = ['Webinar', 'Karmayogi Talks', 'Karmayogi Saptah', 'Rajya Karmayogi Saptah', 'Sadhana Saptah', 'Samuhik Charcha - NLW 2026']
   stateList = []
   timeArr = [
     { value: '00:00' }, { value: '00:15' }, { value: '00:30' }, { value: '00:45' },
