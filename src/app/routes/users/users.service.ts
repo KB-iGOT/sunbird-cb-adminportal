@@ -17,7 +17,8 @@ const API_END_POINTS = {
   MIGRATE_USER: `${API_BASE}/user/private/v1/migrate`,
   RESET_PASSWORD: `${API_PROTECTED}/user/password/reset`,
   FETCH_GROUPS: `/api/user/v1/groups`,
-  FETCH_CADRE_DATA: `${API_PROTECTED}/user/v1/cadre-config`,
+  FETCH_CADRE_DATA: `${API_BASE}/data/v2/system/settings/get/cadreConfig`,
+  FETCH_DESIGNATIONS: `${API_PROTECTED}/proxies/v8/sunbirdigot/v4/search`,
   FETCH_MASTER_LANGUAGES: `${API_PROTECTED}/user/v1/master-languages`,
   FETCH_IGOT_ROLES: `${API_BASE}/data/v1/system/settings/get/orgTypeList`,
   SEARCH_ORG: `${API_BASE}/org/v1/search`,
@@ -74,6 +75,30 @@ export class UsersService {
 
   fetchCadreData(): Observable<any> {
     return this.http.get<any>(API_END_POINTS.FETCH_CADRE_DATA)
+  }
+
+  fetchDesignations(): Observable<any> {
+    return this.http.get<any>(API_END_POINTS.FETCH_DESIGNATIONS)
+  }
+
+  /** Search iGOT master designations */
+  searchMasterDesignations(query: string, pageSize = 50, pageNumber = 0): Observable<{ items: { name: string; identifier: string }[]; totalCount: number }> {
+    const body: any = {
+      filterCriteriaMap: { status: 'Active' },
+      requestedFields: [],
+      pageNumber,
+      pageSize,
+    }
+    if (query) { body['searchString'] = query }
+    return this.http.post<any>(`${API_BASE}/designation/search`, body).pipe(
+      map((res: any) => {
+        const data: any[] = res?.result?.result?.data || []
+        return {
+          items: data.map((d: any) => ({ name: d.designation || d.name || '', identifier: String(d.id || d.identifier || '') })),
+          totalCount: res?.result?.result?.totalCount || 0,
+        }
+      }),
+    )
   }
 
   fetchMasterLanguages(): Observable<any> {

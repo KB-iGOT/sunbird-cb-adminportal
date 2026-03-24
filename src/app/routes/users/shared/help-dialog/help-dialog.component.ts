@@ -10,15 +10,12 @@ import { MatDialogRef } from '@angular/material/dialog'
 export class HelpDialogComponent {
 
   helpItems = [
-    { action: 'Search Users', description: 'Search users by name, email, phone, masked email, masked phone, user ID, or roles. Filter by active/inactive status.' },
-    { action: 'Create User', description: 'Create a new user account with name, email, phone, roles, and organization assignment.' },
-    { action: 'Edit User Details', description: 'Modify user profile fields such as name, email, phone, external system ID, and external system.' },
-    { action: 'Edit Primary Details', description: 'Update the user\'s group and designation. May be restricted by pending workflow requests.' },
-    { action: 'Manage User Roles', description: 'Assign or modify roles for a user within their organization.' },
+    { action: 'Search Users', description: 'Search users by name, email, phone, or role. When searching by Role, select a role from the dropdown. Optionally filter by organisation and active/inactive status.' },
+    { action: 'Create User', description: 'Create a new user account with name, email, phone, roles, and organisation assignment.' },
+    { action: 'Edit User Details', description: 'Modify personal details (name, email, phone, external system), professional details (group, designation), and cadre/civil service information in a single dialog.' },
+    { action: 'Manage User Roles', description: 'Assign or modify roles for a user within their organisation.' },
     { action: 'Reset Password', description: 'Generate a password reset link for the user. The link is valid for 72 hours.' },
-    { action: 'Migrate User', description: 'Transfer a user to a different organization with options for force migration and soft delete.' },
-    { action: 'Reassign User', description: 'Reassign users with profile status "NOT-MY-USER" to the correct organization.' },
-    { action: 'View Full Details', description: 'Navigate to the full user detail page with all profile information and management options.' },
+    { action: 'Migrate User', description: 'Transfer a user to a different organisation with options for force migration and soft delete.' },
   ]
 
   constructor(private dialogRef: MatDialogRef<HelpDialogComponent>) { }

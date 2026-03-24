@@ -1,19 +1,161 @@
 <h2 mat-dialog-title>Edit User Details</h2>
 
-<mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+<mat-progress-bar *ngIf="isLoading || isSaving" mode="indeterminate"></mat-progress-bar>
 
-<mat-dialog-content>
+<mat-dialog-content class="dialog-content">
   <form [formGroup]="editForm" class="edit-form">
-    <mat-form-field *ngFor="let field of fields" class="full-width" appearance="outline" floatLabel="always">
-      <mat-label>{{ field.displayName }}</mat-label>
-      <input matInput [formControlName]="field.identifier">
+
+    <!-- ═══ Personal Details ═══ -->
+    <div class="section-header">
+      <mat-icon color="primary">person</mat-icon>
+      <span class="section-title">Personal Details</span>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field class="field-half" appearance="outline" floatLabel="always">
+        <mat-label>Full Name</mat-label>
+        <input matInput formControlName="firstname">
+      </mat-form-field>
+
+      <mat-form-field class="field-half" appearance="outline" floatLabel="always">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email">
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field class="field-half" appearance="outline" floatLabel="always">
+        <mat-label>Phone Number</mat-label>
+        <input matInput formControlName="phone">
+      </mat-form-field>
+
+      <mat-form-field class="field-half" appearance="outline" floatLabel="always">
+        <mat-label>External System ID</mat-label>
+        <input matInput formControlName="externalSystemId">
+      </mat-form-field>
+    </div>
+
+    <mat-form-field class="full-width" appearance="outline" floatLabel="always">
+      <mat-label>External System</mat-label>
+      <input matInput formControlName="externalSystem">
     </mat-form-field>
+
+    <mat-divider class="section-divider"></mat-divider>
+
+    <!-- ═══ Professional Details ═══ -->
+    <div class="section-header">
+      <mat-icon color="primary">work</mat-icon>
+      <span class="section-title">Professional Details</span>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field class="field-half" appearance="outline" floatLabel="always">
+        <mat-label>Group</mat-label>
+        <mat-select formControlName="group">
+          <mat-option *ngFor="let g of groups" [value]="g">{{ g }}</mat-option>
+        </mat-select>
+        <mat-error>Group is required</mat-error>
+      </mat-form-field>
+
+      <div class="field-half">
+        <ws-designation-selector [required]="true" [disabled]="isSaving" [rootOrgId]="user.rootOrgId || ''"
+          [selectedDesignation]="editForm.get('designation')?.value"
+          (designationSelected)="onDesignationSelected($event)">
+        </ws-designation-selector>
+      </div>
+    </div>
+
+    <!-- Department (Read-Only) -->
+    <div class="readonly-box" style="margin-top: 8px;">
+      <span class="readonly-label">Department</span>
+      <span class="readonly-value">{{ user.profileDetails?.employmentDetails?.departmentName || '-' }}</span>
+    </div>
+
+    <mat-divider class="section-divider"></mat-divider>
+
+    <!-- ═══ Cadre / Civil Service Details ═══ -->
+    <div class="section-header">
+      <mat-icon color="primary">account_balance</mat-icon>
+      <span class="section-title">Cadre / Civil Service Details</span>
+      <mat-spinner *ngIf="isLoading" diameter="16" class="inline-spinner"></mat-spinner>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field class="field-half" appearance="outline" floatLabel="always">
+        <mat-label>Are you from any organized service of the government?</mat-label>
+        <mat-select formControlName="isCadre">
+          <mat-option [value]="true">Yes</mat-option>
+          <mat-option [value]="false">No</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- All cadre sub-fields hidden when isCadre is false -->
+    <ng-container *ngIf="editForm.get('isCadre')?.value">
+
+      <!-- Type of Civil Services -->
+      <div class="form-row">
+        <mat-form-field class="field-half" appearance="outline" floatLabel="always">
+          <mat-label>Type of Civil Services</mat-label>
+          <mat-select formControlName="civilServiceType">
+            <mat-option *ngFor="let t of civilServiceTypes" [value]="t">{{ t }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Services & Cadre -->
+      <div class="form-row" *ngIf="editForm.get('civilServiceType')?.value">
+        <mat-form-field class="field-half" appearance="outline" floatLabel="always">
+          <mat-label>Services</mat-label>
+          <mat-select formControlName="civilServiceName">
+            <mat-option *ngFor="let s of serviceNamesList" [value]="s">{{ s }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="showCadreDropdown" class="field-half" appearance="outline" floatLabel="always">
+          <mat-label>Cadre</mat-label>
+          <mat-select formControlName="cadreName">
+            <mat-option *ngFor="let c of cadreList" [value]="c">{{ c }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Batch & Controlling Authority -->
+      <div class="form-row" *ngIf="showBatchDropdown">
+        <mat-form-field class="field-half" appearance="outline" floatLabel="always">
+          <mat-label>Batch</mat-label>
+          <mat-select formControlName="cadreBatch">
+            <mat-option *ngFor="let y of yearArray" [value]="y + ''">{{ y }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div *ngIf="showControllingAuthority" class="field-half readonly-box">
+          <span class="readonly-label">Cadre Controlling Authority</span>
+          <span class="readonly-value">{{ cadreControllingAuthority }}</span>
+        </div>
+      </div>
+
+      <!-- Central Deputation -->
+      <mat-form-field *ngIf="showCentralDeputation" class="full-width" appearance="outline" floatLabel="always">
+        <mat-label>Central Deputation</mat-label>
+        <mat-select formControlName="isOnCentralDeputation">
+          <mat-option [value]="true">Yes</mat-option>
+          <mat-option [value]="false">No</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </ng-container>
+
+    <p *ngIf="!editForm.get('isCadre')?.value" class="hint-text">
+      Select "Yes" above if the user belongs to an organized government service to configure cadre details.
+    </p>
+
   </form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()" [disabled]="isLoading">Cancel</button>
-  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="isLoading">
-    Save Changes
+  <button mat-button (click)="onCancel()" [disabled]="isSaving">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="isSaving || isLoading">
+    {{ isSaving ? 'Saving...' : 'Save Changes' }}
   </button>
 </mat-dialog-actions>

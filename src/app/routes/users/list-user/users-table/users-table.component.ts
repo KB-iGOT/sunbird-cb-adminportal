@@ -27,6 +27,7 @@ export class UsersTableComponent {
   displayedColumns = ['name', 'email', 'phone', 'organization', 'status', 'roles', 'actions']
   dataSource = new MatTableDataSource<IUserProfile>([])
   pageSizeOptions = [10, 25, 50]
+  skeletonRows = Array(8).fill(0)
 
   getUserName(user: IUserProfile): string {
     return user.profileDetails?.personalDetails?.firstname || user.firstName || 'N/A'

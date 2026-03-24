@@ -34,9 +34,14 @@ export class CreateUserDialogComponent implements OnInit {
     this.loadRoles()
   }
 
+  private readonly EXCLUDED_ROLES = new Set([
+    'CBC_ADMIN', 'CBC_MEMBER', 'DASHBOARD_ADMIN', 'MDO_DASHBOARD_USER',
+    'MDO_REPORT_ACCESSOR', 'PROGRAM_INSTRUCTOR', 'STATE_ADMIN', 'SPV_ADMIN', 'SPV_PUBLISHER', 'WAT_MEMBER',
+  ])
+
   loadRoles(): void {
     this.usersService.fetchIgotRoles().subscribe(
-      (roles: string[]) => { this.availableRoles = roles },
+      (roles: string[]) => { this.availableRoles = roles.filter(r => !this.EXCLUDED_ROLES.has(r)) },
       () => { this.snackBar.open('Failed to load roles', 'X', { duration: 5000 }) },
     )
   }
@@ -147,3 +152,4 @@ export class CreateUserDialogComponent implements OnInit {
     this.dialogRef.close()
   }
 }
+
