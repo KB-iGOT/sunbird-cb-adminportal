@@ -38,7 +38,7 @@
       </button>
     </div>
 
-    <div class="section-label org-label">Organization</div>
+    <div class="section-label org-label">Organization <span class="required-star">*</span></div>
     <ws-organization-selector [required]="true" [selectedOrg]="selectedOrg" (orgSelected)="onOrgSelected($event)"
       (orgCleared)="onOrgCleared()">
     </ws-organization-selector>
