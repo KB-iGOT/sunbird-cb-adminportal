@@ -53,7 +53,8 @@ export class CreateUserComponent implements OnInit {
   orgName!: string
   isThisExistingLeader = false
   disableRequired = false
-  stateAdminRoles = ["MDO_LEADER", "PUBLIC"]
+  stateAdminRoles = ["STATE_ADMIN", "PUBLIC"]
+  rawCurrentDept = ''
   // hideRole: any = []
 
   constructor(
@@ -78,6 +79,7 @@ export class CreateUserComponent implements OnInit {
       this.queryParam = params['id']
       this.deptId = params['id']
       this.orgName = params['orgName']
+      this.rawCurrentDept = params['currentDept'] || ''
       // this.currentDept = params['currentDept']
       this.currentDept = params['subOrgType']
       this.redirectionPath = params['redirectionPath']
@@ -175,18 +177,32 @@ export class CreateUserComponent implements OnInit {
     const roles: any[] = _.get(this.route, 'snapshot.parent.data.configService.unMappedUser.roles')
     this.directoryService.getDepartmentTitles().subscribe(res => {
       const departmentHeaderArray = JSON.parse(res.result.response.value)
-      departmentHeaderArray.orgTypeList.forEach((ele: { name: any, isHidden: any, roles: [] }) => {
-        if (environment && environment.cbpProviderRoles && environment.cbpProviderRoles.includes(this.currentDept.toLowerCase())) {
-          this.currentDept = 'CBP'
-        }
-        if (ele.name === this.currentDept.toUpperCase()) {
-          if (roles && roles.indexOf('STATE_ADMIN') >= 0) {
-            this.roles = this.stateAdminRoles
-          } else {
-            this.roles = ele.roles
+      if (this.rawCurrentDept === 'organisation' && this.createdDepartment && this.createdDepartment.depType === 'organisation') {
+        const allRoles: string[] = []
+        departmentHeaderArray.orgTypeList.forEach((ele: { name: any, isHidden: any, roles: string[] }) => {
+          if (ele.roles) {
+            ele.roles.forEach((role: string) => {
+              if (!allRoles.includes(role)) {
+                allRoles.push(role)
+              }
+            })
           }
-        }
-      })
+        })
+        this.roles = allRoles
+      } else {
+        departmentHeaderArray.orgTypeList.forEach((ele: { name: any, isHidden: any, roles: [] }) => {
+          if (environment && environment.cbpProviderRoles && environment.cbpProviderRoles.includes(this.currentDept.toLowerCase())) {
+            this.currentDept = 'CBP'
+          }
+          if (ele.name === this.currentDept.toUpperCase()) {
+            if (roles && roles.indexOf('STATE_ADMIN') >= 0) {
+              this.roles = this.stateAdminRoles
+            } else {
+              this.roles = ele.roles
+            }
+          }
+        })
+      }
 
     })
   }

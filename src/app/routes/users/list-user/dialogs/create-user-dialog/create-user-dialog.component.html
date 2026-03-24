@@ -47,7 +47,7 @@
 
 <mat-dialog-actions align="end">
   <button mat-button (click)="onCancel()" [disabled]="isLoading">Cancel</button>
-  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!isFormValid || isLoading">
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="(!isFormValid && !isLoading) || isLoading">
     <span *ngIf="!isLoading">Create User</span>
     <span *ngIf="isLoading">Creating...</span>
   </button>
