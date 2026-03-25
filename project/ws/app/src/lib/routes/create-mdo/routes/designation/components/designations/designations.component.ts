@@ -42,6 +42,7 @@ export class DesignationsComponent implements OnInit {
   orgName = ''
   showTopSection = false
   designationMaster = 'desigantion master'
+  isStateAdmin = false
   constructor(
     private designationsService: DesignationsService,
     private dialog: MatDialog,
@@ -69,6 +70,8 @@ export class DesignationsComponent implements OnInit {
       this.orgId = this.activateRoute.snapshot.params.department
       this.designationConfig = this.activateRoute.snapshot.data['pageData'].data
       this.orgName = _.get(this.activateRoute, 'snapshot.queryParams.orgName')
+      const userRoles: string[] = _.get(this.activateRoute, 'snapshot.parent.data.configService.unMappedUser.roles') || []
+      this.isStateAdmin = userRoles.indexOf('STATE_ADMIN') >= 0
     }
 
     this.actionMenuItem = [
