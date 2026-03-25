@@ -592,8 +592,12 @@ h3.shepherd-title {
   padding: 12px 0 16px !important;
   border-top: 1px solid #e8edf5;
 
-  .mat-mdc-raised-button.mat-primary,
-  button[mat-raised-button][color="primary"] {
+  .mdc-button:disabled {
+    background-color: #c7cdd6 !important;
+  }
+
+  .mat-mdc-raised-button.mat-primary:not(:disabled) ,
+  button[mat-raised-button][color="primary"]:not(:disabled) {
     background-color: #1b4ca1 !important;
     color: #fff !important;
     font-weight: 600 !important;
@@ -1021,4 +1025,6 @@ input.mat-input-element {
   background-color: transparent !important;
 }
 
-
+.mat-mdc-checkbox-checked .mdc-checkbox__background .mdc-checkbox__checkmark {
+  color: #fff !important; 
+} 

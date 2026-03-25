@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core'
-import { FormControl } from '@angular/forms'
+import { FormControl, Validators } from '@angular/forms'
 import { Subject, of } from 'rxjs'
 import { catchError, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators'
 import { UsersService } from '../../users.service'
@@ -40,6 +40,10 @@ export class DesignationSelectorComponent implements OnInit, OnChanges, OnDestro
   }
 
   ngOnInit(): void {
+    if (this.required) {
+      this.searchControl.setValidators(Validators.required)
+      this.searchControl.updateValueAndValidity()
+    }
     if (this.selectedDesignation) {
       this.searchControl.setValue(this.selectedDesignation, { emitEvent: false })
     }
@@ -100,6 +104,10 @@ export class DesignationSelectorComponent implements OnInit, OnChanges, OnDestro
     this.searchControl.setValue('', { emitEvent: true })
     this.selectedDesignation = ''
     this.designationSelected.emit('')
+  }
+
+  markAsTouched(): void {
+    this.searchControl.markAsTouched()
   }
 
   get placeholder(): string {

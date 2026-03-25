@@ -80,17 +80,18 @@ export class CreateUserDialogComponent implements OnInit {
 
     const formVal = this.userForm.value
     const createPayload = {
-      request: {
+      personalDetails: {
         firstName: formVal.firstName.trim(),
         email: formVal.email.trim().toLowerCase(),
         phone: formVal.phone.trim(),
         channel: this.selectedOrg.channel,
+        roles: this.selectedRoles,
       },
     }
 
     this.usersService.createUser(createPayload).subscribe(
       (createRes: any) => {
-        const userId = createRes?.result?.userId || createRes?.result?.response?.userId
+        const userId = createRes?.userId || createRes?.result?.userId || createRes?.result?.response?.userId
         if (!userId) {
           this.onError('Failed to create user — no user ID returned')
           return
