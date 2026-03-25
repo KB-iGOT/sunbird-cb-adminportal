@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core'
+import { Component, Inject, OnInit, ViewChild } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
@@ -6,6 +6,7 @@ import { forkJoin, of } from 'rxjs'
 import { catchError } from 'rxjs/operators'
 import { UsersService } from '../../../users.service'
 import { EDITABLE_FIELDS, IUserProfile } from '../../../models/users.models'
+import { DesignationSelectorComponent } from '../../../shared/designation-selector/designation-selector.component'
 
 
 // Cadre config interfaces
@@ -22,6 +23,7 @@ const CADRE_SERVICES = ['Indian Administrative Service (IAS)', 'Indian Police Se
   styleUrls: ['./edit-user-details-dialog.component.scss'],
 })
 export class EditUserDetailsDialogComponent implements OnInit {
+  @ViewChild(DesignationSelectorComponent) designationSelectorRef!: DesignationSelectorComponent
   editForm!: FormGroup
   isLoading = false
   isSaving = false
@@ -253,6 +255,7 @@ export class EditUserDetailsDialogComponent implements OnInit {
   onSubmit(): void {
     if (this.editForm.get('group')?.invalid || this.editForm.get('designation')?.invalid) {
       this.editForm.markAllAsTouched()
+      this.designationSelectorRef?.markAsTouched()
       return
     }
 
