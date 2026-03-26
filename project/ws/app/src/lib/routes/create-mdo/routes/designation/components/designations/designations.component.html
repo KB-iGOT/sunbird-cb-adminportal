@@ -4,7 +4,7 @@
       <div class="flex justify-between items-center">
         <div class="mobile-margin text-capitalize mat-h2">{{designationConfig.mainHeading}}</div>
         <div class="flex gap-3">
-          <button mat-raised-button class="mat-btn-flat" (click)="designationMaster = 'bulk upload'" type="button">
+          <button mat-raised-button class="mat-btn-flat" (click)="designationMaster = 'bulk upload'" type="button" *ngIf="!isStateAdmin">
             {{designationConfig?.bulkUploadConfig?.mainHeading}}
           </button> 
 
@@ -102,6 +102,8 @@
   </ng-container>
 
   <ng-container *ngSwitchCase="'bulk upload'">
-    <ws-app-bulk-upload (closeComponent)="showDesignationMaster($event)"></ws-app-bulk-upload>
+    <ng-container *ngIf="!isStateAdmin">
+      <ws-app-bulk-upload (closeComponent)="showDesignationMaster($event)"></ws-app-bulk-upload>
+    </ng-container>
   </ng-container>
 </ng-container>

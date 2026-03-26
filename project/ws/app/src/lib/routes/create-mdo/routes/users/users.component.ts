@@ -82,12 +82,12 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
         render: true,
         enabled: true,
       },
-      {
-        name: 'Mentor Management',
-        key: 'mentormanage',
-        render: true,
-        enabled: true,
-      },
+      // {
+      //   name: 'Mentor Management',
+      //   key: 'mentormanage',
+      //   render: true,
+      //   enabled: true,
+      // },
       {
         name: 'Designation Master',
         key: 'designation_master',

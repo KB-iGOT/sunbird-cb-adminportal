@@ -592,8 +592,12 @@ h3.shepherd-title {
   padding: 12px 0 16px !important;
   border-top: 1px solid #e8edf5;
 
-  .mat-mdc-raised-button.mat-primary,
-  button[mat-raised-button][color="primary"] {
+  .mdc-button:disabled {
+    background-color: #c7cdd6 !important;
+  }
+
+  .mat-mdc-raised-button.mat-primary:not(:disabled) ,
+  button[mat-raised-button][color="primary"]:not(:disabled) {
     background-color: #1b4ca1 !important;
     color: #fff !important;
     font-weight: 600 !important;
@@ -869,6 +873,10 @@ button.mat-mdc-outlined-button[color="primary"] {
   font-family: Lato !important;
 }
 
+.mat-mdc-button .mdc-button__label, .mat-mdc-button .mat-icon, .mat-mdc-unelevated-button .mdc-button__label, .mat-mdc-unelevated-button .mat-icon, .mat-mdc-raised-button .mdc-button__label, .mat-mdc-raised-button .mat-icon, .mat-mdc-outlined-button .mdc-button__label, .mat-mdc-outlined-button .mat-icon, .mat-tonal-button .mdc-button__label, .mat-tonal-button .mat-icon {
+  z-index: 0 !important;
+}
+
 .mat-mdc-card {
     transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
     display: block;
@@ -1021,4 +1029,6 @@ input.mat-input-element {
   background-color: transparent !important;
 }
 
-
+.mat-mdc-checkbox-checked .mdc-checkbox__background .mdc-checkbox__checkmark {
+  color: #fff !important; 
+} 

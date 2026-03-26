@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { IUserProfile } from '../../models/users.models'
 
-export type UserAction = 'editDetails' | 'editPrimary' | 'manageRoles' | 'resetPassword' | 'migrate' | 'reassign'
+export type UserAction = 'editDetails' | 'manageRoles' | 'resetPassword' | 'migrate' | 'reassign'
 
 @Component({
   standalone: false,

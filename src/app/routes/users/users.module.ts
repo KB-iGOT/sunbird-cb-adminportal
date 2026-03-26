@@ -42,7 +42,6 @@ import { UserActionsMenuComponent } from './list-user/user-actions-menu/user-act
 // Dialogs
 import { CreateUserDialogComponent } from './list-user/dialogs/create-user-dialog/create-user-dialog.component'
 import { EditUserDetailsDialogComponent } from './list-user/dialogs/edit-user-details-dialog/edit-user-details-dialog.component'
-import { EditPrimaryDetailsDialogComponent } from './list-user/dialogs/edit-primary-details-dialog/edit-primary-details-dialog.component'
 import { RoleAssignmentDialogComponent } from './list-user/dialogs/role-assignment-dialog/role-assignment-dialog.component'
 import { PasswordResetDialogComponent } from './list-user/dialogs/password-reset-dialog/password-reset-dialog.component'
 import { UserMigrationDialogComponent } from './list-user/dialogs/user-migration-dialog/user-migration-dialog.component'
@@ -66,7 +65,6 @@ import { UserStatusUpdateDialogComponent } from './list-user/dialogs/user-status
     // Dialogs
     CreateUserDialogComponent,
     EditUserDetailsDialogComponent,
-    EditPrimaryDetailsDialogComponent,
     RoleAssignmentDialogComponent,
     PasswordResetDialogComponent,
     UserMigrationDialogComponent,

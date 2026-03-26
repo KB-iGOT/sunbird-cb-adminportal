@@ -9,7 +9,6 @@ import { UsersService } from '../users.service'
 import { IUserProfile, IOrganization, SEARCH_FIELD_MAPPINGS, SearchType, UserStatus } from '../models/users.models'
 import { CreateUserDialogComponent } from './dialogs/create-user-dialog/create-user-dialog.component'
 import { EditUserDetailsDialogComponent } from './dialogs/edit-user-details-dialog/edit-user-details-dialog.component'
-import { EditPrimaryDetailsDialogComponent } from './dialogs/edit-primary-details-dialog/edit-primary-details-dialog.component'
 import { RoleAssignmentDialogComponent } from './dialogs/role-assignment-dialog/role-assignment-dialog.component'
 import { PasswordResetDialogComponent } from './dialogs/password-reset-dialog/password-reset-dialog.component'
 import { UserMigrationDialogComponent } from './dialogs/user-migration-dialog/user-migration-dialog.component'
@@ -36,6 +35,7 @@ export class ListUserComponent implements OnInit {
   searchQuery = ''
   userStatus: UserStatus = 'active'
   selectedOrg: IOrganization | null = null
+  hasSearched = false
 
   constructor(
     private dialog: MatDialog,
@@ -64,6 +64,7 @@ export class ListUserComponent implements OnInit {
         if (this.searchPanel) {
           this.searchPanel.setSearchParams(this.searchType, this.searchQuery)
         }
+        this.hasSearched = true
         this.fetchUsers()
       })
     }
@@ -75,6 +76,7 @@ export class ListUserComponent implements OnInit {
     this.userStatus = params.userStatus
     this.selectedOrg = params.selectedOrg
     this.page = 0
+    this.hasSearched = true
     this.fetchUsers()
   }
 
@@ -86,6 +88,7 @@ export class ListUserComponent implements OnInit {
     this.searchQuery = ''
     this.userStatus = 'active'
     this.selectedOrg = null
+    this.hasSearched = false
   }
 
   onPageChange(event: PageEvent): void {
@@ -106,7 +109,7 @@ export class ListUserComponent implements OnInit {
     } else {
       const currentOrgId = this.currentRootOrgId
       if (currentOrgId) {
-        filters['rootOrgId'] = currentOrgId
+        filters['profileDetails.ministryOrStateId'] = currentOrgId
       }
     }
 
@@ -161,9 +164,6 @@ export class ListUserComponent implements OnInit {
       case 'editDetails':
         this.openEditDetailsDialog(event.user)
         break
-      case 'editPrimary':
-        this.openEditPrimaryDialog(event.user)
-        break
       case 'manageRoles':
         this.openRoleAssignmentDialog(event.user)
         break
@@ -187,7 +187,7 @@ export class ListUserComponent implements OnInit {
       autoFocus: false,
     })
     dialogRef.afterClosed().subscribe(result => {
-      if (result?.success) { this.fetchUsers() }
+      if (result?.success) { this.refreshAfterDelay() }
     })
   }
 
@@ -201,25 +201,13 @@ export class ListUserComponent implements OnInit {
 
   private openEditDetailsDialog(user: IUserProfile): void {
     const dialogRef = this.dialog.open(EditUserDetailsDialogComponent, {
-      width: '520px',
+      width: '680px',
       maxHeight: '90vh',
       data: { user },
       autoFocus: false,
     })
     dialogRef.afterClosed().subscribe(result => {
-      if (result?.success) { this.fetchUsers() }
-    })
-  }
-
-  private openEditPrimaryDialog(user: IUserProfile): void {
-    const dialogRef = this.dialog.open(EditPrimaryDetailsDialogComponent, {
-      width: '520px',
-      maxHeight: '90vh',
-      data: { user, pendingRequests: {} },
-      autoFocus: false,
-    })
-    dialogRef.afterClosed().subscribe(result => {
-      if (result?.success) { this.fetchUsers() }
+      if (result?.success) { this.refreshAfterDelay() }
     })
   }
 
@@ -231,7 +219,7 @@ export class ListUserComponent implements OnInit {
       autoFocus: false,
     })
     dialogRef.afterClosed().subscribe(result => {
-      if (result?.success) { this.fetchUsers() }
+      if (result?.success) { this.refreshAfterDelay() }
     })
   }
 
@@ -252,7 +240,7 @@ export class ListUserComponent implements OnInit {
       autoFocus: false,
     })
     dialogRef.afterClosed().subscribe(result => {
-      if (result?.success) { this.fetchUsers() }
+      if (result?.success) { this.refreshAfterDelay() }
     })
   }
 
@@ -264,7 +252,13 @@ export class ListUserComponent implements OnInit {
       autoFocus: false,
     })
     dialogRef.afterClosed().subscribe(result => {
-      if (result?.success) { this.fetchUsers() }
+      if (result?.success) { this.refreshAfterDelay() }
     })
+  }
+
+  /** Show loader immediately, wait 2 s for backend to index, then re-fetch */
+  private refreshAfterDelay(delayMs = 2000): void {
+    this.loading = true
+    setTimeout(() => this.fetchUsers(), delayMs)
   }
 }

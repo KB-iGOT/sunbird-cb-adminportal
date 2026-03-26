@@ -36,8 +36,21 @@ export interface IProfileDetails {
   professionalDetails?: IProfessionalDetails[]
   employmentDetails?: IEmploymentDetails
   additionalProperties?: IAdditionalProperties
+  cadreDetails?: ICadreDetails
   verifiedKarmayogi?: boolean
   ministryOrStateOrgName?: string
+}
+
+export interface ICadreDetails {
+  civilServiceTypeId?: string
+  civilServiceType?: string
+  civilServiceId?: string
+  civilServiceName?: string
+  cadreId?: string
+  cadreName?: string
+  cadreBatch?: number
+  cadreControllingAuthorityName?: string
+  isOnCentralDeputation?: boolean
 }
 
 export interface IEmploymentDetails {
@@ -56,6 +69,16 @@ export interface IPersonalDetails {
   category?: string
   nationality?: string
   domicileMedium?: string
+  pincode?: string
+  employeeCode?: string
+  // Cadre / Civil Service
+  isCadre?: boolean
+  typeOfCivilService?: string
+  serviceType?: string
+  cadre?: string
+  batch?: number
+  cadreControllingAuthority?: string
+  isOnCentralDeputation?: boolean
 }
 
 export interface IProfessionalDetails {

@@ -34,9 +34,14 @@ export class CreateUserDialogComponent implements OnInit {
     this.loadRoles()
   }
 
+  private readonly EXCLUDED_ROLES = new Set([
+    'CBC_ADMIN', 'CBC_MEMBER', 'DASHBOARD_ADMIN', 'MDO_DASHBOARD_USER',
+    'MDO_REPORT_ACCESSOR', 'PROGRAM_INSTRUCTOR', 'STATE_ADMIN', 'SPV_ADMIN', 'SPV_PUBLISHER', 'WAT_MEMBER',
+  ])
+
   loadRoles(): void {
     this.usersService.fetchIgotRoles().subscribe(
-      (roles: string[]) => { this.availableRoles = roles },
+      (roles: string[]) => { this.availableRoles = roles.filter(r => !this.EXCLUDED_ROLES.has(r)) },
       () => { this.snackBar.open('Failed to load roles', 'X', { duration: 5000 }) },
     )
   }
@@ -75,17 +80,18 @@ export class CreateUserDialogComponent implements OnInit {
 
     const formVal = this.userForm.value
     const createPayload = {
-      request: {
+      personalDetails: {
         firstName: formVal.firstName.trim(),
         email: formVal.email.trim().toLowerCase(),
         phone: formVal.phone.trim(),
         channel: this.selectedOrg.channel,
+        roles: this.selectedRoles,
       },
     }
 
     this.usersService.createUser(createPayload).subscribe(
       (createRes: any) => {
-        const userId = createRes?.result?.userId || createRes?.result?.response?.userId
+        const userId = createRes?.userId || createRes?.result?.userId || createRes?.result?.response?.userId
         if (!userId) {
           this.onError('Failed to create user — no user ID returned')
           return

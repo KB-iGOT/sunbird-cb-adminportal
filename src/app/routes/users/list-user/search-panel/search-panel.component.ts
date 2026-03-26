@@ -7,6 +7,7 @@ import {
   USER_STATUS_OPTIONS,
   UserStatus,
 } from '../../models/users.models'
+import { UsersService } from '../../users.service'
 
 export interface ISearchParams {
   searchType: SearchType
@@ -36,8 +37,14 @@ export class SearchPanelComponent implements OnInit {
 
   // Role options for role-based search
   availableRoles: string[] = []
+  rolesLoading = false
 
-  constructor(private fb: FormBuilder) { }
+  private readonly EXCLUDED_ROLES = new Set([
+    'CBC_ADMIN', 'CBC_MEMBER', 'DASHBOARD_ADMIN', 'MDO_DASHBOARD_USER',
+    'MDO_REPORT_ACCESSOR', 'PROGRAM_INSTRUCTOR', 'SPV_ADMIN', 'SPV_PUBLISHER', 'WAT_MEMBER',
+  ])
+
+  constructor(private fb: FormBuilder, private usersService: UsersService) { }
 
   ngOnInit(): void {
     this.searchForm = this.fb.group({
@@ -45,6 +52,18 @@ export class SearchPanelComponent implements OnInit {
       searchQuery: [this.initialSearchQuery],
       userStatus: [this.initialUserStatus],
     })
+    this.loadAvailableRoles()
+  }
+
+  private loadAvailableRoles(): void {
+    this.rolesLoading = true
+    this.usersService.fetchIgotRoles().subscribe(
+      (roles: string[]) => {
+        this.availableRoles = roles.filter(r => !this.EXCLUDED_ROLES.has(r))
+        this.rolesLoading = false
+      },
+      () => { this.rolesLoading = false },
+    )
   }
 
   get currentSearchType(): SearchType {
@@ -63,6 +82,10 @@ export class SearchPanelComponent implements OnInit {
     return this.currentSearchType !== 'roles'
   }
 
+  get showRoleDropdown(): boolean {
+    return this.currentSearchType === 'roles'
+  }
+
   get canSearch(): boolean {
     if (this.validationError) { return false }
     const query = (this.searchForm.get('searchQuery')?.value || '').trim()
@@ -74,7 +97,7 @@ export class SearchPanelComponent implements OnInit {
 
   getSearchHint(): string {
     if (this.currentSearchType === 'name') { return 'Enter a Name above to search.' }
-    if (this.currentSearchType === 'roles') { return 'Enter a Role name or select an Organisation.' }
+    if (this.currentSearchType === 'roles') { return 'Select a Role from the dropdown to search.' }
     const label = this.currentMapping?.label || 'value'
     return `Enter a ${label} to search.`
   }
