@@ -4,9 +4,10 @@
       <div class="flex justify-between items-center">
         <div class="mobile-margin text-capitalize mat-h2">{{designationConfig.mainHeading}}</div>
         <div class="flex gap-3">
-          <button mat-raised-button class="mat-btn-flat" (click)="designationMaster = 'bulk upload'" type="button" *ngIf="!isStateAdmin">
+          <!-- Disabled Bulk upload Designation Master for NLW-2026 -->
+          <!-- <button mat-raised-button class="mat-btn-flat" (click)="designationMaster = 'bulk upload'" type="button" *ngIf="!isStateAdmin">
             {{designationConfig?.bulkUploadConfig?.mainHeading}}
-          </button> 
+          </button>  -->
 
           <button mat-flat-button class="mat-btn-flat" (click)="designationMaster = 'import designations'"
             type="button">
