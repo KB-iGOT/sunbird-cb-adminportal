@@ -1,29 +1,12 @@
-<div class="example-card" fxLayoutAlign="center">
-    <div class="float-right cursor-pointer">
-        <mat-icon (click)="dialogRef.close()" class="closeicon">close</mat-icon>
-    </div>
-    <div>
-        <!-- <div class="text-center">
-            <img src="/assets/icons/Publish_Success.svg" alt="Event Creation"
-                class="margin-top-s margin-bottom-s text-center">
-        </div> -->
-        <div class="margin-top-l">
-            <mat-card-title>Event Created Successfully</mat-card-title>
-        </div>
-    </div>
-    <div class="margin-top-xl">
-        <p>
-            Event will be listed under 'Upcoming'. You will be able to make updates to <br />
+<div class="success-dialog">
+    <button mat-icon-button class="close-btn" mat-dialog-close aria-label="Close">
+        <mat-icon>close</mat-icon>
+    </button>
+    <mat-dialog-content class="dialog-body">
+        <h2 class="dialog-title">Event Created Successfully</h2>
+        <p class="dialog-message">
+            Event will be listed under 'Upcoming'. You will be able to make updates to
             the event later.
         </p>
-    </div>
+    </mat-dialog-content>
 </div>
-<!-- <div class="margin-top-xl">
-    <mat-divider></mat-divider>
-    <div class="flex flex-1 custom button-row margin-top-m" align="end">
-        <button mat-stroked-button color="accent" type="button" class="mat-accent-border flex-auto-display"
-            (click)="dialogRef.close()">
-            <span >Dismiss</span>
-        </button>
-    </div>
-</div> -->

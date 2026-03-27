@@ -19,6 +19,7 @@ import { TelemetryEvents } from '../../events/model/telemetry.event.model'
 import { ProfileV2UtillService } from '../services/home-utill.service'
 import { preventHtmlAndJs } from '../../../validators/prevent-html-and-js.validator'
 import { PipePublicURL } from '../../../pipes/pipe-public-URL/pipe-public-URL.pipe'
+import { GlobalEventsService } from '../../../../../../../../../../src/app/services/global-events.service'
 /* tslint:enable */
 
 export const MY_FORMATS = {
@@ -146,7 +147,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
     private router: Router, private configSvc: ConfigurationsService, private changeDetectorRefs: ChangeDetectorRef,
     // tslint:disable-next-line:align
     private activeRoute: ActivatedRoute, private events: EventService, private profileUtilSvc: ProfileV2UtillService,
-    private pipePublic: PipePublicURL
+    private pipePublic: PipePublicURL, private loaderService: GlobalEventsService,
   ) {
 
     if (this.configSvc.userProfile) {
@@ -681,11 +682,14 @@ export class CreateEventComponent implements OnInit, OnDestroy {
       width: '612px',
       data: res,
       panelClass: 'remove-overflow',
+      autoFocus: false
     })
     this.dialogRef.afterClosed().subscribe(() => {
+      this.loaderService.setLoaderState(true)
       setTimeout(() => {
+        this.loaderService.setLoaderState(false)
         this.router.navigate([`/app/home/events`])
-      }, 700)
+      }, 2000)
     })
   }
 
