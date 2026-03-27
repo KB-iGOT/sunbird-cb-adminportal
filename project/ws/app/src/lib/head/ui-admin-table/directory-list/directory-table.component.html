@@ -89,14 +89,16 @@
                                     <button mat-menu-item (click)="goToRoute('users', row)">Users</button>
                                     <button mat-menu-item (click)="goToRoute('rolesandaccess', row)">Roles &
                                         Access</button>
-                                    <button mat-menu-item (click)="goToRoute('mentormanage', row)"
+                                    <!-- <button mat-menu-item (click)="goToRoute('mentormanage', row)"
                                         *ngIf="currentTab === 'organisation'">Mentor
-                                        Management</button>
+                                        Management</button> -->
                                     <button mat-menu-item (click)="goToRoute('designation_master', row)"
                                         *ngIf="needCreate && currentTab === 'organisation'">Manage
                                         Designations</button>
                                     <!-- <button mat-menu-item
                                         (click)="goToRoute('grade_setting', row)">Grades/Group</button> -->
+                                    <button mat-menu-item
+                                        (click)="goToRoute('user_transfer', row)">User Transfer</button>
                                 </ng-template>
                             </mat-menu>
                         </ng-container>

@@ -60,7 +60,7 @@
           <div class="button mat-body" (click)="confirmReassign(confirm, user);$event.stopPropagation();"
             *ngIf="currentFilter === 'notmyuser'">Reassign</div>
         </div> -->
-        <div class="float-right flex flex-col items-center" *ngIf="(isSPVAdmin) && forMentor">
+        <div class="float-right flex flex-col items-center" *ngIf="(isSPVAdmin || isStateAdmin) && forMentor">
           <div class="black-color">Mentor</div>
           <div>
             <div class="black-color">No&nbsp;<mat-slide-toggle [checked]="getUserRoles(user)"

@@ -141,3 +141,7 @@
     filter: brightness(0) invert(1);
   }
 }
+
+:host ::ng-deep .mdc-button__label {
+  display: flex;
+}

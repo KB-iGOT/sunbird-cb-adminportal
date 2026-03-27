@@ -65,6 +65,18 @@ const routes: Routes = [
         },
       },
       {
+        path: 'state-users',
+        loadChildren: () =>
+          // tslint:disable-next-line:max-line-length
+          import('../../../../../../../src/app/routes/users/users.module').then(m => m.UsersModule),
+        data: {
+          pageId: 'home/state-users',
+          module: 'Users',
+          pageType: 'feature',
+          pageKey: 'Users',
+        },
+      },
+      {
         path: '',
         // redirectTo: 'directory/mdo',
         // redirectTo: 'users/active',
