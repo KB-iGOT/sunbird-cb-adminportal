@@ -246,4 +246,16 @@ export class EventListViewComponent implements OnInit, AfterViewInit, OnChanges,
     })
   }
 
+  allowUpdateEvent(item: any) {
+    const filter = this.currentFilter && this.currentFilter.toLowerCase()
+    if (filter === 'upcoming') {
+      const startDateTime = moment(`${item.startDate}T${item.startTime.split('+')[0]}`)
+      if (startDateTime.isBefore(moment())) {
+        return false
+      }
+      return true
+    }
+    return true
+  }
+
 }
