@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core'
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
 import { EventsService } from '../services/events.service'
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core'
@@ -41,7 +41,7 @@ export const MY_FORMATS = {
   ],
   standalone: false
 })
-export class EditEventComponent implements OnInit {
+export class EditEventComponent implements OnInit, OnDestroy {
 
   artifactURL: any
   participantsArr: any = []
@@ -136,12 +136,13 @@ export class EditEventComponent implements OnInit {
     // tslint:disable-next-line:align
     private activeRoute: ActivatedRoute, private events: EventService, private profileUtilSvc: ProfileV2UtillService
   ) {
-
     if (this.configSvc.userProfile) {
       this.userId = this.configSvc.userProfile.userId
       this.username = this.configSvc.userProfile.userName
       this.department = this.configSvc.userProfile.departmentName
+      this.departmentID = this.configSvc.userProfile.rootOrgId
     } else {
+
       if (_.get(this.activeRoute, 'snapshot.data.configService.userProfile.rootOrgId')) {
         this.departmentID = _.get(this.activeRoute, 'snapshot.data.configService.userProfile.rootOrgId')
       }
