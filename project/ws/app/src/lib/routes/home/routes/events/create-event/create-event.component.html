@@ -11,8 +11,7 @@
         <span class="spacer"></span>
         <div class="flex flex-3 custom button-row-inline margin-top-xs">
             <div>
-                <button mat-stroked-button color="accent" type="button"
-                    class="mat-accent-border cancle-btn flex-auto-display" (click)="goToList()">
+                <button mat-stroked-button color="accent" type="button" class="mat-accent-border cancle-btn flex-auto-display" (click)="goToList()">
                     <span>Cancel</span>
                 </button>
                 <button mat-button class="create-btn btn-success ml-5" type="button" (click)="onSubmit()"
@@ -33,26 +32,22 @@
                         id="eventInfo">
                         <div class="margin-bottom-s">
                             <label class="heading">Event details</label>
-                            <label for="eventTitle" class=" margin-remove-bottom form-label required"
-                                aria-label="Event title label">
+                            <label for="eventTitle" class=" margin-remove-bottom form-label required" aria-label="Event title label">
                                 Upload cover photo
                             </label>
                             <br>
                             <span class="aspect-ratio">Image will be cropped to 16:9 aspect ratio</span>
                             <div class="input-wrapper margin-top-s">
                                 <div class="mb-5 image-box display-block">
-                                    <mat-card class="text-center"
-                                        [ngClass]="imageSrcURL ? 'button-row' : 'button-row-inline'">
+                                    <mat-card class="text-center" [ngClass]="imageSrcURL ? 'button-row' : 'button-row-inline'">
                                         <div class="item text-center">
                                             <ng-container *ngIf="!imageSrcURL">
                                                 <div class="images">
                                                     <div class="img">
-                                                        <img alt="jpg" class="imgicon display-block"
-                                                            src="/assets/icons/jpg.svg">
+                                                        <img alt="jpg" class="imgicon display-block" src="/assets/icons/jpg.svg">
                                                     </div>
                                                     <div class="img">
-                                                        <img alt="png" class="imgicon display-block"
-                                                            src="/assets/icons/png.svg">
+                                                        <img alt="png" class="imgicon display-block" src="/assets/icons/png.svg">
                                                     </div>
                                                 </div>
                                             </ng-container>
@@ -66,15 +61,12 @@
                                             <ng-container>
                                                 <input type="file" id="coverPicture" (change)="onFileSelect($event);"
                                                     accept="image/x-png,image/jpeg" />
-                                                <img *ngIf="imageSrcURL" id="blah" [src]="imageSrcURL"
-                                                    alt="your image" />
+                                                <img *ngIf="imageSrcURL" id="blah" [src]="imageSrcURL" alt="your image" />
                                                 <div class="margin-top-m" *ngIf="!imageSrcURL">
-                                                    <div><a color="accent" class="browse-link"
-                                                            (click)="selectCover()">Browse
+                                                    <div><a color="accent" class="browse-link" (click)="selectCover()">Browse
                                                             files</a></div>
                                                 </div>
-                                                <mat-card-content *ngIf="!imageSrcURL"
-                                                    class="caption dispaly-block ws-mat-black60-text text-center">
+                                                <mat-card-content *ngIf="!imageSrcURL" class="caption dispaly-block ws-mat-black60-text text-center">
                                                     <div class="margin-top-m supported-files">
                                                         Max file size: 500KB<br>
                                                         Supported file types: <b>jpg, jpeg, png</b>
@@ -83,13 +75,11 @@
                                             </ng-container>
                                         </div>
                                     </mat-card>
-                                    <mat-error [hidden]="false"
-                                        aria-label="Event image Error|Explains event image is required " *ngIf="createEventForm?.controls['eventPicture']?.touched && createEventForm?.controls['eventPicture'].errors?.required &&
+                                    <mat-error [hidden]="false" aria-label="Event image Error|Explains event image is required " *ngIf="createEventForm?.controls['eventPicture']?.touched && createEventForm?.controls['eventPicture'].errors?.required &&
                                             errorMessages?.length === 0">Event
                                         image is mandatory
                                     </mat-error>
-                                    <mat-error [hidden]="false"
-                                        aria-label="Event image Error|Explains event image is required "
+                                    <mat-error [hidden]="false" aria-label="Event image Error|Explains event image is required "
                                         *ngIf="errorMessages?.length > 0">{{errorMessages}}
 
                                     </mat-error>
@@ -97,16 +87,13 @@
                             </div>
                         </div>
                         <div class="margin-bottom-s">
-                            <label for="eventTitle" class=" margin-remove-bottom form-label required"
-                                aria-label="Event title label">
+                            <label for="eventTitle" class=" margin-remove-bottom form-label required" aria-label="Event title label">
                                 Event title
                             </label>
                             <mat-form-field appearance="outline" class="margin-top-xs w-full">
-                                <input id="eventTitle" matInput #eventTitle formControlName="eventTitle"
-                                    placeholder="Type here" aria-label="Event Title input" class="form-input"
-                                    maxlength="250" />
-                                <mat-error [hidden]="false"
-                                    aria-label="Event title Error|Explains event title is required "
+                                <input id="eventTitle" matInput #eventTitle formControlName="eventTitle" placeholder="Type here"
+                                    aria-label="Event Title input" class="form-input" maxlength="250" />
+                                <mat-error [hidden]="false" aria-label="Event title Error|Explains event title is required "
                                     *ngIf="createEventForm?.controls['eventTitle']?.touched && createEventForm?.controls['eventTitle'].errors?.required">
                                     Event title is mandatory
                                 </mat-error>
@@ -119,24 +106,19 @@
                             </mat-form-field>
                         </div>
                         <div class="margin-bottom-s">
-                            <label for="description" class=" margin-remove-bottom form-label required"
-                                aria-label="description label">
+                            <label for="description" class=" margin-remove-bottom form-label required" aria-label="description label">
                                 Description
                             </label>
                             <label class="sub_title">Detailed description about the event. It will
                                 appear in the event details page</label>
                             <mat-form-field appearance="outline" class="margin-top-xs w-full">
-                                <textarea id="description" matInput #description formControlName="description"
-                                    placeholder="Type here" aria-label="description input" class="form-input" rows="8"
-                                    cols="40" maxlength="1000"></textarea>
-                                <mat-error [hidden]="false"
-                                    aria-label="description Error|Explains description is required "
-                                    *ngIf="createEventForm?.controls['description']?.touched &&
+                                <textarea id="description" matInput #description formControlName="description" placeholder="Type here"
+                                    aria-label="description input" class="form-input" rows="8" cols="40" maxlength="1000"></textarea>
+                                <mat-error [hidden]="false" aria-label="description Error|Explains description is required " *ngIf="createEventForm?.controls['description']?.touched &&
                                                                                     createEventForm?.controls['description'].errors?.required">
                                     Description is mandatory
                                 </mat-error>
-                                <mat-error [hidden]="false"
-                                    aria-label="description Error|Explains description is required " *ngIf="createEventForm?.controls['description']?.touched &&
+                                <mat-error [hidden]="false" aria-label="description Error|Explains description is required " *ngIf="createEventForm?.controls['description']?.touched &&
                                         createEventForm?.controls['description'].errors?.noHtml">
                                     HTML and javascript is not allowed
                                 </mat-error>
@@ -148,9 +130,8 @@
                                 Event agenda
                             </label>
                             <mat-form-field appearance="outline" class="margin-top-xs w-full">
-                                <textarea id="agenda" matInput #agenda formControlName="agenda" placeholder="Type here"
-                                    aria-label="agenda input" class="form-input" rows="8" cols="40"
-                                    maxlength="500"></textarea>
+                                <textarea id="agenda" matInput #agenda formControlName="agenda" placeholder="Type here" aria-label="agenda input"
+                                    class="form-input" rows="8" cols="40" maxlength="500"></textarea>
                                 <mat-error [hidden]="false"
                                     *ngIf="createEventForm?.controls['agenda']?.touched && createEventForm?.controls['agenda'].errors?.required">
                                     Agenda is mandatory
@@ -203,8 +184,7 @@
                             <label class="required">State</label>
                             <mat-form-field appearance="outline" class="custom-width margin-top-xs">
                                 <mat-select formControlName="state">
-                                    <mat-option [value]="type?.stateOrMinistryName"
-                                        *ngFor="let type of stateList">{{type?.stateOrMinistryName}}
+                                    <mat-option [value]="type?.stateOrMinistryName" *ngFor="let type of stateList">{{type?.stateOrMinistryName}}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
@@ -242,23 +222,19 @@
                         id="videoinfo">
                         <label class="heading">Add link</label>
                         <div class="input-wrapper margin-top-s">
-                            <label for="conferenceLink" class=" margin-remove-bottom form-label required"
-                                aria-label="conferenceLink label">
+                            <label for="conferenceLink" class=" margin-remove-bottom form-label required" aria-label="conferenceLink label">
                                 Event link
                             </label>
                             <label class="sub_title">Add a link so people know where to go when your
                                 events starts.</label>
                             <mat-form-field appearance="outline" class="margin-top-xs">
-                                <input id="conferenceLink" matInput #conferenceLink formControlName="conferenceLink"
-                                    placeholder="Type here" aria-label="conferenceLink input" class="form-input"
-                                    rows="4" cols="40" maxlength="500" />
-                                <mat-error [hidden]="false"
-                                    aria-label="conferenceLink Error|Explains conferenceLink is required "
+                                <input id="conferenceLink" matInput #conferenceLink formControlName="conferenceLink" placeholder="Type here"
+                                    aria-label="conferenceLink input" class="form-input" rows="4" cols="40" maxlength="500" />
+                                <mat-error [hidden]="false" aria-label="conferenceLink Error|Explains conferenceLink is required "
                                     *ngIf="createEventForm?.controls['conferenceLink']?.touched && createEventForm?.controls['conferenceLink'].errors?.required">
                                     Event link is mandatory
                                 </mat-error>
-                                <mat-error [hidden]="false"
-                                    *ngIf="createEventForm?.controls['conferenceLink'].errors?.pattern"
+                                <mat-error [hidden]="false" *ngIf="createEventForm?.controls['conferenceLink'].errors?.pattern"
                                     aria-label="conferenceLink Error|conferenceLink fields cannot contain numbers and special characters except">
                                     Please input correct event link URL
                                 </mat-error>
@@ -272,26 +248,21 @@
 
                             <div class="flex-parent-element">
                                 <div class="flex-child-element">
-                                    <label for="eventDate" class=" margin-remove-bottom form-label required"
-                                        aria-label="Event Date label">
+                                    <label for="eventDate" class=" margin-remove-bottom form-label required" aria-label="Event Date label">
                                         Date
                                     </label>
-                                    <ng-container
-                                        *ngIf="allowedCurrentDates?.includes(createEventForm.get('eventType')?.value)">
+                                    <ng-container *ngIf="allowedCurrentDates?.includes(createEventForm.get('eventType')?.value)">
                                         <mat-form-field color="accent" appearance="outline" class="w-full">
-                                            <input matInput [matDatepicker]="eventDate" formControlName="eventDate"
-                                                [min]="currentDate" [max]="maxDate" [(ngModel)]="todayDate"
-                                                (dateChange)="updateDate($event)">
+                                            <input matInput [matDatepicker]="eventDate" formControlName="eventDate" [min]="currentDate"
+                                                [max]="maxDate" [(ngModel)]="todayDate" (dateChange)="updateDate($event)">
                                             <mat-datepicker-toggle matSuffix [for]="eventDate">
                                             </mat-datepicker-toggle>
                                             <mat-datepicker #eventDate></mat-datepicker>
-                                            <mat-error [hidden]="false"
-                                                aria-label="eventDate Error|Explains eventDate is required "
+                                            <mat-error [hidden]="false" aria-label="eventDate Error|Explains eventDate is required "
                                                 *ngIf="createEventForm?.controls['eventDate']?.touched && createEventForm?.controls['eventDate'].errors?.required">
                                                 Event Date is mandatory
                                             </mat-error>
-                                            <mat-error [hidden]="false"
-                                                *ngIf="createEventForm?.controls['eventDate'].errors?.pattern"
+                                            <mat-error [hidden]="false" *ngIf="createEventForm?.controls['eventDate'].errors?.pattern"
                                                 aria-label="eventDate Error|eventDate fields cannot contain numbers and special characters except">
                                                 Event Date fields cannot contain numbers and special
                                                 characters
@@ -299,22 +270,18 @@
                                             </mat-error>
                                         </mat-form-field>
                                     </ng-container>
-                                    <ng-container
-                                        *ngIf="!allowedCurrentDates?.includes(createEventForm.get('eventType')?.value)">
+                                    <ng-container *ngIf="!allowedCurrentDates?.includes(createEventForm.get('eventType')?.value)">
                                         <mat-form-field color="accent" appearance="outline" class="w-full">
-                                            <input matInput [matDatepicker]="eventDate" formControlName="eventDate"
-                                                [min]="minDate" [max]="maxDate" [(ngModel)]="todayDate"
-                                                (dateChange)="updateDate($event)">
+                                            <input matInput [matDatepicker]="eventDate" formControlName="eventDate" [min]="minDate" [max]="maxDate"
+                                                [(ngModel)]="todayDate" (dateChange)="updateDate($event)">
                                             <mat-datepicker-toggle matSuffix [for]="eventDate">
                                             </mat-datepicker-toggle>
                                             <mat-datepicker #eventDate></mat-datepicker>
-                                            <mat-error [hidden]="false"
-                                                aria-label="eventDate Error|Explains eventDate is required "
+                                            <mat-error [hidden]="false" aria-label="eventDate Error|Explains eventDate is required "
                                                 *ngIf="createEventForm?.controls['eventDate']?.touched && createEventForm?.controls['eventDate'].errors?.required">
                                                 Event Date is mandatory
                                             </mat-error>
-                                            <mat-error [hidden]="false"
-                                                *ngIf="createEventForm?.controls['eventDate'].errors?.pattern"
+                                            <mat-error [hidden]="false" *ngIf="createEventForm?.controls['eventDate'].errors?.pattern"
                                                 aria-label="eventDate Error|eventDate fields cannot contain numbers and special characters except">
                                                 Event Date fields cannot contain numbers and special
                                                 characters
@@ -324,8 +291,7 @@
                                     </ng-container>
                                 </div>
                                 <div class="flex-child-element">
-                                    <label for="eventTime" class=" margin-remove-bottom form-label required"
-                                        aria-label="Event Time label">
+                                    <label for="eventTime" class=" margin-remove-bottom form-label required" aria-label="Event Time label">
                                         When
                                     </label>
                                     <mat-form-field appearance="outline" class="w-full">
@@ -335,13 +301,11 @@
                                                 {{ timeObj.value }}
                                             </mat-option>
                                         </mat-select>
-                                        <mat-error [hidden]="false"
-                                            aria-label="eventTime Error|Explains eventTime is required "
+                                        <mat-error [hidden]="false" aria-label="eventTime Error|Explains eventTime is required "
                                             *ngIf="createEventForm?.controls['eventTime']?.touched && createEventForm?.controls['eventTime'].errors?.required">
                                             Event Time is mandatory
                                         </mat-error>
-                                        <mat-error [hidden]="false"
-                                            *ngIf="createEventForm?.controls['eventTime'].errors?.pattern"
+                                        <mat-error [hidden]="false" *ngIf="createEventForm?.controls['eventTime'].errors?.pattern"
                                             aria-label="eventTime Error|eventTime fields cannot contain numbers and special characters except">
                                             Event Time fields cannot contain numbers and special
                                             characters
@@ -363,8 +327,7 @@
                                                 {{hourObj}}
                                             </mat-option>
                                         </mat-select>
-                                        <mat-error [hidden]="false"
-                                            aria-label="eventDurationHours Error|Explains eventDurationHours is required "
+                                        <mat-error [hidden]="false" aria-label="eventDurationHours Error|Explains eventDurationHours is required "
                                             *ngIf="createEventForm?.controls['eventDurationHours']?.touched && createEventForm?.controls['eventDurationHours'].errors?.required">
                                             Duration Hours field is mandatory
                                         </mat-error>
@@ -381,8 +344,7 @@
                                                 {{minObj}}
                                             </mat-option>
                                         </mat-select>
-                                        <mat-error [hidden]="false"
-                                            aria-label="eventDurationMinutes Error|Explains eventDurationMinutes is required "
+                                        <mat-error [hidden]="false" aria-label="eventDurationMinutes Error|Explains eventDurationMinutes is required "
                                             *ngIf="createEventForm?.controls['eventDurationMinutes']?.touched && createEventForm?.controls['eventDurationMinutes'].errors?.required">
                                             Duration Minutes field is mandatory
                                         </mat-error>
@@ -466,8 +428,7 @@
                                 Presenters added are displayed in the event details page
                             </label>
                             <div class="flex flex-1 custom button-row-add-user">
-                                <button mat-stroked-button color="accent" type="button"
-                                    class="mat-accent-border flex-auto-display add-karmayogi-btn"
+                                <button mat-stroked-button color="accent" type="button" class="mat-accent-border flex-auto-display add-karmayogi-btn"
                                     (click)="openDialog()">
                                     <span>Add karmayogi user</span>
                                 </button>
@@ -495,9 +456,9 @@
             </div>
         </div>
     </div>
-    <div class="page_title_flex ">
+    <div class="page_title_flex mb-3">
         <span class="required"></span>
-        <span class="flex font-bold mr-2    ">Note:</span>
+        <span class="flex font-bold mr-2">Note:</span>
         <span class="flex bold">Event will be visible after 30 minutes in the learner portal.</span>
     </div>
 
@@ -505,8 +466,7 @@
         <span class="spacer"></span>
         <div class="flex flex-3 custom button-row-inline">
             <div class="flex flex-middle gap-4">
-                <button mat-stroked-button color="accent" type="button"
-                    class="mat-accent-border cancle-btn flex-auto-display" (click)="goToList()">
+                <button mat-stroked-button color="accent" type="button" class="mat-accent-border cancle-btn flex-auto-display" (click)="goToList()">
                     <span>Cancel</span>
                 </button>
                 <button mat-button class="create-btn btn-success" type="button" (click)="onSubmit()"
