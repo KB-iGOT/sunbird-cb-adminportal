@@ -236,7 +236,7 @@
                                 </mat-error>
                                 <mat-error [hidden]="false" *ngIf="createEventForm?.controls['conferenceLink'].errors?.pattern"
                                     aria-label="conferenceLink Error|conferenceLink fields cannot contain numbers and special characters except">
-                                    Please input correct event link URL
+                                    Only YouTube links or embedded YouTube URLs are supported
                                 </mat-error>
                             </mat-form-field>
                         </div>
