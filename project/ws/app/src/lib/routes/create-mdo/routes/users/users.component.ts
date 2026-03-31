@@ -332,7 +332,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate(['app/home/create-user'], {
       queryParams: {
         id: this.id, currentDept: this.currentDept,
-        createDept: JSON.stringify({ depName: this.deptName }),
+        createDept: JSON.stringify({ depName: this.deptName, depType: this.currentDept }),
         orgName: this.deptName,
         redirectionPath: window.location.href,
         subOrgType: this.getSubOrgType()
