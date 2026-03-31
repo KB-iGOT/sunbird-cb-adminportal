@@ -397,6 +397,7 @@ export class CreateUserComponent implements OnInit {
             roleId: this.deptId,
             depatName: this.createdDepartment.depName,
             subOrgType: this.getSubOrgType(),
+            orgName: this.orgName,
           }
         })
 
