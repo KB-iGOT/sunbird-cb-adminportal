@@ -104,7 +104,7 @@
                             <mat-form-field appearance="outline" class="margin-top-xs w-full">
                                 <input id="eventTitle" matInput #eventTitle formControlName="eventTitle"
                                     placeholder="Type here" aria-label="Event Title input" class="form-input"
-                                    maxlength="150" />
+                                    maxlength="90" />
                                 <mat-error [hidden]="false"
                                     aria-label="Event title Error|Explains event title is required "
                                     *ngIf="createEventForm?.controls['eventTitle']?.touched && createEventForm?.controls['eventTitle'].errors?.required">
@@ -115,7 +115,7 @@
                                     [hidden]="false">
                                     Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' " " !) characters are supported.
                                 </mat-error>
-                                <mat-hint>{{eventTitle.value.length}}/150 characters</mat-hint>
+                                <mat-hint>{{eventTitle.value.length}}/90 characters</mat-hint>
                             </mat-form-field>
                         </div>
                         <div class="margin-bottom-s">
