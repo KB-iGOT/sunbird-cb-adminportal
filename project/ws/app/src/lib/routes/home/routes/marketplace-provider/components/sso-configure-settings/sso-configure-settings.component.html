@@ -155,7 +155,7 @@
         </div>
         <mat-form-field class="w-full">
           <input class="input-ellipse" #callbackUrl matInput placeholder="Type here" [formControl]="acsUrl" />
-          <mat-icon matSuffix (click)="copy('callback', callbackUrl.value)" matTooltipPosition="above"
+          <mat-icon matSuffix (click)="copy('callback', callbackUrl.value)" (keyup)="copy('callback', callbackUrl.value)" matTooltipPosition="above"
             [matTooltip]="callbackUrlCopied ? 'Copied' : 'Copy'" [svgIcon]="'content_copy'"></mat-icon>
           <mat-error class="m-1" *ngIf="acsUrl.hasError('required') && (acsUrl.dirty || acsUrl.touched)">This field is
             required</mat-error>
@@ -170,7 +170,7 @@
         </div>
         <mat-form-field class="w-full">
           <input class="input-ellipse" #redirectUrl matInput placeholder="Type here" [formControl]="ssoTestUrl" />
-          <mat-icon matSuffix (click)="copy('redirect', redirectUrl.value)" matTooltipPosition="above"
+          <mat-icon matSuffix (click)="copy('redirect', redirectUrl.value)" (keyup)="copy('redirect', redirectUrl.value)" matTooltipPosition="above"
             [matTooltip]="redirectUrlCopied ? 'Copied' : 'Copy'" [svgIcon]="'content_copy'"></mat-icon>
           <mat-error class="m-1"
             *ngIf="ssoTestUrl.hasError('required') && (ssoTestUrl.dirty || ssoTestUrl.touched)">This field is

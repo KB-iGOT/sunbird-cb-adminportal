@@ -237,7 +237,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
     const ctx = canvas.getContext('2d')
 
     // const aspectRatio = 16 / 9
-    const aspectRatio = 1 / 1
+    const aspectRatio = 1
     const containerWidth = 800
     const containerHeight = containerWidth / aspectRatio
 

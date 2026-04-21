@@ -5,7 +5,7 @@
         <li
           class="step-item cursor-pointer text-sm"
           [ngClass]="{ active: activeItem.slug === item.slug, disabled: item.disabled }"
-          (click)="setActiveItem(item)"
+          (click)="setActiveItem(item)"  (keydown)="setActiveItem(item)"
         >
           <div class="step-item-label">{{ item.label }}</div>
         </li>

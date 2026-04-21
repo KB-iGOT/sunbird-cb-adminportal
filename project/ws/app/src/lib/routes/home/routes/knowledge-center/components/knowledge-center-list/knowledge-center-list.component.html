@@ -29,7 +29,7 @@
       <ng-container *ngFor="let col of tableColumns" [matColumnDef]="col.key">
         <th class="table-header-spacing" mat-header-cell *matHeaderCellDef [ngSwitch]="col.cellType">
           <!-- Regular Column Header -->
-          <span *ngSwitchDefault class="sortable-header" (click)="onSortChange(col.key)">
+          <span *ngSwitchDefault class="sortable-header" (click)="onSortChange(col.key)" (keyup)="onSortChange(col.key)">
             {{ col.displayName }}
             <mat-icon class="sort-icon" *ngIf="sortField === col.key; else defaultIcon">
               {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}

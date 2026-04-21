@@ -54,7 +54,7 @@
             >
           </span>
           <!-- Regular Column Header -->
-          <span *ngSwitchDefault class="sortable-header" (click)="onSortChange(col.key)">
+          <span *ngSwitchDefault class="sortable-header" (click)="onSortChange(col.key)" (keydown)="onSortChange(col.key)">
             {{ col.displayName }}
             <mat-icon class="sort-icon" *ngIf="sortField === col.key; else defaultIcon">
               {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
@@ -92,6 +92,7 @@
             <div
               class="content-name-container pt-2 pb-2 cursor-pointer rounded-sm"
               (click)="takeAction('view', element)"
+              (keydown)="takeAction('view', element)"
             >
               <ng-container *ngIf="element['courseImg']">
                 <img class="imageCell" [src]="element['courseImg'] || element['link']" alt="logo" />
@@ -109,6 +110,7 @@
               <div
                 class="content-partner-container pt-2 pb-2 px-1 cursor-pointer rounded-sm"
                 (click)="takeAction('view', element)"
+                (keydown)="takeAction('view', element)"
               >
                 <img class="imageCell" [src]="element['link']" alt="logo" />
               </div>
