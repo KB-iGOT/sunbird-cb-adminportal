@@ -1,0 +1,267 @@
+<div class="courses-content-container">
+  <!-- Search and Filter Section -->
+  <div class="content-body-filter mt-4 flex items-center justify-between" *ngIf="showSearchBox">
+    <div class="content-search w-full">
+      <div class="search-wrapper w-1/2">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input
+          type="text"
+          placeholder="Type here to search..."
+          class="search-input"
+          (input)="onSearchInput()"
+          [formControl]="searchControl"
+        />
+      </div>
+    </div>
+    <ng-container *ngIf="showDeleteAll && needCheckBox">
+      <button
+        (click)="deleteAllSelected()"
+        [disabled]="selectedRowData.length === 0"
+        mat-flat-button
+        class="delete-all flex items-center rounded-full px-4 py-2 font-bold text-sm mat-btn-flat gap-3"
+      >
+        <mat-icon class="mr-1">delete</mat-icon>
+        <span class="mr-1">Delete All</span>
+        <span *ngIf="selectedRowData.length"> ({{ selectedRowData.length }})</span>
+      </button>
+    </ng-container>
+  </div>
+
+  <!-- Table Section -->
+  <div class="mat-elevation-z8 seperate-tab-table">
+    <table mat-table [dataSource]="dataSource" class="table-container w-full mt-4">
+      <!-- Dynamic Columns -->
+      <ng-container *ngFor="let col of tableColumns" [matColumnDef]="col.key">
+        <th
+          class="table-header-spacing"
+          mat-header-cell
+          *matHeaderCellDef
+          [ngSwitch]="col.cellType"
+        >
+          <!-- Select Column Header -->
+          <mat-checkbox
+            *ngSwitchCase="'select'"
+            [checked]="allSelected"
+            (change)="selectAll($event)"
+          ></mat-checkbox>
+          <!-- Authentication Column Header -->
+          <span *ngSwitchCase="'authentication'" class="sortable-header">
+            {{ col.displayName }}
+            <mat-icon
+              class="header-info-icon"
+              matTooltip="This icon indicates the authentication status of the partner with iGOT. Please connect with the technical team for further information."
+              >info_outline</mat-icon
+            >
+          </span>
+          <!-- Regular Column Header -->
+          <span *ngSwitchDefault class="sortable-header" (click)="onSortChange(col.key)">
+            {{ col.displayName }}
+            <mat-icon class="sort-icon" *ngIf="sortField === col.key; else defaultIcon">
+              {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+            </mat-icon>
+            <ng-template #defaultIcon>
+              <mat-icon class="sort-icon default-icon">arrow_upward</mat-icon>
+            </ng-template>
+          </span>
+        </th>
+
+        <td class="table-cell-spacing px-4" mat-cell *matCellDef="let element" [ngSwitch]="col.key">
+          <!-- Checkbox Cell -->
+          <mat-checkbox
+            *ngSwitchCase="'select'"
+            [checked]="element.isChecked"
+            (change)="onCheckboxChange($event, element)"
+          ></mat-checkbox>
+
+          <!-- Menu Cell -->
+          <div *ngSwitchCase="'menu'">
+            <mat-icon
+              class="cursor-pointer"
+              [matMenuTriggerFor]="moreMenu"
+              [matMenuTriggerData]="{ data: element }"
+            >
+              more_horiz
+            </mat-icon>
+          </div>
+
+          <!-- Course Name with Image -->
+          <div
+            *ngSwitchCase="'courseName'"
+            class="content-name-block flex flex-start items-center gap-3"
+          >
+            <div
+              class="content-name-container pt-2 pb-2 cursor-pointer rounded-sm"
+              (click)="takeAction('view', element)"
+            >
+              <ng-container *ngIf="element['courseImg']">
+                <img class="imageCell" [src]="element['courseImg'] || element['link']" alt="logo" />
+              </ng-container>
+            </div>
+            <div class="content-name flex-grow pt-2">
+              <span class="line-clamp-2">{{ element['courseName'] }}</span>
+            </div>
+          </div>
+          <div
+            *ngSwitchCase="'contentPartnerName'"
+            class="content-name-block flex flex-start items-start gap-3 py-4 pl-6"
+          >
+            <ng-container *ngIf="element['link']">
+              <div
+                class="content-partner-container pt-2 pb-2 px-1 cursor-pointer rounded-sm"
+                (click)="takeAction('view', element)"
+              >
+                <img class="imageCell" [src]="element['link']" alt="logo" />
+              </div>
+            </ng-container>
+            <div class="content-name flex-grow pt-2">
+              <span class="line-clamp-2">{{ element['contentPartnerName'] }}</span>
+            </div>
+          </div>
+
+          <!-- Status Column -->
+          <div *ngSwitchCase="'status'" class="status-badge">
+            <span class="{{ element?.status?.toLowerCase() }}">
+              {{ capitalizeText(element?.status) }}
+            </span>
+          </div>
+
+          <div *ngSwitchCase="'isActive'" class="status-badge">
+            <span class="{{ element?.isActive ? 'active' : 'inactive' }}">
+              {{ element?.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </div>
+
+          <!-- Authentication Column -->
+          <div *ngSwitchCase="'isAuthenticate'">
+            <ng-container *ngIf="element[col.key]; else notAuthenticated">
+              <div class="authenticated inline-flex gap-2 items-center mat-body-2">
+                <div class="icon-status">
+                  <mat-icon class="checkCircle">check</mat-icon>
+                </div>
+                Authenticated
+              </div>
+            </ng-container>
+            <ng-template #notAuthenticated>
+              <div class="not-authenticated inline-flex gap-2 items-center mat-body-2">
+                <div class="icon-status">
+                  <mat-icon class="checkCircle">close</mat-icon>
+                </div>
+                Not Authenticated
+              </div>
+            </ng-template>
+          </div>
+
+          <div *ngSwitchCase="'acceptReject'">
+            <ng-container>
+              <div class="flex gap-5">
+                <!-- <div class="icon-status-view" (click)="takeAction('view', element)">
+                  <mat-icon class="checkCircle">remove_red_eye</mat-icon>
+                </div>
+                <div class="icon-status-accept" (click)="takeAction('accept', element)">
+                  <mat-icon class="checkCircle">check</mat-icon>
+                </div>
+                <div class="icon-status-reject" (click)="takeAction('reject', element)">
+                  <mat-icon class="checkCircle">close</mat-icon>
+                </div> -->
+                <button (click)="takeAction('view', element)"
+                  mat-flat-button
+                  class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline mat-btn-height-32"
+                >
+                  <div class="flex items-center justify center">
+                    <mat-icon class="mr-2">remove_red_eye</mat-icon>
+                    <div class="font-bold text-sm">Preview</div>
+                  </div>
+                </button>
+              </div>
+            </ng-container>
+          </div>
+
+          <!-- Regular Text Column -->
+          <span *ngSwitchDefault [ngClass]="col.cellClass">
+            <ng-container *ngIf="col.imageKey">
+              <img class="imageCell" [src]="element[col.imageKey]" alt="logo" />
+            </ng-container>
+            {{ element[col.key] }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- No Data Row -->
+      <tr class="mat-row" *matNoDataRow>
+        <td
+          class="table-cell-spacing mat-cell no-data-cell"
+          [attr.colspan]="displayedColumns?.length"
+        >
+          {{ noDataMessage }}
+        </td>
+      </tr>
+
+      <!-- Header and Data Rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" class="element-row new-row"></tr>
+    </table>
+
+    <!-- Custom Pagination Widget -->
+    <ws-widget-pagination
+      [defaultPaginationSize]="paginationSize"
+      [defaultPaginationSizeOptions]="pageSizeOptions"
+      [totalItemsCount]="paginationDetails?.totalCount"
+      [currentPage]="paginationDetails?.currentPage"
+      (pageChange)="onPageChange($event)"
+      *ngIf="showPagination && paginationDetails?.totalCount"
+    ></ws-widget-pagination>
+  </div>
+</div>
+
+<!-- Actions Menu -->
+<mat-menu #moreMenu="matMenu" class="actions-menu">
+  <ng-template matMenuContent let-rowData="data">
+    <ng-container *ngIf="menuItems && menuItems.length > 0; else defaultMenu">
+      <a
+        class="flex items-center"
+        mat-menu-item
+        *ngFor="let item of menuItems"
+        (click)="takeAction(item.action, rowData)"
+      >
+        <span>{{ item.btnText }}</span>
+      </a>
+    </ng-container>
+
+    <ng-template #defaultMenu>
+      <a
+        class="flex items-center"
+        mat-menu-item
+        [disabled]="!rowData.isActive"
+        (click)="takeAction('configure', rowData)"
+        [ngClass]="{ 'disabled-menu-item': !rowData.isActive }"
+      >
+        <span [ngClass]="{ 'disabled-text': !rowData.isActive }">Configure</span>
+      </a>
+      <a
+        class="flex items-center"
+        mat-menu-item
+        [disabled]="!rowData.isActive"
+        (click)="takeAction('sso_integration', rowData)"
+        [ngClass]="{ 'disabled-menu-item': !rowData.isActive }"
+      >
+        <span [ngClass]="{ 'disabled-text': !rowData.isActive }">SSO Integration</span>
+      </a>
+      <a
+        *ngIf="rowData.isActive"
+        class="flex items-center"
+        mat-menu-item
+        (click)="takeAction('deactivate_provider', rowData)"
+      >
+        <span>Deactivate this Content Partner</span>
+      </a>
+      <a
+        *ngIf="!rowData.isActive"
+        class="flex items-center"
+        mat-menu-item
+        (click)="takeAction('activate_provider', rowData)"
+      >
+        <span>Activate this Content Partner</span>
+      </a>
+    </ng-template>
+  </ng-template>
+</mat-menu>

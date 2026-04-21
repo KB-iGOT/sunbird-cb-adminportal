@@ -1,10 +1,10 @@
 import { EventsListComponent } from './events-list.component'
-import * as moment from 'moment'
+import moment from 'moment'
 import { of } from 'rxjs'
 
 // Mock the dependencies
 jest.mock('@angular/material/dialog')
-jest.mock('@angular/material/legacy-snack-bar')
+jest.mock('@angular/material/snack-bar')
 jest.mock('@angular/router')
 jest.mock('@sunbird-cb/utils-v2')
 jest.mock('../services/events.service')

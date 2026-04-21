@@ -23,7 +23,7 @@
                       <p class="margin-remove-bottom">
                         Full name
                       </p>
-                      <mat-form-field appearance="outline" class="margin-top-xs">
+                      <mat-form-field appearance="outline" class="margin-top-xs w-full">
                         <input matInput #fullname formControlName="fullname" type="text" readonly
                           aria-readonly="true" />
                       </mat-form-field>
@@ -34,7 +34,7 @@
                       <p class="margin-remove-bottom">
                         Email
                       </p>
-                      <mat-form-field appearance="outline" class="margin-top-xs">
+                      <mat-form-field appearance="outline" class="margin-top-xs w-full">
                         <input matInput #email formControlName="email" type="text" readonly aria-readonly="true" />
                       </mat-form-field>
                     </div>
@@ -44,7 +44,7 @@
                       <p class="margin-remove-bottom">
                         Mobile
                       </p>
-                      <mat-form-field appearance="outline" class="margin-top-xs">
+                      <mat-form-field appearance="outline" class="margin-top-xs w-full">
                         <input matInput #mobile formControlName="mobile" type="text" disabled="true" />
                       </mat-form-field>
                     </div>
@@ -55,7 +55,7 @@
                       <p class="margin-remove-bottom">
                         New designation name
                       </p>
-                      <mat-form-field appearance="outline" class="margin-top-xs">
+                      <mat-form-field appearance="outline" class="margin-top-xs w-full">
                         <input matInput #position formControlName="position" maxlength="500" placeholder="Type here"
                           type="text" />
                         <mat-error>
@@ -70,7 +70,7 @@
                       <p class="margin-remove-bottom">
                         New Organisation Name
                       </p>
-                      <mat-form-field appearance="outline" class="margin-top-xs">
+                      <mat-form-field appearance="outline" class="margin-top-xs w-full">
                         <input matInput #organisation formControlName="organisation" maxlength="500"
                           placeholder="Type here" type="text" />
                         <mat-error>
@@ -85,7 +85,7 @@
                       <p class="margin-remove-bottom">
                         New Domain Name
                       </p>
-                      <mat-form-field appearance="outline" class="margin-top-xs">
+                      <mat-form-field appearance="outline" class="margin-top-xs w-full">
                         <input matInput #domain formControlName="domain" maxlength="500" placeholder="Type here"
                           type="text" />
                         <mat-error>
@@ -99,7 +99,7 @@
                       <p class="margin-remove-bottom">
                         Description
                       </p>
-                      <mat-form-field appearance="outline" class="margin-top-xs">
+                      <mat-form-field appearance="outline" class="margin-top-xs w-full">
                         <textarea matInput #desc formControlName="description" maxlength="500" placeholder="Type here"
                           type="text" rows="3"></textarea>
                         <mat-error *ngIf="positionForm?.controls['description'].errors?.required">

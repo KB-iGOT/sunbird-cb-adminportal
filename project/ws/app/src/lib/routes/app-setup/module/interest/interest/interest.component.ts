@@ -3,14 +3,15 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { WidgetContentService, NsContent, BtnPlaylistService, NsPlaylist } from '@sunbird-cb/collection'
 import { TFetchStatus, NsPage, ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { UntypedFormControl } from '@angular/forms'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { Subscription } from 'rxjs'
 // import { InterestService } from '../../../../profile/routes/interest/services/interest.service'
 
 @Component({
-  selector: 'ws-app-interests',
-  templateUrl: './interest.component.html',
-  styleUrls: ['./interest.component.scss'],
+    selector: 'ws-app-interests',
+    templateUrl: './interest.component.html',
+    styleUrls: ['./interest.component.scss'],
+    standalone: false
 })
 export class InterestComponent implements OnInit {
   interestsData: any

@@ -1,0 +1,177 @@
+<div class="providers-api-integrations rounded-xl px-4 py-2 bg-white">
+  <div class="api-form-wrapper flex gap-3 p-4">
+    <div class="api-form-controls flex-1 w-1/2">
+      <p class="page-title">Add Bulk Upload Courses</p>
+      <div class="flex flex-column gap-1 mat-field-rounded">
+        <div class="flex items-center gap-1 required">
+          <span class="label">Link
+            <mat-icon svgIcon="field_i" matTooltip="Link"></mat-icon>
+          </span>
+        </div>
+        <form [formGroup]="viaApiFormGroup" class="flex gap-3">
+          <mat-form-field class="w-full" appearance="outline">
+            <mat-select formControlName="apiType" placeholder="Select">
+              <ng-container *ngFor="let type of apiTypesList">
+                <mat-option [value]="type.value">{{ type.type }}</mat-option>
+              </ng-container>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="w-full" appearance="outline">
+            <input matInput formControlName="apiUrl" placeholder="API URL" type="text" />
+          </mat-form-field>
+        </form>
+      </div>
+
+      <!-- Chips for Params, Headers, Body -->
+      <div class="w-full flex gap-5 items-center justify-start">
+        <ng-container *ngFor="let item of apiMetadata">
+          <div matRipple class="cursor-pointer px-3 chips-headers" [class.active]="selectedApiTab === item.value"
+            (click)="onApiTabChange(item.value)">
+            {{ item?.name }}
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Dynamic Params Table based on selected tab -->
+      <div class="api-params-table my-4" *ngIf="selectedApiTab">
+        <ws-app-via-api-params-table *ngIf="selectedApiTab === 'Params'" [tableListFormGroup]="paramsFormGroup"
+          [paramsType]="'params'">
+        </ws-app-via-api-params-table>
+        <ws-app-via-api-params-table *ngIf="selectedApiTab === 'Headers'" [tableListFormGroup]="headersFormGroup"
+          [paramsType]="'headers'">
+        </ws-app-via-api-params-table>
+        <ws-app-via-api-params-table *ngIf="selectedApiTab === 'Body'" [tableListFormGroup]="bodyFormGroup"
+          [paramsType]="'body'">
+        </ws-app-via-api-params-table>
+        <ng-container *ngIf="selectedApiTab === 'authPayload'">
+          <ws-app-via-api-params-table [tableListFormGroup]="authenticationFormGroup"
+            [paramsType]="'authentication'"></ws-app-via-api-params-table>
+        </ng-container>
+      </div>
+
+      <!-- Service Code -->
+      <div class="flex flex-column gap-1 mat-field-rounded">
+        <div class="flex items-center gap-1 required">
+          <span class="label">Service Code</span>
+        </div>
+        <form [formGroup]="servicesFormGroup">
+          <mat-form-field class="w-full" appearance="outline">
+            <input formControlName="serviceCode" matInput placeholder="Type Here" type="text" />
+            <mat-error *ngIf="getControlValidation('serviceCode', 'required')">
+              Service Code is mandatory
+            </mat-error>
+            <mat-error *ngIf="getControlValidation('serviceCode', 'pattern')">
+              Only ( a-z/A-Z/0-9 . - _ $ / : [ ]' !) characters are supported
+            </mat-error>
+          </mat-form-field>
+        </form>
+      </div>
+
+      <div class="flex flex-column gap-1 mat-field-rounded">
+        <div class="flex items-center gap-1 required">
+          <span class="label">Service Name</span>
+        </div>
+        <form [formGroup]="servicesFormGroup">
+          <mat-form-field class="w-full" appearance="outline">
+            <input formControlName="serviceName" matInput placeholder="Type Here" type="text" />
+            <mat-error *ngIf="getControlValidation('serviceName', 'required')">
+              Service Name is mandatory
+            </mat-error>
+            <mat-error *ngIf="getControlValidation('serviceName', 'pattern')">
+              Only ( a-z/A-Z/0-9 . - _ $ / : [ ]' !) characters are supported
+            </mat-error>
+          </mat-form-field>
+        </form>
+      </div>
+
+      <!-- Service Description -->
+      <div class="flex flex-column gap-1">
+        <div class="flex items-center gap-1 required">
+          <span class="label">Service Description</span>
+        </div>
+        <form [formGroup]="servicesFormGroup">
+          <mat-form-field class="w-full" appearance="outline">
+            <textarea formControlName="serviceDescription" matInput placeholder="Type Here" rows="4" maxlength="500">
+            </textarea>
+            <mat-hint class="flex items-center justify-between w-full">
+              <span class="hint-text-style">Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported</span>
+              <span class="hint-text-style">{{ getTextLength('serviceDescription') }}/500</span>
+            </mat-hint>
+          </mat-form-field>
+        </form>
+      </div>
+
+      <!-- Has Authentication Toggle -->
+      <div class="has-authentication mt-3">
+        <form [formGroup]="servicesFormGroup">
+          <mat-slide-toggle formControlName="isAuthenticated" (change)="authenticationToggleChange()">
+            Has Authentication
+          </mat-slide-toggle>
+        </form>
+      </div>
+
+      <!-- Authentication Expiry Toggle (Conditional) -->
+      <ng-container *ngIf="servicesFormGroup?.controls?.isAuthenticated.value">
+        <div class="has-authentication mt-3">
+          <form [formGroup]="servicesFormGroup">
+            <mat-slide-toggle formControlName="strictCache" (change)="onToggleChange()">
+              Has Authentication Expiry
+            </mat-slide-toggle>
+          </form>
+        </div>
+      </ng-container>
+
+      <!-- Expiry Time in Minutes (Conditional) -->
+      <ng-container *ngIf="servicesFormGroup?.controls?.strictCache.value">
+        <div class="flex flex-column gap-1 mt-3 mat-field-rounded">
+          <div class="flex items-center gap-1 required">
+            <span class="label">Expiry time in minutes</span>
+          </div>
+          <form [formGroup]="servicesFormGroup">
+            <mat-form-field class="w-full" appearance="outline">
+              <input type="text" matInput placeholder="minutes" formControlName="strictCacheTimeInMinutes"
+                aria-label="Mobile Number input" maxlength="10" (keypress)="numericOnly($event)"
+                (paste)="numericOnly($event)">
+              <mat-error *ngIf="getControlValidation('strictCacheTimeInMinutes', 'required')">
+                Time is mandatory
+              </mat-error>
+            </mat-form-field>
+          </form>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Transform Content Section -->
+    <div class="api-json-controls flex-1">
+      <p class="page-title">Transform Content</p>
+      <div class="flex flex-col gap-4 transformation-box"
+        [ngClass]="{ 'transformation-required': !transformationsUpdated && executed }">
+        <!-- JSON Editor Section -->
+        <ng-container *ngIf="transforamtionType === 'viaSpec'">
+          <json-editor [options]="editorOptions" [formControl]="transformationSpecForm" class="transformationEditor"
+            [ngClass]="{
+              'has-error': transformationSpecForm?.invalid && transformationSpecForm?.touched
+            }">
+          </json-editor>
+        </ng-container>
+
+        <!-- Update Button -->
+        <div class="flex w-full justify-end mt-4">
+          <button mat-flat-button
+            class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat"
+            (click)="updateTransformationDetails()">
+            {{ getUpdateBtnText }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Configure Button -->
+  <div class="flex justify-center items-center mt-6">
+    <button mat-flat-button class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat"
+      (click)="configure()">
+      Configure
+    </button>
+  </div>
+</div>

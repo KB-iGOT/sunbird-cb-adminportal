@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { NSProfileDataV2 } from '../../models/profile-v2.model'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ConfigurationsService, EventService, WsEvents } from '@sunbird-cb/utils-v2'
 /* tslint:disable */
@@ -10,12 +10,12 @@ import { UIDirectoryTableComponent } from '../../../../head/ui-admin-table/direc
 import { DatePipe } from '@angular/common'
 
 @Component({
-  selector: 'ws-app-directory',
-  templateUrl: './directory.component.html',
-  styleUrls: ['./directory.component.scss'],
-  /* tslint:disable */
-  host: { class: 'flex flex-1' },
-  /* tslint:enable */
+    selector: 'ws-app-directory',
+    templateUrl: './directory.component.html',
+    styleUrls: ['./directory.component.scss'],
+    /* tslint:disable */
+    host: { class: 'flex flex-1' },
+    standalone: false
 })
 export class DirectoryViewComponent implements OnInit {
   @ViewChild(UIDirectoryTableComponent)
@@ -121,12 +121,7 @@ export class DirectoryViewComponent implements OnInit {
     this.tabledata = []
     if (this.currentFilter === 'organisation') {
       this.tabledata = {
-        columns: [
-          { displayName: 'Organisation', key: 'organisation' },
-          { displayName: 'Type', key: 'type' },
-          { displayName: 'State/Center', key: 'stateOrMinistry' },
-          { displayName: 'Created On', key: 'createdOn' },
-        ],
+        columns: [],
         actions: [{ name: '', label: '', icon: 'remove_red_eye', type: 'menu' }],
         link: { name: 'generate_link', generateLabel: 'Generate Link', column: 'Custom Registration', viewLabel: 'View Link' },
         needCheckBox: false,
@@ -136,6 +131,20 @@ export class DirectoryViewComponent implements OnInit {
         showNewNoContent: true,
         loader: true,
         tableDataCount: this.totalCount
+      }
+
+      if (this.userRoles.has('state_admin')) {
+        this.tabledata.columns.push(
+          { displayName: 'Organisation', key: 'organisation' },
+          { displayName: 'Created On', key: 'createdOn' },
+        )
+      } else {
+        this.tabledata.columns.push(
+          { displayName: 'Organisation', key: 'organisation' },
+          { displayName: 'Type', key: 'type' },
+          { displayName: 'State/Center', key: 'stateOrMinistry' },
+          { displayName: 'Created On', key: 'createdOn' },
+        )
       }
 
       const isAllowed = this.isAllowed(this.allowedCreateRoles)
@@ -197,7 +206,7 @@ export class DirectoryViewComponent implements OnInit {
         tab: role.type,
         // subOrgType: !this.isAllowed(this.allowedCreateRoles) ? 'ministry' : role.data.type ? role.data.type : 'cbp-providers'
         // subOrgType: !this.isAllowed(this.allowedCreateRoles) ? 'ministry' : role.data.type ? role.data.type : 'ministry'
-        subOrgType: this.getSubOrgType(role.data.type)
+        subOrgType: this.getSubOrgType(role?.data?.type, role?.data)
       }
     })
   }
@@ -406,6 +415,7 @@ export class DirectoryViewComponent implements OnInit {
               registrationLink: element?.registrationLink || null,
               startDateRegistration: element?.startDateRegistration || null,
               endDateRegistration: element?.endDateRegistration || null,
+              isState: element?.isState || false,
               stateOrMinistry: element?.ministryOrStateName || element?.ministryorstatename || null,
 
             }
@@ -437,6 +447,7 @@ export class DirectoryViewComponent implements OnInit {
             logo: dept.logo,
             description: dept.description,
             qrRegistrationLink: dept.qrRegistrationLink,
+            isState: dept.isState,
             registrationLink: dept.registrationLink,
             startDateRegistration: dept.startDateRegistration,
             endDateRegistration: dept.endDateRegistration,
@@ -480,9 +491,9 @@ export class DirectoryViewComponent implements OnInit {
     return false
   }
 
-  getSubOrgType(type: string) {
+  getSubOrgType(type: string, orgData: any) {
     if (this.currentFilter === 'organisation') {
-      return 'ministry'
+      return orgData?.isState ? 'state' : 'ministry'
     } else if (this.currentFilter === 'orgHierarchies') {
       return 'orgHierarchies'
     } else if (type === 'cbp-providers') {

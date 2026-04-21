@@ -3,12 +3,12 @@ import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 
 @Component({
-  selector: 'ws-app-positions-home',
-  templateUrl: './positions-home.component.html',
-  styleUrls: ['./positions-home.component.scss'],
-  /* tslint:disable */
-  host: { class: 'flex flex-1 margin-top-l' },
-  /* tslint:enable */
+    selector: 'ws-app-positions-home',
+    templateUrl: './positions-home.component.html',
+    styleUrls: ['./positions-home.component.scss'],
+    /* tslint:disable */
+    host: { class: 'flex flex-1 margin-top-l' },
+    standalone: false
 })
 export class PositionsHomeComponent implements OnInit {
   currentFilter = 'inactive'

@@ -6,9 +6,9 @@ import {
 
 import * as _ from 'lodash'
 
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog'
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
-import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips'
+import { MatChipInputEvent } from '@angular/material/chips'
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms'
 
 export interface IDialogData {
@@ -19,9 +19,10 @@ export interface IDialogData {
 }
 
 @Component({
-  selector: 'discussion-popup.component',
-  templateUrl: 'discussion-popup.component.html',
-  styleUrls: ['./discussion-post.component.scss'],
+    selector: 'discussion-popup.component',
+    templateUrl: 'discussion-popup.component.html',
+    styleUrls: ['./discussion-post.component.scss'],
+    standalone: false
 })
 
 export class DialogTextProfanityComponent implements OnInit {

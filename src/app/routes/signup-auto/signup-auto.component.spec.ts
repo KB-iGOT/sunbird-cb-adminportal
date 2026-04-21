@@ -1,6 +1,6 @@
 import { SignupAutoComponent } from './signup-auto.component'
 import { of, throwError } from 'rxjs'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { SignupAutoService } from './signup-auto.service'
 import { ActivatedRoute } from '@angular/router'
 

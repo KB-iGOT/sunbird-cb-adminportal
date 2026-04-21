@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
 
 @Component({
-  selector: 'ws-app-grade-setting',
-  templateUrl: './grade-setting.component.html',
-  styleUrls: ['./grade-setting.component.scss']
+    selector: 'ws-app-grade-setting',
+    templateUrl: './grade-setting.component.html',
+    styleUrls: ['./grade-setting.component.scss'],
+    standalone: false
 })
 export class GradeSettingComponent implements OnInit {
   settingsForm!: FormGroup

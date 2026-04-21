@@ -1,0 +1,270 @@
+<div class="wrapper-form">
+  <form [formGroup]="providerDetailsForm" [ngClass]="{ 'provider-details-disabled': isPendingProvider }"
+    class="provider-form-controls">
+    <p class="page-title">Provider Details</p>
+    <div class="flex flex-column gap-1 provider-logo mb-3" *ngIf="!isPendingProvider">
+      <div class="logo-container">
+        <input #logoInput type="file" accept="image/*" hidden (change)="onLogoSelected($event)" />
+        <canvas #canvas class="canvas-inputfile"></canvas>
+
+        <div class="empty-logo relative" *ngIf="!logoPreviewUrl">
+          <div class="edit-icon" (click)="isPendingProvider ? null : triggerLogoSelect()"
+            [ngClass]="{ 'disabled': isPendingProvider }" role="button" tabindex="0">
+            <mat-icon>edit</mat-icon>
+          </div>
+        </div>
+
+        <div class="logo-preview" *ngIf="logoPreviewUrl">
+          <img [src]="logoPreviewUrl" alt="logo preview" class="logo-img" />
+          <div class="close-icon" (click)="isPendingProvider ? null : removeLogo()"
+            [ngClass]="{ 'disabled': isPendingProvider }" role="button" tabindex="0" aria-label="remove-logo-button">
+            <mat-icon>close</mat-icon>
+          </div>
+        </div>
+
+        <mat-error *ngIf="getControlValidation('providerLogo', 'required') && logoTouched" class="mt-1 mr-auto">Logo is
+          required</mat-error>
+
+        <div class="logo-filename mt-2" *ngIf="logoFile || controls['providerLogo'].value">
+          {{ logoFile?.name || logoName || controls['providerLogo'].value }}
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-column gap-1 mat-field-rounded">
+      <div class="flex items-center gap-1 required">
+        <span class="label">Content Partner Name</span>
+      </div>
+      <mat-form-field class="w-full">
+        <input formControlName="contentPartnerName" matInput placeholder="Enter Content Partner Name" />
+        <mat-hint class="flex items-center justify-end w-full">
+          <span class="hint-text-style">{{ getTextLength('contentPartnerName') }}/70</span></mat-hint>
+        <mat-error>
+          <div class="flex gap-4">
+            <span *ngIf="getControlValidation('contentPartnerName', 'required')">
+              Content Partner Name is required.
+            </span>
+            <span *ngIf="getControlValidation('contentPartnerName', 'pattern')">
+              Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported.
+            </span>
+            <span *ngIf="getControlValidation('contentPartnerName', 'maxlength')">
+              Maximum 70 characters allowed.
+            </span>
+          </div>
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <ng-container *ngIf="isPendingProvider">
+      <div class="flex flex-column gap-1 mat-field-rounded">
+        <div class="flex items-center gap-1 required">
+          <span class="label">Contact Name</span>
+        </div>
+        <mat-form-field class="w-full">
+          <input formControlName="contactName" matInput placeholder="Enter Contact Name" />
+        </mat-form-field>
+      </div>
+      <div class="flex flex-column gap-1 mat-field-rounded">
+        <div class="flex items-center gap-1 required">
+          <span class="label">Email</span>
+        </div>
+        <mat-form-field class="w-full">
+          <input formControlName="email" matInput placeholder="Enter email" />
+        </mat-form-field>
+      </div>
+      <div class="flex flex-column gap-1 mat-field-rounded">
+        <div class="flex items-center gap-1 required">
+          <span class="label">Mobile Number</span>
+        </div>
+        <mat-form-field class="w-full">
+          <input formControlName="phone" matInput placeholder="Enter Mobile Number" />
+        </mat-form-field>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="hasPartnerCode">
+      <div class="flex flex-column gap-1 mat-field-rounded" *ngIf="!isPendingProvider">
+        <div class="flex items-center gap-1 required">
+          <span class="label">Partner Code</span>
+        </div>
+        <mat-form-field class="w-full">
+          <input matInput formControlName="partnerCode" placeholder="Partner Code" />
+          <mat-hint class="flex items-center justify-end w-full">
+            <span class="hint-text-style">{{ getTextLength('partnerCode') }}/6</span>
+          </mat-hint>
+
+          <mat-error>
+            <div class="flex gap-4">
+              <span *ngIf="getControlValidation('partnerCode', 'required')">
+                Partner Code is required.
+              </span>
+              <span *ngIf="getControlValidation('partnerCode', 'pattern')">
+                Only alphanumeric characters allowed
+              </span>
+              <span *ngIf="getControlValidation('partnerCode', 'maxlength')">
+                Maximum 6 characters allowed
+              </span>
+            </div>
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </ng-container>
+
+    <div class="flex flex-column gap-1 mat-field-rounded">
+      <div class="flex items-center gap-1 required">
+        <span class="label">Website URL</span>
+      </div>
+      <mat-form-field class="w-full">
+        <input matInput formControlName="websiteUrl" placeholder="https://example.com" />
+        <mat-hint class="flex items-center justify-end w-full">
+          <span class="hint-text-style">{{ getTextLength('websiteUrl') }}/1024</span>
+        </mat-hint>
+
+        <mat-error>
+          <div class="flex gap-4">
+            <span *ngIf="getControlValidation('websiteUrl', 'required')">
+              Website URL is required.
+            </span>
+            <span *ngIf="getControlValidation('websiteUrl', 'pattern')">
+              Please enter a valid URL (http/https)
+            </span>
+            <span *ngIf="getControlValidation('websiteUrl', 'maxlength')">
+              Maximum 1024 characters allowed
+            </span>
+          </div>
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-column gap-1">
+      <div class="flex items-center gap-1" [ngClass]="{'required': !isPendingProvider}">
+        <span class="label">Description</span>
+      </div>
+      <mat-form-field class="w-full">
+        <textarea matInput formControlName="description" placeholder="Add description" rows="4"></textarea>
+        <mat-hint class="flex items-center  w-full">
+          <span class="hint-text-style">Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported</span>
+          <span class="hint-text-style">{{ getTextLength('description') }}/500</span>
+        </mat-hint>
+
+        <mat-error>
+          <div class="flex gap-4">
+            <span *ngIf="getControlValidation('description', 'required')">
+              Description is required.
+            </span>
+            <span *ngIf="getControlValidation('description', 'pattern')">
+              Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported
+            </span>
+            <span *ngIf="getControlValidation('description', 'maxlength')">
+              Maximum 500 characters allowed
+            </span>
+          </div>
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-column gap-2 mt-3" *ngIf="!isPendingProvider">
+      <div class="flex items-center gap-1">
+        <span class="label">Provider Specific Tips</span>
+        <mat-icon matTooltip="Tips added will be available for learners accessing any course from this provider"
+          class="info-icon">info_outline</mat-icon>
+      </div>
+
+      <ng-container *ngIf="!disableAddTips; else addTipsDisabled">
+        <a (click)="addTips()" class="addtips-btn" matRipple>
+          <mat-icon class="addtips-icon">add</mat-icon>
+          <span class="addtips-text">Add tips</span>
+        </a>
+      </ng-container>
+
+      <ng-template #addTipsDisabled>
+        <a class="addtips-btn disabled" matRipple matTooltip="Maximum number of tips added">
+          <mat-icon class="addtips-icon">add</mat-icon>
+          <span class="addtips-text">Add tips</span>
+        </a>
+      </ng-template>
+
+      <div class="flex flex-column gap-2" formArrayName="providerTips">
+        <ng-container *ngFor="let tip of getTipsList?.controls; let i = index">
+          <div class="flex gap-0 mat-field-rounded">
+            <div class="w-full flex items-center">
+              <mat-form-field class="w-full">
+                <input [id]="'item-' + i" [formControlName]="i" matInput placeholder="Type here" maxlength="250" />
+                <mat-hint align="end">
+                  {{tip?.value?.length || 0}}/250
+                </mat-hint>
+                <mat-error *ngIf="tip?.hasError('required') && tip?.touched">
+                  Please enter a valid tip
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <button type="button" mat-button (click)="isPendingProvider ? null : removeTipAtIndex(i)"
+              [disabled]="isPendingProvider" class="removeTipBox flex justify-center items-center">
+              <mat-icon class="removeIcon">close</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="flex flex-column gap-1 mat-field-rounded mt-2" *ngIf="!isPendingProvider">
+      <div class="flex items-center gap-1">
+        <span class="label">Partnership Agreement</span>
+      </div>
+      <ng-container *ngIf="!pdfUploaded; else fileUploaded">
+        <div class="parnter-ship-agreement p-4" wsAuthDragDrop (fileDropped)="isPendingProvider ? null : onDrop($event)"
+          (click)="isPendingProvider ? null : fileInput?.nativeElement.click()"
+          [ngClass]="{ 'disabled': isPendingProvider }">
+          <div class="flex flex-col gap-1 items-center">
+            <div class="icon">
+              <mat-icon svgIcon="upload_upward_arrow"></mat-icon>
+            </div>
+            <div class="meta-text-1" onclick="document.getElementById('fileInput')?.click()">
+              Select File to upload
+            </div>
+            <div class="meta-text-2 text-center">or drag and drop here Max Size - 1GB</div>
+          </div>
+          <input type="file" id="fileInput" hidden accept=".pdf"
+            (change)="onDrop($event.target.files[0]); fileInput.value = null" />
+        </div>
+      </ng-container>
+      <ng-template #fileUploaded>
+        <div class="flex items-center my-2 fileUploadedCard">
+          <mat-icon class="removePdf" matTooltip="Remove PDF" (click)="isPendingProvider ? null : removePdf()"
+            [ngClass]="{ 'disabled': isPendingProvider }">close</mat-icon>
+          <img src="/assets/icons/pdf.svg" alt="uploaded pdf" class="samplePdf" />
+          <div class="flex flex-column justify-between pdfDetails">
+            <span class="pdfName">{{ fileName }}</span>
+            <ng-container *ngIf="fileUploadedDate">
+              <span class="fileUplaodedDate">File uploaded : {{ fileUploadedDate }}</span>
+            </ng-container>
+            <span class="documentAttached flex items-center">
+              <mat-icon class="greenTick">check_circle</mat-icon>
+              Document attached
+            </span>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="action-buttons flex items-center gap-3 justify-center mt-4" *ngIf="!isPendingProvider">
+      <button (click)="navigateToProvidersDashboard()" mat-flat-button
+        class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline">
+        Cancel
+      </button>
+      <button (click)="submit()" mat-flat-button
+        class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat">
+        {{ providerDetailsBeforeUpdate ? 'Update' : 'Save' }}
+      </button>
+    </div>
+  </form>
+  <div class="action-buttons flex items-center gap-3 justify-center mt-4" *ngIf="isPendingProvider">
+    <button (click)="rejectApproveProvider('reject')" mat-flat-button
+      class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline">
+      Reject
+    </button>
+    <button (click)="rejectApproveProvider('approve')" mat-flat-button
+      class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat">
+      Approve
+    </button>
+  </div>
+</div>

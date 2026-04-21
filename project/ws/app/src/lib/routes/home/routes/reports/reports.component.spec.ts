@@ -3,7 +3,7 @@ import { of } from 'rxjs'
 import { Router } from '@angular/router'
 import { ConfigurationsService, EventService } from '@sunbird-cb/utils-v2'
 import { DirectoryService } from '../../services/directory.services'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 
 describe('ReportsComponent', () => {
   let component: ReportsComponent

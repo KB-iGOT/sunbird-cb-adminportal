@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { ActivatedRoute, Router } from '@angular/router'
 import { DialogConfirmComponent } from '../../../../../../../../../src/app/component/dialog-confirm/dialog-confirm.component'
 import { RequestsService } from '../../services/onboarding-requests.service'
@@ -10,9 +10,10 @@ import * as _ from 'lodash'
 import { preventHtmlAndJs } from '../../validators/prevent-html-and-js.validator'
 
 @Component({
-  selector: 'ws-app-requests-approval',
-  templateUrl: './requests-approval.component.html',
-  styleUrls: ['./requests-approval.component.scss'],
+    selector: 'ws-app-requests-approval',
+    templateUrl: './requests-approval.component.html',
+    styleUrls: ['./requests-approval.component.scss'],
+    standalone: false
 })
 export class RequestsApprovalComponent implements OnInit {
   positionForm!: UntypedFormGroup

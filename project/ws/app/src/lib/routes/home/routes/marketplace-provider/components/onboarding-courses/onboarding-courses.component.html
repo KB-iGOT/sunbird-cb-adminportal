@@ -1,0 +1,72 @@
+<div class="onboarding-courses-wrapper">
+  <ng-container *ngIf="!addCoursesFlag">
+    <div class="flex justify-between items-center mb-4">
+      <p class="page-title">Courses</p>
+      <button
+        (click)="addCourses()"
+        mat-flat-button
+        class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat"
+      >
+        Add Course
+      </button>
+    </div>
+
+    <ng-container *ngIf="!delayTabLoad">
+      <mat-tab-group class="grouped-tabs-courses">
+        <!-- Upload Status Tab -->
+        <mat-tab label="Upload Status">
+          <div class="courses-table mt-4">
+            <ng-container *ngIf="!showUploadedStatusLoader; else showLoader">
+              <ws-app-courses-list-table
+                [coursesList]="uploadedContentList"
+                [tableData]="contentTableData"
+                [menuItems]="contenetMenuItems"
+                [paginationDetails]="defaultPagination"
+                (actionTriggered)="contentEvents($event)"
+              ></ws-app-courses-list-table>
+            </ng-container>
+          </div>
+        </mat-tab>
+
+        <!-- Published Courses Tab -->
+        <mat-tab label="Published Courses">
+          <div class="courses-table mt-4">
+            <ng-container *ngIf="!showPublishedCoursesLoader; else showLoader">
+              <ws-app-courses-list-table
+                [coursesList]="publishedCoursesList"
+                [tableData]="publishedCoursesTableData"
+                [paginationDetails]="publishedCoursesTablePaginationDetails"
+                (actionTriggered)="contentEvents($event)"
+              ></ws-app-courses-list-table>
+            </ng-container>
+          </div>
+        </mat-tab>
+
+        <!-- Not Published Courses Tab -->
+        <mat-tab label="Not Published Courses">
+          <div class="courses-table mt-4">
+            <ng-container *ngIf="!showUnpublishedCoursesLoader; else showLoader">
+              <ws-app-courses-list-table
+                [coursesList]="unPublishedCoursesList"
+                [tableData]="unPublishedCoursesTableData"
+                [menuItems]="unpublishedCoursesMenuItems"
+                [paginationDetails]="unPublishedCoursesTablePaginationDetails"
+                (actionTriggered)="contentEvents($event)"
+              ></ws-app-courses-list-table>
+            </ng-container>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </ng-container>
+
+    <ng-template #showLoader>
+      <div class="w-full flex items-center justify-center dataLoader mt-4">
+        <mat-spinner [diameter]="50" class="dataSpinner"></mat-spinner>
+      </div>
+    </ng-template>
+  </ng-container>
+
+  <ng-container *ngIf="addCoursesFlag">
+    <ws-app-add-provider-courses (action)="actionHandler($event)"></ws-app-add-provider-courses>
+  </ng-container>
+</div>

@@ -12,8 +12,8 @@ jest.mock('../../services/event.service', () => ({
 jest.mock('@sunbird-cb/utils-v2', () => ({
     ValueService: jest.fn(),
 }))
-jest.mock('@angular/material/legacy-dialog', () => ({
-    MatLegacyDialog: jest.fn(),
+jest.mock('@angular/material/dialog', () => ({
+    MatDialog: jest.fn(),
 }))
 
 describe('ProfileDetailComponent', () => {

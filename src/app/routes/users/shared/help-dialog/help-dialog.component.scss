@@ -1,0 +1,25 @@
+.help-list {
+  .help-item {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+    &:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .help-action {
+      margin: 0 0 4px;
+      font-weight: 600;
+      color: #1a237e;
+    }
+
+    .help-desc {
+      margin: 0;
+      color: rgba(0, 0, 0, 0.7);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+  }
+}

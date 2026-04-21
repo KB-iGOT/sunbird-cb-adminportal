@@ -6,9 +6,10 @@ import { Subscription } from 'rxjs'
 import { ILoginDescriptiveFooterConfig, IWSPublicLoginConfig } from './login.model'
 
 @Component({
-  selector: 'ws-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+    selector: 'ws-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    standalone: false
 })
 export class LoginComponent implements OnInit, OnDestroy {
   objectKeys = Object.keys
@@ -24,6 +25,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   welcomeFooter: ILoginDescriptiveFooterConfig | null = null
   title = ''
   subTitle = ''
+  // copyrightYears = `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`
   // private redirectUrl = ''
   private subscriptionLogin: Subscription | null = null
 

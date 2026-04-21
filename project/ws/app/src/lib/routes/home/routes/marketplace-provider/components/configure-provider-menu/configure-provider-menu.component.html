@@ -1,0 +1,15 @@
+<div class="menu mx-4">
+  <div class="menu-section">
+    <ul class="step-list relative">
+      <ng-container *ngFor="let item of MENU_ITEMS; trackBy: trackByFn">
+        <li
+          class="step-item cursor-pointer text-sm"
+          [ngClass]="{ active: activeItem.slug === item.slug, disabled: item.disabled }"
+          (click)="setActiveItem(item)"
+        >
+          <div class="step-item-label">{{ item.label }}</div>
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+</div>

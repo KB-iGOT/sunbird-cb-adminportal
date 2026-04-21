@@ -4,6 +4,7 @@ import { Inject, Injectable } from '@angular/core'
 import { MatIconRegistry } from '@angular/material/icon'
 import { DomSanitizer } from '@angular/platform-browser'
 import { BtnSettingsService } from '@sunbird-cb/collection'
+import { TranslateService } from '@ngx-translate/core'
 import { v4 as uuid } from 'uuid'
 import {
   hasPermissions,
@@ -63,6 +64,7 @@ export class InitService {
     private settingsSvc: BtnSettingsService,
     private userPreference: UserPreferenceService,
     private http: HttpClient,
+    private translate: TranslateService,
     // private router: Router, private authSvc: AuthKeycloakService,
     @Inject(APP_BASE_HREF) private baseHref: string,
     // private router: Router,
@@ -72,6 +74,9 @@ export class InitService {
     // private authSvc: AuthKeycloakService,
   ) {
     this.configSvc.isProduction = environment.production
+
+    // Initialize translation service
+    this.initializeTranslations()
 
     // Register pin icon for use in Knowledge Board
     // Usage: <mat-icon svgIcon="pin"></mat-icon>
@@ -99,6 +104,77 @@ export class InitService {
       'hubs',
       domSanitizer.bypassSecurityTrustResourceUrl('spv-assets/icons/hubs.svg'),
     )
+    iconRegistry.addSvgIcon(
+      'field_i',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/field-i-icon.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'upload_upward_arrow',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/upload-colored.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'karma_points',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/karma-points.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'excel_sheet',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/csv.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'archieve_color',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/archieve-colored.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'certificate_color',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/certificate-colored.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'download_color',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/download-colored.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'content_copy',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/content_copy.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'alert_i',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/alert-i-icon.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'verified_tick',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/verified-tick.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'market_place',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hubs/market-place.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'content_management',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hubs/content-management.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'survey',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hubs/survey.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'corporate',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hubs/corporate.svg'),
+    )
+    iconRegistry.addSvgIcon(
+      'person_check',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hubs/person-check.svg'),
+    )
+  }
+
+  private initializeTranslations(): void {
+    // Set default language
+    this.translate.setDefaultLang('en')
+
+    // Get the locale from baseHref or use 'en' as default
+    const currentLang = this.locale || 'en'
+
+    // Set and use the current language
+    this.translate.use(currentLang)
   }
 
   async init() {

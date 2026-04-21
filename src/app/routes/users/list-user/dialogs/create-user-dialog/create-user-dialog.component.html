@@ -1,0 +1,54 @@
+<h2 mat-dialog-title>Create New User</h2>
+
+<mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+<mat-dialog-content>
+  <form [formGroup]="userForm" class="create-user-form">
+    <mat-form-field class="full-width" appearance="outline" floatLabel="always">
+      <mat-label>Full Name</mat-label>
+      <input matInput formControlName="firstName" placeholder="Enter full name">
+      <mat-error *ngIf="userForm.get('firstName')?.hasError('required')">Name is required</mat-error>
+      <mat-error *ngIf="userForm.get('firstName')?.hasError('minlength')">Minimum 2 characters</mat-error>
+      <mat-error *ngIf="userForm.get('firstName')?.hasError('maxlength')">Maximum 100 characters</mat-error>
+      <mat-error *ngIf="userForm.get('firstName')?.hasError('pattern')">Only letters, spaces, and periods
+        allowed</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width" appearance="outline" floatLabel="always">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" placeholder="Enter email address" type="email">
+      <mat-error *ngIf="userForm.get('email')?.hasError('required')">Email is required</mat-error>
+      <mat-error *ngIf="userForm.get('email')?.hasError('pattern')">Please enter a valid email</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width" appearance="outline" floatLabel="always">
+      <mat-label>Phone Number</mat-label>
+      <input matInput formControlName="phone" placeholder="Enter phone number">
+      <mat-error *ngIf="userForm.get('phone')?.hasError('required')">Phone number is required</mat-error>
+      <mat-error *ngIf="userForm.get('phone')?.hasError('pattern')">Enter a valid phone (10-15 digits, optional +
+        prefix)</mat-error>
+    </mat-form-field>
+
+    <div class="section-label">Roles</div>
+    <div class="roles-chips">
+      <button *ngFor="let role of availableRoles" type="button" class="role-chip"
+        [class.selected]="isRoleSelected(role)" [disabled]="role === 'PUBLIC'" (click)="toggleRole(role)">
+        <mat-icon class="chip-icon" *ngIf="isRoleSelected(role)">check</mat-icon>
+        {{ role }}
+      </button>
+    </div>
+
+    <div class="section-label org-label">Organization <span class="required-star">*</span></div>
+    <ws-organization-selector [required]="true" [selectedOrg]="selectedOrg" (orgSelected)="onOrgSelected($event)"
+      (orgCleared)="onOrgCleared()">
+    </ws-organization-selector>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="isLoading">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="(!isFormValid && !isLoading) || isLoading">
+    <span *ngIf="!isLoading">Create User</span>
+    <span *ngIf="isLoading">Creating...</span>
+  </button>
+</mat-dialog-actions>

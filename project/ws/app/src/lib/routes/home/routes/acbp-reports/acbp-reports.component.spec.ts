@@ -3,8 +3,8 @@ import { AcbpReportsService } from './acbp-reports.service'
 import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { DatePipe } from '@angular/common'
 import { of, throwError } from 'rxjs'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
+import { MatDialog } from '@angular/material/dialog'
 
 // Mock environment
 jest.mock('../../../../../../../../../src/environments/environment', () => ({

@@ -1,0 +1,252 @@
+<!-- Main Container -->
+<div class="dev-doc-container">
+  <!-- Form Container -->
+  <mat-card class="dev-doc-card">
+    <!-- Card Header -->
+    <mat-card-header class="dev-doc-card-header flex items-center justify-between">
+      <div class="flex items-center gap-6">
+        <mat-icon class="dev-doc-back-icon" (click)="cancel()"> arrow_back</mat-icon>
+        <h1 class="dev-doc-title">{{ headerText }}</h1>
+      </div>
+      <ng-container *ngIf="mode !== 'view'">
+        <div class="dev-doc-header-actions">
+          <button mat-raised-button class="save-btn flex justify-center items-center"
+            [disabled]="isSaving || subCategoryForm.get('title')?.invalid"
+            [class.disable-btn]="isSaving || subCategoryForm.get('title')?.invalid" (click)="save()">
+            Save as Draft
+          </button>
+          <button class="publish-btn" [disabled]="(subCategoryForm.invalid || isSaving)" mat-raised-button
+            [class.disable-btn]="subCategoryForm.invalid || isSaving" (click)="next()">
+            {{ isPublicDocument ? 'Republish' : 'Publish' }}
+          </button>
+        </div>
+      </ng-container>
+    </mat-card-header>
+
+    <!-- Card Content -->
+    <mat-card-content class="dev-doc-card-content">
+      <form [formGroup]="subCategoryForm" class="dev-doc-form" [ngClass]="{'disable-form': mode === 'view'}">
+        <!-- Article Details Section -->
+        <ng-container *ngTemplateOutlet="articleDetailsSection"></ng-container>
+
+        <!-- Content Section -->
+        <ng-container *ngTemplateOutlet="contentsSection"></ng-container>
+
+        <!-- Publishing Settings Section -->
+        <ng-container *ngTemplateOutlet="publishingSection"></ng-container>
+
+        <!-- Template: Article Details Section -->
+        <ng-template #articleDetailsSection>
+          <div class="dev-doc-section">
+            <div class="dev-doc-section-content">
+              <!-- Title Field -->
+              <div class="dev-doc-form-group round-control">
+                <label class="dev-doc-label required" htmlFor="title-input">Article Name</label>
+                <mat-form-field class="dev-doc-form-field" appearance="outline">
+                  <input id="title-input" matInput formControlName="title" placeholder="Enter article title"
+                    [readonly]="mode === 'view'" aria-label="Title" maxlength="100" />
+                  <mat-error *ngIf="mode !== 'view' && hasError('title', 'required')">
+                    Article Name is required
+                  </mat-error>
+                  <mat-error *ngIf="mode !== 'view' && hasError('title', 'minlength')">
+                    Minimum characters left to create {{ getRemainingCharacters('title', 10) }}
+                  </mat-error>
+                  <mat-error *ngIf="mode !== 'view' && hasError('title', 'maxlength')">
+                    Article Name must not exceed 100 characters
+                  </mat-error>
+                  <mat-hint align="end">
+                    {{ subCategoryForm.get('title')?.value?.length || 0 }} / 100
+                  </mat-hint>
+                </mat-form-field>
+              </div>
+
+              <!-- Excerpt Field (Textarea) -->
+              <div class="dev-doc-form-group round-control">
+                <label class="dev-doc-label required" htmlFor="excerpt-input">Article Brief Description</label>
+                <mat-form-field class="dev-doc-form-field" appearance="outline">
+                  <textarea id="excerpt-input" matInput formControlName="excerpt" placeholder="Enter article excerpt"
+                    rows="5" [readonly]="mode === 'view'" aria-label="Excerpt" maxlength="1000"></textarea>
+                  <mat-error *ngIf="mode !== 'view' && hasError('excerpt', 'required')">
+                    Article Brief Description is required
+                  </mat-error>
+                  <mat-error *ngIf="mode !== 'view' && hasError('excerpt', 'minlength')">
+                    Minimum characters left to create {{ getRemainingCharacters('excerpt', 50) }}
+                  </mat-error>
+                  <mat-hint align="end">
+                    {{ subCategoryForm.get('excerpt')?.value?.length || 0 }} / 1000
+                  </mat-hint>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <!-- Template: Contents Section -->
+        <ng-template #contentsSection>
+          <div class="dev-doc-section">
+            <div class="dev-doc-section-header">
+              <div class="dev-doc-label required">Article Sections</div>
+            </div>
+
+            <div class="dev-doc-section-content">
+              <ng-container *ngIf="mode !== 'view'">
+                <a (click)="addArticle()" class="addtips-btn" matRipple>
+                  <mat-icon class="addtips-icon">add</mat-icon>
+                  <span class="addtips-text">Add Article Section</span>
+                </a>
+              </ng-container>
+              <mat-accordion formArrayName="articles" class="dev-doc-accordion">
+                <ng-container *ngFor="let article of articlesArray.controls; let i = index">
+                  <mat-expansion-panel [formGroupName]="i" class="dev-doc-expansion-panel" [hideToggle]="true"
+                    [expanded]="expandedAccordionIndex === i" (opened)="expandedAccordionIndex = i"
+                    (closed)="expandedAccordionIndex = expandedAccordionIndex === i ? null : expandedAccordionIndex">
+                    <!-- Expansion Panel Header -->
+                    <mat-expansion-panel-header class="dev-doc-expansion-header">
+                      <mat-panel-title class="dev-doc-panel-title dev-doc-label">
+                        {{ articlesArray.at(i)?.get('title')?.value }}
+                      </mat-panel-title>
+                      <ng-container *ngIf="mode !== 'view'">
+                        <button type="button" mat-button (click)="deleteArticle(i, $event)"
+                          class="removeItem flex justify-center items-center"
+                          [attr.aria-label]="articlesArray.length > 1 ? 'Delete section' : 'At least one article section is required'"
+                          [tabindex]="articlesArray.length > 1 ? 0 : -1">
+                          <mat-icon class="removeIcon">close</mat-icon>
+                        </button>
+                      </ng-container>
+                    </mat-expansion-panel-header>
+
+                    <!-- Expansion Panel Content -->
+                    <div class="dev-doc-panel-content">
+                      <!-- Article Title -->
+                      <div class="dev-doc-form-group round-control">
+                        <label class="dev-doc-label required" [htmlFor]="'content-title-' + i">Article Section
+                          Name</label>
+                        <mat-form-field class="dev-doc-form-field" appearance="outline">
+                          <input [id]="'content-title-' + i" matInput formControlName="title"
+                            placeholder="Enter article section name" [readonly]="mode === 'view'"
+                            [attr.aria-label]="'Article Section Name ' + (i + 1)" maxlength="100" />
+                          <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'title', 'required')">
+                            Article Section Name is required
+                          </mat-error>
+                          <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'title', 'minlength')">
+                            Minimum characters left to create {{ getArticleRemainingCharacters(i, 'title', 10) }}
+                          </mat-error>
+                          <mat-error *ngIf="mode !== 'view' && articleHasError(i, 'title', 'maxlength')">
+                            Article Section Name must not exceed 100 characters
+                          </mat-error>
+                          <mat-hint align="end">
+                            {{ articlesArray.at(i)?.get('title')?.value?.length || 0 }} / 100
+                          </mat-hint>
+                        </mat-form-field>
+                      </div>
+
+                      <!-- Article Content (Rich Text Editor) -->
+                      <div class="dev-doc-form-group">
+                        <label class="dev-doc-label required" [htmlFor]="'content-' + i">Article Section
+                          Description</label>
+                          <div>
+                        <ws-app-plain-ckeditor [content]="articlesArray.at(i)?.get('content')?.value || ''"
+                          (value)="onCKEditorChange(i, $event)" [doRegex]="false"
+                          [showError]="mode !== 'view' && articleHasError(i, 'content', 'required')"></ws-app-plain-ckeditor>
+                        <div class="ckeditor-validation-wrapper">
+                          <ng-container *ngIf="mode !== 'view'">
+                            <mat-error *ngIf="articleHasError(i, 'content', 'required')" class="dev-doc-error">
+                              Article Section Description is required
+                            </mat-error>
+                            <mat-error *ngIf="articleHasError(i, 'content', 'minlength')" class="dev-doc-error">
+                              Minimum characters left to create {{ getArticleRemainingCharacters(i, 'content', 50) }}
+                            </mat-error>
+                            <mat-error *ngIf="articleHasError(i, 'content', 'maxlength')" class="dev-doc-error">
+                              Article Section Description must not exceed 1000 characters
+                            </mat-error>
+                          </ng-container>
+                          <span class="dev-doc-hint">
+                            {{ getArticleContentPlainTextLength(i) }} / 1000
+                          </span>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                  </mat-expansion-panel>
+                </ng-container>
+              </mat-accordion>
+
+              <!-- Empty State -->
+              <ng-container *ngIf="articlesArray.length === 0">
+                <div class="dev-doc-empty-state">
+                  <p>No content sections added yet</p>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </ng-template>
+
+        <!-- Template: Publishing Settings Section -->
+        <ng-template #publishingSection>
+          <div class="dev-doc-section">
+            <div class="dev-doc-section-content dev-doc-publishing-grid">
+              <!-- Category Dropdown -->
+              <div class="dev-doc-form-group round-control">
+                <label class="dev-doc-label required" htmlFor="category-select">Category</label>
+                <mat-form-field class="dev-doc-form-field" appearance="outline">
+                  <mat-select id="category-select" formControlName="category" [disabled]="mode === 'view'"
+                    aria-label="Category">
+                    <mat-option *ngFor="let option of categoryOptions" [value]="option.categoryId">
+                      {{ option.title }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <!-- Visibility Dropdown -->
+              <div class="dev-doc-form-group round-control">
+                <label class="dev-doc-label" htmlFor="visibility-select">Visibility</label>
+                <mat-form-field class="dev-doc-form-field" appearance="outline">
+                  <mat-select id="visibility-select" formControlName="visibility" [disabled]="mode === 'view'"
+                    aria-label="Visibility">
+                    <mat-option *ngFor="let option of visibilityOptions" [value]="option.value">
+                      {{ option.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Tags Section -->
+            <fieldset class="dev-doc-tags-section">
+              <div class="dev-doc-tags-header flex items-center justify-between">
+                <div class="dev-doc-label">Tags</div>
+              </div>
+
+              <div formArrayName="tags" class="dev-doc-tags-list">
+                <ng-container *ngIf="mode !== 'view'">
+                  <a (click)="addTag()" class="addtips-btn" matRipple>
+                    <mat-icon class="addtips-icon">add</mat-icon>
+                    <span class="addtips-text">Add Tag</span>
+                  </a>
+                </ng-container>
+                <ng-container *ngFor="let tag of tagsArray.controls; let i = index">
+                  <div [formGroupName]="i" class="dev-doc-tag-row round-control flex items-start">
+                    <mat-form-field class="dev-doc-form-field dev-doc-tag-field" appearance="outline">
+                      <input matInput formControlName="value" placeholder="Enter tag" [readonly]="mode === 'view'"
+                        (change)="onTagChange()" [attr.aria-label]="'Tag ' + (i + 1)" />
+                      <mat-error *ngIf="mode !== 'view' && tagsArray.at(i)?.hasError('minlength')">
+                        Minimum characters left to create {{ getTagRemainingCharacters(i, 3) }}
+                      </mat-error>
+                    </mat-form-field>
+                    <ng-container *ngIf="mode !== 'view'">
+                      <button type="button" mat-button (click)="removeTag(i)"
+                        class="removeItem flex justify-center items-center">
+                        <mat-icon class="removeIcon">close</mat-icon>
+                      </button>
+                    </ng-container>
+                  </div>
+                </ng-container>
+              </div>
+            </fieldset>
+          </div>
+        </ng-template>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

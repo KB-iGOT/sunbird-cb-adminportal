@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { environment } from '../../../../../../../../../src/environments/environment'
 /* tslint:disable */
 import _ from 'lodash'
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator'
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
+import { MatPaginator } from '@angular/material/paginator'
+import { MatTableDataSource } from '@angular/material/table'
 import { DatePipe } from '@angular/common'
 import { MomentDateAdapter } from '@angular/material-moment-adapter'
 import moment from 'moment'
@@ -26,14 +26,14 @@ export const MY_FORMATS = {
   },
 }
 @Component({
-  selector: 'ws-general-reports',
-  templateUrl: './general-reports.component.html',
-  styleUrls: ['./general-reports.component.scss'],
-  providers: [DatePipe,
-    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  ]
-
+    selector: 'ws-general-reports',
+    templateUrl: './general-reports.component.html',
+    styleUrls: ['./general-reports.component.scss'],
+    providers: [DatePipe,
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    ],
+    standalone: false
 })
 export class GeneralReportsComponent implements OnInit {
 

@@ -1,83 +1,27 @@
-@import 'ws-common';
-@import 'ws-vars';
-
-.mat-card-avatar {
-  width: 150px !important;
-  height: 144px !important;
-}
-
-mat-card-header {
-  text-align: center !important;
-  display: block !important;
-}
-
-table {
-  width: 100%;
-}
-
-.button-row {
-  display: table-cell;
-  justify-content: flex-end;
-}
-
-.button-row .mat-button-base {
-  margin: 8px 16px 8px 0;
-}
-
-.mat-cell {
-	font-size: 14px;
-}
-
-th.mat-header-cell {
-	font-size:16px;
-	font-weight: bold;
-}
-
-ws-app-home input {
-  line-height: 1.5
-}
-
-ws-app-home input {
-  padding-left: .5rem !important;
-}
-
-ws-app-home .filter-button {
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  align-items: center;
+.success-dialog {
   text-align: center;
+  position: relative;
+  padding: 16px;
 }
 
-ws-app-home .search .mat-form-field-wrapper {
-  padding-bottom: 0px !important;
-
-  .mat-form-field-infix {
-    border-top-width: 11px !important;
-    padding: 0;
-    padding-bottom: 10px;
-  }
+.close-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
-
-
-ws-app-home .lang-btn {
-  margin-right: 0 !important;
+.dialog-body {
+  padding: 0 24px 24px;
 }
 
-ws-app-home .search-border {
-  border-radius: .75rem;
-  border-color: #cecece;
+.dialog-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 16px;
 }
 
-ws-app-home .border-right {
-  border-right: 1px solid #cecece;
-}
-
-.example-card {
-  box-shadow: none; text-align: center; justify-content: center;
-}
-
-.closeicon {
-  margin-top: -31px;
+.dialog-message {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+  margin: 0;
 }

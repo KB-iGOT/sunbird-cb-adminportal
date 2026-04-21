@@ -8,9 +8,10 @@ export interface IParticipantElement {
 }
 
 @Component({
-  selector: 'ws-app-success',
-  templateUrl: './success.component.html',
-  styleUrls: ['./success.component.scss'],
+    selector: 'ws-app-success',
+    templateUrl: './success.component.html',
+    styleUrls: ['./success.component.scss'],
+    standalone: false
 })
 export class SuccessComponent implements OnInit {
 

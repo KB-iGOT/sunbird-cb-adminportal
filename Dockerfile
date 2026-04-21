@@ -1,17 +1,21 @@
-FROM node:22.6.0
-WORKDIR /app
-COPY ./* /app/
-#RUN npm i yarn
-#RUN yarn global add @angular/cli@latest
-RUN rm -rf node_modules
-RUN yarn && yarn add moment && yarn add vis-util && npm run build --prod --build-optimizer
-#RUN ng build --prod --outputPath=dist/www/en --baseHref=/ --i18nLocale=en --verbose=true
-RUN npm run compress:brotli
-#RUN npm run compress:gzip
-USER node
-WORKDIR /app/dist
-COPY assets/SPV/client-assets/dist www/en/assets
-RUN npm install --production
-EXPOSE 3004
+FROM node:22.13.0
 
-CMD [ "npm", "run", "serve:prod" ]
+RUN mkdir -p /app && chown -R node:node /app
+WORKDIR /app
+
+COPY --chown=node:node . .
+
+USER node
+
+RUN rm -rf node_modules
+RUN yarn cache clean && yarn && yarn add moment && yarn add vis-util && npm run build --prod --build-optimizer
+
+RUN npm run compress:brotli
+WORKDIR /app/dist
+
+COPY --chown=node:node assets/SPV/client-assets/dist www/en/assets
+
+RUN npm install --production
+
+EXPOSE 3004
+CMD ["npm", "run", "serve:prod"]

@@ -17,3 +17,7 @@
     }
   }
 }
+
+::ng-deep .addCardButtonNew .mdc-button__label {
+  padding: 0 18px !important
+}

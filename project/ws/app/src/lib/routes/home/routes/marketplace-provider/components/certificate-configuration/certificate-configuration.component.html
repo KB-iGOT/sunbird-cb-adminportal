@@ -1,0 +1,161 @@
+<div class="wrapper-certificate-configuration">
+  <div class="flex justify-between items-center mb-4">
+    <p class="page-title">Certificate Configuration</p>
+    <button
+      mat-flat-button
+      class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat"
+      (click)="uploadFile()"
+    >
+      Save
+    </button>
+  </div>
+
+  <form [formGroup]="providerForm">
+    <div class="configuration-block flex gap-3 rounded-xl px-4 py-5 bg-white">
+      <div class="configuration-left flex-1 w-1/2">
+        <p class="page-title">Certificate Configuration</p>
+
+        <div class="flex flex-column gap-1 mat-field-rounded">
+          <div class="flex items-center gap-1 required">
+            <span class="label">Provider Name</span>
+          </div>
+          <mat-form-field class="w-full" appearance="outline">
+            <input matInput placeholder="Type Here" type="text" formControlName="providerName" />
+          </mat-form-field>
+        </div>
+        <div class="flex flex-column gap-1 mat-field-rounded mt-2">
+          <div class="flex items-center gap-1">
+            <span class="label">Add Logo</span>
+          </div>
+          <ng-container *ngIf="!logoUploaded; else logoFileUploaded">
+            <div
+              class="parnter-ship-agreement p-4"
+              wsAuthDragDrop
+              (fileDropped)="onDropLogo($event)"
+            >
+              <div class="flex flex-col gap-1 items-center">
+                <div class="icon">
+                  <mat-icon svgIcon="upload_upward_arrow"></mat-icon>
+                </div>
+                <div
+                  class="meta-text-1"
+                  onclick="document.getElementById('logoFileInput')?.click()"
+                >
+                  Select File to upload
+                </div>
+                <div class="meta-text-2 text-center">or drag and drop here Max Size - 1GB</div>
+              </div>
+              <input
+                type="file"
+                id="logoFileInput"
+                #logoFileInput
+                hidden
+                accept=".svg,image/svg+xml"
+                (change)="onDropLogo($event.target.files[0]); logoFileInput.value = null"
+              />
+            </div>
+          </ng-container>
+          <ng-template #logoFileUploaded>
+            <div class="flex items-start justify-start my-2 flex-col">
+              <div class="relative">
+                <mat-icon
+                  class="remove-logo-image-icon cursor-pointer"
+                  matTooltip="Remove Logo"
+                  (click)="removeLogoImage()"
+                  >close</mat-icon
+                >
+                <img [src]="selectedLogoImage" alt="uploaded logo" class="uploaded-logo-image" />
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Certificate Template Section -->
+      <div class="configuration-right flex-1">
+        <p class="page-title">Certificate Template</p>
+
+        <div class="flex flex-column gap-1 mat-field-rounded mt-2">
+          <ng-container *ngIf="!certificateUploaded; else certificateFileUploaded">
+            <div
+              class="parnter-ship-agreement p-4 certificate-preview"
+              wsAuthDragDrop
+              (fileDropped)="onDropCertificate($event)"
+            >
+              <div class="flex flex-col gap-1 items-center">
+                <div class="icon">
+                  <mat-icon svgIcon="upload_upward_arrow"></mat-icon>
+                </div>
+                <div
+                  class="meta-text-1"
+                  onclick="document.getElementById('certificateFileInput')?.click()"
+                >
+                  Select SVG File to upload
+                </div>
+                <div class="meta-text-2 text-center">or drag and drop here Max Size - 100MB</div>
+              </div>
+              <input
+                type="file"
+                id="certificateFileInput"
+                #certificateFileInput
+                hidden
+                accept=".svg,image/svg+xml"
+                (change)="
+                  onDropCertificate($event.target.files[0]); certificateFileInput.value = null
+                "
+              />
+            </div>
+          </ng-container>
+          <ng-template #certificateFileUploaded>
+            <div class="parnter-ship-agreement p-4 certificate-preview relative">
+              <div class="flex items-start my-2 flex-column">
+                <div class="">
+                  <mat-icon
+                    class="certificate-logo-image-icon cursor-pointer"
+                    (click)="removeCertificateImage()"
+                    >close</mat-icon
+                  >
+                  <ng-container *ngIf="safeCertificateUrl">
+                    <img
+                      [src]="safeCertificateUrl"
+                      alt="certificate"
+                      class="uploaded-certificate"
+                    />
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+
+        <div class="actions-on-certificate flex gap-4 mt-4 items-center justify-center">
+          <button
+            mat-flat-button
+            class="flex rounded-full mat-btn-outline"
+            (click)="downloadPDF()"
+            [disabled]="!certificateUploaded"
+          >
+            <mat-icon svgIcon="download_color" class="mr-1"></mat-icon>
+            Export PDF
+          </button>
+          <button
+            mat-flat-button
+            class="flex rounded-full mat-btn-outline"
+            onclick="document.getElementById('certificateFileInput')?.click()"
+          >
+            <mat-icon svgIcon="archieve_color" class="mr-1"></mat-icon>
+            Import Template
+          </button>
+          <button
+            mat-flat-button
+            class="flex rounded-full mat-btn-outline"
+            (click)="useDefaultTemplate()"
+          >
+            <mat-icon svgIcon="certificate_color" class="mr-1"></mat-icon>
+            Use Default
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

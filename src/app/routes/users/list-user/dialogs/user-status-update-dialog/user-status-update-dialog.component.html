@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>Reassign User</h2>
+
+<mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+<mat-dialog-content>
+  <div class="user-info">
+    <div class="info-row">
+      <span class="label">User:</span>
+      <span class="value">{{ userName }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Profile Status:</span>
+      <span class="status-chip not-my-user">NOT-MY-USER</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Current Organization:</span>
+      <span class="value">{{ user.rootOrgName || 'N/A' }}</span>
+    </div>
+  </div>
+
+  <p class="description">
+    This user has been marked as "NOT-MY-USER". Please select the correct organization
+    to reassign this user.
+  </p>
+
+  <div class="org-section">
+    <div class="section-label">Target Organization</div>
+    <ws-organization-selector [required]="true" [selectedOrg]="selectedOrg" (orgSelected)="onOrgSelected($event)"
+      (orgCleared)="onOrgCleared()">
+    </ws-organization-selector>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="isLoading">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onConfirm()" [disabled]="!selectedOrg || isLoading">
+    Reassign User
+  </button>
+</mat-dialog-actions>

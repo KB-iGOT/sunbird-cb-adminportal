@@ -19,50 +19,49 @@
 :host {
   .custom-height-select {
     width: 250px;
-
-    // Main field height
-    ::ng-deep .mat-form-field-wrapper {
-      height: 35px;
-      padding: 0;
-      margin: 0;
-    }
-
-    // Infix (content area) height and alignment
-    ::ng-deep .mat-form-field-infix {
-      min-height: 35px !important;
-      height: 35px !important;
-      display: flex;
-      align-items: center;
-      border: 0;
-      position: relative;
-      padding: 4px 8px 0px 8px;
-    }
-
-    // Force mat-select dropdown to appear below
-    ::ng-deep .mat-select-panel-below {
-      margin-top: 36px !important; // Adjust this value as needed
-      transform-origin: top center !important;
-    }
-
-    // Round border for select
-    ::ng-deep .mat-form-field-outline {
-      border-radius: 20px !important;
-    }
-
-    ::ng-deep .mat-form-field-outline-start {
-      display: none !important;
-    }
-
-    ::ng-deep .mat-form-field-outline-end {
-      border-radius: 20px !important;
-      border-left-style: solid !important;
-    }
-
-    ::ng-deep .mat-select-arrow-wrapper {
-      padding-top: 15px;
-    }
   }
 }
+
+/* Container gets full rounded border and visible border */
+::ng-deep .custom-height-select .mdc-notched-outline {
+  border-radius: 20px !important;
+  border: none !important; /* remove default border */
+  box-shadow: 0 0 0 1px #c0c0c0 inset !important; /* simulate border */
+  transition: box-shadow 0.3s ease;
+  overflow: visible !important;
+}
+
+/* Remove child borders to avoid double border/arc */
+::ng-deep .custom-height-select
+  .mdc-notched-outline__leading,
+::ng-deep .custom-height-select
+  .mdc-notched-outline__notch,
+::ng-deep .custom-height-select
+  .mdc-notched-outline__trailing {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* On focus, highlight with brand color */
+::ng-deep .custom-height-select.mat-focused .mdc-notched-outline {
+  box-shadow: 0 0 0 2px #1B4CA1 inset !important;
+}
+
+/* Match height and vertical alignment */
+::ng-deep .custom-height-select .mat-mdc-form-field-flex {
+  height: 40px;
+  align-items: center;
+}
+
+/* Infix padding and alignment */
+::ng-deep .custom-height-select .mat-mdc-form-field-infix {
+  padding: 0 12px !important;
+  min-height: 40px !important;
+  display: flex;
+  align-items: center;
+}
+
+
 
 // Global styles to ensure dropdown appears below
 ::ng-deep .cdk-overlay-pane {

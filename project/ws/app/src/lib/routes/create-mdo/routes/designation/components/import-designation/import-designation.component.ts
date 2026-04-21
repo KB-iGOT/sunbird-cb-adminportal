@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { PageEvent } from '@angular/material/paginator'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { FormControl } from '@angular/forms'
 import { catchError, delay, map } from 'rxjs/operators'
 import { forkJoin, of, Subscription } from 'rxjs'
@@ -18,6 +18,7 @@ import { ConformationPopupDesignationComponent } from '../../../../../home/compo
   selector: 'ws-app-import-designation',
   templateUrl: './import-designation.component.html',
   styleUrls: ['./import-designation.component.scss'],
+  standalone: false
 })
 export class ImportDesignationComponent implements OnInit, OnDestroy {
   @Output() closeComponent: EventEmitter<boolean> = new EventEmitter<boolean>();

@@ -47,12 +47,16 @@
                 <mat-header-cell *matHeaderCellDef class="clr-darkish-blue action-header"> Actions </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="action-cell">
                     <div *ngIf="row.subSector" class="text-right margin-right-xxl margin-bottom-xs  margin-top-xs">
-                        <button class="mat-raised-button mat-button-base mat-primary" (click)="onClickButton(row)">
+                        <button
+                            class="mdc-button mat-mdc-button-base btn text-white no-shadow mdc-button--raised mat-mdc-raised-button mat-primary"
+                            (click)="onClickButton(row)">
                             Edit
                         </button>
                     </div>
                     <div *ngIf="!row.subSector" class="text-right margin-right-xxl margin-bottom-xs margin-top-xs">
-                        <button class="mat-raised-button mat-button-base mat-primary" (click)="onClickButton(row)">
+                        <button
+                            class="mdc-button mat-mdc-button-base btn text-white no-shadow mdc-button--raised mat-mdc-raised-button mat-primary"
+                            (click)="onClickButton(row)">
                             Add Sub-sector
                         </button>
                     </div>

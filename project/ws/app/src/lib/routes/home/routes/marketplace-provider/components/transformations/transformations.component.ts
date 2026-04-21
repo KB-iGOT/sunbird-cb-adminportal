@@ -12,9 +12,10 @@ import { environment } from '../../../../../../../../../../../src/environments/e
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor'
 
 @Component({
-  selector: 'ws-app-transformations',
-  templateUrl: './transformations.component.html',
-  styleUrls: ['./transformations.component.scss'],
+    selector: 'ws-app-transformations',
+    templateUrl: './transformations.component.html',
+    styleUrls: ['./transformations.component.scss'],
+    standalone: false
 })
 export class TransformationsComponent implements OnInit, OnChanges {
 

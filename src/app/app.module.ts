@@ -1,25 +1,25 @@
 import { FullscreenOverlayContainer, OverlayContainer } from '@angular/cdk/overlay'
 import { APP_BASE_HREF, PlatformLocation } from '@angular/common'
-import { HttpClientJsonpModule, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi, withJsonpSupport } from '@angular/common/http'
 // Injectable
 import { APP_INITIALIZER, NgModule, ErrorHandler } from '@angular/core'
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button'
-import { MatLegacyCardModule as MatCardModule } from '@angular/material/legacy-card'
+import { MatButtonModule } from '@angular/material/button'
+import { MatCardModule } from '@angular/material/card'
 // GestureConfig
 import { MatRippleModule } from '@angular/material/core'
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog'
+import { MatDialogModule } from '@angular/material/dialog'
 import { MatDividerModule } from '@angular/material/divider'
 import { MatExpansionModule } from '@angular/material/expansion'
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field'
+import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatIconModule } from '@angular/material/icon'
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input'
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu'
-import { MatLegacyProgressBarModule as MatProgressBarModule } from '@angular/material/legacy-progress-bar'
-import { MAT_LEGACY_PROGRESS_SPINNER_DEFAULT_OPTIONS as MAT_PROGRESS_SPINNER_DEFAULT_OPTIONS } from '@angular/material/legacy-progress-spinner'
-import { MatLegacySliderModule as MatSliderModule } from '@angular/material/legacy-slider'
-import { MAT_LEGACY_SNACK_BAR_DEFAULT_OPTIONS as MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/legacy-snack-bar'
+import { MatInputModule } from '@angular/material/input'
+import { MatMenuModule } from '@angular/material/menu'
+import { MatProgressBarModule } from '@angular/material/progress-bar'
+import { MAT_PROGRESS_SPINNER_DEFAULT_OPTIONS } from '@angular/material/progress-spinner'
+import { MatSliderModule as MatSliderModule } from '@angular/material/slider'
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar'
 import { MatToolbarModule } from '@angular/material/toolbar'
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip'
+import { MatTooltipModule } from '@angular/material/tooltip'
 // HAMMER_GESTURE_CONFIG
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -131,7 +131,10 @@ import { PublicLogoutModule } from './routes/public/public-logout/public-logout.
 import { PublicHomeComponent } from './routes/public/public-home/public-home.component'
 import { LoaderService } from '../../project/ws/app/src/lib/routes/home/services/loader.service'
 import { GlobalEventsService } from './services/global-events.service'
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 
+import { TranslateHttpLoader } from '@ngx-translate/http-loader'
+import { BackBreadcrumbsComponent } from '../../project/ws/app/src/lib/routes/home/components/back-breadcrumbs/back-breadcrumbs.component'
 /** Improt from Sunbird Collection */
 
 // import { AvatarPhotoModule } from '@sunbird-cb/collection'
@@ -214,8 +217,20 @@ const appInitializer = (initSvc: InitService, logger: LoggerService) => async ()
     await initSvc.init()
   } catch (error) {
     logger.error('ERROR DURING APP INITIALIZATION >', error)
+    return Promise.resolve()  // continue
   }
 }
+
+export function HttpLoaderFactory(http: HttpClient) {
+  // Use assets path for translation files
+  // This will work in both local and deployed environments
+  const prefix = './assets/i18n/'
+  const suffix = '.json'
+
+  // @ts-ignore - Version compatibility issue between core and http-loader
+  return new TranslateHttpLoader(http, prefix, suffix)
+}
+
 
 const getBaseHref = (platformLocation: PlatformLocation): string => {
   return platformLocation.getBaseHrefFromDOM()
@@ -236,13 +251,14 @@ const getBaseHref = (platformLocation: PlatformLocation): string => {
     LoginRootComponent,
     LoginRootDirective,
     PublicHomeComponent,
+    BackBreadcrumbsComponent
   ],
-  imports: [
-    FormsModule,
+  exports: [
+    TncComponent,
+  ],
+  bootstrap: [RootComponent], imports: [FormsModule,
     ReactiveFormsModule,
     BrowserModule,
-    HttpClientModule,
-    HttpClientJsonpModule,
     BrowserAnimationsModule,
     // KeycloakAngularModule,
     AppRoutingModule,
@@ -342,49 +358,50 @@ const getBaseHref = (platformLocation: PlatformLocation): string => {
     PublicLogoutModule,
     PipeSafeSanitizerModule,
     TourModule,
-    SbUiResolverModule.forRoot(WIDGET_REGISTRATION_CONFIG),
-    // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-  ],
-  exports: [
-    TncComponent,
-  ],
-  bootstrap: [RootComponent],
-  providers: [
-    { provide: 'environment', useValue: environment },
-    {
-      deps: [InitService, LoggerService],
-      multi: true,
-      provide: APP_INITIALIZER,
-      useFactory: appInitializer,
-    },
-    {
-      provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
-      useValue: { duration: 5000 },
-    },
-    {
-      provide: MAT_PROGRESS_SPINNER_DEFAULT_OPTIONS,
-      useValue: {
-        diameter: 55,
-        strokeWidth: 4,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
       },
-    },
-    { provide: HTTP_INTERCEPTORS, useClass: AppInterceptorService, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: AppRetryInterceptorService, multi: true },
-    TncAppResolverService,
-    TncPublicResolverService,
-    PipeContentRoutePipe,
-    NPSGridService,
-    // AppTocResolverService,
-    {
-      provide: APP_BASE_HREF,
-      useFactory: getBaseHref,
-      deps: [PlatformLocation],
-    },
-    { provide: OverlayContainer, useClass: FullscreenOverlayContainer },
-    // { provide: HAMMER_GESTURE_CONFIG, useClass: HammerConfig },
-    { provide: ErrorHandler, useClass: GlobalErrorHandlingService },
-    LoaderService,
-    GlobalEventsService
-  ]
+    }),
+    SbUiResolverModule.forRoot(WIDGET_REGISTRATION_CONFIG)], providers: [
+      { provide: 'environment', useValue: environment },
+      {
+        deps: [InitService, LoggerService],
+        multi: true,
+        provide: APP_INITIALIZER,
+        useFactory: appInitializer,
+      },
+      {
+        provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+        useValue: { duration: 5000 },
+      },
+      {
+        provide: MAT_PROGRESS_SPINNER_DEFAULT_OPTIONS,
+        useValue: {
+          diameter: 55,
+          strokeWidth: 4,
+        },
+      },
+      { provide: HTTP_INTERCEPTORS, useClass: AppInterceptorService, multi: true },
+      { provide: HTTP_INTERCEPTORS, useClass: AppRetryInterceptorService, multi: true },
+      TncAppResolverService,
+      TncPublicResolverService,
+      PipeContentRoutePipe,
+      NPSGridService,
+      // AppTocResolverService,
+      {
+        provide: APP_BASE_HREF,
+        useFactory: getBaseHref,
+        deps: [PlatformLocation],
+      },
+      { provide: OverlayContainer, useClass: FullscreenOverlayContainer },
+      // { provide: HAMMER_GESTURE_CONFIG, useClass: HammerConfig },
+      { provide: ErrorHandler, useClass: GlobalErrorHandlingService },
+      LoaderService,
+      GlobalEventsService,
+      provideHttpClient(withInterceptorsFromDi(), withJsonpSupport())
+    ]
 })
 export class AppModule { }

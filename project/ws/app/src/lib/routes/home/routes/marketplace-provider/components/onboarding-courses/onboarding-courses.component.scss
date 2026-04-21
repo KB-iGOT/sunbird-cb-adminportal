@@ -1,0 +1,52 @@
+.page-title {
+  /* stylelint-disable */
+  font-family: Montserrat;
+  /* stylelint-enable */
+  font-weight: 600;
+  font-size: 20px;
+  color: #000000;
+}
+
+.grouped-tabs-courses {
+  ::ng-deep {
+    .mat-tab-group {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .mat-tab-header {
+      background-color: transparent;
+      border-bottom: 2px solid #e0e0e0;
+      box-shadow: none;
+    }
+
+    .mat-tab-label {
+      height: 48px;
+      padding: 0 24px;
+      opacity: 1;
+      color: #666;
+      font-weight: 500;
+
+      &:hover {
+        color: #333;
+        background-color: rgba(0, 0, 0, 0.04);
+      }
+
+      &.mat-tab-label-active {
+        color: #1b4ca1;
+        font-weight: 700;
+        background-color: transparent;
+      }
+    }
+
+    .mat-ink-bar {
+      height: 3px;
+      display: block;
+      background-color: #1b4ca1 !important;
+    }
+
+    .mat-ripple-element {
+      background-color: rgba(25, 118, 210, 0.1);
+    }
+  }
+}

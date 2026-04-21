@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router'
 
 // import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 // import { ConfigurationsService, EventService } from '@sunbird-cb/utils-v2'
-// import * as moment from 'moment'
+// import moment from 'moment'
 /* tslint:disable */
 
 // import { EventsService } from '../services/events.service'
@@ -20,7 +20,8 @@ import { ActivatedRoute } from '@angular/router'
 @Component({
   selector: 'ws-app-survey',
   templateUrl: './survey.component.html',
-  styleUrls: ['./survey.component.scss']
+  styleUrls: ['./survey.component.scss'],
+  standalone: false
 })
 export class SurveyComponent implements OnInit {
   currentUser!: string | null

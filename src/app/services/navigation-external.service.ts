@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core'
 import { Router } from '@angular/router'
-import { fromEvent } from 'rxjs'
+import { BehaviorSubject, fromEvent } from 'rxjs'
 import { NAVIGATION_DATA_INCOMING } from '../models/mobile-events.model'
+import { BackBreadcrumb } from '../models/tnc.model'
 
 @Injectable({
   providedIn: 'root',
 })
 export class NavigationExternalService {
+  breadcrumnItems: BehaviorSubject<BackBreadcrumb[]> = new BehaviorSubject<BackBreadcrumb[]>([])
 
   dummy = 1
   constructor(private router: Router) {

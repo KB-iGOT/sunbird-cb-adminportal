@@ -4,25 +4,25 @@ import { RouterModule, Routes } from '@angular/router'
 import { DesignationsComponent } from './components/designations/designations.component'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
-import { MatLegacyCardModule as MatCardModule } from '@angular/material/legacy-card'
-import { MatLegacyCheckboxModule as MatCheckboxModul } from '@angular/material/legacy-checkbox'
+import { MatCardModule } from '@angular/material/card'
+import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatDialogModule } from '@angular/material/dialog'
 import { MatIconModule } from '@angular/material/icon'
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input'
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator'
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner'
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select'
+import { MatInputModule } from '@angular/material/input'
+import { MatPaginatorModule } from '@angular/material/paginator'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { MatSelectModule } from '@angular/material/select'
 import { MatTableModule } from '@angular/material/table'
 import { UIORGTableModule } from '@sunbird-cb/collection'
 import { PageResolve, PipeOrderByModule } from '@sunbird-cb/utils-v2'
 import { BulkUploadComponent } from './components/bulk-upload/bulk-upload.component'
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip'
+import { MatTooltipModule } from '@angular/material/tooltip'
 import { ConfigResolveService } from '../../../home/resolvers/config-resolver.service'
 import { ImportDesignationComponent } from './components/import-designation/import-designation.component'
 import { FileService } from './services/upload.service'
 import { OtpService } from './services/otp.service'
 import { VerifyOtpComponent } from '../../../home/components/verify-otp/verify-otp.component'
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio'
+import { MatRadioModule } from '@angular/material/radio'
 const routes: Routes = [
   {
     path: '',
@@ -84,7 +84,7 @@ const routes: Routes = [
     FormsModule,
     MatIconModule,
     MatCardModule,
-    MatCheckboxModul,
+    MatCheckboxModule,
     ReactiveFormsModule,
     MatInputModule,
     MatButtonModule,
