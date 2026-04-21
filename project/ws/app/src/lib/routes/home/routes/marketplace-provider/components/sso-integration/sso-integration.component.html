@@ -1,0 +1,87 @@
+<div class="content-sso-integration">
+  <div class="help-support">
+    <ws-app-help-center-guide-v2 [helpCenterGuide]="helpCenterGuide"></ws-app-help-center-guide-v2>
+  </div>
+  <div class="flex justify-between items-center mb-4">
+    <p class="page-title">SSO Integration</p>
+    <div class="actions-buttons-sso flex items-center gap-4">
+      <!-- <button
+        mat-flat-button
+        class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline mat-btn-height-32"
+      >
+        Cancel
+      </button> -->
+      <!-- <button
+        mat-flat-button
+        class="flex rounded-full px-4 py-2 font-bold text-sm mat-btn-outline mat-btn-height-32"
+      >
+        <div class="flex items-center justify center">
+          <mat-icon class="mr-2">remove_red_eye</mat-icon>
+          <div class="font-bold text-sm">Preview</div>
+        </div>
+      </button> -->
+      <ng-container *ngIf="selectedTabIndex !== 1">
+        <button [disabled]="!canSave" [ngClass]="{'disable-btn': !canSave}" (click)="updateCreateSSO()" mat-flat-button
+          class="flex items-center rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat mat-btn-height-32">
+          {{ ssoConfigurationSettings && ssoConfigurationSettings?.SSOConfigurationData ? 'Update' : 'Save' }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+
+  <mat-tab-group (selectedIndexChange)="selectedTabIndex = $event" class="grouped-tabs-courses">
+    <mat-tab label="Configure">
+      <ws-app-sso-configure-settings #ssoConfigurationSettings [providerDetails]="providerDetails"
+        (loadSSODetails)="loadSSODetails($event)"></ws-app-sso-configure-settings>
+    </mat-tab>
+    <mat-tab label="Test & Preview">
+      <ng-container>
+        <div class="test-sso-connection wrapper-border p-4 bg-white rounded-lg flex-1 mt-4">
+          <p class="page-title">Test SSO Connections</p>
+          <p class="text-sm section-title mb-6 mt-2">
+            Verify your SSO configuration before going live
+          </p>
+
+          <!-- <div class="email-failed-box p-4 rounded-lg">
+            <div class="flex gap-2">
+              <mat-icon svgIcon="alert_i"></mat-icon>
+              <div class="info">
+                <p class="info-title">Email List100.xlsx</p>
+                <p class="text-sm section-title mt-2 mb-0">
+                  There's an error occurred while uploading this file.
+                </p>
+              </div>
+            </div>
+          </div> -->
+
+          <!-- Test SSO Button  -->
+          <ng-container *ngIf="!isSSOSuccessfullyConfigured">
+            <button [disabled]="!ssoConfigurations?.ssoTestUrl" (click)="testSsoUrl()" mat-flat-button
+              class="flex items-center rounded-full px-4 py-2 mat-btn-flat mat-btn-height-32 w-full my-8">
+              Test SSO Connection
+            </button>
+          </ng-container>
+
+          <!-- Success SSO Message  -->
+          <ng-container *ngIf="isSSOSuccessfullyConfigured">
+            <div class="success-sso-message p-4 rounded-lg">
+              <div class="flex gap-3">
+                <mat-icon svgIcon="verified_tick"></mat-icon>
+                <div class="info">
+                  <div class="mb-3">
+                    <p class="info-title">Test Successful!</p>
+                    <p class="text-sm section-title mt-2 mb-0">
+                      SSO authentication completed successfully. User attributes received and mapped
+                      correctly.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+    </mat-tab>
+    <!-- <mat-tab label="Documentation"> Content 3 </mat-tab> -->
+  </mat-tab-group>
+</div>

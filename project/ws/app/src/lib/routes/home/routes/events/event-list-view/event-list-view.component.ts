@@ -3,8 +3,8 @@ import {
   AfterViewInit, OnChanges, SimpleChanges, Inject, ChangeDetectorRef, AfterViewChecked,
 } from '@angular/core'
 import { SelectionModel } from '@angular/cdk/collections'
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator'
+import { MatTableDataSource } from '@angular/material/table'
+import { MatPaginator } from '@angular/material/paginator'
 import { MatSort } from '@angular/material/sort'
 import * as _ from 'lodash'
 import { ITableData, IColums, IAction } from '../interfaces/interfaces'
@@ -14,7 +14,7 @@ import { EventThumbnailComponent } from '../event-thumbnail/event-thumbnail.comp
 import { EventService } from '@sunbird-cb/utils-v2'
 import { NsContent } from '@sunbird-cb/collection'
 import { TelemetryEvents } from '../model/telemetry.event.model'
-import * as moment from 'moment'
+import moment from 'moment'
 import { environment } from '../../../../../../../../../../src/environments/environment'
 
 export interface IContentShareData {
@@ -25,6 +25,7 @@ export interface IContentShareData {
   selector: 'ws-event-list-view',
   templateUrl: './event-list-view.component.html',
   styleUrls: ['./event-list-view.component.scss'],
+  standalone: false
 })
 export class EventListViewComponent implements OnInit, AfterViewInit, OnChanges, AfterViewChecked {
 
@@ -243,6 +244,18 @@ export class EventListViewComponent implements OnInit, AfterViewInit, OnChanges,
       width: '800px',
       data: this.finalImg,
     })
+  }
+
+  allowUpdateEvent(item: any) {
+    const filter = this.currentFilter && this.currentFilter.toLowerCase()
+    if (filter === 'upcoming') {
+      const startDateTime = moment(`${item.startDate}T${item.startTime.split('+')[0]}`)
+      if (startDateTime.isBefore(moment())) {
+        return false
+      }
+      return true
+    }
+    return true
   }
 
 }

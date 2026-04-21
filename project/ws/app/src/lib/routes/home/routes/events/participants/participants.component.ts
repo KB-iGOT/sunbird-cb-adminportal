@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core'
 import { UntypedFormControl } from '@angular/forms'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { SelectionModel } from '@angular/cdk/collections'
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
+import { MatTableDataSource } from '@angular/material/table'
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators'
 import { EventsService } from '../services/events.service'
 import { HttpClient } from '@angular/common/http'
@@ -20,6 +20,7 @@ export interface IParticipantElement {
     selector: 'ws-app-participants',
     templateUrl: './participants.component.html',
     styleUrls: ['./participants.component.scss'],
+    standalone: false
 })
 export class ParticipantsComponent implements OnInit {
 

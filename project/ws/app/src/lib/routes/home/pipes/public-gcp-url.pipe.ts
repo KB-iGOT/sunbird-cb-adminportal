@@ -3,7 +3,8 @@ import { environment } from '../../../../../../../../src/environments/environmen
 // import { environment } from '../../../../../../../../src/environments/environment'
 
 @Pipe({
-  name: 'publicGcpUrl',
+    name: 'publicGcpUrl',
+    standalone: false
 })
 export class PublicGcpUrlPipe implements PipeTransform {
   transform(url: string): any {

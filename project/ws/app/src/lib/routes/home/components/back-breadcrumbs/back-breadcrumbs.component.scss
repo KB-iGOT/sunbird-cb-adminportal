@@ -1,0 +1,17 @@
+.breadcrumb-item {
+  /* stylelint-disable */
+  font-family: Lato;
+  /* stylelint-enable */
+  font-weight: 400;
+  font-size: 14px;
+  color: #000 !important;
+
+  &.active {
+    font-weight: 700;
+    color: #1b4ca1 !important;
+  }
+}
+
+.breadcrumb-icon.active {
+  color: #1b4ca1;
+}

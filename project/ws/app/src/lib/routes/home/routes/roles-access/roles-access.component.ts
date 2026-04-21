@@ -8,9 +8,10 @@ import { ITableData } from '../../../../head/ui-admin-table/interface/interfaces
 import { RolesService } from '../../services/roles.service'
 import { UsersService } from '../../services/users.service'
 @Component({
-  selector: 'ws-app-roles-access',
-  templateUrl: './roles-access.component.html',
-  styleUrls: ['./roles-access.component.scss'],
+    selector: 'ws-app-roles-access',
+    templateUrl: './roles-access.component.html',
+    styleUrls: ['./roles-access.component.scss'],
+    standalone: false
 })
 export class RolesAccessComponent implements OnInit {
   tabledata!: ITableData

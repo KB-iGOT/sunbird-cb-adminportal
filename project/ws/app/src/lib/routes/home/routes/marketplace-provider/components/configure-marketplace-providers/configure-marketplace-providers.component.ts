@@ -6,9 +6,10 @@ import { MatSnackBar } from '@angular/material/snack-bar'
 import { HttpErrorResponse } from '@angular/common/http'
 
 @Component({
-  selector: 'ws-app-configure-marketplace-providers',
-  templateUrl: './configure-marketplace-providers.component.html',
-  styleUrls: ['./configure-marketplace-providers.component.scss'],
+    selector: 'ws-app-configure-marketplace-providers',
+    templateUrl: './configure-marketplace-providers.component.html',
+    styleUrls: ['./configure-marketplace-providers.component.scss'],
+    standalone: false
 })
 export class ConfigureMarketplaceProvidersComponent implements OnInit {
 

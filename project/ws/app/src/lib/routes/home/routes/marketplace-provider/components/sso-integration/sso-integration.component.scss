@@ -1,0 +1,104 @@
+.page-title {
+  /* stylelint-disable */
+  font-family: Montserrat;
+  /* stylelint-enable */
+  font-weight: 600;
+  font-size: 20px;
+  color: #000000;
+  margin-bottom: 0;
+}
+
+.disable-btn {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.email-failed-box {
+  background: #00000014;
+  border: 1px solid #00000029;
+
+  .info-title {
+    @extend .page-title;
+    font-size: 14px;
+    color: #000;
+    margin-bottom: 4px;
+  }
+}
+
+.success-sso-message {
+  border: 1px solid #1d8923;
+  background: #1d89231f;
+
+  .info-title {
+    @extend .page-title;
+    font-size: 16px;
+    color: #000 !important;
+    margin-bottom: 4px !important;
+  }
+
+  .section-title {
+    color: #000 !important;
+  }
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem !important;
+}
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+.mb-2 {
+  margin-top: 8px !important;
+}
+.my-8 {
+  margin-top: 2rem !important;
+  margin-bottom: 2rem !important;
+}
+
+.wrapper-border {
+  border: 1px solid #1b4ca1;
+}
+
+.grouped-tabs-courses {
+  ::ng-deep {
+    .mat-tab-group {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .mat-tab-header {
+      background-color: transparent;
+      border-bottom: 2px solid #e0e0e0;
+      box-shadow: none;
+    }
+
+    .mat-tab-label {
+      height: 48px;
+      padding: 0 24px;
+      opacity: 1;
+      color: #666;
+      font-weight: 500;
+
+      &:hover {
+        color: #333;
+        background-color: rgba(0, 0, 0, 0.04);
+      }
+
+      &.mat-tab-label-active {
+        color: #1b4ca1;
+        font-weight: 700;
+        background-color: transparent;
+      }
+    }
+
+    .mat-ink-bar {
+      height: 3px;
+      display: block;
+      background-color: #1b4ca1 !important;
+    }
+
+    .mat-ripple-element {
+      background-color: rgba(25, 118, 210, 0.1);
+    }
+  }
+}

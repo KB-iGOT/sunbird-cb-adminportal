@@ -1,0 +1,14 @@
+<div class="flex flex-4 flex-column main-container">
+  <mat-card class="card-section">
+    <span class="flex">
+      <mat-icon class="arrow-btn" (click)="navigateBack()">arrow_back</mat-icon>
+      <mat-card-title class="flex-4 mobile-margin mat-h2 title-request">
+        {{isHideData ? 'Go Back':'Request Content'}}
+      </mat-card-title>
+    </span>
+
+    <mat-card-content>
+      <sb-uic-create-request-form (requestDetails)="submit($event)"></sb-uic-create-request-form>
+    </mat-card-content>
+  </mat-card>
+</div>

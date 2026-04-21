@@ -46,11 +46,13 @@
         window["env"]["azureBucket"] = envJson.azureBucket
         window["env"]["compentencyVersionKey"] = envJson.compentencyVersionKey
         window["env"]["ODCSMasterFramework"] = envJson.ODCSMasterFramework
+        window["env"]["spvorgID"] = envJson.spvorgID
       } catch (error) {
         console.error("Error in fetching env json")
       }
     })(this);
   </script>
+  <script src="/assets/authoring/ckeditor/ckeditor.js"></script>
 </head>
 
 <body class="mat-app-background mat-body mat-typography custom-scroll">

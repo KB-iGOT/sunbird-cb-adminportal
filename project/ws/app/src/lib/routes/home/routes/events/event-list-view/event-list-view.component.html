@@ -75,15 +75,17 @@
 
 <mat-menu #cardMenu="matMenu">
     <ng-template matMenuContent let-rowData="data">
-        <button *ngIf="rowData" (click)="buttonClick('update event',rowData)" mat-menu-item
+        <button *ngIf="rowData && allowUpdateEvent(rowData)" (click)="buttonClick('update event',rowData)" mat-menu-item
             name="channel-analytics-button" class="ws-mat-primary-text" aria-label="Analytics">
-            <mat-icon class="margin-right-xs">create</mat-icon><span>Update event</span>
+            <mat-icon>create</mat-icon>
+            <span>Update event</span>
         </button>
         <button
             *ngIf="((rowData && rowData?.canArchive) && (currentFilter && currentFilter?.toLowerCase() !== 'archive'))"
             (click)="buttonClick('archive',rowData)" mat-menu-item name="channel-analytics-button"
             class="ws-mat-primary-text" aria-label="Analytics">
-            <mat-icon class="margin-right-xs">archive</mat-icon><span>Archive event</span>
+            <mat-icon>archive</mat-icon>
+            <span>Archive event</span>
         </button>
     </ng-template>
 </mat-menu>

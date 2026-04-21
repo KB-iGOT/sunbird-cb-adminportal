@@ -7,10 +7,10 @@ import { HomeModule } from '../home/home.module'
 import { RouterModule } from '@angular/router'
 import { UsersService } from './services/users.service'
 import { MatIconModule } from '@angular/material/icon'
-import { MatLegacyProgressBarModule as MatProgressBarModule } from '@angular/material/legacy-progress-bar'
+import { MatProgressBarModule } from '@angular/material/progress-bar'
 import { MatSidenavModule } from '@angular/material/sidenav'
-import { MatLegacyCardModule as MatCardModule } from '@angular/material/legacy-card'
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner'
+import { MatCardModule } from '@angular/material/card'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 
 @NgModule({
   imports: [CommonModule, BtnPageBackModule, SbUiResolverModule, MatProgressSpinnerModule, MatProgressBarModule,

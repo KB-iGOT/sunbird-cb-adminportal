@@ -6,9 +6,10 @@ import { ValueService } from '@sunbird-cb/utils-v2'
 import { map } from 'rxjs/operators'
 
 @Component({
-  selector: 'ws-app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+    selector: 'ws-app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    standalone: false
 })
 export class HomeComponent implements OnInit, OnDestroy {
   currentRoute = 'users'

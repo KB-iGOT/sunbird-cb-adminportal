@@ -13,30 +13,49 @@ import { CoursesTableComponent } from './components/courses-table/courses-table.
 import { DragDropDirective } from './directives/drag-drop.directive'
 import { PageResolve } from '@sunbird-cb/utils-v2'
 import { NgJsonEditorModule } from 'ang-jsoneditor'
-import { MatLegacyInputModule } from '@angular/material/legacy-input'
-import { MatLegacyCardModule as MatCardModule } from '@angular/material/legacy-card'
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button'
+import { MatInputModule } from '@angular/material/input'
+import { MatCardModule } from '@angular/material/card'
+import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 import { MatExpansionModule } from '@angular/material/expansion'
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs'
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu'
+import { MatTabsModule as MatTabsModule } from '@angular/material/tabs'
+import { MatMenuModule } from '@angular/material/menu'
 import { MatDialogModule } from '@angular/material/dialog'
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip'
-import { MatLegacyProgressBarModule as MatProgressBarModule } from '@angular/material/legacy-progress-bar'
-import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox'
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner'
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator'
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table'
+import { MatTooltipModule } from '@angular/material/tooltip'
+import { MatProgressBarModule as MatProgressBarModule } from '@angular/material/progress-bar'
+import { MatCheckboxModule } from '@angular/material/checkbox'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { MatPaginatorModule } from '@angular/material/paginator'
+import { MatTableModule } from '@angular/material/table'
 import { LoaderService } from '../../services/loader.service'
 import { ProviderResolveService } from './services/provider-resolve.service'
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select'
+import { MatSelectModule } from '@angular/material/select'
 import { TransformationsComponent } from './components/transformations/transformations.component'
 import { ViaApiParamsTableComponent } from './components/via-api-params-table/via-api-params-table.component'
 import { ViaApiComponent } from './components/via-api/via-api.component'
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio'
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle'
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field'
-
+import { MatRadioModule } from '@angular/material/radio'
+import { MatSlideToggleModule as MatSlideToggleModule } from '@angular/material/slide-toggle'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatSidenavModule } from '@angular/material/sidenav'
+import { MatRippleModule } from '@angular/material/core'
+import { PaginationModule } from '@sunbird-cb/consumption'
+import { ConfigureProviderComponent } from './components/configure-provider/configure-provider.component'
+import { ConfigureProviderMenuComponent } from './components/configure-provider-menu/configure-provider-menu.component'
+import { ProviderSettingsComponent } from './components/provider-settings/provider-settings.component'
+import { HelpCenterGuideComponentV2 } from './components/help-center-guide-v2/help-center-guide-v2.component'
+import { ProviderDetailsV2Component } from './components/provider-details-v2/provider-details-v2.component'
+import { OnboardingCoursesComponent } from './components/onboarding-courses/onboarding-courses.component'
+import { CoursesListTableComponent } from './components/courses-list-table/courses-list-table.component'
+import { AddProviderCoursesComponent } from './components/add-provider-courses/add-provider-courses.component'
+import { BulkUploadCoursesComponent } from './components/bulk-upload-courses/bulk-upload-courses.component'
+import { ProvidersApiIntegrationsComponent } from './components/providers-api-integrations/providers-api-integrations.component'
+import { CertificateConfigurationComponent } from './components/certificate-configuration/certificate-configuration.component'
+import { SsoIntegrationComponent } from './components/sso-integration/sso-integration.component'
+import { SsoConfigureSettingsComponent } from './components/sso-configure-settings/sso-configure-settings.component'
+import { LoadingPopupComponent } from './dialogs/loading-popup/loading-popup.component'
+import { MaxLengthNumberDirective } from './directives/max-length-number.directive'
+import { MatAutocompleteModule } from '@angular/material/autocomplete'
+import { MatOptionModule } from '@angular/material/core'
 
 const routes: Routes = [
   {
@@ -73,6 +92,24 @@ const routes: Routes = [
       pageData: PageResolve,
     },
   },
+  {
+    path: 'configure-provider',
+    pathMatch: 'full',
+    component: ConfigureProviderComponent,
+    data: {
+      pageId: 'app/home/marketplace-providers/onboard-partner',
+      module: 'marketplace-providers',
+      pageType: 'feature',
+      pageKey: 'marcket_place',
+    },
+    resolve: {
+      pageData: PageResolve,
+      providerDetails: ProviderResolveService,
+
+    },
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange'
+  },
+
 ]
 
 @NgModule({
@@ -88,13 +125,29 @@ const routes: Routes = [
     TransformationsComponent,
     ViaApiParamsTableComponent,
     ViaApiComponent,
+    ConfigureProviderComponent,
+    ConfigureProviderMenuComponent,
+    ProviderSettingsComponent,
+    ProviderSettingsComponent,
+    ProviderDetailsV2Component,
+    HelpCenterGuideComponentV2,
+    OnboardingCoursesComponent,
+    CoursesListTableComponent,
+    AddProviderCoursesComponent,
+    BulkUploadCoursesComponent,
+    ProvidersApiIntegrationsComponent,
+    CertificateConfigurationComponent,
+    SsoIntegrationComponent,
+    SsoConfigureSettingsComponent,
+    LoadingPopupComponent,
+    MaxLengthNumberDirective
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
     FormsModule,
     ReactiveFormsModule,
-    MatLegacyInputModule,
+    MatInputModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -114,7 +167,12 @@ const routes: Routes = [
     MatSelectModule,
     MatRadioModule,
     MatSlideToggleModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatSidenavModule,
+    MatRippleModule,
+    PaginationModule,
+    MatAutocompleteModule,
+    MatOptionModule
   ],
   providers: [DatePipe, LoaderService],
   exports: [RouterModule],

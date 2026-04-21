@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs'
   styleUrls: ['./home.component.scss'],
   /* tslint:disable */
   host: { class: 'margin-top-l' },
-  /* tslint:enable */
+  standalone: false
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   sideNavBarOpened = true
@@ -64,6 +64,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
+        const url = event.urlAfterRedirects || event.url
+
         // for KCM mapping page
         const urlData = _.get(this.activeRoute, 'snapshot._routerState.url')
         this.containerCustomCls = urlData && urlData.includes('kcm-mapping') ? true : false
@@ -97,10 +99,26 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
           _.set(leftData, 'widgetData.logoPath', _.get(this.activeRoute, 'snapshot.data.department.data.logo'))
           _.set(leftData, 'widgetData.name', _.get(this.activeRoute, 'snapshot.data.configService.unMappedUser.rootOrg.orgName'))
           _.set(leftData, 'widgetData.userRoles', this.myRoles)
+
           this.widgetData = leftData
         } else {
           this.widgetData = this.activeRoute.snapshot.data.pageData.data.menus
+        }
 
+        if (url.includes('/marketplace-providers/configure-provider')) {
+          this.sideNavBarOpened = false
+
+          const container = document.querySelector('.container-balanced')
+          if (container) {
+            container.classList.add('remove-body-padding')
+          }
+        } else {
+          this.sideNavBarOpened = true
+
+          const container = document.querySelector('.container-balanced')
+          if (container) {
+            container.classList.remove('remove-body-padding')
+          }
         }
 
         // this.department = this.activeRoute.snapshot.data.configService.unMappedUser.rootOrg.orgName

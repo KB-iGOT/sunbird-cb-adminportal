@@ -20,13 +20,31 @@ export class ProviderResolveService implements Resolve<IResolveResponse<any>> {
     _route: ActivatedRouteSnapshot,
     _state: RouterStateSnapshot
   ): Promise<IResolveResponse<any>> {
-    const partnerId = _route.paramMap.get('id')
-    if (partnerId) {
+    const partnerId = _route.paramMap.get('id') || _route.queryParamMap.get('id')
+    const canView = _route.queryParamMap.get('status') || _route.paramMap.get('status')
+    if (partnerId && canView === 'PENDING') {
       try {
-        const response = await this.marketPlaceSvc.getProviderDetails(partnerId).toPromise()
-        return { data: response, error: null }
+        const response: any = await this.marketPlaceSvc.readRegisteredProviderDetails(partnerId).toPromise()
+        if (response?.params?.status === 'success') {
+          return { data: response, error: null }
+        } else {
+          return { data: null, error: response?.params?.errMsg }
+        }
       } catch (error: any) {
-        const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')
+        const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong, please try again later')
+        return { data: null, error: errmsg }
+      }
+
+    } else if (partnerId) {
+      try {
+        const response: any = await this.marketPlaceSvc.getProviderDetails(partnerId).toPromise()
+        if (response?.params?.status === 'success') {
+          return { data: response, error: null }
+        } else {
+          return { data: null, error: response?.params?.errMsg }
+        }
+      } catch (error: any) {
+        const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong, please try again later')
         return { data: null, error: errmsg }
       }
     }

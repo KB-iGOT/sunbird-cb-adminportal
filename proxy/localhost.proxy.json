@@ -1,6 +1,6 @@
 {
-  "/apis/*": {
-    "target": "https://spv.karmayogi.nic.in/",
+  "/apis": {
+    "target": "https://spv.qa.karmayogibharat.net/",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
@@ -8,11 +8,11 @@
       "/apis": "/apis"
     },
     "headers": {
-      "Cookie": "connect.sid=s%3AJ2iZb9ljpIi6kjdQatd4somc0wrmY0pi.DWVSZw86hJUUYv3ZF0LG5NIQyQIHhlsUtGT66chRBoM"
+      "Cookie": "connect.sid=s%3AC-BaVjFWaCUPibsdWPQ0W4ZYH-Tzk7Rd.8xFHf%2F3Z44NuukfiLLWCw2M2JMdivTcTLa8%2FtfGi2ug"
     }
   },
-  "/api/*": {
-    "target": "https://spv.karmayogi.nic.in/",
+  "/api": {
+    "target": "https://spv.qa.karmayogibharat.net/",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
@@ -20,61 +20,58 @@
       "/api": "/api"
     },
     "headers": {
-      "Cookie": "connect.sid=s%3AJ2iZb9ljpIi6kjdQatd4somc0wrmY0pi.DWVSZw86hJUUYv3ZF0LG5NIQyQIHhlsUtGT66chRBoM"
+      "Cookie": "connect.sid=s%3AC-BaVjFWaCUPibsdWPQ0W4ZYH-Tzk7Rd.8xFHf%2F3Z44NuukfiLLWCw2M2JMdivTcTLa8%2FtfGi2ug"
     }
   },
-  "/content-api/*": {
+  "/content-api": {
     "target": "http://localhost:3004",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
     "pathRewrite": {
-      "/apis": ""
+      "^/content-api": ""
     }
   },
-  "/content-store/*": {
+  "/content-store": {
     "target": "http://localhost:3005",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
     "pathRewrite": {
-      "/apis": ""
+      "^/content-store": ""
     }
   },
-  "/chat-bot/*": {
+  "/chat-bot": {
     "target": "http://localhost:3006",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
     "pathRewrite": {
-      "/apis": ""
+      "^/chat-bot": ""
     }
   },
-  "/mobile-apps/*": {
+  "/mobile-apps": {
     "target": "http://localhost:3007",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
     "pathRewrite": {
-      "/apis": ""
+      "^/mobile-apps": ""
     }
   },
-  "/LA/*": {
+  "/LA": {
     "target": "http://localhost:3008",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
     "pathRewrite": {
-      "/apis": ""
+      "^/LA": ""
     }
   },
-  "/assets/*": {
+  "/assets": {
     "target": "http://127.0.0.1:8080",
     "secure": false,
     "logLevel": "debug",
-    "changeOrigin": true,
-    "pathRewrite": {
-      "/apis": ""
-    }
+    "changeOrigin": true
   }
 }

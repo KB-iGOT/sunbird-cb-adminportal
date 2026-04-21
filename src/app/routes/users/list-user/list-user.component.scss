@@ -1,0 +1,44 @@
+.list-user-page {
+  padding: 10px 0;
+  width: 100%;
+}
+
+.page-refresh-loader {
+  margin-bottom: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #e8f0fe;
+
+  .refresh-label {
+    display: block;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: #1b4ca1;
+    padding: 4px 0;
+    letter-spacing: 0.3px;
+  }
+}
+
+.page-header {
+  margin-bottom: 16px;
+  padding: 12px 0;
+
+  .page-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+    color: #1b4ca1;
+  }
+}
+
+.results-info {
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1b4ca1;
+  padding: 6px 12px;
+  background: #e8edf5;
+  border-radius: 6px;
+  display: inline-block;
+}

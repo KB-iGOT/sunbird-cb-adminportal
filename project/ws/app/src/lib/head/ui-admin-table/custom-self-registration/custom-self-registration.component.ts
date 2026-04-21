@@ -10,9 +10,10 @@ import * as fileSaver from 'file-saver'
 import { EventService } from '@sunbird-cb/utils-v2'
 
 @Component({
-  selector: 'ws-app-custom-self-registration',
-  templateUrl: './custom-self-registration.component.html',
-  styleUrls: ['./custom-self-registration.component.scss']
+    selector: 'ws-app-custom-self-registration',
+    templateUrl: './custom-self-registration.component.html',
+    styleUrls: ['./custom-self-registration.component.scss'],
+    standalone: false
 })
 export class CustomSelfRegistrationComponent implements OnInit, OnDestroy {
 

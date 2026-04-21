@@ -1,0 +1,41 @@
+<mat-sidenav-container class="provider-configs-sidenav-container">
+  <mat-sidenav #sidenav mode="side" [(opened)]="opened">
+    <ws-app-configure-provider-menu
+      (activeMenu)="activeMenuItemEvent($event)"
+    ></ws-app-configure-provider-menu>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="provider-content-main p-4">
+      <ng-container *ngIf="activeMenuItem === 'active_courses'">
+        <ws-app-onboarding-courses
+          [providerDetails]="providerDetails"
+          (loadProviderDetails)="getProviderDetails($event)"
+        ></ws-app-onboarding-courses>
+      </ng-container>
+      <ng-container *ngIf="activeMenuItem === 'provider_settings'">
+        <ws-app-provider-settings
+          [providerDetails]="providerDetails"
+          (loadProviderDetails)="getProviderDetails($event)"
+        ></ws-app-provider-settings>
+      </ng-container>
+      <ng-container *ngIf="activeMenuItem === 'provider_details'">
+        <ws-app-provider-details-v2
+          [providerDetails]="providerDetails"
+          (loadProviderDetails)="getProviderDetails($event)"
+        ></ws-app-provider-details-v2>
+      </ng-container>
+      <ng-container *ngIf="activeMenuItem === 'configure_certificate'">
+        <ws-app-certificate-configuration
+          [providerDetails]="providerDetails"
+          (loadProviderDetails)="getProviderDetails($event)"
+        ></ws-app-certificate-configuration>
+      </ng-container>
+      <ng-container *ngIf="activeMenuItem === 'sso_integration'">
+        <ws-app-sso-integration
+          [providerDetails]="providerDetails"
+          (loadProviderDetails)="getProviderDetails($event)"
+        ></ws-app-sso-integration>
+      </ng-container>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

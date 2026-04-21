@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>Manage User Roles</h2>
+
+<mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+<mat-dialog-content>
+  <div class="user-info">
+    <span class="user-name">{{ user.firstName || user.profileDetails?.personalDetails?.firstname }}</span>
+    <span class="user-org">{{ user.rootOrgName }}</span>
+  </div>
+
+  <div class="warning-banner" *ngIf="mdoLeaderWarning">
+    <mat-icon>warning</mat-icon>
+    <span>{{ mdoLeaderWarning }}</span>
+  </div>
+
+  <div class="roles-section" *ngIf="!isFetchingRoles">
+    <div class="section-label">Select Roles</div>
+    <div class="roles-chips">
+      <button *ngFor="let role of availableRoles" type="button" class="role-chip"
+        [class.selected]="isRoleSelected(role)" (click)="toggleRole(role)">
+        <mat-icon class="chip-icon" *ngIf="isRoleSelected(role)">check</mat-icon>
+        {{ role }}
+      </button>
+    </div>
+  </div>
+
+  <div class="loading-roles" *ngIf="isFetchingRoles">
+    <mat-spinner diameter="24"></mat-spinner>
+    <span>Loading available roles...</span>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="isLoading">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSave()"
+    [disabled]="isLoading || isFetchingRoles || selectedRoles.length === 0">
+    Save Roles
+  </button>
+</mat-dialog-actions>

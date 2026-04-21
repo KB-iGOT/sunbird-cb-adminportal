@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core'
 import * as _ from 'lodash'
 
 @Pipe({
-  name: 'ddMMYYYYFormat',
+    name: 'ddMMYYYYFormat',
+    standalone: false
 })
 export class ReverseDateFormatPipe implements PipeTransform {
 

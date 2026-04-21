@@ -1,11 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core'
 import * as _ from 'lodash'
-import { ITableData } from '@sunbird-cb/collection/lib/ui-org-table/interface/interfaces'
 import { DesignationsService } from '../../services/designations.service'
 import { FormControl } from '@angular/forms'
 import { delay } from 'rxjs/operators'
 import { MatDialog } from '@angular/material/dialog'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { ActivatedRoute } from '@angular/router'
 import { environment } from '../../../../../../../../../../../src/environments/environment'
 import { DemoVideoPopupComponent } from '../../../../../home/components/demo-video-popup/demo-video-popup.component'
@@ -15,6 +14,7 @@ import { ConformationPopupDesignationComponent } from '../../../../../home/compo
   selector: 'ws-app-designations',
   templateUrl: './designations.component.html',
   styleUrls: ['./designations.component.scss'],
+  standalone: false
 })
 export class DesignationsComponent implements OnInit {
   @Input() goToImportMaster: boolean = false
@@ -30,7 +30,7 @@ export class DesignationsComponent implements OnInit {
   selectedOrganisation = ''
   designationsList: any = []
   filteredDesignationsList: any = []
-  tableData!: ITableData
+  tableData!: any
   showLoader = true
   actionMenuItem: {
     name: string,
@@ -42,6 +42,7 @@ export class DesignationsComponent implements OnInit {
   orgName = ''
   showTopSection = false
   designationMaster = 'desigantion master'
+  isStateAdmin = false
   constructor(
     private designationsService: DesignationsService,
     private dialog: MatDialog,
@@ -69,6 +70,8 @@ export class DesignationsComponent implements OnInit {
       this.orgId = this.activateRoute.snapshot.params.department
       this.designationConfig = this.activateRoute.snapshot.data['pageData'].data
       this.orgName = _.get(this.activateRoute, 'snapshot.queryParams.orgName')
+      const userRoles: string[] = _.get(this.activateRoute, 'snapshot.parent.data.configService.unMappedUser.roles') || []
+      this.isStateAdmin = userRoles.indexOf('STATE_ADMIN') >= 0
     }
 
     this.actionMenuItem = [

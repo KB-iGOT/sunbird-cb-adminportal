@@ -4,9 +4,10 @@ import { PositionsService } from '../../services/position.service'
 // tslint:disable-next-line
 import _ from 'lodash'
 @Component({
-  selector: 'ws-app-positions-approval-list',
-  templateUrl: './positions-approval-list.component.html',
-  styleUrls: ['./positions-approval-list.component.scss'],
+    selector: 'ws-app-positions-approval-list',
+    templateUrl: './positions-approval-list.component.html',
+    styleUrls: ['./positions-approval-list.component.scss'],
+    standalone: false
 })
 
 export class PositionsApprovalListComponent implements OnInit {

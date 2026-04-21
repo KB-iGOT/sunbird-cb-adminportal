@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import _ from 'lodash'
 /* tslint:enable */
 // import { environment } from 'src/environments/environment'
-import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator'
+import { PageEvent } from '@angular/material/paginator'
 import { EventService } from '@sunbird-cb/utils-v2'
 import { NsContent } from '@sunbird-cb/collection'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
@@ -21,7 +21,7 @@ import { DemoVideoPopupComponent } from '../../home/components/demo-video-popup/
   styleUrls: ['./mentor-manage.component.scss'],
   /* tslint:disable */
   host: { class: 'flex flex-col' },
-  /* tslint:enable */
+  standalone: false
 })
 export class MentorManageComponent implements OnInit, OnDestroy {
   /* tslint:disable */

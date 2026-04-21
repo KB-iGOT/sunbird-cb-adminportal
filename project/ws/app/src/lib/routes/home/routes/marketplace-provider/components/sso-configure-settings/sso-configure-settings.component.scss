@@ -1,0 +1,178 @@
+.sso-provider-settings {
+  .page-title {
+    /* stylelint-disable */
+    font-family: Montserrat;
+    /* stylelint-enable */
+    font-weight: 600;
+    font-size: 20px;
+    color: #1b4ca1;
+  }
+
+  .section-title {
+    /* stylelint-disable */
+    font-family: Lato;
+    /* stylelint-enable */
+    font-weight: 400;
+    color: #00000099;
+    font-size: 14px;
+  }
+
+  .label {
+    /* stylelint-disable */
+    font-family: Lato;
+    /* stylelint-enable */
+    font-weight: 700;
+    font-size: 14px;
+    color: #212529;
+  }
+
+  .b-seperator {
+    border-bottom: 1px solid #00000014;
+  }
+
+  .wrapper-border {
+    border: 1px solid #1b4ca1;
+  }
+
+  .meta-info-section {
+    width: 344px;
+  }
+
+  .sub-heading-title {
+    @extend .page-title;
+    font-size: 16px;
+  }
+
+  .sso-provider-meta {
+    .meta-label {
+      @extend .label;
+      color: #00000099 !important;
+    }
+  }
+
+  .sso-status label {
+    @extend .label;
+    color: #000 !important;
+  }
+
+  .email-failed-box {
+    background: #00000014;
+    border: 1px solid #00000029;
+
+    .info-title {
+      @extend .page-title;
+      font-size: 14px;
+      color: #000;
+      margin-bottom: 4px;
+    }
+  }
+
+  .success-sso-message {
+    border: 1px solid #1d8923;
+    background: #1d89231f;
+
+    .info-title {
+      @extend .page-title;
+      font-size: 16px;
+      color: #000 !important;
+      margin-bottom: 4px !important;
+    }
+
+    .section-title {
+      color: #000 !important;
+    }
+
+    .received-attributes {
+      p {
+        color: #000000 !important;
+        /* stylelint-disable */
+        font-family: Montserrat;
+        /* stylelint-enable */
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      ol {
+        padding: 0 20px;
+        li {
+          /* stylelint-disable */
+          font-family: Lato;
+          /* stylelint-enable */
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 24px;
+        }
+      }
+    }
+  }
+}
+
+.input-ellipse {
+  width: 215px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badge {
+  /* stylelint-disable */
+  font-family: Montserrat;
+  /* stylelint-enable */
+  font-weight: 600;
+  font-size: 14px;
+
+  &.success {
+    border: 1px solid #1d8923;
+    color: #1d8923;
+    background: #1d892329;
+    border-radius: 4px;
+    padding: 0 8px;
+  }
+
+  &.incomplete {
+    background: #f3962f29;
+    border: 1px solid #f3962f;
+    color: #1b2133;
+    padding: 0 1rem;
+    border-radius: 1rem;
+  }
+
+  &.not-tested {
+    background: #00000029;
+    border: 1px solid #00000066;
+    color: #1b2133;
+    border-radius: 1rem;
+    padding: 0 1rem;
+  }
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem !important;
+}
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+.my-8 {
+  margin-top: 2rem !important;
+  margin-bottom: 2rem !important;
+}
+
+.mapper-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+
+  .mat-form-field {
+    flex: 1;
+  }
+
+  .remove-mapper-btn {
+    color: #dc3545;
+    padding: 0.25rem;
+  }
+}
+
+.btn-disable {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

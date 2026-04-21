@@ -1,19 +1,19 @@
 
 import { Component, OnInit } from '@angular/core'
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { ActivatedRoute, Router } from '@angular/router'
 import { DialogConfirmComponent } from '../../../../../../../../../../../src/app/component/dialog-confirm/dialog-confirm.component'
 import { PositionsService } from '../../services/position.service'
 
 @Component({
-  selector: 'ws-app-positions-new',
-  templateUrl: './positions-new.component.html',
-  styleUrls: ['./positions-new.component.scss'],
-  /* tslint:disable */
-  host: { class: 'flex flex-1 margin-top-l' },
-  /* tslint:enable */
+    selector: 'ws-app-positions-new',
+    templateUrl: './positions-new.component.html',
+    styleUrls: ['./positions-new.component.scss'],
+    /* tslint:disable */
+    host: { class: 'flex flex-1 margin-top-l' },
+    standalone: false
 })
 export class PositionsNewComponent implements OnInit {
   positionForm!: UntypedFormGroup
