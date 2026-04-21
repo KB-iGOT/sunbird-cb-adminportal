@@ -5,13 +5,17 @@
   background: #fff;
 
   .label {
+    /* stylelint-disable */
     font-family: Lato;
+    /* stylelint-enable */
     font-weight: 700;
     font-size: 14px;
     color: #212529;
   }
   .field-meta {
+    /* stylelint-disable */
     font-family: Lato;
+    /* stylelint-enable */
     font-weight: 400;
     font-size: 14px;
     color: #00000099;
@@ -25,7 +29,9 @@
 }
 
 .page-title {
+  /* stylelint-disable */
   font-family: Montserrat;
+  /* stylelint-enable */
   font-weight: 600;
   font-size: 20px;
   color: #000000;

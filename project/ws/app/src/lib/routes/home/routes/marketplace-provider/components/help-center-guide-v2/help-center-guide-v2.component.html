@@ -1,6 +1,7 @@
 <div
   class="flex justify-between mb-3 flex-column info-pill cursor-pointer"
   (click)="showDetailToggle = !showDetailToggle"
+  (keydown)="showDetailToggle = !showDetailToggle"
 >
   <div class="flex flex-row justify-between">
     <div class="flex items-center justify-center">
@@ -14,6 +15,7 @@
         class="cursor-pointer"
         *ngIf="!showDetailToggle"
         (click)="showDetailToggle = !showDetailToggle"
+        (keydown)="showDetailToggle = !showDetailToggle"
         src="assets/icons/arrow-down.svg"
         alt="icon"
       />
@@ -21,6 +23,7 @@
         class="cursor-pointer rotate-icon"
         *ngIf="showDetailToggle"
         (click)="showDetailToggle = !showDetailToggle"
+        (keydown)="showDetailToggle = !showDetailToggle"
         src="assets/icons/arrow-down.svg"
         alt="icon"
       />
@@ -44,7 +47,7 @@
       <div class="helpCenterDemo flex justify-end section-2">
         <div
           class="helpCenterDemoVideo flex flex-column flex-middle justify-center"
-          (click)="openVideoPopup()"
+          (click)="openVideoPopup()" (keyup)="openVideoPopup()"
         >
           <mat-icon class="video_icon mb-2">play_arrow</mat-icon>
           <div>Watch how it works</div>

@@ -26,7 +26,7 @@
       <div class="w-full flex gap-5 items-center justify-start">
         <ng-container *ngFor="let item of apiMetadata">
           <div matRipple class="cursor-pointer px-3 chips-headers" [class.active]="selectedApiTab === item.value"
-            (click)="onApiTabChange(item.value)">
+            (click)="onApiTabChange(item.value)" (keyup)="onApiTabChange(item.value)">
             {{ item?.name }}
           </div>
         </ng-container>

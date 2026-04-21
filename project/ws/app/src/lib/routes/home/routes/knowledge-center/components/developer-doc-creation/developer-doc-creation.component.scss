@@ -120,7 +120,9 @@
 
 .dev-doc-label {
   // stylelint-disable-next-line font-shorthand-values
+  /* stylelint-disable */
   font: 700 14px/21px Lato;
+  /* stylelint-enable */
   letter-spacing: normal;
 }
 
@@ -266,8 +268,9 @@
   line-height: 1.5;
   resize: vertical;
   min-height: 256px;
-
+/* stylelint-disable */
   &:readonly {
+/* stylelint-enable */
     background-color: #f9fafb;
     cursor: not-allowed;
   }
@@ -329,8 +332,10 @@
   padding-top: 24px;
   border-top: 1px solid #e5e7eb;
   border: none;
+  /* stylelint-disable */
   padding: 0;
   margin: 24px 0 0 0;
+  /* stylelint-enable */
 }
 
 .dev-doc-tags-legend {

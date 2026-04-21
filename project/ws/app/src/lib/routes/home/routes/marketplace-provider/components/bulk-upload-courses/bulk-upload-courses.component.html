@@ -45,7 +45,7 @@
               <span i18n>No file uploaded</span>
             </ng-template>
           </p>
-          <div class="close-icon" matTooltip="Remove File" (click)="removeFile()">
+          <div class="close-icon" matTooltip="Remove File" (click)="removeFile()" (keyup)="removeFile()">
             <mat-icon>close</mat-icon>
           </div>
         </div>

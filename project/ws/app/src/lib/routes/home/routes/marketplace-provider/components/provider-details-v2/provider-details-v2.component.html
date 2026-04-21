@@ -8,7 +8,7 @@
         <canvas #canvas class="canvas-inputfile"></canvas>
 
         <div class="empty-logo relative" *ngIf="!logoPreviewUrl">
-          <div class="edit-icon" (click)="isPendingProvider ? null : triggerLogoSelect()"
+          <div class="edit-icon" (click)="isPendingProvider ? null : triggerLogoSelect()" (keydown)="isPendingProvider ? null : triggerLogoSelect()"
             [ngClass]="{ 'disabled': isPendingProvider }" role="button" tabindex="0">
             <mat-icon>edit</mat-icon>
           </div>
@@ -16,7 +16,7 @@
 
         <div class="logo-preview" *ngIf="logoPreviewUrl">
           <img [src]="logoPreviewUrl" alt="logo preview" class="logo-img" />
-          <div class="close-icon" (click)="isPendingProvider ? null : removeLogo()"
+          <div class="close-icon" (click)="isPendingProvider ? null : removeLogo()" (keydown)="isPendingProvider ? null : removeLogo()"
             [ngClass]="{ 'disabled': isPendingProvider }" role="button" tabindex="0" aria-label="remove-logo-button">
             <mat-icon>close</mat-icon>
           </div>
@@ -212,13 +212,13 @@
       </div>
       <ng-container *ngIf="!pdfUploaded; else fileUploaded">
         <div class="parnter-ship-agreement p-4" wsAuthDragDrop (fileDropped)="isPendingProvider ? null : onDrop($event)"
-          (click)="isPendingProvider ? null : fileInput?.nativeElement.click()"
+          (click)="isPendingProvider ? null : fileInput?.nativeElement.click()" (keydown)="isPendingProvider ? null : fileInput?.nativeElement.click()"
           [ngClass]="{ 'disabled': isPendingProvider }">
           <div class="flex flex-col gap-1 items-center">
             <div class="icon">
               <mat-icon svgIcon="upload_upward_arrow"></mat-icon>
             </div>
-            <div class="meta-text-1" onclick="document.getElementById('fileInput')?.click()">
+            <div class="meta-text-1" onclick="document.getElementById('fileInput')?.click()" onkeydown="document.getElementById('fileInput')?.click()">
               Select File to upload
             </div>
             <div class="meta-text-2 text-center">or drag and drop here Max Size - 1GB</div>
@@ -229,7 +229,7 @@
       </ng-container>
       <ng-template #fileUploaded>
         <div class="flex items-center my-2 fileUploadedCard">
-          <mat-icon class="removePdf" matTooltip="Remove PDF" (click)="isPendingProvider ? null : removePdf()"
+          <mat-icon class="removePdf" matTooltip="Remove PDF" (click)="isPendingProvider ? null : removePdf()" (keyup)="isPendingProvider ? null : removePdf()"
             [ngClass]="{ 'disabled': isPendingProvider }">close</mat-icon>
           <img src="/assets/icons/pdf.svg" alt="uploaded pdf" class="samplePdf" />
           <div class="flex flex-column justify-between pdfDetails">

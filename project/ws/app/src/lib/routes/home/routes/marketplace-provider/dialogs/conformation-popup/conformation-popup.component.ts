@@ -54,12 +54,14 @@ export class ConformationPopupComponent implements OnInit {
       }
       const formValue = this.inputForm.get('inputValue')?.value
 
-      if (typeof event === 'boolean') {
+
+      // if (typeof event === 'boolean') {
         // Return boolean along with form value
-        this.dialogRef.close({ result: event, value: formValue })
-      } else {
-        this.dialogRef.close({ result: event, value: formValue })
-      }
+      //   this.dialogRef.close({ result: event, value: formValue })
+      // } else {
+      //   this.dialogRef.close({ result: event, value: formValue })
+      // }
+      this.dialogRef.close({ result: event, value: formValue })
     } else {
       this.dialogRef.close(event)
     }

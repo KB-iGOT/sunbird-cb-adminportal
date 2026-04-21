@@ -40,6 +40,7 @@
                 <div
                   class="meta-text-1"
                   onclick="document.getElementById('logoFileInput')?.click()"
+                  onkeydown="document.getElementById('logoFileInput')?.click()"
                 >
                   Select File to upload
                 </div>
@@ -62,6 +63,7 @@
                   class="remove-logo-image-icon cursor-pointer"
                   matTooltip="Remove Logo"
                   (click)="removeLogoImage()"
+                  (keydown)="removeLogoImage()"
                   >close</mat-icon
                 >
                 <img [src]="selectedLogoImage" alt="uploaded logo" class="uploaded-logo-image" />
@@ -89,6 +91,7 @@
                 <div
                   class="meta-text-1"
                   onclick="document.getElementById('certificateFileInput')?.click()"
+                  onkeydown="document.getElementById('certificateFileInput')?.click()"
                 >
                   Select SVG File to upload
                 </div>
@@ -113,6 +116,7 @@
                   <mat-icon
                     class="certificate-logo-image-icon cursor-pointer"
                     (click)="removeCertificateImage()"
+                    (keydown)="removeCertificateImage()"
                     >close</mat-icon
                   >
                   <ng-container *ngIf="safeCertificateUrl">

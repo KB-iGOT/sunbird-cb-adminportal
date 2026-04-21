@@ -189,7 +189,7 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
     const headerArray = []
     for (let j = 0; j < headers.length; j = j + 1) {
       // Remove surrounding quotes and trim whitespace
-      const cleanedHeader = headers[j].replace(/^"|"$/g, '').trim()
+      const cleanedHeader = headers[j].replace(/(^"|"$)/g, '').trim()
       headerArray.push(cleanedHeader)
     }
     return headerArray
