@@ -8,9 +8,10 @@ import { ActivatedRoute } from '@angular/router'
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor'
 
 @Component({
-  selector: 'ws-app-via-api',
-  templateUrl: './via-api.component.html',
-  styleUrls: ['./via-api.component.scss'],
+    selector: 'ws-app-via-api',
+    templateUrl: './via-api.component.html',
+    styleUrls: ['./via-api.component.scss'],
+    standalone: false
 })
 export class ViaApiComponent implements OnInit, OnChanges {
   //#region (global varialbles)

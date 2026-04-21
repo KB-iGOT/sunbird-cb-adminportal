@@ -4,11 +4,14 @@ import { IBtnAppsConfig, CustomTourService } from '@sunbird-cb/collection'
 import { NsWidgetResolver } from '@sunbird-cb/resolver-v2'
 import { ConfigurationsService, NsInstanceConfig, NsPage } from '@sunbird-cb/utils-v2'
 import { Router, NavigationStart, NavigationEnd, Event } from '@angular/router'
+import { BackBreadcrumb } from '../../models/tnc.model'
+import { NavigationExternalService } from '../../services/navigation-external.service'
 
 @Component({
-  selector: 'ws-app-nav-bar',
-  templateUrl: './app-nav-bar.component.html',
-  styleUrls: ['./app-nav-bar.component.scss'],
+    selector: 'ws-app-nav-bar',
+    templateUrl: './app-nav-bar.component.html',
+    styleUrls: ['./app-nav-bar.component.scss'],
+    standalone: false
 })
 export class AppNavBarComponent implements OnInit, OnChanges {
   @Input() mode: 'top' | 'bottom' = 'top'
@@ -33,11 +36,13 @@ export class AppNavBarComponent implements OnInit, OnChanges {
   isTourGuideClosed = false
   showAppNavBar = false
   popupTour: any
+  breadcrumbData: BackBreadcrumb[] = []
   constructor(
     private domSanitizer: DomSanitizer,
     private configSvc: ConfigurationsService,
     private tourService: CustomTourService,
     private router: Router,
+    private navigationSvc: NavigationExternalService,
   ) {
     this.btnAppsConfig = { ...this.basicBtnAppsConfig }
     if (this.configSvc.restrictedFeatures) {
@@ -48,6 +53,12 @@ export class AppNavBarComponent implements OnInit, OnChanges {
         this.cancelTour()
       } else if (event instanceof NavigationEnd) {
         this.cancelTour()
+      }
+    })
+
+    this.navigationSvc.breadcrumnItems.subscribe(item => {
+      if (item) {
+        this.breadcrumbData = item
       }
     })
   }

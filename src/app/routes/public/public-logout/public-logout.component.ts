@@ -3,9 +3,10 @@ import { ConfigurationsService, NsPage } from '@sunbird-cb/utils-v2'
 import { Subscription } from 'rxjs'
 
 @Component({
-  selector: 'ws-public-logout',
-  templateUrl: './public-logout.component.html',
-  styleUrls: ['./public-logout.component.scss'],
+    selector: 'ws-public-logout',
+    templateUrl: './public-logout.component.html',
+    styleUrls: ['./public-logout.component.scss'],
+    standalone: false
 })
 export class PublicLogoutComponent implements OnInit, OnDestroy {
   contactUsMail = ''

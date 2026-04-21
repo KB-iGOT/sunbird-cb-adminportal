@@ -1,12 +1,13 @@
 import { Component, OnInit, Inject } from '@angular/core'
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { SystemRolesManagementService } from '../../../../services/system-roles-management.service'
 import { IManageUser } from './system-roles-management.model'
 
 @Component({
-  selector: 'ws-admin-open-roles-dialog',
-  templateUrl: './open-roles-dialog.component.html',
-  styleUrls: ['./open-roles-dialog.component.scss'],
+    selector: 'ws-admin-open-roles-dialog',
+    templateUrl: './open-roles-dialog.component.html',
+    styleUrls: ['./open-roles-dialog.component.scss'],
+    standalone: false
 })
 export class OpenRolesDialogComponent implements OnInit {
   userId!: string
@@ -60,9 +61,9 @@ export class OpenRolesDialogComponent implements OnInit {
             this.rolesHash[role].hasRole = true
           })
         }).catch(
-        () => {
+          () => {
             this.addError = true
-        })
+          })
       this.promiseArray.push(promise1)
     }
     if (this.removeRole.length) {
@@ -77,10 +78,10 @@ export class OpenRolesDialogComponent implements OnInit {
             this.rolesHash[role].hasRole = false
           })
         }).catch(
-        () => {
+          () => {
             this.removeError = true
-        }
-      )
+          }
+        )
       this.promiseArray.push(promise2)
     }
     if (this.promiseArray.length) {
@@ -92,14 +93,14 @@ export class OpenRolesDialogComponent implements OnInit {
       }
     })
     this.processing = false
-      this.dialogRef.close({
-        wid: this.userId,
-        newRoles: this.updatedRole,
-        addingError: this.addError,
-        removingError: this.removeError,
-      })
+    this.dialogRef.close({
+      wid: this.userId,
+      newRoles: this.updatedRole,
+      addingError: this.addError,
+      removingError: this.removeError,
+    })
 
-}
+  }
 
   close() {
     this.dialogRef.close()

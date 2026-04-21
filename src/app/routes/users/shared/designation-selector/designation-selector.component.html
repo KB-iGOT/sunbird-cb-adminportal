@@ -1,0 +1,19 @@
+<mat-form-field class="full-width" appearance="outline" floatLabel="always">
+  <mat-label>{{ label }}</mat-label>
+  <input matInput [formControl]="searchControl" [matAutocomplete]="desigAuto" [placeholder]="placeholder">
+  <mat-spinner matSuffix diameter="18" *ngIf="isLoading" style="margin-right:6px"></mat-spinner>
+  <button mat-icon-button matSuffix *ngIf="searchControl.value && !disabled && !isLoading" (click)="clear()"
+    type="button">
+    <mat-icon>close</mat-icon>
+  </button>
+  <mat-autocomplete #desigAuto="matAutocomplete" [displayWith]="displayFn"
+    (optionSelected)="onOptionSelected($event.option.value)">
+    <mat-option *ngFor="let opt of filteredOptions" [value]="opt">
+      {{ opt.name }}
+    </mat-option>
+    <mat-option *ngIf="filteredOptions.length === 0 && !isLoading" disabled>
+      No designations found
+    </mat-option>
+  </mat-autocomplete>
+  <mat-error *ngIf="required && !selectedDesignation">Designation is required</mat-error>
+</mat-form-field>

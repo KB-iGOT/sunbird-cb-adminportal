@@ -6,11 +6,11 @@ import {
 } from '@angular/core'
 import { UntypedFormGroup, UntypedFormControl, Validators, FormControl, FormGroup } from '@angular/forms'
 import { UsersService } from '../../../routes/home/services/users.service'
-// import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+// import {  MatChipInputEvent } from '@angular/material/chips'
+import { MatDialog } from '@angular/material/dialog'
 import { MatExpansionPanel } from '@angular/material/expansion'
-import { MatLegacyPaginator as MatPaginator, LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatPaginator, PageEvent } from '@angular/material/paginator'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
 // tslint:disable-next-line
 import * as _ from 'lodash'
@@ -32,9 +32,8 @@ const EMAIL_PATTERN = /^[a-zA-Z0-9]+[a-zA-Z0-9._-]*[a-zA-Z0-9]+@[a-zA-Z0-9]+(\.[
   selector: 'ws-widget-user-card',
   templateUrl: './user-card.component.html',
   styleUrls: ['./user-card.component.scss'],
-  providers: [
-
-  ],
+  providers: [],
+  standalone: false
 })
 export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() userId: any
@@ -120,6 +119,7 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
   currentUserRole = ''
   checked = false
   isSPVAdmin = false
+  isStateAdmin = false
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
     private dialog: MatDialog,
     private route: ActivatedRoute,
@@ -153,6 +153,7 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
     // this.department = fullProfile.unMappedUser.rootOrgId
     if (fullProfile) {
       this.isSPVAdmin = fullProfile.has('spv_admin')
+      this.isStateAdmin = fullProfile.has('state_admin')
     }
 
     if (this.usersData && this.usersData.length > 0) {

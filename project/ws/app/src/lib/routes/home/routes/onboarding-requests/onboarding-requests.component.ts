@@ -1,13 +1,14 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { RequestsService } from '../../services/onboarding-requests.service'
-import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator'
+import { PageEvent } from '@angular/material/paginator'
 import * as _ from 'lodash'
 
 @Component({
   selector: 'ws-app-onboarding-requests',
   templateUrl: './onboarding-requests.component.html',
   styleUrls: ['./onboarding-requests.component.scss'],
+  standalone: false
 })
 export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
   tabledata: any = []
@@ -24,7 +25,7 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
   currentOffset = 0
   pendingListRecord?: number | 0
   totalRecords?: number | 0
-
+  isLoading = true
   constructor(private route: Router,
     private activatedRoute: ActivatedRoute,
     private requestService: RequestsService,
@@ -121,7 +122,7 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
   }
 
   getDisplayName() {
-    return this.displayType.charAt(0).toUpperCase() + this.displayType.substr(1).toLowerCase()
+    return this.displayType?.charAt(0)?.toUpperCase() + this.displayType?.substr(1)?.toLowerCase()
   }
 
   formatData(resData: any, list: any) {
@@ -251,17 +252,25 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
       deptName: 'iGOT',
     }
     if (this.requestType === 'position') {
+      this.isLoading = true
       this.requestService.getPositionsList(reqbody).subscribe((res: any) => {
+        this.isLoading = false
         this.data = []
         const resData = res.result.data
         this.pendingListRecord = res.result.count
         this.formatData(resData, 'pending')
+      }, () => {
+        this.isLoading = false
       })
     } else if (this.requestType === 'organisation') {
+      this.isLoading = true
       this.requestService.getOrgsList(reqbody).subscribe((res: any) => {
+        this.isLoading = false
         const resData = res.result.data
         this.pendingListRecord = res.result.count
         this.formatData(resData, 'pending')
+      }, () => {
+        this.isLoading = false
       })
     }
   }
@@ -275,17 +284,25 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
       deptName: 'iGOT',
     }
     if (this.requestType === 'position') {
+      this.isLoading = true
       this.requestService.getPositionsList(reqbody).subscribe((res: any) => {
+        this.isLoading = false
         this.data = []
         const resData = res.result.data
         this.totalRecords = res.result.count
         this.formatData(resData, 'approved')
+      }, () => {
+        this.isLoading = false
       })
     } else if (this.requestType === 'organisation') {
+      this.isLoading = true
       this.requestService.getOrgsList(reqbody).subscribe((res: any) => {
+        this.isLoading = false
         const resData = res.result.data
         this.totalRecords = res.result.count
         this.formatData(resData, 'approved')
+      }, () => {
+        this.isLoading = false
       })
     }
   }
@@ -299,17 +316,25 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
       deptName: 'iGOT',
     }
     if (this.requestType === 'position') {
+      this.isLoading = true
       this.requestService.getPositionsList(reqbody).subscribe((res: any) => {
+        this.isLoading = false
         this.data = []
         const resData = res.result.data
         this.totalRecords = res.result.count
         this.formatData(resData, 'rejected')
+      }, () => {
+        this.isLoading = false
       })
     } else if (this.requestType === 'organisation') {
+      this.isLoading = true
       this.requestService.getOrgsList(reqbody).subscribe((res: any) => {
+        this.isLoading = false
         const resData = res.result.data
         this.totalRecords = res.result.count
         this.formatData(resData, 'rejected')
+      }, () => {
+        this.isLoading = false
       })
     }
   }

@@ -1,0 +1,94 @@
+<div class="search-panel">
+  <form [formGroup]="searchForm" class="search-form" (ngSubmit)="onSearch()">
+
+    <!-- Row 1: Dropdowns -->
+    <div class="filter-row">
+      <div class="filter-field">
+        <label class="field-label">Search By</label>
+        <mat-form-field appearance="outline" class="compact-field">
+          <mat-select formControlName="searchType" (selectionChange)="onSearchTypeChange()">
+            <mat-option *ngFor="let st of searchTypes" [value]="st.type">
+              {{ st.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="filter-field">
+        <label class="field-label">User Status</label>
+        <mat-form-field appearance="outline" class="compact-field">
+          <mat-select formControlName="userStatus">
+            <mat-option *ngFor="let opt of userStatusOptions" [value]="opt.value">
+              {{ opt.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Row 2: Search inputs -->
+    <div class="input-row">
+
+      <!-- Role dropdown (shown only when Search By = Role) -->
+      <div class="input-field" *ngIf="showRoleDropdown">
+        <label class="field-label">
+          Role
+          <span class="required-star">*</span>
+        </label>
+        <mat-form-field appearance="outline" class="full-width-field">
+          <mat-select formControlName="searchQuery" placeholder="Select a role">
+            <mat-option *ngIf="rolesLoading" disabled>Loading roles...</mat-option>
+            <mat-option *ngFor="let role of availableRoles" [value]="role">{{ role }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Text input (shown for all types except roles) -->
+      <div class="input-field" *ngIf="showTextInput">
+        <label class="field-label">
+          {{ currentMapping?.label || 'Search' }}
+          <span class="required-star">*</span>
+        </label>
+        <mat-form-field appearance="outline" class="full-width-field">
+          <input matInput formControlName="searchQuery"
+            [placeholder]="'Enter ' + (currentMapping?.label || 'search term')" (input)="validateInput()"
+            (blur)="validateInput()" (keyup.enter)="onSearch()">
+        </mat-form-field>
+        <span class="field-hint error-hint" *ngIf="validationError">
+          <mat-icon>error</mat-icon>{{ validationError }}
+        </span>
+        <span class="field-hint" *ngIf="!validationError && getExample()">e.g. {{ getExample() }}</span>
+      </div>
+
+      <!-- Organisation selector (shown for name + roles search) -->
+      <div class="input-field" *ngIf="showOrgSelector">
+        <label class="field-label">
+          Organisation
+          <span class="optional-badge">Optional — narrows results</span>
+        </label>
+        <ws-organization-selector class="full-org-selector" [selectedOrg]="selectedOrg"
+          (orgSelected)="onOrgSelected($event)" (orgCleared)="onOrgCleared()">
+        </ws-organization-selector>
+      </div>
+
+    </div>
+
+    <!-- Hint shown when Search is not ready -->
+    <div class="search-hint" *ngIf="!canSearch">
+      <mat-icon>info</mat-icon>
+      <span>{{ getSearchHint() }}</span>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="search-actions">
+      <button mat-raised-button type="submit" [disabled]="!canSearch" [class.btn-ready]="canSearch"
+        [class.btn-waiting]="!canSearch">
+        <mat-icon>search</mat-icon> Search
+      </button>
+      <button mat-stroked-button color="primary" type="button" (click)="onClear()">
+        <mat-icon>clear</mat-icon> Clear
+      </button>
+    </div>
+
+  </form>
+</div>

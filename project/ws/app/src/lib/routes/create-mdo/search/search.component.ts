@@ -5,11 +5,12 @@ import _ from 'lodash'
 /* tslint:enable */
 import { UsersService } from '../../../routes/home/services/users.service'
 import { LoaderService } from '../../../routes/home/services/loader.service'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 @Component({
-  selector: 'ws-app-searchuser',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
+    selector: 'ws-app-searchuser',
+    templateUrl: './search.component.html',
+    styleUrls: ['./search.component.scss'],
+    standalone: false
 })
 export class SearchComponent implements OnInit {
   @Input() from: any = ''

@@ -1,0 +1,17 @@
+.provider-configs-sidenav-container {
+  height: calc(100vh - 120px);
+}
+
+::ng-deep {
+  .provider-configs-sidenav-container .mat-drawer {
+    width: 240px;
+    background-color: #fff !important;
+  }
+  .provider-configs-sidenav-container mat-sidenav-content {
+    background: #f4f8ff;
+  }
+}
+
+.provider-content-main {
+  padding: 1rem 40px;
+}

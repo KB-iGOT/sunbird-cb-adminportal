@@ -2,8 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetect
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
 import { EventsService } from '../services/events.service'
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core'
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatPaginator } from '@angular/material/paginator'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { MatSort } from '@angular/material/sort'
 import { ITableData } from '../interfaces/interfaces'
 import { MatDialog } from '@angular/material/dialog'
@@ -11,7 +11,7 @@ import { ParticipantsComponent } from '../participants/participants.component'
 import { SuccessComponent } from '../success/success.component'
 import { Router, ActivatedRoute } from '@angular/router'
 import { ConfigurationsService, EventService } from '@sunbird-cb/utils-v2'
-import * as moment from 'moment'
+import moment from 'moment'
 import { MomentDateAdapter } from '@angular/material-moment-adapter'
 /* tslint:disable */
 import * as _ from 'lodash'
@@ -19,6 +19,7 @@ import { TelemetryEvents } from '../../events/model/telemetry.event.model'
 import { ProfileV2UtillService } from '../services/home-utill.service'
 import { preventHtmlAndJs } from '../../../validators/prevent-html-and-js.validator'
 import { PipePublicURL } from '../../../pipes/pipe-public-URL/pipe-public-URL.pipe'
+import { GlobalEventsService } from '../../../../../../../../../../src/app/services/global-events.service'
 /* tslint:enable */
 
 export const MY_FORMATS = {
@@ -40,6 +41,7 @@ export const MY_FORMATS = {
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
+  standalone: false
 })
 
 export class CreateEventComponent implements OnInit, OnDestroy {
@@ -66,7 +68,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   departmentName = ''
   toastSuccess: any
   pictureObj: any
-  myreg = /^(https?|http):\/\/[^\s/$.?#].[^\s]*$/
+  myreg = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/|v\/|live\/)|youtu\.be\/)[A-Za-z0-9_\-]+/
   eventTitleRegex = new RegExp(
     /^[\u0900-\u097F\u0980-\u09FF\u0C00-\u0C7F\u0B80-\u0BFF\u0C80-\u0CFF\u0D00-\u0D7F\u0A80-\u0AFF\u0B00-\u0B7F\u0A00-\u0A7Fa-zA-Z0-9\(\)\$\[\]\.\-,:!'\" _\/]*$/ // NOSONAR
   )
@@ -77,7 +79,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   // eventTypes = [
   //   { title: 'Webinar', desc: 'General discussion involving', border: 'rgb(0, 116, 182)', disabled: false },
   // ]
-  evntTypesList = ['Webinar', 'Karmayogi Talks', 'Karmayogi Saptah', 'Rajya Karmayogi Saptah']
+  evntTypesList = ['Webinar', 'Karmayogi Talks', 'Karmayogi Saptah', 'Rajya Karmayogi Saptah', 'Sadhana Saptah', 'Samuhik Charcha - NLW 2026']
   stateList = []
   timeArr = [
     { value: '00:00' }, { value: '00:15' }, { value: '00:30' }, { value: '00:45' },
@@ -145,13 +147,14 @@ export class CreateEventComponent implements OnInit, OnDestroy {
     private router: Router, private configSvc: ConfigurationsService, private changeDetectorRefs: ChangeDetectorRef,
     // tslint:disable-next-line:align
     private activeRoute: ActivatedRoute, private events: EventService, private profileUtilSvc: ProfileV2UtillService,
-    private pipePublic: PipePublicURL
+    private pipePublic: PipePublicURL, private loaderService: GlobalEventsService,
   ) {
 
     if (this.configSvc.userProfile) {
       this.userId = this.configSvc.userProfile.userId
       this.username = this.configSvc.userProfile.userName
       this.department = this.configSvc.userProfile.departmentName
+      this.departmentID = this.configSvc.userProfile?.rootOrgId
     } else {
       if (_.get(this.activeRoute, 'snapshot.data.configService.userProfile.rootOrgId')) {
         this.departmentID = _.get(this.activeRoute, 'snapshot.data.configService.userProfile.rootOrgId')
@@ -681,11 +684,14 @@ export class CreateEventComponent implements OnInit, OnDestroy {
       width: '612px',
       data: res,
       panelClass: 'remove-overflow',
+      autoFocus: false
     })
     this.dialogRef.afterClosed().subscribe(() => {
+      this.loaderService.setLoaderState(true)
       setTimeout(() => {
+        this.loaderService.setLoaderState(false)
         this.router.navigate([`/app/home/events`])
-      }, 700)
+      }, 2000)
     })
   }
 

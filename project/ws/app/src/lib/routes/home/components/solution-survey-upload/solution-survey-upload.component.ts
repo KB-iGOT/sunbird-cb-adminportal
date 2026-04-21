@@ -3,9 +3,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { DomSanitizer } from '@angular/platform-browser'
 
 @Component({
-  selector: 'ws-app-solution-survey-upload',
-  templateUrl: './solution-survey-upload.component.html',
-  styleUrls: ['./solution-survey-upload.component.scss'],
+    selector: 'ws-app-solution-survey-upload',
+    templateUrl: './solution-survey-upload.component.html',
+    styleUrls: ['./solution-survey-upload.component.scss'],
+    standalone: false
 })
 export class SolutionSurveyUploadComponent implements OnInit {
   surveyFileUploadUrl = ''

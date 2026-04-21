@@ -24,3 +24,9 @@ export namespace NsTnc {
     version: string
   }
 }
+
+export interface BackBreadcrumb {
+  label?: string
+  route?: string
+  active?: boolean
+}

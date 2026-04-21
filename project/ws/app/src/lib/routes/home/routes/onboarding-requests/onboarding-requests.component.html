@@ -34,7 +34,7 @@
         </div>
       </div>
 
-      <ng-container *ngIf="requestType === 'position'">
+      <ng-container *ngIf="requestType === 'position' && !isLoading">
         <ng-container *ngIf="currentFilter === 'pending'">
           <ws-widget-org-user-table-v2 [tableData]="tabledata" [data]="data" (actionsClick)="actionsClick($event)"
             [totalRecords]="pendingListRecord" (pageChangeClick)="onPaginateChange($event)"
@@ -46,7 +46,7 @@
         </ng-container>
       </ng-container>
 
-      <ng-container *ngIf="requestType === 'organisation'">
+      <ng-container *ngIf="requestType === 'organisation' && !isLoading">
         <ng-container *ngIf="currentFilter === 'pending'">
           <ws-widget-org-user-table-v2 [tableData]="tabledata" [isSearchBar]="false" [data]="data"
             [totalRecords]="pendingListRecord" (pageChangeClick)="onPaginateChange($event)" [tabChangeIndex]="pageIndex"
@@ -63,11 +63,17 @@
       </ng-container>
 
 
-      <ng-container *ngIf="currentFilter === 'designations'">
+      <ng-container *ngIf="currentFilter === 'designations' && !isLoading">
         <div class="margin-top-m">
           <ws-widget-ui-user-table [tableData]='tabledataPositions' [data]='data' isCreate=true
             [currentTabData]='currentFilter' [needCreatePosition]="true">
           </ws-widget-ui-user-table>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="isLoading">
+        <div class="flex justify-center margin-top-m">
+          <mat-spinner ></mat-spinner>
         </div>
       </ng-container>
     </mat-card-content>

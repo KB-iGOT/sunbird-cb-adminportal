@@ -18,6 +18,7 @@ export const environment: IEnvironment = {
   KCMframeworkName: (window as { [key: string]: any })['env']['KCMframeworkName'] || '',
   compentencyVersionKey: (window as { [key: string]: any })['env']['compentencyVersionKey'] || '',
   ODCSMasterFramework: (window as { [key: string]: any })['env']['ODCSMasterFramework'] || '',
+  spvorgID: (window as { [key: string]: any })['env']['spvorgID'] || ''
 }
 interface IEnvironment {
   contentBucket: any
@@ -35,6 +36,7 @@ interface IEnvironment {
   KCMframeworkName?: string
   compentencyVersionKey: string
   ODCSMasterFramework?: string
+  spvorgID?: string
 }
 
 /*
@@ -44,4 +46,4 @@ interface IEnvironment {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-import 'zone.js/dist/zone-error' // Included with Angular CLI.x
+import 'zone.js' // Included with Angular CLI.x

@@ -6,9 +6,10 @@ import * as _ from 'lodash'
 import { debounceTime } from 'rxjs/operators'
 
 @Component({
-  selector: 'ws-app-courses-table',
-  templateUrl: './courses-table.component.html',
-  styleUrls: ['./courses-table.component.scss'],
+    selector: 'ws-app-courses-table',
+    templateUrl: './courses-table.component.html',
+    styleUrls: ['./courses-table.component.scss'],
+    standalone: false
 })
 export class CoursesTableComponent implements OnInit, OnChanges {
   @Input() tableData!: any

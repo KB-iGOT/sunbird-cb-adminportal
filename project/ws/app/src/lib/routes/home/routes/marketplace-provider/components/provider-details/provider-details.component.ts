@@ -12,9 +12,10 @@ import { LoaderService } from '../../../../services/loader.service'
 import { environment } from '../../../../../../../../../../../src/environments/environment'
 
 @Component({
-  selector: 'ws-app-provider-details',
-  templateUrl: './provider-details.component.html',
-  styleUrls: ['./provider-details.component.scss'],
+    selector: 'ws-app-provider-details',
+    templateUrl: './provider-details.component.html',
+    styleUrls: ['./provider-details.component.scss'],
+    standalone: false
 })
 export class ProviderDetailsComponent implements OnInit, OnChanges {
   @ViewChild('thumbNailInput', { static: false }) thumbNailInput!: ElementRef<HTMLInputElement>

@@ -1,9 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 @Component({
-  selector: 'ws-app-confirmation-box',
-  templateUrl: './confirmation-box.component.html',
-  styleUrls: ['./confirmation-box.component.scss'],
+    selector: 'ws-app-confirmation-box',
+    templateUrl: './confirmation-box.component.html',
+    styleUrls: ['./confirmation-box.component.scss'],
+    standalone: false
 })
 export class ConfirmationBoxComponent implements OnInit {
 

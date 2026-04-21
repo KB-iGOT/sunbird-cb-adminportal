@@ -157,6 +157,8 @@ const routes: Routes = [
       tnc: TncAppResolverService,
     },
   },
+  // app/users moved to app/home/users (child of HomeComponent)
+  // to properly inherit the sidenav left-menu layout
   {
     path: 'error-access-forbidden',
     component: ErrorResolverComponent,

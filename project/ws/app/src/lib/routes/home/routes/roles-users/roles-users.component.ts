@@ -6,9 +6,10 @@ import { ProfileV2UtillService } from '../../services/home-utill.service'
 import { UsersService } from '../../services/users.service'
 
 @Component({
-  selector: 'ws-app-roles-users',
-  templateUrl: './roles-users.component.html',
-  styleUrls: ['./roles-users.component.scss'],
+    selector: 'ws-app-roles-users',
+    templateUrl: './roles-users.component.html',
+    styleUrls: ['./roles-users.component.scss'],
+    standalone: false
 })
 export class RolesUsersComponent implements OnInit, AfterViewInit, OnDestroy {
   tabledata: any = []

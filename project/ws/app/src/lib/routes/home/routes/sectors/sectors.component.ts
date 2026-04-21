@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import * as _ from 'lodash'
 import { SectorsService } from './sectors.service'
 
 @Component({
-  selector: 'ws-app-sectors',
-  templateUrl: './sectors.component.html',
-  styleUrls: ['./sectors.component.scss'],
+    selector: 'ws-app-sectors',
+    templateUrl: './sectors.component.html',
+    styleUrls: ['./sectors.component.scss'],
+    standalone: false
 })
 export class SectorsComponent implements OnInit {
 

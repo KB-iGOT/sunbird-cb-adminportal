@@ -1,7 +1,7 @@
 import { fakeAsync, tick } from '@angular/core/testing'
 import { KCMMappingComponent } from './kcm-mapping.component'
 import { ActivatedRoute } from '@angular/router'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 import { DemoVideoPopupComponent } from '../../components/demo-video-popup/demo-video-popup.component'
 import { of } from 'rxjs'
 import { environment } from '../../../../../../../../../src/environments/environment'

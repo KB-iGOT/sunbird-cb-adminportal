@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ConfigurationsService, EventService } from '@sunbird-cb/utils-v2'
-import * as moment from 'moment'
+import moment from 'moment'
 /* tslint:disable */
 import * as _ from 'lodash'
 import { EventsService } from '../services/events.service'
 import { DialogConfirmComponent } from '../../../../../../../../../../src/app/component/dialog-confirm/dialog-confirm.component'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { TelemetryEvents } from '../model/telemetry.event.model'
 
 @Component({
   selector: 'ws-app-events-list',
   templateUrl: './events-list.component.html',
   styleUrls: ['./events-list.component.scss'],
+  standalone: false
 })
 export class EventsListComponent implements OnInit {
   currentUser!: string | null
@@ -21,7 +22,6 @@ export class EventsListComponent implements OnInit {
   department: any
   departmentID: any
   tabledata: any = []
-  eventData: any = []
   data: any = []
   currentFilter = 'upcoming'
 
@@ -78,23 +78,63 @@ export class EventsListComponent implements OnInit {
 
   }
 
-  fetchEvents() {
-    const requestObj = {
-      locale: [
-        'en',
-      ],
-      query: '',
-      request: {
-        query: '',
-        filters: {
-          status: ['Live', 'Retired'],
-          contentType: 'Event',
-          createdFor: this.departmentID,
-        },
-        sort_by: {
-          lastUpdatedOn: 'desc',
-        },
-      },
+  fetchEvents(tab?: string) {
+    if (tab) {
+      this.currentFilter = tab
+    }
+    const now = moment.utc().format('YYYY-MM-DDTHH:mm:ss.SSSZZ')
+    let requestObj: any
+
+    switch (this.currentFilter) {
+      case 'upcoming':
+        requestObj = {
+          locale: ['en'],
+          request: {
+            query: '',
+            limit: 20,
+            offset: 0,
+            filters: {
+              status: ['Live'],
+              contentType: 'Event',
+              createdFor: this.departmentID,
+              endDateTime: { '>=': now },
+            },
+            sort_by: { lastUpdatedOn: 'desc' },
+          },
+        }
+        break
+      case 'past':
+        requestObj = {
+          locale: ['en'],
+          request: {
+            query: '',
+            limit: 20,
+            offset: 0,
+            filters: {
+              status: ['Live'],
+              contentType: 'Event',
+              createdFor: this.departmentID,
+              endDateTime: { '<': now },
+            },
+            sort_by: { lastUpdatedOn: 'desc' },
+          },
+        }
+        break
+      case 'archive':
+        requestObj = {
+          locale: ['en'],
+          query: '',
+          request: {
+            query: '',
+            filters: {
+              status: ['Retired'],
+              contentType: 'Event',
+              createdFor: this.departmentID,
+            },
+            sort_by: { lastUpdatedOn: 'desc' },
+          },
+        }
+        break
     }
 
     this.eventSvc.getEventsList(requestObj).subscribe((events: any) => {
@@ -105,13 +145,9 @@ export class EventsListComponent implements OnInit {
   setEventListData(eventObj: any) {
     if (eventObj !== undefined) {
       const data = eventObj.result.Event
-      this.eventData['pastEvents'] = []
-      this.eventData['upcomingEvents'] = []
-      this.eventData['archiveEvents'] = []
+      this.data = []
       Object.keys(data).forEach((index: any) => {
         const obj = data[index]
-        //if (obj.createdFor && obj.createdFor[0] === this.departmentID) {
-        const expiryDateFormat = this.getCustomDateFormat(obj.endDate, obj.endTime)
         const floor = Math.floor
         const hours = floor(obj.duration / 60)
         const minutes = obj.duration % 60
@@ -132,31 +168,16 @@ export class EventsListComponent implements OnInit {
           startTime: obj.startTime,
           createdOn: obj.createdOn,
           duration: obj.duration,
+          status: obj.status,
           creatorDetails: (creatorDetails !== undefined ? creatorDetails.length : 0),
           eventjoined: (creatorDetails !== undefined && creatorDetails.length > 0) ?
             ((creatorDetails.length === 1) ? '1 person' : `${creatorDetails.length} people`) : ' --- ',
           lastUpdatedOn: obj.lastUpdatedOn,
-          // eventThumbnail: obj.appIcon && (obj.appIcon !== null || obj.appIcon !== undefined) ?
-          //   this.eventSvc.getPublicUrl(obj.appIcon) : this.eventSvc.getPublicUrl('/assets/icons/Events_default.png'),
           eventThumbnail: obj.appIcon
         }
-        if (obj.status === 'Retired') {
-          this.eventData['archiveEvents'].push(eventDataObj)
-        } else {
-          const isPast = this.compareDate(expiryDateFormat);
-          (isPast) ? this.eventData['pastEvents'].push(eventDataObj) : this.eventData['upcomingEvents'].push(eventDataObj)
-        }
-        //}
+        this.data.push(eventDataObj)
       })
-      this.filter(this.currentFilter)
     }
-  }
-
-  getCustomDateFormat(date: any, time: any) {
-    const stime = time.split('+')[0]
-    const hour = stime.substr(0, 2)
-    const min = stime.substr(2, 3)
-    return `${date} ${hour}${min}`
   }
 
   customDateFormat(date: string, time: string) {
@@ -168,51 +189,8 @@ export class EventsListComponent implements OnInit {
     return finalDateTimeValue
   }
 
-  filter(key: string | 'timestamp' | 'best' | 'saved') {
-    const upcomingEventsData: any[] = []
-    const pastEventsData: any[] = []
-    const archiveEventsData: any[] = []
-    if (this.eventData['pastEvents'] && this.eventData['pastEvents'].length > 0) {
-      this.eventData['pastEvents'].forEach((event: any) => {
-        pastEventsData.push(event)
-      })
-    }
-
-    if (this.eventData['upcomingEvents'] && this.eventData['upcomingEvents'].length > 0) {
-      this.eventData['upcomingEvents'].forEach((event: any) => {
-        upcomingEventsData.push(event)
-      })
-    }
-
-    if (this.eventData['archiveEvents'] && this.eventData['archiveEvents'].length > 0) {
-      this.eventData['archiveEvents'].forEach((event: any) => {
-        archiveEventsData.push(event)
-      })
-    }
-
-    if (key) {
-      this.currentFilter = key
-      switch (key) {
-        case 'upcoming':
-          this.data = upcomingEventsData
-          break
-        case 'past':
-          this.data = pastEventsData
-          break
-        case 'archive':
-          this.data = archiveEventsData
-          break
-        default:
-          this.data = upcomingEventsData
-          break
-      }
-    }
-  }
-
-  compareDate(selectedDate: any) {
-    const now = new Date()
-    const today = moment(now).format('YYYY-MM-DD HH:mm')
-    return (selectedDate < today) ? true : false
+  filter(key: string) {
+    this.fetchEvents(key)
   }
 
   allEventDateFormat(datetime: any) {
@@ -266,9 +244,7 @@ export class EventsListComponent implements OnInit {
           this.eventSvc.retireEvent($event.row.identifier).subscribe((result: any) => {
             if (result.responseCode === 'OK') {
               this.openSnackbar('Event is successfully archived.')
-              this.fetchEvents()
-              this.currentFilter = 'archive'
-              this.filter(this.currentFilter)
+              this.fetchEvents('archive')
             }
           })
         }
@@ -285,10 +261,10 @@ export class EventsListComponent implements OnInit {
   }
 
   canArchive(objData: any) {
-    const sDate = this.getCustomDateFormat(objData.startDate, objData.startTime)
-    const eDate = this.getCustomDateFormat(objData.endDate, objData.endTime)
-    const msDate = Math.floor(moment(sDate).valueOf() / 1000)
-    const meDate = Math.floor(moment(eDate).valueOf() / 1000)
+    const sTime = objData.startTime.split('+')[0]
+    const eTime = objData.endTime.split('+')[0]
+    const msDate = Math.floor(moment(`${objData.startDate}T${sTime}`).valueOf() / 1000)
+    const meDate = Math.floor(moment(`${objData.endDate}T${eTime}`).valueOf() / 1000)
     const cDate = Math.floor(moment(new Date()).valueOf() / 1000)
     return !(cDate >= msDate && cDate <= meDate)
   }

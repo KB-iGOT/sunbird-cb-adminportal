@@ -4,15 +4,16 @@ import {
 } from '@angular/core'
 import * as _ from 'lodash'
 import { IAction, ITableData } from '../../events/interfaces/interfaces'
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator'
+import { MatPaginator } from '@angular/material/paginator'
 import { MatSort } from '@angular/material/sort'
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
+import { MatTableDataSource } from '@angular/material/table'
 import { sectorConstants } from '../sectors-constats.model'
 
 @Component({
-  selector: 'ws-sector-list-view',
-  templateUrl: './sector-list-view.component.html',
-  styleUrls: ['./sector-list-view.component.scss'],
+    selector: 'ws-sector-list-view',
+    templateUrl: './sector-list-view.component.html',
+    styleUrls: ['./sector-list-view.component.scss'],
+    standalone: false
 })
 export class SectorListViewComponent implements OnInit {
   @Input() tableData!: ITableData | undefined

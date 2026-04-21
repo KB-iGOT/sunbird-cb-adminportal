@@ -4,7 +4,7 @@ import { of, throwError } from 'rxjs'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { UntypedFormGroup } from '@angular/forms'
 import { ElementRef } from '@angular/core'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 
 describe('CreateUserV2Component', () => {
     let component: CreateUserV2Component

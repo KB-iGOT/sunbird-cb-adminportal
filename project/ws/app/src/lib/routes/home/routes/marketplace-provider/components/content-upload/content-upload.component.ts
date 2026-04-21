@@ -7,10 +7,11 @@ import { HttpErrorResponse } from '@angular/common/http'
 import { MatSnackBar } from '@angular/material/snack-bar'
 
 @Component({
-  selector: 'ws-app-content-upload',
-  templateUrl: './content-upload.component.html',
-  styleUrls: ['./content-upload.component.scss'],
-  providers: [DatePipe],
+    selector: 'ws-app-content-upload',
+    templateUrl: './content-upload.component.html',
+    styleUrls: ['./content-upload.component.scss'],
+    providers: [DatePipe],
+    standalone: false
 })
 export class ContentUploadComponent implements OnInit, OnChanges {
   //#region (global variables)
@@ -92,7 +93,7 @@ export class ContentUploadComponent implements OnInit, OnChanges {
       this.tableDataInitialzation()
     }
 
-    if (changes.selectedTabIndex && changes.selectedTabIndex.currentValue === 1) {
+    if (changes.selectedTabIndex && changes.selectedTabIndex.currentValue === 2) {
       this.delayTabLoad = false
     }
   }

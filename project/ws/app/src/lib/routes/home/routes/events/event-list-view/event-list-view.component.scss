@@ -2,6 +2,24 @@
 @import 'ws-vars';
 @import 'ws-mixins';
 
+:host ::ng-deep .mat-mdc-menu-item {
+  display: flex !important;
+  align-items: center !important;
+
+  .mat-mdc-menu-item-text {
+    height: auto;
+  }
+
+  .mat-icon {
+    margin-right: 12px;
+    vertical-align: middle;
+  }
+
+  span {
+    vertical-align: middle;
+  }
+}
+
 table {
   width: 100%;
 }
@@ -644,6 +662,7 @@ $title-line-count: 2;
   // flex: 1;
   flex-direction: column;
 }
+
 .cursor {
   cursor: pointer;
 }
@@ -676,7 +695,7 @@ $title-line-count: 2;
 }
 
 .sinput {
-width: 400px;
+  width: 400px;
   border-radius: 20px;
   border: 1px solid #d5d0d0;
   padding: 8px 16px;
@@ -684,7 +703,7 @@ width: 400px;
   // margin-bottom: 10px;
   height: 42px;
 
-    .material-icons {
+  .material-icons {
     vertical-align: middle;
     font-size: 20px;
     margin-right: 7px;
@@ -719,8 +738,8 @@ mat-header-row {
 .container-balanced {
   max-width: 99%;
   // min-height: 85vh;
-  margin-left: auto!important;
-  margin-right: auto!important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 .flex-3 {
@@ -809,12 +828,13 @@ mat-header-row {
 }
 
 ::ng-deep .mat-column-eventName {
-  flex: 0 0 30%!important;
+  flex: 0 0 30% !important;
 }
+
 ::ng-deep .mat-column-Menu {
-  flex: 0 0 5%!important;
+  flex: 0 0 5% !important;
 }
 
 .mat-header-cell {
-  font-size: 14px!important;
+  font-size: 14px !important;
 }

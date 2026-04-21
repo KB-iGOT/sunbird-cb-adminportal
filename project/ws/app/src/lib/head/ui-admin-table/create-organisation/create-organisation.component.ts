@@ -11,7 +11,8 @@ import { Subject } from 'rxjs'
 @Component({
   selector: 'ws-app-create-organisation',
   templateUrl: './create-organisation.component.html',
-  styleUrls: ['./create-organisation.component.scss']
+  styleUrls: ['./create-organisation.component.scss'],
+  standalone: false
 })
 export class CreateOrganisationComponent implements OnInit, OnDestroy {
 
@@ -240,10 +241,6 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       sbRootOrgId: "",
       ministryOrStateId: ""
     }
-    // const sbRootOrgId = _.get(this.activatedRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrgId')
-    // if (sbRootOrgId) {
-    //   payload['sbRootOrgId'] = sbRootOrgId
-    // }
     if (this.controls['category']?.value === 'state') {
       const orgDetails = _.find(this.statesList, { orgName: this.stateName })
       if (orgDetails) {
@@ -274,17 +271,24 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
     this.isLoading = true
     this.createMDOService.createOrganization(payload).subscribe({
       next: (response: any) => {
-        if (response.result) {
+        this.loaderService.changeLoad.next(false)
+        this.isLoading = false
+
+        // Check if responseCode indicates an error
+        if (response.responseCode && response.responseCode.includes('ERROR')) {
+          const errorMessage = response.params?.errmsg || `Something went wrong, please try again later`
+          this.snackBar.open(errorMessage, 'X', { panelClass: ['error'] })
+        } else if (response.result && Object.keys(response.result).length > 0) {
           this.organizationCreated.emit(payload)
           this.snackBar.open('Organization successfully created.', 'X', { panelClass: ['success'] })
           this.closeNaveBar()
-          this.loaderService.changeLoad.next(false)
-          this.isLoading = false
         }
       },
-      error: () => {
+      error: (error: any) => {
         this.loaderService.changeLoad.next(false)
         this.isLoading = false
+        const errorMessage = error.error?.params?.errmsg || `Something went wrong, please try again later`
+        this.snackBar.open(errorMessage, 'X', { panelClass: ['error'] })
       }
     })
   }

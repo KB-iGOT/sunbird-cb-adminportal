@@ -1,10 +1,10 @@
 import { UIDiscussionPostComponent } from './discussion-post.component'
 import { RejectPublishService } from '../reject-publish.service'
 import { LoggerService } from '@sunbird-cb/utils-v2'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 import { of } from 'rxjs'
 import { SimpleChange, SimpleChanges } from '@angular/core'
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
+import { MatTableDataSource } from '@angular/material/table'
 
 // Mock dependencies
 jest.mock('../reject-publish.service')

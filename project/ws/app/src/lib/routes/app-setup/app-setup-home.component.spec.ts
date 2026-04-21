@@ -1,6 +1,6 @@
 import { AppSetupHomeComponent } from './app-setup-home.component'
 import { ConfigurationsService } from '@sunbird-cb/utils-v2'
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog'
+import { MatDialog } from '@angular/material/dialog'
 
 jest.mock('@sunbird-cb/utils-v2', () => ({
     ConfigurationsService: jest.fn().mockImplementation(() => ({
@@ -10,8 +10,8 @@ jest.mock('@sunbird-cb/utils-v2', () => ({
     })),
 }))
 
-jest.mock('@angular/material/legacy-dialog', () => ({
-    MatLegacyDialog: jest.fn().mockImplementation(() => ({
+jest.mock('@angular/material/dialog', () => ({
+    MatDialog: jest.fn().mockImplementation(() => ({
         open: jest.fn().mockReturnValue({
             afterClosed: jest.fn().mockReturnValue({ subscribe: jest.fn() }),
         }),
