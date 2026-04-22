@@ -59,10 +59,9 @@ describe('HomeComponent', () => {
 
     // Test case 4: ngOnDestroy - subscription cleanup
     it('should unsubscribe from the defaultSideNavBarOpenedSubscription on ngOnDestroy', () => {
-        const unsubscribeSpy = jest.fn()
-        // Spy on the subscription's unsubscribe method
-        mockValueService.isLtMedium$ = of(false)
-        //  component.defaultSideNavBarOpenedSubscription = { unsubscribe: unsubscribeSpy } as any
+        component.ngOnInit()
+        const sub = (component as any).defaultSideNavBarOpenedSubscription
+        const unsubscribeSpy = jest.spyOn(sub, 'unsubscribe')
 
         component.ngOnDestroy()
 
@@ -74,5 +73,42 @@ describe('HomeComponent', () => {
         component.bindUrl('newRoute')
 
         expect(component.currentRoute).toBe('newRoute')
+    })
+
+    // Test case 6: ngOnInit with state deptType (non-ministry/state path)
+    it('should set directory titles when deptType is not ministry or state', () => {
+        mockActivatedRoute = {
+            queryParams: of({
+                currentDept: 'MyOrg',
+                depatName: 'SubOrg',
+                deptType: 'org',
+            }),
+        }
+        component = new HomeComponent(
+            mockValueService as ValueService,
+            mockActivatedRoute as ActivatedRoute
+        )
+        component.ngOnInit()
+
+        expect(component.titles[0].title).toBe('Directory')
+        expect(component.titles[1].title).toBe('MyOrg')
+    })
+
+    // Test case 7: bindUrl with empty path
+    it('should not update currentRoute when bindUrl is called with empty path', () => {
+        component.currentRoute = 'users'
+        component.bindUrl('')
+        expect(component.currentRoute).toBe('users')
+    })
+
+    // Test case 8: ngOnDestroy with no subscription
+    it('should not throw when ngOnDestroy is called without ngOnInit', () => {
+        expect(() => component.ngOnDestroy()).not.toThrow()
+    })
+
+    // Test case 9: screen size subscription sets sideNavBarOpened
+    it('should set sideNavBarOpened based on screen size', () => {
+        component.ngOnInit()
+        expect(component.sideNavBarOpened).toBe(true) // isLtMedium$ emits false
     })
 })

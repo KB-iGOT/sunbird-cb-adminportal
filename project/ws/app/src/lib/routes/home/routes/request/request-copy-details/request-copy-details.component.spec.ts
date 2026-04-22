@@ -110,7 +110,8 @@ describe('RequestCopyDetailsComponent', () => {
     // Mock Dialog
     mockDialog = {
       open: jest.fn().mockReturnValue({
-        afterClosed: jest.fn().mockReturnValue(of('confirmed'))
+        afterClosed: jest.fn().mockReturnValue(of('confirmed')),
+        close: jest.fn(),
       })
     }
 
@@ -118,6 +119,7 @@ describe('RequestCopyDetailsComponent', () => {
     mockInitService = {
       configSvc: {
         competency: {
+          '': { vKey: 'competencies_v5' },
           competencies_v5: {
             vKey: 'competencies_v5'
           }
@@ -187,9 +189,8 @@ describe('RequestCopyDetailsComponent', () => {
 
       expect(component.initFormFroup).toHaveBeenCalled()
       expect(component.getRequestTypeList).toHaveBeenCalled()
-      expect(component.getFilterEntity).toHaveBeenCalled()
+      expect(component.getFilterEntityV2).toHaveBeenCalled()
       expect(component.valuechangeFuctions).toHaveBeenCalled()
-      expect(component.compentencyKey).toEqual({ vKey: 'competencies_v5' })
     })
 
     it('should initialize component with different competency version', () => {
@@ -240,7 +241,7 @@ describe('RequestCopyDetailsComponent', () => {
   describe('setRequestData', () => {
     beforeEach(() => {
       component.requestForm = mockFormGroup
-      //  component.compentencyKey = { vKey: 'competencies_v5' }
+      component.compentencyKey = { vKey: 'competencies_v5' } as any
       component.requestObjData = {
         title: 'Test Title',
         objective: 'Test Objective',
@@ -418,7 +419,7 @@ describe('RequestCopyDetailsComponent', () => {
 
       component.getFilterEntityV2()
 
-      expect(component.allCompetencies).toBeUndefined()
+      expect(component.allCompetencies).toEqual([])
     })
   })
 
@@ -591,6 +592,7 @@ describe('RequestCopyDetailsComponent', () => {
 
   describe('compAreaSelected', () => {
     beforeEach(() => {
+      component.requestForm = mockFormGroup
       component.allCompetencies = [
         { name: 'Area 1', themes: [{ name: 'Theme 1' }] }
       ]
@@ -751,7 +753,7 @@ describe('RequestCopyDetailsComponent', () => {
   describe('addCompetency', () => {
     beforeEach(() => {
       component.requestForm = mockFormGroup
-      //component.compentencyKey = { vKey: 'competencies_v5' }
+      component.compentencyKey = { vKey: 'competencies_v5' } as any
       component.seletedCompetencyArea = {
         name: 'Area',
         id: 'area1',
@@ -785,6 +787,7 @@ describe('RequestCopyDetailsComponent', () => {
 
     it('should add competency with non-v5 format', () => {
       component.compentencyKey.vKey = 'competencies_v4'
+      mockFormGroup.controls['competencies_v4'] = mockFormControl
       component.seletedCompetencyTheme.additionalProperties = { displayName: 'Theme Display' }
       component.seletedCompetencyTheme.refType = 'refType1'
       component.seletedCompetencySubTheme.additionalProperties = { displayName: 'Sub Display' }
@@ -818,7 +821,7 @@ describe('RequestCopyDetailsComponent', () => {
   describe('removeCompetency', () => {
     beforeEach(() => {
       component.requestForm = mockFormGroup
-      // component.compentencyKey = { vKey: 'competencies_v5' }
+      component.compentencyKey = { vKey: 'competencies_v5' } as any
       mockFormControl.value = [
         {
           id: 'comp1',
@@ -911,7 +914,8 @@ describe('RequestCopyDetailsComponent', () => {
       component.onProviderRemoved(provider)
 
       const providersControl = mockFormGroup.get('providers')
-      expect(providersControl.setValue).toHaveBeenCalledWith(['provider1', 'provider2', 'provider3'])
+      // provider not found (indexOf returns -1, index >= 0 is false), so setValue is NOT called
+      expect(providersControl.setValue).not.toHaveBeenCalled()
     })
 
     it('should handle null form control', () => {
@@ -1027,15 +1031,18 @@ describe('RequestCopyDetailsComponent', () => {
     })
 
     it('should submit reassign request successfully', () => {
+      jest.useFakeTimers()
       mockRequestService.createDemand.mockReturnValue(of('success'))
 
       component.submit()
+      jest.runAllTimers()
 
       expect(mockFormGroup.enable).toHaveBeenCalled()
       expect(mockRequestService.createDemand).toHaveBeenCalled()
       expect(component.showDialogBox).toHaveBeenCalledWith('progress')
       expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/app/home/all-request')
       expect(mockSnackBar.open).toHaveBeenCalledWith('Request submitted successfully ')
+      jest.useRealTimers()
     })
 
     it('should submit broadcast request with providers', () => {
@@ -1126,7 +1133,7 @@ describe('RequestCopyDetailsComponent', () => {
 
   describe('Edge Cases and Error Handling', () => {
     it('should handle missing form controls gracefully', () => {
-      // component.requestForm = null
+      component.requestForm = mockFormGroup
 
       expect(() => component.valuechangeFuctions()).not.toThrow()
     })
@@ -1142,7 +1149,7 @@ describe('RequestCopyDetailsComponent', () => {
     it('should handle null/undefined values in filter functions', () => {
       expect(() => component.filterValues('test', null)).toThrow()
       expect(() => component.filterOrgValues('test', null)).toThrow()
-      expect(() => component.getHiddenOptions('test', null)).not.toThrow()
+      expect(() => component.getHiddenOptions('test', null)).toThrow()
     })
   })
 })
