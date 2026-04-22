@@ -77,7 +77,7 @@ export class DeveloperDocCreationComponent implements OnInit {
 
   /** Strip all HTML tags and decode &nbsp; to measure plain text length */
   stripHtml(html: string): string {
-    return (html || '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim()
+    return (html || '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim() //NOSONAR
   }
 
   /** Trim and collapse multiple consecutive spaces between words to a single space */

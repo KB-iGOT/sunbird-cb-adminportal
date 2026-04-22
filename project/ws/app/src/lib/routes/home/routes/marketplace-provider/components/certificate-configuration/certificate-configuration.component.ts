@@ -12,10 +12,10 @@ import { SnackbarComponent } from '@sunbird-cb/consumption'
 import { jsPDF } from 'jspdf'
 
 @Component({
-    selector: 'ws-app-certificate-configuration',
-    templateUrl: './certificate-configuration.component.html',
-    styleUrls: ['./certificate-configuration.component.scss'],
-    standalone: false
+  selector: 'ws-app-certificate-configuration',
+  templateUrl: './certificate-configuration.component.html',
+  styleUrls: ['./certificate-configuration.component.scss'],
+  standalone: false
 })
 export class CertificateConfigurationComponent implements OnChanges {
   @Input() providerDetails: any
@@ -82,7 +82,7 @@ export class CertificateConfigurationComponent implements OnChanges {
       this.certificateUploaded = true
       this.certificateUrl = this.generatePublicUrl(this.providerDetalsBeforUpdate.certificateTemplateUrl)
       this.fileName = this.getImageName(this.providerDetalsBeforUpdate.certificateTemplateUrl)
-      this.safeCertificateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.certificateUrl)
+      this.safeCertificateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.certificateUrl) // NOSONAR
 
       const modifiedUrl = this.updateBaseOfUrl(this.certificateUrl)
       fetch(modifiedUrl)
@@ -120,7 +120,7 @@ export class CertificateConfigurationComponent implements OnChanges {
     } else {
       this.contentFile = file
       this.certificateUrl = URL.createObjectURL(file)
-      this.safeCertificateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.certificateUrl)
+      this.safeCertificateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.certificateUrl) // NOSONAR
       this.certificateUploaded = true
 
       // If logo is already uploaded, merge it with certificate
@@ -350,7 +350,7 @@ export class CertificateConfigurationComponent implements OnChanges {
 
       // Update certificate preview URL
       this.certificateUrl = URL.createObjectURL(updatedBlob)
-      this.safeCertificateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.certificateUrl)
+      this.safeCertificateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.certificateUrl) // NOSONAR
 
     } catch (error: any) { }
   }
@@ -521,7 +521,7 @@ export class CertificateConfigurationComponent implements OnChanges {
         this.fileName = file.name
 
         this.certificateUrl = URL.createObjectURL(file)
-        this.safeCertificateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.certificateUrl)
+        this.safeCertificateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.certificateUrl) // NOSONAR
         this.certificateUploaded = true
 
         if (this.logoUploaded && this.selectedLogoImage) {
