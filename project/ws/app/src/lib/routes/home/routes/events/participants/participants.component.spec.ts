@@ -5,7 +5,7 @@ import { ProfileV2UtillService } from '../services/home-utill.service'
 import { MatDialogRef } from '@angular/material/dialog'
 import { UntypedFormControl } from '@angular/forms'
 import { SelectionModel } from '@angular/cdk/collections'
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
+import { MatTableDataSource } from '@angular/material/table'
 import { of } from 'rxjs'
 import * as _ from 'lodash'
 
@@ -70,7 +70,7 @@ describe('ParticipantsComponent', () => {
         it('should return true when all rows are selected', () => {
             const mockData = [{ id: 1 }, { id: 2 }]
             component.dataSource = new MatTableDataSource(mockData)
-            // component.selection.select(mockData[0], mockData[1])
+            component.selection.select(mockData[0] as any, mockData[1] as any)
 
             const result = component.isAllSelected()
 
@@ -80,7 +80,7 @@ describe('ParticipantsComponent', () => {
         it('should return false when not all rows are selected', () => {
             const mockData = [{ id: 1 }, { id: 2 }]
             component.dataSource = new MatTableDataSource(mockData)
-            // component.selection.select(mockData[0])
+            component.selection.select(mockData[0] as any)
 
             const result = component.isAllSelected()
 
@@ -124,8 +124,7 @@ describe('ParticipantsComponent', () => {
 
     describe('isSomeSelected', () => {
         it('should return true when some items are selected', () => {
-            // const mockData = [{ id: 1 }, { id: 2 }]
-            //component.selection.select(mockData[0])
+            component.selection.select({ id: 1 } as any)
 
             const result = component.isSomeSelected()
 

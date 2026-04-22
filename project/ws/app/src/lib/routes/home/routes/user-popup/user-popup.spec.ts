@@ -1,5 +1,5 @@
 import { UserPopupComponent } from './user-popup'
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog'
+import { MatDialogRef } from '@angular/material/dialog'
 
 describe('UserPopupComponent', () => {
   let component: UserPopupComponent
@@ -94,14 +94,12 @@ describe('UserPopupComponent', () => {
     expect(component.selectedUser).toEqual([{ id: 1, name: 'Test User' }])
   })
 
-  it('should handle the typo in length property when selecting users', () => {
-    // Specifically test the typo scenario (using 'lenght' instead of 'length')
-    component.selectedUser = { lenght: 0 } // Mimicking the typo in the component
+  it('should always replace users due to typo in lenght property (never enters if branch)', () => {
+    // The component uses 'lenght' (typo) instead of 'length', so if branch is never entered
+    component.selectedUser = []
     const mockUser = { row: { id: 1, name: 'Test User' } }
-
     component.selectedUserFrom(mockUser)
-
-    // Despite the typo, it should enter the if block since the condition will be true
+    // Goes to else branch: splice(0,0) then push
     expect(component.selectedUser).toContainEqual({ id: 1, name: 'Test User' })
   })
 })

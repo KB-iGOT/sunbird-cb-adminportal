@@ -1,6 +1,6 @@
 import { UIDirectoryTableComponent } from './directory-table.component'
 import { SelectionModel } from '@angular/cdk/collections'
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
+import { MatTableDataSource } from '@angular/material/table'
 import { BehaviorSubject, of, throwError } from 'rxjs'
 import { SimpleChanges } from '@angular/core'
 import * as _ from 'lodash'
@@ -161,6 +161,11 @@ describe('UIDirectoryTableComponent', () => {
     })
 
     describe('ngOnInit', () => {
+        beforeEach(() => {
+            mockCreateMDOService.getStatesOrMinisteries
+                .mockReturnValue(of({}))
+        })
+
         it('should set isSelectedDept to false when department is in environment', () => {
             component.selectedDepartment = 'test-dept'
             component.ngOnInit()
@@ -211,6 +216,12 @@ describe('UIDirectoryTableComponent', () => {
         it('should reset pageIndex when selectedDepartment changes', () => {
             component.pageIndex = 5
             const changes: SimpleChanges = {
+                tableData: {
+                    currentValue: { showNewNoContent: false, tableDataCount: 10 },
+                    previousValue: null,
+                    firstChange: false,
+                    isFirstChange: () => false
+                },
                 selectedDepartment: {
                     currentValue: 'new-dept',
                     previousValue: 'old-dept',
@@ -365,7 +376,9 @@ describe('UIDirectoryTableComponent', () => {
         it('should select all items when masterToggle is called and not all selected', () => {
             const selectSpy = jest.spyOn(component.selection, 'select')
             component.masterToggle()
-            expect(selectSpy).toHaveBeenCalledWith(...component.dataSource.data)
+            expect(selectSpy).toHaveBeenCalledTimes(2)
+            expect(selectSpy).toHaveBeenCalledWith({ id: 1, name: 'Item 1' })
+            expect(selectSpy).toHaveBeenCalledWith({ id: 2, name: 'Item 2' })
         })
 
         it('should clear selection when masterToggle is called and all selected', () => {
@@ -603,14 +616,15 @@ describe('UIDirectoryTableComponent', () => {
         it('should reset pageIndex and emit search after timeout', (done) => {
             const emitSpy = jest.spyOn(component.searchByEnterKey, 'emit')
             component.pageIndex = 5
+            jest.useFakeTimers()
 
             component.organizationCreatedEmit({})
+            jest.runAllTimers()
 
-            setTimeout(() => {
-                expect(component.pageIndex).toBe(0)
-                expect(emitSpy).toHaveBeenCalledWith('')
-                done()
-            }, 1100)
+            expect(component.pageIndex).toBe(0)
+            expect(emitSpy).toHaveBeenCalledWith('')
+            jest.useRealTimers()
+            done()
         })
     })
 

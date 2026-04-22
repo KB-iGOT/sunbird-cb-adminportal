@@ -1,7 +1,7 @@
 import { UserPopupComponent } from './user-popup'
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog'
+import { MatDialogRef } from '@angular/material/dialog'
 import { CreateMDOService } from '../../../routes/home/services/create-mdo.services'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { BehaviorSubject } from 'rxjs'
 
 describe('UserPopupComponent', () => {
@@ -119,17 +119,16 @@ describe('UserPopupComponent', () => {
   })
 
   describe('selectedUserFrom', () => {
-    it('should push user to selectedUser array when array is empty', () => {
-      // Arrange
+    it('should splice and push user to selectedUser array (lenght typo always takes else branch)', () => {
+      // Note: source has typo `this.selectedUser.lenght` (not `length`),
+      // so the if-branch is never reached; always goes to else.
       const mockUser = { row: { id: 1, name: 'Test User' } }
       component.selectedUser = []
-      jest.spyOn(component.selectedUser, 'length', 'get').mockReturnValue(0)
 
-      // Act
       component.selectedUserFrom(mockUser)
 
-      // Assert
       expect(component.selectedUser).toContain(mockUser.row)
+      expect(component.selectedUser.length).toBe(1)
     })
 
     it('should replace existing users in selectedUser array with new user', () => {

@@ -2,237 +2,173 @@ import { ProviderResolveService } from './provider-resolve.service'
 import { MarketplaceService } from './marketplace.service'
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router'
 import { of, throwError } from 'rxjs'
-import * as _ from 'lodash'
-
-// Mock the MarketplaceService
-jest.mock('./marketplace.service')
 
 describe('ProviderResolveService', () => {
   let service: ProviderResolveService
-  let mockMarketplaceService: jest.Mocked<MarketplaceService>
-  let mockRoute: Partial<ActivatedRouteSnapshot>
+  let mockMarketplaceService: jest.Mocked<Partial<MarketplaceService>>
+  let mockRoute: any
   let mockState: Partial<RouterStateSnapshot>
   let mockParamMapGet: jest.Mock
+  let mockQueryParamMapGet: jest.Mock
 
   beforeEach(() => {
-    // Create mock for paramMap.get
-    mockParamMapGet = jest.fn()
+    mockParamMapGet = jest.fn().mockReturnValue(null)
+    mockQueryParamMapGet = jest.fn().mockReturnValue(null)
 
-    // Create mock instances
     mockMarketplaceService = {
-      getProviderDetails: jest.fn()
-    } as any
+      getProviderDetails: jest.fn(),
+      readRegisteredProviderDetails: jest.fn(),
+    }
 
     mockRoute = {
-      paramMap: {
-        get: mockParamMapGet
-      }
-    } as any
+      paramMap: { get: mockParamMapGet },
+      queryParamMap: { get: mockQueryParamMapGet },
+    }
 
-    mockState = {} as Partial<RouterStateSnapshot>
+    mockState = {}
 
-    // Create service instance with mocked dependencies
-    service = new ProviderResolveService(mockMarketplaceService)
+    service = new ProviderResolveService(mockMarketplaceService as MarketplaceService)
   })
 
   afterEach(() => {
     jest.clearAllMocks()
   })
 
-  describe('resolve', () => {
-    it('should return success response when partnerId exists and API call succeeds', async () => {
-      // Arrange
-      const partnerId = 'test-partner-123'
-      const mockProviderData = {
-        id: partnerId,
-        name: 'Test Provider',
-        description: 'Test Description'
-      }
+  it('should create an instance of the service', () => {
+    expect(service).toBeDefined()
+  })
 
-      mockParamMapGet.mockReturnValue(partnerId)
-      mockMarketplaceService.getProviderDetails.mockReturnValue(
-        of(mockProviderData)
-      )
-
-      // Act
-      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
-
-      // Assert
-      expect(mockParamMapGet).toHaveBeenCalledWith('id')
-      expect(mockMarketplaceService.getProviderDetails).toHaveBeenCalledWith(partnerId)
-      expect(result).toEqual({
-        data: mockProviderData,
-        error: null
-      })
-    })
-
-    it('should return error response when partnerId exists but API call fails with error message', async () => {
-      // Arrange
-      const partnerId = 'test-partner-123'
-      const errorMessage = 'Provider not found'
-      const mockError = {
-        error: {
-          params: {
-            errMsg: errorMessage
-          }
-        }
-      }
-
-      mockParamMapGet.mockReturnValue(partnerId)
-      mockMarketplaceService.getProviderDetails.mockReturnValue(
-        throwError(mockError)
-      )
-
-      // Act
-      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
-
-      // Assert
-      expect(mockParamMapGet).toHaveBeenCalledWith('id')
-      expect(mockMarketplaceService.getProviderDetails).toHaveBeenCalledWith(partnerId)
-      expect(result).toEqual({
-        data: null,
-        error: errorMessage
-      })
-    })
-
-    it('should return default error message when API call fails without specific error message', async () => {
-      // Arrange
-      const partnerId = 'test-partner-123'
-      const mockError = {
-        error: {
-          message: 'Network error'
-        }
-      }
-
-      mockParamMapGet.mockReturnValue(partnerId)
-      mockMarketplaceService.getProviderDetails.mockReturnValue(
-        throwError(mockError)
-      )
-
-      // Act
-      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
-
-      // Assert
-      expect(mockParamMapGet).toHaveBeenCalledWith('id')
-      expect(mockMarketplaceService.getProviderDetails).toHaveBeenCalledWith(partnerId)
-      expect(result).toEqual({
-        data: null,
-        error: 'Something went worng, please try again later'
-      })
-    })
-
-    it('should return default error message when API call fails with empty error object', async () => {
-      // Arrange
-      const partnerId = 'test-partner-123'
-      const mockError = {}
-
-      mockParamMapGet.mockReturnValue(partnerId)
-      mockMarketplaceService.getProviderDetails.mockReturnValue(
-        throwError(mockError)
-      )
-
-      // Act
-      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
-
-      // Assert
-      expect(result).toEqual({
-        data: null,
-        error: 'Something went worng, please try again later'
-      })
-    })
-
-    it('should return null data and error when partnerId is null', async () => {
-      // Arrange
+  describe('resolve – no partnerId', () => {
+    it('should return { data: null, error: null } when paramMap and queryParamMap return null', async () => {
       mockParamMapGet.mockReturnValue(null)
+      mockQueryParamMapGet.mockReturnValue(null)
 
-      // Act
       const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
 
-      // Assert
-      expect(mockParamMapGet).toHaveBeenCalledWith('id')
+      expect(result).toEqual({ data: null, error: null })
       expect(mockMarketplaceService.getProviderDetails).not.toHaveBeenCalled()
-      expect(result).toEqual({
-        data: null,
-        error: null
-      })
+      expect(mockMarketplaceService.readRegisteredProviderDetails).not.toHaveBeenCalled()
     })
 
-    it('should return null data and error when partnerId is undefined', async () => {
-      // Arrange
-      mockParamMapGet.mockReturnValue(undefined)
-
-      // Act
-      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
-
-      // Assert
-      expect(mockParamMapGet).toHaveBeenCalledWith('id')
-      expect(mockMarketplaceService.getProviderDetails).not.toHaveBeenCalled()
-      expect(result).toEqual({
-        data: null,
-        error: null
-      })
-    })
-
-    it('should return null data and error when partnerId is empty string', async () => {
-      // Arrange
+    it('should return { data: null, error: null } when partnerId is empty string', async () => {
       mockParamMapGet.mockReturnValue('')
+      mockQueryParamMapGet.mockReturnValue(null)
 
-      // Act
       const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
 
-      // Assert
-      expect(mockParamMapGet).toHaveBeenCalledWith('id')
-      expect(mockMarketplaceService.getProviderDetails).not.toHaveBeenCalled()
-      expect(result).toEqual({
-        data: null,
-        error: null
-      })
-    })
-
-    it('should handle API response with null data', async () => {
-      // Arrange
-      const partnerId = 'test-partner-123'
-
-      mockParamMapGet.mockReturnValue(partnerId)
-      // mockMarketplaceService.getProviderDetails.mockReturnValue(
-      //   of(null)
-      // )
-
-      // Act
-      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
-
-      // Assert
-      expect(result).toEqual({
-        data: null,
-        error: null
-      })
-    })
-
-    it('should handle unexpected error types', async () => {
-      // Arrange
-      const partnerId = 'test-partner-123'
-      const stringError = 'String error message'
-
-      mockParamMapGet.mockReturnValue(partnerId)
-      mockMarketplaceService.getProviderDetails.mockReturnValue(
-        throwError(stringError)
-      )
-
-      // Act
-      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
-
-      // Assert
-      expect(result).toEqual({
-        data: null,
-        error: 'Something went worng, please try again later'
-      })
+      expect(result).toEqual({ data: null, error: null })
     })
   })
 
-  describe('dependency injection', () => {
-    it('should be created with MarketplaceService dependency', () => {
-      expect(service).toBeDefined()
-      expect(service['marketPlaceSvc']).toBeDefined()
+  describe('resolve – regular provider (non-PENDING)', () => {
+    const partnerId = 'partner-abc'
+
+    beforeEach(() => {
+      mockParamMapGet.mockImplementation((key: string) => key === 'id' ? partnerId : null)
+      mockQueryParamMapGet.mockReturnValue(null)
+    })
+
+    it('should return data on success with params.status === success', async () => {
+      const mockResponse = { params: { status: 'success' }, result: { name: 'Provider' } }
+        ; (mockMarketplaceService.getProviderDetails as jest.Mock).mockReturnValue(of(mockResponse))
+
+      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
+
+      expect(mockMarketplaceService.getProviderDetails).toHaveBeenCalledWith(partnerId)
+      expect(result).toEqual({ data: mockResponse, error: null })
+    })
+
+    it('should return errMsg when response params.status is not success', async () => {
+      const mockResponse = { params: { status: 'failed', errMsg: 'Not found' } }
+        ; (mockMarketplaceService.getProviderDetails as jest.Mock).mockReturnValue(of(mockResponse))
+
+      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
+
+      expect(result).toEqual({ data: null, error: 'Not found' })
+    })
+
+    it('should return specific errMsg from error object on API failure', async () => {
+      const mockError = { error: { params: { errMsg: 'Server error' } } }
+        ; (mockMarketplaceService.getProviderDetails as jest.Mock).mockReturnValue(throwError(mockError))
+
+      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
+
+      expect(result).toEqual({ data: null, error: 'Server error' })
+    })
+
+    it('should return default error message when error has no errMsg', async () => {
+      const mockError = { error: { message: 'Network error' } }
+        ; (mockMarketplaceService.getProviderDetails as jest.Mock).mockReturnValue(throwError(mockError))
+
+      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
+
+      expect(result).toEqual({ data: null, error: 'Something went wrong, please try again later' })
+    })
+
+    it('should return default error message when error object is empty', async () => {
+      ; (mockMarketplaceService.getProviderDetails as jest.Mock).mockReturnValue(throwError({}))
+
+      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
+
+      expect(result).toEqual({ data: null, error: 'Something went wrong, please try again later' })
+    })
+
+    it('should use queryParamMap id when paramMap id is null', async () => {
+      mockParamMapGet.mockReturnValue(null)
+      mockQueryParamMapGet.mockImplementation((key: string) => key === 'id' ? partnerId : null)
+      const mockResponse = { params: { status: 'success' } }
+        ; (mockMarketplaceService.getProviderDetails as jest.Mock).mockReturnValue(of(mockResponse))
+
+      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
+
+      expect(mockMarketplaceService.getProviderDetails).toHaveBeenCalledWith(partnerId)
+      expect(result).toEqual({ data: mockResponse, error: null })
+    })
+  })
+
+  describe('resolve – PENDING status', () => {
+    const partnerId = 'partner-pending'
+
+    beforeEach(() => {
+      mockParamMapGet.mockImplementation((key: string) => key === 'id' ? partnerId : null)
+      mockQueryParamMapGet.mockImplementation((key: string) => key === 'status' ? 'PENDING' : null)
+    })
+
+    it('should call readRegisteredProviderDetails for PENDING status success', async () => {
+      const mockResponse = { params: { status: 'success' }, result: { name: 'Pending Provider' } }
+        ; (mockMarketplaceService.readRegisteredProviderDetails as jest.Mock).mockReturnValue(of(mockResponse))
+
+      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
+
+      expect(mockMarketplaceService.readRegisteredProviderDetails).toHaveBeenCalledWith(partnerId)
+      expect(mockMarketplaceService.getProviderDetails).not.toHaveBeenCalled()
+      expect(result).toEqual({ data: mockResponse, error: null })
+    })
+
+    it('should return errMsg when PENDING response params.status is not success', async () => {
+      const mockResponse = { params: { status: 'failed', errMsg: 'Pending error' } }
+        ; (mockMarketplaceService.readRegisteredProviderDetails as jest.Mock).mockReturnValue(of(mockResponse))
+
+      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
+
+      expect(result).toEqual({ data: null, error: 'Pending error' })
+    })
+
+    it('should return specific errMsg from error object on PENDING API failure', async () => {
+      const mockError = { error: { params: { errMsg: 'PENDING server error' } } }
+        ; (mockMarketplaceService.readRegisteredProviderDetails as jest.Mock).mockReturnValue(throwError(mockError))
+
+      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
+
+      expect(result).toEqual({ data: null, error: 'PENDING server error' })
+    })
+
+    it('should return default error message on PENDING API failure without errMsg', async () => {
+      ; (mockMarketplaceService.readRegisteredProviderDetails as jest.Mock).mockReturnValue(throwError({}))
+
+      const result = await service.resolve(mockRoute as ActivatedRouteSnapshot, mockState as RouterStateSnapshot)
+
+      expect(result).toEqual({ data: null, error: 'Something went wrong, please try again later' })
     })
   })
 })

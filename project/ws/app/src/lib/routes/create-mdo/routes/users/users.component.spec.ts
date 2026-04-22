@@ -8,6 +8,8 @@ describe('UsersComponent', () => {
     let mockRoute: any
     let mockProfile: any
     let mockProfileUtilSvc: any
+    let mockOrgHieService: any
+    let mockLoaderService: any
 
     beforeEach(() => {
         // Mock services
@@ -24,6 +26,9 @@ describe('UsersComponent', () => {
 
         mockRoute = {
             queryParams: of({ id: '123', currentDept: 'organisation', depatName: 'Test Dept' }),
+            snapshot: {
+                queryParams: { id: '123', currentDept: 'organisation', depatName: 'Test Dept' }
+            },
             parent: {
                 snapshot: {
                     data: {
@@ -43,14 +48,24 @@ describe('UsersComponent', () => {
             emailTransform: jest.fn().mockImplementation(email => email ? `${email.substring(0, 2)}****@***${email.split('@')[1]}` : 'NA')
         }
 
-        // Initialize component
+        mockOrgHieService = {
+            getOrgReadData: jest.fn().mockReturnValue(of({ result: { response: {} } }))
+        }
+
+        mockLoaderService = {
+            changeLoaderState: jest.fn()
+        }
+
+        // Initialize component with all 8 constructor args
         component = new UsersComponent(
             mockUsersSvc,
             mockRouter as any,
             mockRoute as any,
             mockProfile,
             mockProfileUtilSvc,
-            mockUsersSvc // usersService is the same as usersSvc in this test
+            mockUsersSvc,
+            mockOrgHieService,
+            mockLoaderService
         )
     })
 
@@ -111,8 +126,8 @@ describe('UsersComponent', () => {
     })
 
     it('should call getAllActiveUsers for SPV ADMIN id', () => {
-        // Update route queryParams to have 'SPV ADMIN' as id
-        mockRoute.queryParams = of({ id: 'SPV ADMIN' })
+        // roleId drives this.id (code does: this.id = params['roleId'] after setting id)
+        mockRoute.queryParams = of({ id: '123', roleId: 'SPV ADMIN', currentDept: 'organisation', depatName: 'Test Dept' })
         const spy = jest.spyOn(component, 'getAllActiveUsers')
 
         component.ngOnInit()
@@ -267,10 +282,99 @@ describe('UsersComponent', () => {
         const mockSubscription = {
             unsubscribe: jest.fn()
         }
-        // component.defaultSideNavBarOpenedSubscription = mockSubscription
+            ; (component as any).defaultSideNavBarOpenedSubscription = mockSubscription
 
         component.ngOnDestroy()
 
         expect(mockSubscription.unsubscribe).toHaveBeenCalled()
+    })
+
+    it('should handle import-designation tab routing', () => {
+        mockRoute.queryParams = of({ id: '123', tab: 'designation_master/import-designation', currentDept: 'organisation', depatName: 'Dept' })
+        component.ngOnInit()
+        expect(component.currentTab).toBe('designation_master')
+        expect(component.goToImportMaster).toBe(true)
+    })
+
+    it('should handle reports path', () => {
+        mockRouter.url = 'app/roles/123/users?path=reports'
+        mockRoute.queryParams = of({ id: '123', currentDept: 'organisation', depatName: 'Dept' })
+        component.ngOnInit()
+        expect(component.isReportsPath).toBe(true)
+    })
+
+    it('should handle fClickedDepartment correctly', () => {
+        const mockResponse = {
+            count: {
+                content: [{
+                    userId: 'u1',
+                    firstName: 'Jane',
+                    isDeleted: false,
+                    organisations: [{ organisationId: 'org1', roles: ['ADMIN'] }],
+                    profileDetails: {
+                        personalDetails: { primaryEmail: 'jane@test.com', mobile: '9999999999' }
+                    }
+                }]
+            }
+        }
+        mockUsersSvc.getAllRoleUsers.mockReturnValue(of(mockResponse))
+        component.id = 'org1'
+        component.fClickedDepartment('ADMIN')
+        expect(component.data.length).toBe(1)
+        expect(component.currentTab).toBe('users')
+    })
+
+    it('should handle getAllKongUsers and newKongUser with data', () => {
+        const mockContent = [{
+            userId: 'u1',
+            firstName: 'Bob',
+            isDeleted: false,
+            email: 'bob@test.com',
+            organisations: [{ organisationId: 'org1', roles: ['SPV_ADMIN'] }],
+            profileDetails: {
+                personalDetails: { primaryEmail: 'bob@test.com', mobile: '1111111111' }
+            }
+        }]
+        mockUsersSvc.getAllKongUsersPaginated.mockReturnValue(of({
+            result: { response: { content: mockContent, count: 1 } }
+        }))
+        component.id = 'org1'
+        component.getAllKongUsers()
+        expect(component.totalRecordsCount).toBe(1)
+        expect(component.data.length).toBe(1)
+    })
+
+    it('should call getOrgData with ministry path', async () => {
+        const ministryResponse = { result: { response: { ministryOrStateType: 'ministry', ministryOrStateId: 'parentId' } } }
+        const parentResponse = { result: { response: { id: 'parentOrgId' } } }
+        mockOrgHieService.getOrgReadData
+            .mockReturnValueOnce(of(ministryResponse))
+            .mockReturnValueOnce(of(parentResponse))
+        mockOrgHieService.setOrgData = jest.fn()
+        mockOrgHieService.setParentOrgData = jest.fn()
+
+        component.orgData = { roleId: 'testOrgId' }
+        await component.getOrgData()
+
+        expect(mockOrgHieService.setOrgData).toHaveBeenCalledWith(ministryResponse.result.response)
+        expect(mockOrgHieService.setParentOrgData).toHaveBeenCalledWith(parentResponse.result.response)
+        expect(component.orgDataLoaded).toBe(true)
+    })
+
+    it('should call getOrgData with non-ministry path', async () => {
+        const orgResponse = { result: { response: { ministryOrStateType: 'other' } } }
+        mockOrgHieService.getOrgReadData.mockReturnValue(of(orgResponse))
+        mockOrgHieService.setOrgData = jest.fn()
+        mockOrgHieService.setParentOrgData = jest.fn()
+
+        component.orgData = { roleId: 'testOrgId' }
+        await component.getOrgData()
+
+        expect(component.orgDataLoaded).toBe(true)
+    })
+
+    it('should call ngAfterViewInit and set element position', () => {
+        component.ngAfterViewInit()
+        expect(component.elementPosition).toBe(127)
     })
 })

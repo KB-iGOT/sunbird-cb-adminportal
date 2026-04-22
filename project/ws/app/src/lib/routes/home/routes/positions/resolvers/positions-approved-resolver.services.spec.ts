@@ -2,7 +2,7 @@ import { of, throwError } from 'rxjs'
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router'
 import { PositionsService } from '../services/position.service'
 import { IPosition } from '../models/positions.model'
-import { IResolveResponse } from '@sunbird-cb/utils'
+import { IResolveResponse } from '@sunbird-cb/utils-v2'
 import { PositionsApprovedResolve } from './positions-approved-resolver.services'
 
 // Mock the PositionsService

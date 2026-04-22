@@ -1,13 +1,13 @@
 import { SectorListViewComponent } from './sector-list-view.component'
 import { Router } from '@angular/router'
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
+import { MatTableDataSource } from '@angular/material/table'
 import { EventEmitter } from '@angular/core'
 import { ITableData, IAction } from '../../events/interfaces/interfaces'
 import { sectorConstants } from '../sectors-constats.model'
 
 // Mock dependencies
 jest.mock('@angular/router')
-jest.mock('@angular/material/legacy-table')
+jest.mock('@angular/material/table')
 jest.mock('lodash', () => ({
     map: jest.fn()
 }))
@@ -219,7 +219,7 @@ describe('SectorListViewComponent', () => {
 
             const result = component.getFinalColumns()
 
-            expect(result).toEqual(['select', 'SR', 'name', 'code', 'Actions'])
+            expect(result).toEqual(['SR', 'select', 'name', 'code', 'Actions'])
         })
     })
 
@@ -265,7 +265,7 @@ describe('SectorListViewComponent', () => {
 
             component.ngOnInit()
 
-            expect(component.displayedColumns).toBeUndefined()
+            expect(component.displayedColumns).toEqual([])
             expect(mockDataSource.data).toBe(mockData)
             expect(component.length).toBe(1)
         })

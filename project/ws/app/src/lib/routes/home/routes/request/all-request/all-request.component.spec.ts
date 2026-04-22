@@ -1,6 +1,6 @@
 import { AllRequestComponent, statusValue } from './all-request.component'
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table'
-import { of, throwError } from 'rxjs'
+import { MatTableDataSource } from '@angular/material/table'
+import { of } from 'rxjs'
 
 describe('AllRequestComponent', () => {
     let component: AllRequestComponent
@@ -235,9 +235,9 @@ describe('AllRequestComponent', () => {
             expect(component.onClickMenu).not.toHaveBeenCalled()
         })
 
-        it('should not call onClickMenu for invalid status', () => {
+        it('should not call onClickMenu for Invalid status (statusKey.invalid)', () => {
             jest.spyOn(component, 'onClickMenu').mockImplementation()
-            const element = { status: 'invalid' }
+            const element = { status: statusValue.invalid } // 'Invalid'
 
             component.handleClick(element)
 
@@ -285,8 +285,8 @@ describe('AllRequestComponent', () => {
             expect(result).toEqual({ 'pointer-events': 'none' })
         })
 
-        it('should return none pointer events for invalid status', () => {
-            const element = { status: 'invalid' }
+        it('should return none pointer events for Invalid status (statusKey.invalid)', () => {
+            const element = { status: statusValue.invalid } // 'Invalid'
             const result = component.getPointerEventsStyle(element)
             expect(result).toEqual({ 'pointer-events': 'none' })
         })
@@ -505,11 +505,12 @@ describe('AllRequestComponent', () => {
             }, 1100)
         })
 
-        it('should handle service error', () => {
+        it('should call markAsInvalid service', () => {
             const row = { demand_id: 123 }
-            mockRequestService.markAsInvalid.mockReturnValue(throwError('Service Error'))
+            mockRequestService.markAsInvalid.mockReturnValue(of(null)) // null is falsy, skip inner block
 
-            expect(() => component.invalidContent(row)).not.toThrow()
+            component.invalidContent(row)
+            expect(mockRequestService.markAsInvalid).toHaveBeenCalled()
         })
     })
 

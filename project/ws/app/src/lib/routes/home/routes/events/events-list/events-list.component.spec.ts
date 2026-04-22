@@ -2,13 +2,6 @@ import { EventsListComponent } from './events-list.component'
 import moment from 'moment'
 import { of } from 'rxjs'
 
-// Mock the dependencies
-jest.mock('@angular/material/dialog')
-jest.mock('@angular/material/snack-bar')
-jest.mock('@angular/router')
-jest.mock('@sunbird-cb/utils-v2')
-jest.mock('../services/events.service')
-
 describe('EventsListComponent', () => {
     let component: EventsListComponent
     let mockDialog: any
@@ -21,7 +14,6 @@ describe('EventsListComponent', () => {
     let mockSnackBar: any
 
     beforeEach(() => {
-        // Setup mock dependencies
         mockDialog = {
             open: jest.fn()
         }
@@ -53,13 +45,14 @@ describe('EventsListComponent', () => {
         }
 
         mockEventService = {
-            handleTabTelemetry: jest.fn()
+            handleTabTelemetry: jest.fn(),
+            raiseInteractTelemetry: jest.fn()
         }
 
         mockEventsService = {
             getEventsList: jest.fn().mockReturnValue(of({
                 result: {
-                    Event: []
+                    Event: {}
                 }
             })),
             retireEvent: jest.fn().mockReturnValue(of({
@@ -90,173 +83,322 @@ describe('EventsListComponent', () => {
         )
     })
 
-    it('should create the component', () => {
-        expect(component).toBeTruthy()
-    })
+    describe('Constructor', () => {
+        it('should create the component', () => {
+            expect(component).toBeTruthy()
+        })
 
-    it('should initialize with correct default values', () => {
-        expect(component.currentFilter).toBe('upcoming')
-        expect(component.currentUser).toBe('test-user-id')
-        expect(component.department).toBe('test-department')
-        expect(component.departmentID).toBe('test-org-id')
-    })
+        it('should initialize with correct default values', () => {
+            expect(component.currentFilter).toBe('upcoming')
+            expect(component.currentUser).toBe('test-user-id')
+            expect(component.department).toBe('test-department')
+            expect(component.departmentID).toBe('test-org-id')
+        })
 
-    it('should initialize table data in ngOnInit', () => {
-        component.ngOnInit()
-        expect(component.tabledata).toEqual({
-            actions: [],
-            columns: [
-                { displayName: 'Event title', key: 'eventName' },
-                { displayName: 'Date and time', key: 'eventStartDate' },
-                { displayName: 'Created on', key: 'eventCreatedOn' },
-                { displayName: 'Duration', key: 'eventDuration' },
-                { displayName: 'Presenters', key: 'eventjoined' },
-            ],
-            needCheckBox: false,
-            needHash: false,
-            needUserMenus: true,
+        it('should read config from activeRoute when configSvc.userProfile is null', () => {
+            mockConfigService.userProfile = null
+            const comp = new EventsListComponent(
+                mockDialog,
+                mockActivatedRoute,
+                mockConfigService,
+                mockRouter,
+                mockEventService,
+                mockEventsService,
+                mockDialogue,
+                mockSnackBar
+            )
+            expect(comp.departmentID).toBe('test-org-id')
+            expect(comp.department).toBe('test-department')
+            expect(comp.currentUser).toBe('test-user-id')
         })
     })
 
-    it('should fetch events on init', () => {
-        component.ngOnInit()
-        expect(mockEventsService.getEventsList).toHaveBeenCalledWith({
-            locale: ['en'],
-            query: '',
-            request: {
-                query: '',
-                filters: {
-                    status: ['Live', 'Retired'],
-                    contentType: 'Event',
-                    createdFor: 'test-org-id',
-                },
-                sort_by: {
-                    lastUpdatedOn: 'desc',
-                },
-            },
+    describe('ngOnInit', () => {
+        it('should initialize table data structure', () => {
+            component.ngOnInit()
+            expect(component.tabledata).toEqual({
+                actions: [],
+                columns: [
+                    { displayName: 'Event title', key: 'eventName' },
+                    { displayName: 'Date and time', key: 'eventStartDate' },
+                    { displayName: 'Created on', key: 'eventCreatedOn' },
+                    { displayName: 'Duration', key: 'eventDuration' },
+                    { displayName: 'Presenters', key: 'eventjoined' },
+                ],
+                needCheckBox: false,
+                needHash: false,
+                needUserMenus: true,
+            })
+        })
+
+        it('should call fetchEvents on init', () => {
+            const spy = jest.spyOn(component, 'fetchEvents')
+            component.ngOnInit()
+            expect(spy).toHaveBeenCalled()
         })
     })
 
-    it('should format date correctly', () => {
-        const date = '2023-01-01'
-        const time = '1000+0000'
-        const formattedDate = component.customDateFormat(date, time)
-        expect(formattedDate).toMatch(/\d{1,2}(st|nd|rd|th) \w{3} \d{4} \d{2}:\d{2}/)
+    describe('fetchEvents', () => {
+        it('should call getEventsList for upcoming filter', () => {
+            component.fetchEvents('upcoming')
+            expect(mockEventsService.getEventsList).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    request: expect.objectContaining({
+                        filters: expect.objectContaining({
+                            status: ['Live'],
+                            contentType: 'Event',
+                        }),
+                    }),
+                })
+            )
+        })
+
+        it('should call getEventsList for past filter', () => {
+            component.fetchEvents('past')
+            expect(mockEventsService.getEventsList).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    request: expect.objectContaining({
+                        filters: expect.objectContaining({
+                            status: ['Live'],
+                            contentType: 'Event',
+                        }),
+                    }),
+                })
+            )
+        })
+
+        it('should call getEventsList for archive filter', () => {
+            component.fetchEvents('archive')
+            expect(mockEventsService.getEventsList).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    request: expect.objectContaining({
+                        filters: expect.objectContaining({
+                            status: ['Retired'],
+                            contentType: 'Event',
+                        }),
+                    }),
+                })
+            )
+        })
+
+        it('should update currentFilter when tab param is given', () => {
+            component.fetchEvents('past')
+            expect(component.currentFilter).toBe('past')
+        })
     })
 
-    it('should compare dates correctly', () => {
-        const pastDate = moment().subtract(1, 'day').format('YYYY-MM-DD HH:mm')
-        const futureDate = moment().add(1, 'day').format('YYYY-MM-DD HH:mm')
-
-        expect(component.compareDate(pastDate)).toBe(true)
-        expect(component.compareDate(futureDate)).toBe(false)
-    })
-
-    it('should format duration correctly', () => {
-        const mockEvent = {
-            identifier: 'test-id',
-            name: 'Test Event',
-            startDate: '2023-01-01',
-            startTime: '1000+0000',
-            endDate: '2023-01-01',
-            endTime: '1200+0000',
-            createdOn: '2023-01-01T10:00:00.000Z',
+    describe('setEventListData', () => {
+        const buildEvent = (overrides: any = {}) => ({
+            identifier: 'evt-1',
+            name: 'Test Event Long Enough Title Here',
+            startDate: '2025-01-15',
+            startTime: '10:00:00+05:30',
+            endDate: '2025-01-15',
+            endTime: '12:00:00+05:30',
+            createdOn: '2025-01-01T10:00:00.000Z',
             duration: 120,
             status: 'Live',
             creatorDetails: '[]',
-            appIcon: 'test-icon'
-        }
+            appIcon: 'icon.png',
+            ...overrides
+        })
 
-        const events = {
-            result: {
-                Event: [mockEvent]
+        it('should do nothing when eventObj is undefined', () => {
+            component.setEventListData(undefined)
+            expect(component.data).toEqual([])
+        })
+
+        it('should process event and populate data array', () => {
+            const events = { result: { Event: { 0: buildEvent() } } }
+            component.setEventListData(events)
+            expect(component.data).toHaveLength(1)
+        })
+
+        it('should set eventName from first 100 chars of name', () => {
+            const events = { result: { Event: { 0: buildEvent({ name: 'A'.repeat(200) }) } } }
+            component.setEventListData(events)
+            expect(component.data[0].eventName).toHaveLength(100)
+        })
+
+        it('should format duration as hours and minutes', () => {
+            const events = { result: { Event: { 0: buildEvent({ duration: 90 }) } } }
+            component.setEventListData(events)
+            expect(component.data[0].eventDuration).toBe('1 hour 30 minutes')
+        })
+
+        it('should format duration as "2 hours" for exact hours', () => {
+            const events = { result: { Event: { 0: buildEvent({ duration: 120 }) } } }
+            component.setEventListData(events)
+            expect(component.data[0].eventDuration).toBe('2 hours')
+        })
+
+        it('should format duration as "1 hour" for 60 minutes', () => {
+            const events = { result: { Event: { 0: buildEvent({ duration: 60 }) } } }
+            component.setEventListData(events)
+            expect(component.data[0].eventDuration).toBe('1 hour')
+        })
+
+        it('should format duration as "30 minutes" for less than 1 hour', () => {
+            const events = { result: { Event: { 0: buildEvent({ duration: 30 }) } } }
+            component.setEventListData(events)
+            expect(component.data[0].eventDuration).toBe('30 minutes')
+        })
+
+        it('should format duration as "---" for 0 minutes', () => {
+            const events = { result: { Event: { 0: buildEvent({ duration: 0 }) } } }
+            component.setEventListData(events)
+            expect(component.data[0].eventDuration).toBe('---')
+        })
+
+        it('should display creatorDetails count for presenter', () => {
+            const creatorDetails = JSON.stringify([{ name: 'Alice', email: 'a@b.com', mdoName: 'Org' }])
+            const events = { result: { Event: { 0: buildEvent({ creatorDetails }) } } }
+            component.setEventListData(events)
+            expect(component.data[0].eventjoined).toBe('1 person')
+        })
+
+        it('should display "N people" for multiple presenters', () => {
+            const creatorDetails = JSON.stringify([
+                { name: 'Alice', email: 'a@b.com', mdoName: 'Org' },
+                { name: 'Bob', email: 'b@c.com', mdoName: 'Org' }
+            ])
+            const events = { result: { Event: { 0: buildEvent({ creatorDetails }) } } }
+            component.setEventListData(events)
+            expect(component.data[0].eventjoined).toBe('2 people')
+        })
+
+        it('should display " --- " when creatorDetails is empty', () => {
+            const events = { result: { Event: { 0: buildEvent({ creatorDetails: '[]' }) } } }
+            component.setEventListData(events)
+            expect(component.data[0].eventjoined).toBe(' --- ')
+        })
+    })
+
+    describe('customDateFormat', () => {
+        it('should return a formatted date string', () => {
+            const result = component.customDateFormat('2025-01-15', '10:00:00+05:30')
+            expect(result).toMatch(/\d{1,2}(st|nd|rd|th) \w{3} \d{4} \d{2}:\d{2}/)
+        })
+    })
+
+    describe('allEventDateFormat', () => {
+        it('should format a datetime string', () => {
+            const result = component.allEventDateFormat('2025-01-15T10:00:00.000Z')
+            expect(typeof result).toBe('string')
+            expect(result.length).toBeGreaterThan(0)
+        })
+    })
+
+    describe('formatTimeAmPm', () => {
+        it('should format time in AM/PM format', () => {
+            const date = new Date('2025-01-15T10:30:00')
+            const result = component.formatTimeAmPm(date)
+            expect(result).toMatch(/\d{1,2}:\d{2} (am|pm)/)
+        })
+
+        it('should handle noon correctly', () => {
+            const date = new Date('2025-01-15T12:00:00')
+            const result = component.formatTimeAmPm(date)
+            expect(result).toBe('12:00 pm')
+        })
+
+        it('should handle midnight correctly', () => {
+            const date = new Date('2025-01-15T00:00:00')
+            const result = component.formatTimeAmPm(date)
+            expect(result).toBe('12:00 am')
+        })
+    })
+
+    describe('filter', () => {
+        it('should update currentFilter and fetch events', () => {
+            const spy = jest.spyOn(component, 'fetchEvents')
+            component.filter('past')
+            expect(spy).toHaveBeenCalledWith('past')
+        })
+
+        it('should filter to archive', () => {
+            const spy = jest.spyOn(component, 'fetchEvents')
+            component.filter('archive')
+            expect(spy).toHaveBeenCalledWith('archive')
+        })
+    })
+
+    describe('tabTelemetry', () => {
+        it('should call handleTabTelemetry with correct params', () => {
+            component.tabTelemetry('test-label', 1)
+            expect(mockEventService.handleTabTelemetry).toHaveBeenCalledWith(
+                expect.any(String),
+                { label: 'test-label', index: 1 }
+            )
+        })
+    })
+
+    describe('menuActions', () => {
+        it('should open confirmation dialog and retire event on archive action', () => {
+            const mockRow = { identifier: 'evt-id', startTime: '10:00:00+05:30', endTime: '11:00:00+05:30', startDate: '2020-01-01', endDate: '2020-01-01' }
+            component.menuActions({ action: 'archive', row: mockRow })
+            expect(mockDialogue.open).toHaveBeenCalled()
+            expect(mockEventsService.retireEvent).toHaveBeenCalledWith('evt-id')
+        })
+
+        it('should show snackbar after successful archive', () => {
+            const mockRow = { identifier: 'evt-id', startTime: '10:00:00+05:30', endTime: '11:00:00+05:30', startDate: '2020-01-01', endDate: '2020-01-01' }
+            component.menuActions({ action: 'archive', row: mockRow })
+            expect(mockSnackBar.open).toHaveBeenCalledWith('Event is successfully archived.', 'X', { duration: 5000 })
+        })
+
+        it('should not retire event when archive dialog is cancelled', () => {
+            mockDialogue.open.mockReturnValue({
+                afterClosed: jest.fn().mockReturnValue(of(false))
+            })
+            const mockRow = { identifier: 'evt-id', startTime: '10:00:00+05:30', endTime: '11:00:00+05:30', startDate: '2020-01-01', endDate: '2020-01-01' }
+            component.menuActions({ action: 'archive', row: mockRow })
+            expect(mockEventsService.retireEvent).not.toHaveBeenCalled()
+        })
+
+        it('should navigate to edit page for non-archive actions', () => {
+            const mockRow = { identifier: 'test-id' }
+            component.menuActions({ action: 'edit', row: mockRow })
+            expect(mockRouter.navigate).toHaveBeenCalledWith(
+                ['/app/home/events/test-id/edit'],
+                { queryParams: { filter: 'upcoming' } }
+            )
+        })
+    })
+
+    describe('canArchive', () => {
+        it('should return true for past events (ended before now)', () => {
+            const pastEvent = {
+                startDate: '2020-01-01',
+                startTime: '00:00:00+05:30',
+                endDate: '2020-01-01',
+                endTime: '23:59:00+05:30'
             }
-        }
+            expect(component.canArchive(pastEvent)).toBe(true)
+        })
 
-        component.setEventListData(events)
-        const processedEvent = component.eventData['upcomingEvents'][0]
-        expect(processedEvent.eventDuration).toBe('2 hours')
-    })
+        it('should return true for future events (not yet started)', () => {
+            const futureDate = moment().add(2, 'days').format('YYYY-MM-DD')
+            const futureEvent = {
+                startDate: futureDate,
+                startTime: '00:00:00+05:30',
+                endDate: futureDate,
+                endTime: '23:59:00+05:30'
+            }
+            expect(component.canArchive(futureEvent)).toBe(true)
+        })
 
-    it('should filter events correctly', () => {
-        // Setup mock data
-        component.eventData = {
-            upcomingEvents: [{ id: 'upcoming1' }, { id: 'upcoming2' }],
-            pastEvents: [{ id: 'past1' }, { id: 'past2' }],
-            archiveEvents: [{ id: 'archive1' }]
-        }
-
-        // Test upcoming filter
-        component.filter('upcoming')
-        expect(component.currentFilter).toBe('upcoming')
-        expect(component.data).toEqual([{ id: 'upcoming1' }, { id: 'upcoming2' }])
-
-        // Test past filter
-        component.filter('past')
-        expect(component.currentFilter).toBe('past')
-        expect(component.data).toEqual([{ id: 'past1' }, { id: 'past2' }])
-
-        // Test archive filter
-        component.filter('archive')
-        expect(component.currentFilter).toBe('archive')
-        expect(component.data).toEqual([{ id: 'archive1' }])
-    })
-
-    it('should handle menu actions correctly for archive', () => {
-        const mockRow = { identifier: 'test-id' }
-        component.menuActions({ action: 'archive', row: mockRow })
-
-        expect(mockDialogue.open).toHaveBeenCalled()
-        // Since we mocked the dialog to return true, it should call retireEvent
-        expect(mockEventsService.retireEvent).toHaveBeenCalledWith('test-id')
-    })
-
-    it('should handle menu actions correctly for edit', () => {
-        const mockRow = { identifier: 'test-id' }
-        component.menuActions({ action: 'edit', row: mockRow })
-
-        expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/events/test-id/edit'], {})
-    })
-
-    it('should handle telemetry correctly', () => {
-        component.tabTelemetry('test-label', 1)
-
-        expect(mockEventService.handleTabTelemetry).toHaveBeenCalledWith(
-            'approval-tab',
-            { label: 'test-label', index: 1 }
-        )
-    })
-
-    it('should correctly determine if an event can be archived', () => {
-        const currentTime = new Date()
-        const futureDate = moment(currentTime).add(1, 'day').format('YYYY-MM-DD')
-        const pastDate = moment(currentTime).subtract(1, 'day').format('YYYY-MM-DD')
-
-        // Event in progress (can't archive)
-        const inProgressEvent = {
-            startDate: pastDate,
-            startTime: '0000+0000',
-            endDate: futureDate,
-            endTime: '2359+0000'
-        }
-        expect(component.canArchive(inProgressEvent)).toBe(false)
-
-        // Past event (can archive)
-        const pastEvent = {
-            startDate: pastDate,
-            startTime: '0000+0000',
-            endDate: pastDate,
-            endTime: '2359+0000'
-        }
-        expect(component.canArchive(pastEvent)).toBe(true)
-
-        // Future event (can archive)
-        const futureEvent = {
-            startDate: futureDate,
-            startTime: '0000+0000',
-            endDate: futureDate,
-            endTime: '2359+0000'
-        }
-        expect(component.canArchive(futureEvent)).toBe(true)
+        it('should return false for events currently in progress', () => {
+            const yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD')
+            const tomorrow = moment().add(1, 'day').format('YYYY-MM-DD')
+            const inProgressEvent = {
+                startDate: yesterday,
+                startTime: '00:00:00+05:30',
+                endDate: tomorrow,
+                endTime: '23:59:00+05:30'
+            }
+            expect(component.canArchive(inProgressEvent)).toBe(false)
+        })
     })
 })
+
