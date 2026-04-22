@@ -1,8 +1,8 @@
 // app-interceptor.service.spec.ts
 import { HttpHandler, HttpRequest, HttpEvent, HttpErrorResponse } from '@angular/common/http'
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { throwError, of } from 'rxjs'
-import { AuthKeycloakService, ConfigurationsService } from '@sunbird-cb/utils'
+import { AuthKeycloakService, ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { AppInterceptorService } from './app-interceptor.service'
 
 describe('AppInterceptorService', () => {
@@ -92,18 +92,34 @@ describe('AppInterceptorService', () => {
     expect(mockHttpHandler.handle).toHaveBeenCalledWith(mockRequest)
   })
 
-  it('should handle languages correctly', () => {
-    // Arrange
+  it('should handle languages correctly when userPreference is null', () => {
+    // Arrange - with null preference, only 'en' locale should be sent
     mockConfigSvc.userPreference = null
     const cloneSpy = jest.spyOn(mockRequest, 'clone')
 
     // Act
     service.intercept(mockRequest, mockHttpHandler)
 
-    // Assert
+    // Assert - only 'en' locale (no selectedLangGroup to merge)
     expect(cloneSpy).toHaveBeenCalledWith(expect.objectContaining({
       setHeaders: expect.objectContaining({
-        locale: 'en,hi,fr'
+        locale: 'en'
+      })
+    }))
+  })
+
+  it('should merge selectedLangGroup into locale header', () => {
+    // Arrange - userPreference has selectedLangGroup with 'hi'
+    mockConfigSvc.userPreference = { selectedLangGroup: 'hi' } as any
+    const cloneSpy = jest.spyOn(mockRequest, 'clone')
+
+    // Act
+    service.intercept(mockRequest, mockHttpHandler)
+
+    // Assert - 'en' + 'hi' merged
+    expect(cloneSpy).toHaveBeenCalledWith(expect.objectContaining({
+      setHeaders: expect.objectContaining({
+        locale: 'en,hi'
       })
     }))
   })

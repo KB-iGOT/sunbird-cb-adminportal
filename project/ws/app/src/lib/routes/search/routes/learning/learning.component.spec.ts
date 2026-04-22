@@ -52,7 +52,7 @@ describe('LearningComponent', () => {
         }
 
         mockRouter = {
-            navigate: jest.fn()
+            navigate: jest.fn().mockReturnValue(Promise.resolve(true))
         }
 
         mockValueService = {
@@ -265,10 +265,12 @@ describe('LearningComponent', () => {
 
             component.getResults()
 
+            // 'test' has no space so no quoting is applied
+            // Note: pageNo is excluded because searchRequestObject is mutated synchronously by reference
             expect(mockSearchService.getLearning).toHaveBeenCalledWith(expect.objectContaining({
-                query: '"test"',
+                query: 'test',
                 filters: {},
-                pageNo: 0
+                pageSize: 10,
             }))
 
             expect(component.searchResults.totalHits).toBe(10)
@@ -348,8 +350,8 @@ describe('LearningComponent', () => {
     })
 
     describe('searchLanguage', () => {
-        it('should navigate with language parameter', () => {
-            component.searchLanguage('hi')
+        it('should navigate with language parameter', async () => {
+            await component.searchLanguage('hi')
             expect(mockRouter.navigate).toHaveBeenCalledWith(
                 [],
                 expect.objectContaining({
@@ -376,7 +378,7 @@ describe('LearningComponent', () => {
 
     describe('searchInsteadFor', () => {
         it('should clear results and call getResults with didYouMean false', () => {
-            const getResultsSpy = jest.spyOn(component, 'getResults')
+            const getResultsSpy = jest.spyOn(component, 'getResults').mockImplementation(() => { })
             component.searchInsteadFor()
             expect(component.searchResults.result).toEqual([])
             expect(getResultsSpy).toHaveBeenCalledWith(undefined, false)

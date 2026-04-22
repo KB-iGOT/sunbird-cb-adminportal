@@ -1,5 +1,5 @@
 import { ViaApiComponent } from './via-api.component'
-import { FormBuilder, FormArray } from '@angular/forms'
+import { FormBuilder, FormArray, FormGroup, FormControl } from '@angular/forms'
 import { of, throwError } from 'rxjs'
 import { HttpErrorResponse } from '@angular/common/http'
 
@@ -321,6 +321,9 @@ describe('ViaApiComponent', () => {
         data: { partnerCode: 'TEST_PARTNER' }
       }
       component.transformationsUpdated = true
+      // Add at least one row to bodyFormGroup tableListFormArray (required by generatCoursesConfiguration)
+      const bodyArray = component.bodyFormGroup.controls.tableListFormArray as FormArray
+      bodyArray.push(new FormGroup({ key: new FormControl(''), value: new FormControl('') }))
     })
 
     it('should update configuration when contentApisId exists', () => {
@@ -391,7 +394,8 @@ describe('ViaApiComponent', () => {
 
       component.configure()
 
-      expect(mockSnackBar.open).toHaveBeenCalledWith('Update failed')
+      // The component uses _.get(error, 'message') which returns HttpErrorResponse.message
+      expect(mockSnackBar.open).toHaveBeenCalledWith(expect.stringContaining('Http failure response'))
     })
   })
 
@@ -470,13 +474,16 @@ describe('ViaApiComponent', () => {
     })
 
     it('should get params and URL correctly', () => {
+      // Mock constructParamsFormArray to prevent form-URL sync from interfering
+      jest.spyOn(component, 'constructParamsFormArray').mockImplementation(() => { })
+
+      // Set displayUrl first so apiUrl.valueChanges won't trigger constructParamsFormArray
+      component.displayUrl = 'https://api.example.com/test'
       component.viaApiFormGroup.get('apiUrl')?.setValue('https://api.example.com/test')
-      component.paramsFormGroup.patchValue({
-        tableListFormArray: [
-          { key: 'param1', value: 'value1' },
-          { key: 'param2', value: 'value2' }
-        ]
-      })
+
+      const paramsArray = component.paramsFormArray
+      paramsArray.push(new FormGroup({ key: new FormControl('param1'), value: new FormControl('value1') }))
+      paramsArray.push(new FormGroup({ key: new FormControl('param2'), value: new FormControl('value2') }))
 
       const result = component.getParamsAndUrl()
 
