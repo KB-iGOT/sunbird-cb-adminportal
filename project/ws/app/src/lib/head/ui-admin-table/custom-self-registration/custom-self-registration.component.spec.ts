@@ -4,7 +4,7 @@ import { CreateMDOService } from '../create-mdo.services'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { Clipboard } from '@angular/cdk/clipboard'
 import { MatDialog } from '@angular/material/dialog'
-import { EventService } from '@sunbird-cb/utils'
+import { EventService } from '@sunbird-cb/utils-v2'
 import { of, throwError } from 'rxjs'
 import { InfoModalComponent } from '../../info-modal/info-modal.component'
 

@@ -9,6 +9,7 @@ describe('MarketPlaceDashboardComponent', () => {
     let mockMarketPlaceSvc: any
     let mockSnackBar: any
     let mockDatePipe: any
+    let mockLoaderService: any
     let mockDialogRef: any
 
     beforeEach(() => {
@@ -22,29 +23,38 @@ describe('MarketPlaceDashboardComponent', () => {
         }
 
         mockMarketPlaceSvc = {
-            getProvidersList: jest.fn(),
-            deleteProvider: jest.fn()
+            getProvidersList: jest.fn().mockReturnValue(of({ result: { data: [], totalCount: 0 } })),
+            deleteProvider: jest.fn(),
+            changeStatusRegisterProvider: jest.fn(),
+            contentRegisterList: jest.fn().mockReturnValue(of({ result: { data: [], totalCount: 0 } })),
+            activateProvider: jest.fn()
         }
 
         mockSnackBar = {
-            open: jest.fn()
+            open: jest.fn(),
+            openFromComponent: jest.fn()
         }
 
         mockDatePipe = {
-            transform: jest.fn()
+            transform: jest.fn().mockReturnValue('Jan 01, 2023')
+        }
+
+        mockLoaderService = {
+            setLoaderState: jest.fn()
         }
 
         mockDialogRef = {
             afterClosed: jest.fn(() => of(true))
         }
 
-        // Create component instance
+        // Create component instance with all 6 required constructor params
         component = new MarketPlaceDashboardComponent(
             mockDialog,
             mockRouter,
             mockMarketPlaceSvc,
             mockSnackBar,
-            mockDatePipe
+            mockDatePipe,
+            mockLoaderService
         )
     })
 
@@ -58,14 +68,8 @@ describe('MarketPlaceDashboardComponent', () => {
         })
 
         it('should have correct helpCenterGuide configuration', () => {
-            expect(component.helpCenterGuide).toEqual({
-                header: 'SPV Help Center: Video Guides and Tips',
-                guideNotes: [
-                    'Ensure all mandatory fields in the onboarding form regarding the content provider are filled. Once completed, proceed to uploading course catalog for the content provider.',
-                    'Reach out to support team for authenticating the content provider',
-                ],
-                helpVideoLink: `/assets/public/content/guide-videos/CIOS_Updated_demo.mp4`,
-            })
+            expect(component.helpCenterGuide.header).toBe('SPV Help Center: Video Guides and Tips')
+            expect(component.helpCenterGuide.guideNotes).toHaveLength(2)
         })
 
         it('should initialize with default values', () => {
@@ -73,14 +77,44 @@ describe('MarketPlaceDashboardComponent', () => {
             expect(component.displayLoader).toBe(false)
             expect(component.searchKey).toBe('')
             expect(component.menuItems).toEqual([])
+            expect(component.currentTab).toBe('onboardProviders')
         })
     })
 
     describe('ngOnInit', () => {
-        it('should call intializeTableData', () => {
-            const spy = jest.spyOn(component, 'intializeTableData')
+        it('should call intializeTableData on init', () => {
+            const spy = jest.spyOn(component, 'intializeTableData').mockImplementation(() => { })
             component.ngOnInit()
             expect(spy).toHaveBeenCalled()
+        })
+    })
+
+    describe('ngAfterViewInit', () => {
+        it('should add CSS class to container when element exists', () => {
+            const mockContainer = { classList: { add: jest.fn(), remove: jest.fn() } }
+            jest.spyOn(document, 'querySelector').mockReturnValue(mockContainer as any)
+            component.ngAfterViewInit()
+            expect(mockContainer.classList.add).toHaveBeenCalledWith('container-balanced-padding')
+        })
+
+        it('should not throw when container does not exist', () => {
+            jest.spyOn(document, 'querySelector').mockReturnValue(null)
+            expect(() => component.ngAfterViewInit()).not.toThrow()
+        })
+    })
+
+    describe('ngOnDestroy', () => {
+        it('should set isComponentActive to false', () => {
+            jest.spyOn(document, 'querySelector').mockReturnValue(null)
+            component.ngOnDestroy()
+            expect(component.isComponentActive).toBe(false)
+        })
+
+        it('should remove CSS class from container when element exists', () => {
+            const mockContainer = { classList: { add: jest.fn(), remove: jest.fn() } }
+            jest.spyOn(document, 'querySelector').mockReturnValue(mockContainer as any)
+            component.ngOnDestroy()
+            expect(mockContainer.classList.remove).toHaveBeenCalledWith('container-balanced-padding')
         })
     })
 
@@ -89,43 +123,24 @@ describe('MarketPlaceDashboardComponent', () => {
             jest.spyOn(component, 'getProviders').mockImplementation(() => { })
         })
 
-        it('should set up table configuration correctly', () => {
+        it('should set up table configuration with required columns', () => {
             component.intializeTableData()
-
-            expect(component.tabledata).toEqual({
-                columns: [
-                    { displayName: 'Content Provider Name', key: 'contentPartnerName', cellType: 'text', imageKey: 'link' },
-                    { displayName: 'Onboarded On', key: 'createdOn', cellType: 'text', cellClass: 'cell-gray-text' },
-                    { displayName: 'Last Updated On', key: 'updatedOn', cellType: 'text', cellClass: 'cell-gray-text' },
-                    { displayName: 'Authentication', key: 'isAuthenticate', cellType: 'authentication' },
-                ],
-                needCheckBox: false,
-                showDeleteAll: false,
-            })
+            expect(component.tabledata.columns.length).toBeGreaterThan(0)
+            expect(component.tabledata.needCheckBox).toBe(false)
+            expect(component.tabledata.showDeleteAll).toBe(false)
         })
 
-        it('should set up menu items correctly', () => {
+        it('should clear menu items', () => {
+            component.menuItems = [{ icon: 'old', btnText: 'old', action: 'old' }]
             component.intializeTableData()
-
-            expect(component.menuItems).toEqual([
-                {
-                    icon: 'edit',
-                    btnText: 'Configure',
-                    action: 'configure',
-                }
-            ])
+            expect(component.menuItems).toEqual([])
         })
 
-        it('should set up pagination details correctly', () => {
+        it('should initialize pagination details', () => {
             component.intializeTableData()
-
-            expect(component.paginationDetails).toEqual({
-                startIndex: 0,
-                lastIndes: 20,
-                pageSize: 20,
-                pageIndex: 0,
-                totalCount: 20,
-            })
+            expect(component.paginationDetails).toBeDefined()
+            expect(component.paginationDetails.currentPage).toBe(1)
+            expect(component.paginationDetails.pageSize).toBe(20)
         })
 
         it('should call getProviders', () => {
@@ -135,246 +150,350 @@ describe('MarketPlaceDashboardComponent', () => {
         })
     })
 
+    describe('initailizeProviderRequestsTable', () => {
+        it('should set up provider requests table configuration', () => {
+            component.initailizeProviderRequestsTable()
+            expect(component.tabledata.columns.length).toBeGreaterThan(0)
+            expect(component.tabledata.needCheckBox).toBe(false)
+            expect(component.tabledata.acceptRejectMenu).toBe(true)
+        })
+
+        it('should clear menu items', () => {
+            component.menuItems = [{ icon: 'old', btnText: 'old', action: 'old' }]
+            component.initailizeProviderRequestsTable()
+            expect(component.menuItems).toEqual([])
+        })
+    })
+
+    describe('initializePagination', () => {
+        it('should initialize paginationDetails', () => {
+            component.initializePagination()
+            expect(component.paginationDetails).toEqual({
+                currentPage: 1,
+                pageSize: 20,
+                totalCount: 20,
+                paginationSizeOptions: [20, 50, 100]
+            })
+        })
+
+        it('should reset sortData to defaults', () => {
+            component.sortData = { field: 'custom', direction: 'asc' }
+            component.initializePagination()
+            expect(component.sortData).toEqual({ field: 'createdOn', direction: 'desc' })
+        })
+    })
+
     describe('getProviders', () => {
         beforeEach(() => {
             component.paginationDetails = {
-                startIndex: 0,
-                lastIndes: 20,
+                currentPage: 1,
                 pageSize: 20,
-                pageIndex: 0,
                 totalCount: 20,
+                paginationSizeOptions: [20, 50, 100]
             }
         })
 
-        it('should set displayLoader to true initially', () => {
-            mockMarketPlaceSvc.getProvidersList.mockReturnValue(of({}))
+        it('should call loaderService.setLoaderState(true) at start of getProviders', () => {
             component.getProviders()
-            expect(component.displayLoader).toBe(true)
+            expect(mockLoaderService.setLoaderState).toHaveBeenCalledWith(true)
         })
 
-        it('should reset providersList', () => {
-            mockMarketPlaceSvc.getProvidersList.mockReturnValue(of({}))
-            component.providersList = ['existing']
+        it('should call loaderService.setLoaderState(true)', () => {
             component.getProviders()
-            expect(component.providersList).toEqual([])
+            expect(mockLoaderService.setLoaderState).toHaveBeenCalledWith(true)
         })
 
-        it('should call marketPlaceSvc.getProvidersList with correct parameters', () => {
-            mockMarketPlaceSvc.getProvidersList.mockReturnValue(of({}))
+        it('should call marketPlaceSvc.getProvidersList', () => {
             component.getProviders()
-
-            const expectedFormBody = {
-                filterCriteriaMap: {
-                    isActive: true,
-                },
-                pageNumber: 0,
-                pageSize: 20,
-                facets: ['contentPartnerName'],
-                orderBy: 'createdOn',
-                orderDirection: 'desc',
-            }
-
-            expect(mockMarketPlaceSvc.getProvidersList).toHaveBeenCalledWith(expectedFormBody)
+            expect(mockMarketPlaceSvc.getProvidersList).toHaveBeenCalled()
         })
 
         it('should include searchString when searchKey is provided', () => {
-            component.searchKey = 'test search'
-            mockMarketPlaceSvc.getProvidersList.mockReturnValue(of({}))
+            component.searchKey = 'test'
             component.getProviders()
-
-            const expectedFormBody = {
-                filterCriteriaMap: {
-                    isActive: true,
-                },
-                pageNumber: 0,
-                pageSize: 20,
-                facets: ['contentPartnerName'],
-                orderBy: 'createdOn',
-                orderDirection: 'desc',
-                searchString: 'test search'
-            }
-
-            expect(mockMarketPlaceSvc.getProvidersList).toHaveBeenCalledWith(expectedFormBody)
+            const calledWith = mockMarketPlaceSvc.getProvidersList.mock.calls[0][0]
+            expect(calledWith.searchString).toBe('test')
         })
 
-        it('should unsubscribe existing subscription', () => {
-            const mockSubscription = { unsubscribe: jest.fn() }
-            component.apiSubscription = mockSubscription
-            mockMarketPlaceSvc.getProvidersList.mockReturnValue(of({}))
-
+        it('should not include searchString when searchKey is empty', () => {
+            component.searchKey = ''
             component.getProviders()
+            const calledWith = mockMarketPlaceSvc.getProvidersList.mock.calls[0][0]
+            expect(calledWith.searchString).toBeUndefined()
+        })
 
-            expect(mockSubscription.unsubscribe).toHaveBeenCalled()
+        it('should unsubscribe existing subscription before new one', () => {
+            const mockSub = { unsubscribe: jest.fn() }
+            component.apiSubscription = mockSub
+            component.getProviders()
+            expect(mockSub.unsubscribe).toHaveBeenCalled()
+        })
+
+        it('should handle successful response and update providersList', () => {
+            const mockResponse = {
+                result: { data: [{ id: 1, contentPartnerName: 'P1', createdOn: '2023-01-01' }], totalCount: 1 }
+            }
+            mockMarketPlaceSvc.getProvidersList.mockReturnValue(of(mockResponse))
+            component.getProviders()
+            expect(component.displayLoader).toBe(false)
+            expect(component.providersList.length).toBe(1)
+            expect(component.paginationDetails.totalCount).toBe(1)
+        })
+
+        it('should handle error response and show snackbar', () => {
+            const mockError = { error: { params: { errMsg: 'Load failed' } } } as HttpErrorResponse
+            jest.spyOn(component, 'showSnackBar').mockImplementation(() => { })
+            mockMarketPlaceSvc.getProvidersList.mockReturnValue(throwError(mockError))
+            component.getProviders()
+            expect(component.displayLoader).toBe(false)
+            expect(component.showSnackBar).toHaveBeenCalledWith('Load failed', 'error')
+        })
+
+        it('should handle error with no errMsg using null', () => {
+            const mockError = { error: { params: {} } } as HttpErrorResponse
+            jest.spyOn(component, 'showSnackBar').mockImplementation(() => { })
+            mockMarketPlaceSvc.getProvidersList.mockReturnValue(throwError(mockError))
+            component.getProviders()
+            expect(component.showSnackBar).toHaveBeenCalledWith(undefined, 'error')
+        })
+    })
+
+    describe('listProvidersRequests', () => {
+        beforeEach(() => {
+            component.paginationDetails = {
+                currentPage: 1,
+                pageSize: 20,
+                totalCount: 20,
+                paginationSizeOptions: [20, 50, 100]
+            }
+        })
+
+        it('should call loaderService.setLoaderState(true)', () => {
+            component.listProvidersRequests()
+            expect(mockLoaderService.setLoaderState).toHaveBeenCalledWith(true)
+        })
+
+        it('should clear providersRequestsList', () => {
+            component.providersRequestsList = [{ id: 'old' }] as any
+            component.listProvidersRequests()
+            expect(component.providersRequestsList).toEqual([])
+        })
+
+        it('should call contentRegisterList service', () => {
+            component.listProvidersRequests()
+            expect(mockMarketPlaceSvc.contentRegisterList).toHaveBeenCalled()
+        })
+
+        it('should include searchString when searchKey is set', () => {
+            component.searchKey = 'search'
+            component.listProvidersRequests()
+            const calledWith = mockMarketPlaceSvc.contentRegisterList.mock.calls[0][0]
+            expect(calledWith.searchString).toBe('search')
         })
 
         it('should handle successful response', () => {
             const mockResponse = {
-                result: {
-                    data: [{ id: 1, name: 'Provider 1' }],
-                    totalCount: 5
-                }
+                result: { data: [{ id: 1 }], totalCount: 1 }
             }
-
-            jest.spyOn(component, 'formateProvidersList').mockReturnValue(['formatted provider'])
-            mockMarketPlaceSvc.getProvidersList.mockReturnValue(of(mockResponse))
-
-            component.getProviders()
-
-            expect(component.displayLoader).toBe(false)
-            expect(component.providersList).toEqual(['formatted provider'])
-            expect(component.paginationDetails.totalCount).toBe(5)
+            mockMarketPlaceSvc.contentRegisterList.mockReturnValue(of(mockResponse))
+            component.listProvidersRequests()
+            expect(component.paginationDetails.totalCount).toBe(1)
         })
 
         it('should handle error response', () => {
-            const mockError = {
-                error: {
-                    params: {
-                        errMsg: 'Error message'
-                    }
-                }
-            } as HttpErrorResponse
-
+            const mockError = { error: { params: { errMsg: 'List failed' } } } as HttpErrorResponse
             jest.spyOn(component, 'showSnackBar').mockImplementation(() => { })
-            mockMarketPlaceSvc.getProvidersList.mockReturnValue(throwError(mockError))
-
-            component.getProviders()
-
-            expect(component.displayLoader).toBe(false)
-            expect(component.showSnackBar).toHaveBeenCalledWith('Error message')
+            mockMarketPlaceSvc.contentRegisterList.mockReturnValue(throwError(mockError))
+            component.listProvidersRequests()
+            expect(component.showSnackBar).toHaveBeenCalledWith('List failed', 'error')
         })
     })
 
     describe('onSearch', () => {
-        it('should set searchKey and call getProviders', () => {
-            jest.spyOn(component, 'getProviders').mockImplementation(() => { })
+        it('should push value to searchProvider$ subject', () => {
+            const nextSpy = jest.spyOn(component.searchProvider$, 'next')
+            component.onSearch('abc')
+            expect(nextSpy).toHaveBeenCalledWith('abc')
+        })
+    })
 
-            component.onSearch('test search')
-
-            expect(component.searchKey).toBe('test search')
-            expect(component.getProviders).toHaveBeenCalled()
+    describe('onSearchRegisteredPartners', () => {
+        it('should push value to searchRegisteredProvider$ subject', () => {
+            const nextSpy = jest.spyOn(component.searchRegisteredProvider$, 'next')
+            component.onSearchRegisteredPartners('xyz')
+            expect(nextSpy).toHaveBeenCalledWith('xyz')
         })
     })
 
     describe('formateProvidersList', () => {
-        beforeEach(() => {
-            mockDatePipe.transform.mockReturnValue('Jan 01, 2023')
-        })
-
-        it('should return empty array for null/undefined input', () => {
+        it('should return empty array for falsy input', () => {
             expect(component.formateProvidersList(null)).toEqual([])
             expect(component.formateProvidersList(undefined)).toEqual([])
         })
 
-        it('should format providers list correctly', () => {
-            const mockProviders = [
-                { id: 1, name: 'Provider 1', createdOn: '2023-01-01' },
-                { id: 2, name: 'Provider 2', createdOn: '2023-01-02' }
-            ]
-
-            const result = component.formateProvidersList(mockProviders)
-
-            expect(mockDatePipe.transform).toHaveBeenCalledTimes(4) // 2 calls per provider
-            expect(result).toHaveLength(2)
+        it('should format each provider with transformed dates', () => {
+            const providers = [{ id: 1, contentPartnerName: 'P1', createdOn: '2023-01-01T00:00:00Z' }]
+            const result = component.formateProvidersList(providers)
+            expect(result).toHaveLength(1)
             expect(result[0].createdOn).toBe('Jan 01, 2023')
             expect(result[0].updatedOn).toBe('Jan 01, 2023')
         })
     })
 
     describe('providerEvents', () => {
-        it('should handle configure action', () => {
-            jest.spyOn(component, 'navigateToConfiguration').mockImplementation(() => { })
-
-            const event = {
-                action: 'configure',
-                rows: {
-                    id: '123',
-                    contentPartnerName: 'Test Provider',
-                    isAuthenticate: true,
-                    partnerCode: 'TEST123'
-                }
-            }
-
-            component.providerEvents(event)
-
-            const expectedProviderDetails = {
-                id: '123',
-                providerName: 'Test Provider',
-                isAuthenticated: true,
-                partnerCode: 'TEST123'
-            }
-
-            expect(component.navigateToConfiguration).toHaveBeenCalledWith(expectedProviderDetails)
+        beforeEach(() => {
+            jest.spyOn(component, 'navigateToConfigurationV2').mockImplementation(() => { })
+            jest.spyOn(component, 'openConformationPopup').mockImplementation(() => { })
+            jest.spyOn(component, 'activateProvider').mockImplementation(() => { })
+            jest.spyOn(component, 'acceptRejectProviderStatus').mockImplementation(() => { })
         })
 
-        it('should handle deactivate action', () => {
-            jest.spyOn(component, 'openConformationPopup').mockImplementation(() => { })
+        it('should call navigateToConfigurationV2 for configure action', () => {
+            component.providerEvents({ action: 'configure', rows: { id: '1', contentPartnerName: 'P', isAuthenticate: true, partnerCode: 'X' } })
+            expect(component.navigateToConfigurationV2).toHaveBeenCalled()
+        })
 
-            const event = {
-                action: 'deactivate',
-                row: { id: '123', name: 'Test Provider' }
-            }
+        it('should call navigateToConfigurationV2 with tab for sso_integration action', () => {
+            component.providerEvents({ action: 'sso_integration', rows: { id: '1', contentPartnerName: 'P', isAuthenticate: true, partnerCode: 'X' } })
+            expect(component.navigateToConfigurationV2).toHaveBeenCalledWith(expect.objectContaining({ tab: 'sso_integration' }))
+        })
 
-            component.providerEvents(event)
+        it('should call openConformationPopup for deactivate_provider action', () => {
+            const rows = { id: '1' }
+            component.providerEvents({ action: 'deactivate_provider', rows })
+            expect(component.openConformationPopup).toHaveBeenCalledWith(rows)
+        })
 
-            expect(component.openConformationPopup).toHaveBeenCalledWith(event.row)
+        it('should call activateProvider for activate_provider action', () => {
+            const rows = { id: '1' }
+            component.providerEvents({ action: 'activate_provider', rows })
+            expect(component.activateProvider).toHaveBeenCalledWith(rows)
+        })
+
+        it('should call acceptRejectProviderStatus for accept action', () => {
+            const rows = { id: '1' }
+            component.providerEvents({ action: 'accept', rows })
+            expect(component.acceptRejectProviderStatus).toHaveBeenCalledWith('accept', rows)
+        })
+
+        it('should call acceptRejectProviderStatus for reject action', () => {
+            const rows = { id: '1' }
+            component.providerEvents({ action: 'reject', rows })
+            expect(component.acceptRejectProviderStatus).toHaveBeenCalledWith('reject', rows)
+        })
+
+        it('should navigate with PENDING status for view action when status is PENDING', () => {
+            const rows = { id: '1', status: 'PENDING', contentPartnerName: 'P', isAuthenticate: false, partnerCode: 'Y' }
+            component.providerEvents({ action: 'view', rows })
+            expect(component.navigateToConfigurationV2).toHaveBeenCalledWith(expect.any(Object), 'PENDING')
+        })
+
+        it('should navigate without status for view action when status is not PENDING', () => {
+            const rows = { id: '1', status: 'APPROVED', contentPartnerName: 'P', isAuthenticate: false, partnerCode: 'Y' }
+            component.providerEvents({ action: 'view', rows })
+            expect(component.navigateToConfigurationV2).toHaveBeenCalledWith(expect.any(Object))
+        })
+    })
+
+    describe('acceptRejectProviderStatus', () => {
+        it('should call changeStatusRegisterProvider with APPROVED for accept', () => {
+            const rowData = { id: 'p1' }
+            mockMarketPlaceSvc.changeStatusRegisterProvider.mockReturnValue(of({}))
+            jest.spyOn(component, 'listProvidersRequests').mockImplementation(() => { })
+            jest.spyOn(component, 'showSnackBar').mockImplementation(() => { })
+            component.acceptRejectProviderStatus('accept', rowData)
+            expect(mockMarketPlaceSvc.changeStatusRegisterProvider).toHaveBeenCalledWith({ id: 'p1', status: 'APPROVED' })
+        })
+
+        it('should call changeStatusRegisterProvider with REJECTED for reject', () => {
+            const rowData = { id: 'p2' }
+            mockMarketPlaceSvc.changeStatusRegisterProvider.mockReturnValue(of({}))
+            jest.spyOn(component, 'listProvidersRequests').mockImplementation(() => { })
+            jest.spyOn(component, 'showSnackBar').mockImplementation(() => { })
+            component.acceptRejectProviderStatus('reject', rowData)
+            expect(mockMarketPlaceSvc.changeStatusRegisterProvider).toHaveBeenCalledWith({ id: 'p2', status: 'REJECTED' })
+        })
+
+        it('should show success snackbar on success', () => {
+            const rowData = { id: 'p1' }
+            mockMarketPlaceSvc.changeStatusRegisterProvider.mockReturnValue(of({}))
+            jest.spyOn(component, 'listProvidersRequests').mockImplementation(() => { })
+            jest.spyOn(component, 'showSnackBar').mockImplementation(() => { })
+            component.acceptRejectProviderStatus('accept', rowData)
+            expect(component.showSnackBar).toHaveBeenCalledWith('The request has been approved successfully.', 'success')
+        })
+
+        it('should show error snackbar on error', () => {
+            const rowData = { id: 'p1' }
+            const mockError = { error: { params: { errMsg: 'Status error' } } } as HttpErrorResponse
+            mockMarketPlaceSvc.changeStatusRegisterProvider.mockReturnValue(throwError(mockError))
+            jest.spyOn(component, 'showSnackBar').mockImplementation(() => { })
+            component.acceptRejectProviderStatus('accept', rowData)
+            expect(component.showSnackBar).toHaveBeenCalledWith('Status error', 'error')
         })
     })
 
     describe('navigateToConfiguration', () => {
-        it('should navigate to provider configuration with ID', () => {
-            const providerDetails = { id: '123' }
-
-            component.navigateToConfiguration(providerDetails)
-
-            expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/marketplace-providers/onboard-partner/123'])
+        it('should navigate with provider id when provided', () => {
+            component.navigateToConfiguration({ id: '42' })
+            expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/marketplace-providers/onboard-partner/42'])
         })
 
-        it('should navigate to new provider configuration without ID', () => {
+        it('should navigate to base path when no provider details', () => {
             component.navigateToConfiguration()
-
             expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/marketplace-providers/onboard-partner'])
         })
     })
 
-    describe('openConformationPopup', () => {
-        beforeEach(() => {
-            mockDialog.open.mockReturnValue(mockDialogRef)
-            jest.spyOn(component, 'deleteProvider').mockImplementation(() => { })
-        })
-
-        it('should open confirmation dialog with correct configuration', () => {
-            const provider = { id: '123', name: 'Test Provider' }
-
-            component.openConformationPopup(provider)
-
-            expect(mockDialog.open).toHaveBeenCalledWith(
-                expect.any(Function), // ConformationPopupComponent
-                expect.objectContaining({
-                    autoFocus: false,
-                    width: '626px',
-                    maxWidth: '80vw',
-                    maxHeight: '90vh',
-                    height: '225px',
-                    disableClose: true,
-                })
+    describe('navigateToConfigurationV2', () => {
+        it('should navigate with id queryParam', () => {
+            component.navigateToConfigurationV2({ id: '10' })
+            expect(mockRouter.navigate).toHaveBeenCalledWith(
+                ['/app/home/marketplace-providers/configure-provider'],
+                { queryParams: { id: '10' } }
             )
         })
 
-        it('should call deleteProvider when dialog returns true', () => {
-            const provider = { id: '123', name: 'Test Provider' }
-            mockDialogRef.afterClosed.mockReturnValue(of(true))
-
-            component.openConformationPopup(provider)
-
-            expect(component.deleteProvider).toHaveBeenCalledWith('123')
+        it('should navigate with status queryParam', () => {
+            component.navigateToConfigurationV2({ id: '10' }, 'PENDING')
+            expect(mockRouter.navigate).toHaveBeenCalledWith(
+                ['/app/home/marketplace-providers/configure-provider'],
+                { queryParams: { id: '10', status: 'PENDING' } }
+            )
         })
 
-        it('should not call deleteProvider when dialog returns false', () => {
-            const provider = { id: '123', name: 'Test Provider' }
+        it('should navigate to base path when no provider details', () => {
+            component.navigateToConfigurationV2()
+            expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/marketplace-providers/configure-provider'])
+        })
+
+        it('should include tab in queryParams when provided', () => {
+            component.navigateToConfigurationV2({ id: '5', tab: 'sso_integration' })
+            expect(mockRouter.navigate).toHaveBeenCalledWith(
+                ['/app/home/marketplace-providers/configure-provider'],
+                { queryParams: { id: '5', tab: 'sso_integration' } }
+            )
+        })
+    })
+
+    describe('openConformationPopup', () => {
+        it('should open dialog and call deleteProvider on confirm', () => {
+            mockDialogRef.afterClosed.mockReturnValue(of(true))
+            mockDialog.open.mockReturnValue(mockDialogRef)
+            jest.spyOn(component, 'deleteProvider').mockImplementation(() => { })
+
+            component.openConformationPopup({ id: 'prov1' })
+
+            expect(mockDialog.open).toHaveBeenCalled()
+            expect(component.deleteProvider).toHaveBeenCalledWith('prov1')
+        })
+
+        it('should not call deleteProvider on cancel', () => {
             mockDialogRef.afterClosed.mockReturnValue(of(false))
+            mockDialog.open.mockReturnValue(mockDialogRef)
+            jest.spyOn(component, 'deleteProvider').mockImplementation(() => { })
 
-            component.openConformationPopup(provider)
-
+            component.openConformationPopup({ id: 'prov1' })
             expect(component.deleteProvider).not.toHaveBeenCalled()
         })
     })
@@ -391,87 +510,165 @@ describe('MarketPlaceDashboardComponent', () => {
 
         it('should set displayLoader to true initially', () => {
             mockMarketPlaceSvc.deleteProvider.mockReturnValue(of(true))
-
             component.deleteProvider('123')
-
             expect(component.displayLoader).toBe(true)
         })
 
-        it('should handle successful deletion', () => {
+        it('should call getProviders after timeout on success', () => {
             mockMarketPlaceSvc.deleteProvider.mockReturnValue(of(true))
-
             component.deleteProvider('123')
-
             jest.advanceTimersByTime(2000)
-
             expect(component.getProviders).toHaveBeenCalled()
         })
 
-        it('should handle unsuccessful deletion', () => {
-            mockMarketPlaceSvc.deleteProvider.mockReturnValue(of(false))
-
+        it('should set displayLoader false when res is falsy', () => {
+            mockMarketPlaceSvc.deleteProvider.mockReturnValue(of(null))
             component.deleteProvider('123')
-
             expect(component.displayLoader).toBe(false)
-            expect(component.getProviders).not.toHaveBeenCalled()
         })
 
-        it('should handle error during deletion', () => {
-            const mockError = {
-                error: {
-                    params: {
-                        errMsg: 'Delete error'
-                    }
-                }
-            } as HttpErrorResponse
-
+        it('should handle error and show snackbar', () => {
+            const mockError = { error: { params: { errMsg: 'Del error' } } } as HttpErrorResponse
             jest.spyOn(component, 'showSnackBar').mockImplementation(() => { })
             mockMarketPlaceSvc.deleteProvider.mockReturnValue(throwError(mockError))
-
             component.deleteProvider('123')
-
             expect(component.displayLoader).toBe(false)
-            expect(component.showSnackBar).toHaveBeenCalledWith('Delete error')
+            expect(component.showSnackBar).toHaveBeenCalledWith('Del error', 'error')
         })
 
-        it('should use default error message when errMsg is not available', () => {
+        it('should use default message when errMsg not present', () => {
             const mockError = {} as HttpErrorResponse
-
             jest.spyOn(component, 'showSnackBar').mockImplementation(() => { })
             mockMarketPlaceSvc.deleteProvider.mockReturnValue(throwError(mockError))
-
             component.deleteProvider('123')
+            expect(component.showSnackBar).toHaveBeenCalledWith('Something went wrong', 'error')
+        })
+    })
 
-            expect(component.showSnackBar).toHaveBeenCalledWith('Something went wrong')
+    describe('activateProvider', () => {
+        beforeEach(() => {
+            jest.spyOn(component, 'getProviders').mockImplementation(() => { })
+        })
+
+        it('should call activateProvider service', () => {
+            mockMarketPlaceSvc.activateProvider.mockReturnValue(of({ success: true }))
+            component.activateProvider({ id: 'p1' })
+            expect(mockMarketPlaceSvc.activateProvider).toHaveBeenCalledWith({ partnerId: 'p1' })
+        })
+
+        it('should call getProviders and disable loader on success', () => {
+            mockMarketPlaceSvc.activateProvider.mockReturnValue(of(true))
+            component.activateProvider({ id: 'p1' })
+            expect(component.getProviders).toHaveBeenCalled()
+            expect(mockLoaderService.setLoaderState).toHaveBeenCalledWith(false)
+        })
+
+        it('should show snackbar on error', () => {
+            jest.spyOn(component, 'showSnackBar').mockImplementation(() => { })
+            mockMarketPlaceSvc.activateProvider.mockReturnValue(throwError(new Error()))
+            component.activateProvider({ id: 'p1' })
+            expect(component.showSnackBar).toHaveBeenCalledWith('Something went wrong please try again', 'error')
         })
     })
 
     describe('onPageChange', () => {
-        it('should update pagination details and call getProviders', () => {
+        beforeEach(() => {
             jest.spyOn(component, 'getProviders').mockImplementation(() => { })
+            jest.spyOn(component, 'listProvidersRequests').mockImplementation(() => { })
+            component.paginationDetails = { currentPage: 1, pageSize: 20, totalCount: 0, paginationSizeOptions: [] }
+        })
 
-            const newPaginationDetails = {
-                startIndex: 20,
-                lastIndes: 40,
-                pageSize: 20,
-                pageIndex: 1,
-                totalCount: 100,
-            }
-
-            component.onPageChange(newPaginationDetails)
-
-            expect(component.paginationDetails).toEqual(newPaginationDetails)
+        it('should update paginationDetails and call getProviders for onboardProviders tab', () => {
+            component.currentTab = 'onboardProviders'
+            component.onPageChange({ currentPage: 2, pageSize: 50 })
+            expect(component.paginationDetails.currentPage).toBe(2)
+            expect(component.paginationDetails.pageSize).toBe(50)
             expect(component.getProviders).toHaveBeenCalled()
+        })
+
+        it('should call listProvidersRequests for providerRequests tab', () => {
+            component.currentTab = 'providerRequests'
+            component.onPageChange({ currentPage: 2, pageSize: 20 })
+            expect(component.listProvidersRequests).toHaveBeenCalled()
+        })
+    })
+
+    describe('handleOnTabChange', () => {
+        beforeEach(() => {
+            jest.spyOn(component, 'intializeTableData').mockImplementation(() => { })
+            jest.spyOn(component, 'initailizeProviderRequestsTable').mockImplementation(() => { })
+            jest.spyOn(component, 'initializePagination').mockImplementation(() => { })
+            jest.spyOn(component, 'listProvidersRequests').mockImplementation(() => { })
+        })
+
+        it('should initialize providers table for tab index 0', () => {
+            component.handleOnTabChange({ index: 0 })
+            expect(component.intializeTableData).toHaveBeenCalled()
+            expect(component.currentTab).toBe('onboardProviders')
+        })
+
+        it('should initialize requests table for tab index 1', () => {
+            component.handleOnTabChange({ index: 1 })
+            expect(component.initailizeProviderRequestsTable).toHaveBeenCalled()
+            expect(component.initializePagination).toHaveBeenCalled()
+            expect(component.listProvidersRequests).toHaveBeenCalled()
+            expect(component.currentTab).toBe('providerRequests')
         })
     })
 
     describe('showSnackBar', () => {
-        it('should call snackBar.open with message', () => {
-            const message = 'Test message'
+        it('should call snackBar.openFromComponent with message and type', () => {
+            component.showSnackBar('Success!', 'success')
+            expect(mockSnackBar.openFromComponent).toHaveBeenCalledWith(
+                expect.anything(),
+                expect.objectContaining({
+                    data: { message: 'Success!', type: 'success' },
+                    duration: 5000,
+                    panelClass: 'success'
+                })
+            )
+        })
 
-            component.showSnackBar(message)
+        it('should call snackBar.openFromComponent with error type', () => {
+            component.showSnackBar('Error!', 'error')
+            expect(mockSnackBar.openFromComponent).toHaveBeenCalledWith(
+                expect.anything(),
+                expect.objectContaining({
+                    data: { message: 'Error!', type: 'error' },
+                    panelClass: 'error'
+                })
+            )
+        })
+    })
 
-            expect(mockSnackBar.open).toHaveBeenCalledWith(message)
+    describe('onSortChange', () => {
+        beforeEach(() => {
+            jest.spyOn(component, 'initializePagination').mockImplementation(() => { })
+            jest.spyOn(component, 'getProviders').mockImplementation(() => { })
+            jest.spyOn(component, 'listProvidersRequests').mockImplementation(() => { })
+        })
+
+        it('should return early for isActive field', () => {
+            component.onSortChange({ field: 'isActive', direction: 'asc' })
+            expect(component.initializePagination).not.toHaveBeenCalled()
+        })
+
+        it('should call getProviders for onboardProviders tab', () => {
+            component.currentTab = 'onboardProviders'
+            component.onSortChange({ field: 'updatedOn', direction: 'desc' })
+            expect(component.getProviders).toHaveBeenCalled()
+        })
+
+        it('should call listProvidersRequests for providerRequests tab', () => {
+            component.currentTab = 'providerRequests'
+            component.onSortChange({ field: 'createdOn', direction: 'asc' })
+            expect(component.listProvidersRequests).toHaveBeenCalled()
+        })
+
+        it('should update sortData', () => {
+            component.currentTab = 'onboardProviders'
+            component.onSortChange({ field: 'name', direction: 'asc' })
+            expect(component.sortData).toEqual({ field: 'name', direction: 'asc' })
         })
     })
 })

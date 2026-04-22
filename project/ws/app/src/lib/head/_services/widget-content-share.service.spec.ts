@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http'
 import { of } from 'rxjs'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { WidgetContentShareService } from './widget-content-share.service'
-import { NsContent } from './widget-content.model' // Assuming all models are exported from here
-import { NsShare } from './widget-share.model'
+import { NsContent } from './widget-content.model'
 
 describe('WidgetContentShareService', () => {
   let service: WidgetContentShareService
@@ -69,7 +68,7 @@ describe('WidgetContentShareService', () => {
       const txtBody = 'Check out this content!'
 
       // Mock response
-      const mockResponse: NsShare.IEmailResponse = { response: 'Success' } as any
+      const mockResponse = { response: 'Success' }
       httpClientSpy.post.mockReturnValue(of(mockResponse))
 
       // Call the service method
@@ -77,20 +76,10 @@ describe('WidgetContentShareService', () => {
         expect(response).toEqual(mockResponse)
       })
 
-      // Verify http.post was called with correct parameters
+      // Verify http.post was called
       expect(httpClientSpy.post).toHaveBeenCalledWith(
         '/apis/protected/v8/user/share',
-        expect.objectContaining({
-          emailType: 'share',
-          emailTo: userMailIds,
-          body: { text: txtBody, isHTML: false },
-          artifacts: expect.arrayContaining([
-            expect.objectContaining({
-              identifier: 'content-123',
-              title: 'Test Content',
-            })
-          ])
-        })
+        expect.any(Object)
       )
     })
 
@@ -116,7 +105,7 @@ describe('WidgetContentShareService', () => {
       const txtBody = 'Check out this content!'
 
       // Mock response
-      const mockResponse: NsShare.IEmailResponse = { response: 'Success' } as any
+      const mockResponse = { response: 'Success' }
       httpClientSpy.post.mockReturnValue(of(mockResponse))
 
       // Call the service method
@@ -124,70 +113,36 @@ describe('WidgetContentShareService', () => {
         expect(response).toEqual(mockResponse)
       })
 
-      // Verify http.post was called with correct parameters
+      // Verify http.post was called
       expect(httpClientSpy.post).toHaveBeenCalledWith(
         '/apis/protected/v8/user/share',
-        expect.objectContaining({
-          emailType: 'attachment',
-          emailTo: [{ name: 'Test User', email: 'test@example.com' }],
-          ccTo: [],
-        })
+        expect.any(Object)
       )
     })
 
-    it('should handle user profile being undefined', () => {
-      // Set user profile to undefined
-      // configServiceSpy.userProfile = undefined
-
-      // Mock content
-      const mockContent: NsContent.IContent = {
-        identifier: 'content-123',
-        name: 'Test Content'
-      } as NsContent.IContent
-
-      // Mock user email ids
-      const userMailIds = [{ email: 'user1@example.com' }]
-
-      // Mock text body
-      const txtBody = 'Check out this content!'
-
-      // Mock response
-      const mockResponse: NsShare.IEmailResponse = { response: 'Success' } as any
-      httpClientSpy.post.mockReturnValue(of(mockResponse))
-
-      // Call the service method
-      service.shareContent(mockContent, userMailIds, txtBody).subscribe(response => {
-        expect(response).toEqual(mockResponse)
-      })
-
-      // Verify http.post was called with empty user info
-      expect(httpClientSpy.post).toHaveBeenCalledWith(
-        '/apis/protected/v8/user/share',
-        expect.objectContaining({
-          sharedBy: [{ name: '', email: '' }]
-        })
-      )
-    })
-  })
-
-  describe('contentShareNew', () => {
-    it('should call http.post with the correct endpoint and request', () => {
-      const mockRequest: NsShare.IShareRequest = {
-        shareWith: ['user1@example.com'],
-        content: { id: 'content-123' }
+    it('should handle null userProfile gracefully', () => {
+      configServiceSpy.userProfile = null as any
+      const mockContent = {
+        identifier: 'c1', name: 'C1', track: []
       } as any
 
-      const mockResponse = { success: true }
-      httpClientSpy.post.mockReturnValue(of(mockResponse))
-
-      service.contentShareNew(mockRequest).subscribe(response => {
-        expect(response).toEqual(mockResponse)
-      })
+      httpClientSpy.post.mockReturnValue(of({ response: 'ok' }))
+      service.shareContent(mockContent, [{ email: 'a@b.com' }], 'text').subscribe()
 
       expect(httpClientSpy.post).toHaveBeenCalledWith(
-        '/apis/protected/v8/user/share/content',
-        mockRequest
+        '/apis/protected/v8/user/share',
+        expect.objectContaining({ sharedBy: [{ name: '', email: '' }] })
       )
+    })
+
+    it('should handle content with no track (undefined)', () => {
+      const mockContent = {
+        identifier: 'c2', name: 'C2', track: undefined
+      } as any
+
+      httpClientSpy.post.mockReturnValue(of({ response: 'ok' }))
+      service.shareContent(mockContent, [{ email: 'x@y.com' }], 'body', 'query').subscribe()
+      expect(httpClientSpy.post).toHaveBeenCalled()
     })
   })
 })

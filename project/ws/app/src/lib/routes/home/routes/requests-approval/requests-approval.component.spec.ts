@@ -4,8 +4,6 @@ import { of } from 'rxjs'
 import { preventHtmlAndJs } from '../../validators/prevent-html-and-js.validator'
 
 // Mock dependencies
-jest.mock('@angular/material/legacy-snack-bar')
-jest.mock('@angular/material/legacy-dialog')
 jest.mock('@angular/router')
 jest.mock('../../services/onboarding-requests.service')
 

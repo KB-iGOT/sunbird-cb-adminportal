@@ -60,12 +60,15 @@ describe('TelemetryService', () => {
   // Mock window.location
   const originalLocation = window.location
   //delete window.location
-  window.location = {
-    ...originalLocation,
-    pathname: '/test-page',
-    search: '?param=test',
-    href: 'http://localhost/test-page?param=test',
-  }
+  Object.defineProperty(window, 'location', {
+    value: {
+      ...originalLocation,
+      pathname: '/test-page',
+      search: '?param=test',
+      href: 'http://localhost/test-page?param=test',
+    },
+    writable: true,
+  })
 
   beforeEach(() => {
     // Reset mocks
@@ -111,7 +114,7 @@ describe('TelemetryService', () => {
   })
 
   afterAll(() => {
-    window.location = originalLocation
+    Object.defineProperty(window, 'location', { value: originalLocation, writable: true })
   })
 
   it('should be created', () => {
@@ -143,7 +146,7 @@ describe('TelemetryService', () => {
   })
 
   it('should return empty string for rootOrgId when user profile is not available', () => {
-    // configServiceMock.userProfile = undefined
+    configServiceMock.userProfile = undefined as any
     expect(telemetryService.rootOrgId).toBe('')
   })
 
