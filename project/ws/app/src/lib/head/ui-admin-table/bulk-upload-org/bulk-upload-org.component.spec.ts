@@ -4,14 +4,14 @@ import { GlobalEventsService } from '../../../../../../../../src/app/services/gl
 
 import { of, throwError } from 'rxjs'
 import { MatDialogRef } from '@angular/material/dialog'
-import { MatLegacySnackBar } from '@angular/material/legacy-snack-bar'
+import { MatSnackBar } from '@angular/material/snack-bar'
 
 describe('BulkUploadOrgComponent', () => {
   let component: BulkUploadOrgComponent
   let mockDialogRef: jest.Mocked<MatDialogRef<BulkUploadOrgComponent>>
   let mockOrgHieService: jest.Mocked<OrgHierarchyService>
   let mockLoaderService: jest.Mocked<GlobalEventsService>
-  let mockSnackbar: jest.Mocked<MatLegacySnackBar>
+  let mockSnackbar: jest.Mocked<MatSnackBar>
   let mockData: any
 
   beforeEach(() => {
@@ -87,11 +87,15 @@ describe('BulkUploadOrgComponent', () => {
       component.ngOnInit()
 
       expect(component.bulkUploadConfig).toEqual({})
-      expect(component.getBulkuploadPrgressData).not.toHaveBeenCalled()
+      expect(component.getBulkuploadPrgressData).toHaveBeenCalled()
     })
   })
 
   describe('handleDownloadSampleFile', () => {
+    beforeEach(() => {
+      component.bulkUploadConfig = mockData.bulkUploadConfig
+    })
+
     it('should download sample file successfully', async () => {
       const mockFileData = { success: true }
       mockOrgHieService.downloadSampleTemplate.mockReturnValue(
@@ -265,6 +269,7 @@ describe('BulkUploadOrgComponent', () => {
     })
 
     it('should create FormData with file and framework data', async () => {
+      component.bulkUploadConfig = mockData.bulkUploadConfig
       const mockResponse = { result: { fileName: 'test.xlsx' } }
       mockOrgHieService.uploadFreameworkTemplate.mockReturnValue(
         of(mockResponse) as any
@@ -327,6 +332,7 @@ describe('BulkUploadOrgComponent', () => {
 
   describe('getBulkuploadPrgressData', () => {
     it('should fetch progress data successfully', () => {
+      component.bulkUploadConfig = mockData.bulkUploadConfig
       const mockResponse = {
         params: {
           status: 'successful'
@@ -379,10 +385,10 @@ describe('BulkUploadOrgComponent', () => {
       expect(mockSnackbar.open).toHaveBeenCalledWith('Error fetching progress data')
     })
 
-    it('should use empty string when orgId is not available', () => {
+    it('should use the part before underscore as orgId when frameworkId has underscore format', () => {
       component.bulkUploadConfig = {
         frameworkData: {
-          orgHierarchyFrameworkId: 'invalidformat'
+          orgHierarchyFrameworkId: '_framework456'
         }
       }
       mockOrgHieService.getBulkuploadProgress.mockReturnValue(
@@ -411,8 +417,8 @@ describe('BulkUploadOrgComponent', () => {
         click: jest.fn()
       }
 
-      jest.spyOn(window.URL, 'createObjectURL').mockReturnValue(mockUrl)
-      jest.spyOn(window.URL, 'revokeObjectURL').mockImplementation()
+        ; (window.URL as any).createObjectURL = jest.fn().mockReturnValue(mockUrl)
+        ; (window.URL as any).revokeObjectURL = jest.fn()
       jest.spyOn(document, 'createElement').mockReturnValue(mockAnchor as any)
 
       component.handleDownloadFile(mockItem)

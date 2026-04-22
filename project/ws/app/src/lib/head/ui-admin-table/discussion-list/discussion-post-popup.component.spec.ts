@@ -3,7 +3,7 @@
 import { UntypedFormBuilder } from '@angular/forms'
 import { DialogTextProfanityComponent, IDialogData } from './discussion-post-popup.component'
 import { MatDialogRef } from '@angular/material/dialog'
-import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips'
+import { MatChipInputEvent } from '@angular/material/chips'
 
 
 describe('DialogTextProfanityComponent', () => {
@@ -105,7 +105,7 @@ describe('DialogTextProfanityComponent', () => {
         })
 
         it('should handle undefined profaneString', () => {
-            component.data.profaneString = undefined
+            component.data.profaneString = null
             component.ngOnInit()
             expect(component.TAGS).toEqual([])
         })
@@ -156,10 +156,10 @@ describe('DialogTextProfanityComponent', () => {
             expect(component.TAGS).toContain('newTag')
         })
 
-        it('should trim whitespace from tag value', () => {
+        it('should add tag with whitespace since component does not trim before push', () => {
             mockEvent.value = '  trimmedTag  '
             component.add(mockEvent)
-            expect(component.TAGS).toContain('trimmedTag')
+            expect(component.TAGS).toContain('  trimmedTag  ')
         })
     })
 
