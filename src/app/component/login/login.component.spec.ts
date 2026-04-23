@@ -2,7 +2,7 @@
 import { LoginComponent } from './login.component'
 import { DomSanitizer } from '@angular/platform-browser'
 import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap } from '@angular/router'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { of } from 'rxjs'
 
 describe('LoginComponent', () => {

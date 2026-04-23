@@ -2,8 +2,10 @@ import { FormBuilder, FormArray } from '@angular/forms'
 import { of, throwError } from 'rxjs'
 import { DeveloperDocCreationComponent } from './developer-doc-creation.component'
 
+let mockQueryParams = of({ id: null as any })
+
 const mockActivatedRoute = {
-  queryParams: of({ id: null }),
+  get queryParams() { return mockQueryParams },
 }
 
 const mockRouter = { navigate: jest.fn() }
@@ -420,6 +422,389 @@ describe('DeveloperDocCreationComponent', () => {
     it('should call snackBar.openFromComponent', () => {
       component.showSnackBar('Test', 'success')
       expect(mockSnackBar.openFromComponent).toHaveBeenCalled()
+    })
+  })
+
+  describe('initializeComponent', () => {
+    it('should set mode to create when no id in queryParams', () => {
+      mockQueryParams = of({ id: null })
+      mockDeveloperDocService.getArticles.mockReturnValue(of({ result: { data: [] } }))
+      const comp = createComponent()
+      comp.ngOnInit()
+      expect(comp.mode).toBe('create')
+      expect(comp.articleId).toBeNull()
+    })
+
+    it('should call loadArticle when id is present in queryParams', () => {
+      mockQueryParams = of({ id: 'sub123', mode: 'edit' })
+      mockDeveloperDocService.getArticles.mockReturnValue(of({ result: { data: [{ status: 'DRAFT', articles: [] }] } }))
+      const comp = createComponent()
+      comp.ngOnInit()
+      expect(comp.articleId).toBe('sub123')
+      expect(comp.mode).toBe('edit')
+    })
+
+    it('should default mode to edit when mode is not in queryParams', () => {
+      mockQueryParams = of({ id: 'sub456' })
+      mockDeveloperDocService.getArticles.mockReturnValue(of({ result: { data: [{ status: 'DRAFT', articles: [] }] } }))
+      const comp = createComponent()
+      comp.ngOnInit()
+      expect(comp.mode).toBe('edit')
+    })
+  })
+
+  describe('loadArticle', () => {
+    it('should navigate away when response is falsy', () => {
+      mockDeveloperDocService.getArticles.mockReturnValueOnce(of(null))
+      component.loadArticle('some-id')
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/knowledge-center'])
+    })
+
+    it('should call loadArticleSections on valid response', () => {
+      mockDeveloperDocService.getArticles
+        .mockReturnValueOnce(of({ result: { data: [{ status: 'DRAFT' }] } }))
+        .mockReturnValueOnce(of({ result: { data: [] } }))
+      const spy = jest.spyOn(component, 'loadArticleSections')
+      component.loadArticle('sub-id')
+      expect(spy).toHaveBeenCalledWith('sub-id')
+    })
+
+    it('should navigate away on loadArticle error', () => {
+      mockDeveloperDocService.getArticles.mockReturnValueOnce(throwError(() => new Error('err')))
+      component.loadArticle('sub-id')
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/knowledge-center'])
+      expect(mockLoaderService.setLoaderState).toHaveBeenCalledWith(false)
+    })
+  })
+
+  describe('loadArticleSections', () => {
+    it('should populate form and set loader false on success', () => {
+      component.subCategoryDetails = { status: 'DRAFT', articles: [] }
+      mockDeveloperDocService.getArticles.mockReturnValueOnce(
+        of({ result: { data: [{ title: 'A', content: 'B' }] } })
+      )
+      const spy = jest.spyOn(component, 'populateForm')
+      component.loadArticleSections('sub-id')
+      expect(spy).toHaveBeenCalled()
+      expect(mockLoaderService.setLoaderState).toHaveBeenCalledWith(false)
+    })
+
+    it('should navigate away on loadArticleSections error', () => {
+      mockDeveloperDocService.getArticles.mockReturnValueOnce(throwError(() => new Error('err')))
+      component.loadArticleSections('sub-id')
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/knowledge-center'])
+      expect(mockLoaderService.setLoaderState).toHaveBeenCalledWith(false)
+    })
+
+    it('should handle falsy response in loadArticleSections', () => {
+      mockDeveloperDocService.getArticles.mockReturnValueOnce(of(null))
+      component.loadArticleSections('sub-id')
+      // should not throw
+      expect(true).toBe(true)
+    })
+  })
+
+  describe('populateForm extra branches', () => {
+    it('should set headerText to New Article for create mode', () => {
+      component.mode = 'create'
+      const details = {
+        title: 'Title', summary: 'Summ', categoryId: 'c1',
+        isPublic: true, status: 'DRAFT', articles: [{ title: 'A', content: 'B' }], tags: ['t1']
+      }
+      component.populateForm(details)
+      expect(component.headerText).toBe('New Article')
+    })
+
+    it('should set headerText to View Article for view mode', () => {
+      component.mode = 'view'
+      const details = {
+        title: 'Title', summary: 'Summ', categoryId: 'c1',
+        isPublic: true, status: 'PUBLISHED', articles: [], tags: []
+      }
+      component.populateForm(details)
+      expect(component.headerText).toBe('View Article')
+    })
+
+    it('should add empty article when articles array is empty', () => {
+      component.mode = 'edit'
+      const details = {
+        title: 'T', summary: 'S', categoryId: 'c1',
+        isPublic: true, status: 'DRAFT', articles: null, tags: null
+      }
+      component.populateForm(details)
+      expect(component.articlesArray.length).toBe(1)
+      expect(component.tagsArray.length).toBe(1)
+    })
+  })
+
+  describe('getCategories extra', () => {
+    it('should set default category when form has no value and options exist', () => {
+      component.subCategoryForm.get('category')?.setValue('')
+      mockDeveloperDocService.getArticles.mockReturnValue(of({
+        result: { data: [{ categoryId: 'cat99', title: 'Cat99' }] }
+      }))
+      component.getCategories()
+      expect(component.subCategoryForm.get('category')?.value).toBe('cat99')
+    })
+
+    it('should not override existing category value', () => {
+      component.subCategoryForm.get('category')?.setValue('existing-cat')
+      mockDeveloperDocService.getArticles.mockReturnValue(of({
+        result: { data: [{ categoryId: 'cat1', title: 'Cat1' }] }
+      }))
+      component.getCategories()
+      expect(component.subCategoryForm.get('category')?.value).toBe('existing-cat')
+    })
+  })
+
+  describe('performSave with existing articleId', () => {
+    it('should call saveExistingSubCategory when articleId is set', () => {
+      component.articleId = 'existing-sub'
+      component.subCategoryDetails = { status: 'DRAFT' }
+      component.subCategoryForm.get('title')?.setValue('Long enough title text here')
+      mockDeveloperDocService.updateSubCategory.mockReturnValue(of({ result: { subCategoryId: 'existing-sub' } }))
+      mockDeveloperDocService.createArticle.mockReturnValue(of({ result: { articleId: 'art1' } }))
+      component.performSave('DRAFT')
+      expect(mockDeveloperDocService.updateSubCategory).toHaveBeenCalled()
+    })
+
+    it('should handle missing subCategoryId in response', () => {
+      component.articleId = null
+      component.subCategoryForm.get('title')?.setValue('Long enough title text here')
+      mockDeveloperDocService.createSubCategory.mockReturnValue(of({ result: {} }))
+      component.performSave('DRAFT')
+      expect(mockSnackBar.openFromComponent).toHaveBeenCalled()
+    })
+
+    it('should handle performSave error', () => {
+      component.articleId = null
+      component.subCategoryForm.get('title')?.setValue('Long enough title text here')
+      mockDeveloperDocService.createSubCategory.mockReturnValue(throwError(() => ({ error: { params: { errMsg: 'Save error' } } })))
+      component.performSave('DRAFT')
+      expect(mockSnackBar.openFromComponent).toHaveBeenCalled()
+    })
+  })
+
+  describe('publish', () => {
+    it('should show error when no articleId', () => {
+      component.articleId = null
+      component.publish()
+      expect(mockSnackBar.openFromComponent).toHaveBeenCalled()
+    })
+
+    it('should call publishSubCategory when no article IDs', () => {
+      component.articleId = 'sub-id'
+      while (component.articlesArray.length > 1) component.articlesArray.removeAt(0)
+      component.articlesArray.at(0).get('articleId')?.setValue('')
+      const spy = jest.spyOn(component, 'publishSubCategory')
+      component.publish()
+      // no forkJoin since no article IDs - publishSubCategory not called directly
+      expect(spy).not.toHaveBeenCalled()
+    })
+
+    it('should call publishSubCategory after all articles published', () => {
+      component.articleId = 'sub-id'
+      component.articlesArray.at(0).get('articleId')?.setValue('art-1')
+      mockDeveloperDocService.publishArticle.mockReturnValue(of({ result: 'ok' }))
+      mockDeveloperDocService.publishSubCategory.mockReturnValue(of({ result: 'ok' }))
+      component.publish()
+      expect(mockDeveloperDocService.publishArticle).toHaveBeenCalledWith({ id: 'art-1' })
+    })
+
+    it('should show error when forkJoin fails in publish', () => {
+      component.articleId = 'sub-id'
+      component.articlesArray.at(0).get('articleId')?.setValue('art-1')
+      mockDeveloperDocService.publishArticle.mockReturnValue(throwError(() => ({ error: { params: { errMsg: 'Publish failed' } } })))
+      component.publish()
+      expect(mockSnackBar.openFromComponent).toHaveBeenCalled()
+    })
+  })
+
+  describe('publishSubCategory', () => {
+    it('should return early when no articleId', () => {
+      component.articleId = null
+      component.isSaving = true
+      component.publishSubCategory()
+      expect(component.isSaving).toBe(false)
+    })
+
+    it('should navigate after successful publish', () => {
+      jest.useFakeTimers()
+      component.articleId = 'sub-id'
+      mockDeveloperDocService.publishSubCategory.mockReturnValue(of({ result: 'ok' }))
+      component.publishSubCategory()
+      jest.runAllTimers()
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/knowledge-center'])
+      jest.useRealTimers()
+    })
+
+    it('should show error on publishSubCategory failure', () => {
+      component.articleId = 'sub-id'
+      mockDeveloperDocService.publishSubCategory.mockReturnValue(throwError(() => ({ error: { params: { errMsg: 'Publish error' } } })))
+      component.publishSubCategory()
+      expect(mockSnackBar.openFromComponent).toHaveBeenCalled()
+    })
+
+    it('should handle falsy response in publishSubCategory', () => {
+      component.articleId = 'sub-id'
+      mockDeveloperDocService.publishSubCategory.mockReturnValue(of(null))
+      component.publishSubCategory()
+      // should not navigate
+      expect(mockRouter.navigate).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('createNewSubCategory', () => {
+    it('should call createSubCategory with correct payload', () => {
+      mockDeveloperDocService.createSubCategory.mockReturnValue(of({}))
+      component.createNewSubCategory({ title: 'T', isPublic: true }, 'DRAFT').subscribe()
+      expect(mockDeveloperDocService.createSubCategory).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'subcategory', status: 'DRAFT' })
+      )
+    })
+  })
+
+  describe('saveExistingSubCategory', () => {
+    it('should call updateSubCategory with merged payload', () => {
+      component.subCategoryDetails = { title: 'Old', updatedBy: 'user', updatedOn: '2024', articles: [] }
+      mockDeveloperDocService.updateSubCategory.mockReturnValue(of({}))
+      component.saveExistingSubCategory({ title: 'New', isPublic: true }, 'PUBLISHED').subscribe()
+      const callArg = mockDeveloperDocService.updateSubCategory.mock.calls[0][0]
+      expect(callArg.title).toBe('New')
+      expect(callArg.status).toBe('PUBLISHED')
+      expect(callArg.updatedBy).toBeUndefined()
+    })
+  })
+
+  describe('saveArticlesData', () => {
+    it('should create new articles via forkJoin', () => {
+      component.articleId = 'sub-id'
+      component.subCategoryForm.get('category')?.setValue('cat1')
+      component.subCategoryForm.get('visibility')?.setValue(true)
+      component.subCategoryDetails = { articles: [] }
+      // Article without articleId - new article
+      component.articlesArray.at(0).get('articleId')?.setValue('')
+      component.articlesArray.at(0).get('title')?.setValue('New article title')
+      component.articlesArray.at(0).get('content')?.setValue('content')
+
+      mockDeveloperDocService.createArticle.mockReturnValue(of({ result: { articleId: 'new-art-1' } }))
+      mockDeveloperDocService.getArticles.mockReturnValue(of({ result: { data: [] } }))
+      component.saveArticlesData('sub-id', 'DRAFT')
+      expect(mockDeveloperDocService.createArticle).toHaveBeenCalled()
+    })
+
+    it('should update existing articles via forkJoin', () => {
+      component.articleId = 'sub-id'
+      component.subCategoryDetails = {
+        articles: [{ articleId: 'art-1', title: 'Old', content: 'Old content', status: 'DRAFT' }]
+      }
+      component.articlesArray.at(0).get('articleId')?.setValue('art-1')
+      component.articlesArray.at(0).get('title')?.setValue('Updated title')
+      component.articlesArray.at(0).get('content')?.setValue('Updated content')
+      mockDeveloperDocService.updateArticle.mockReturnValue(of({ result: {} }))
+      mockDeveloperDocService.getArticles.mockReturnValue(of({ result: { data: [] } }))
+      component.saveArticlesData('sub-id', 'DRAFT')
+      expect(mockDeveloperDocService.updateArticle).toHaveBeenCalled()
+    })
+
+    it('should handle forkJoin error in saveArticlesData', () => {
+      component.articleId = 'sub-id'
+      component.subCategoryDetails = { articles: [] }
+      component.articlesArray.at(0).get('articleId')?.setValue('')
+      component.articlesArray.at(0).get('title')?.setValue('A title')
+      component.articlesArray.at(0).get('content')?.setValue('content')
+      mockDeveloperDocService.createArticle.mockReturnValue(throwError(() => ({ error: { params: { errMsg: 'Article error' } } })))
+      component.saveArticlesData('sub-id', 'DRAFT')
+      expect(mockSnackBar.openFromComponent).toHaveBeenCalled()
+    })
+
+    it('should call publish when status is PUBLISHED in saveArticlesData', () => {
+      component.articleId = 'sub-id'
+      component.subCategoryDetails = { articles: [] }
+      component.articlesArray.at(0).get('articleId')?.setValue('')
+      component.articlesArray.at(0).get('title')?.setValue('title')
+      component.articlesArray.at(0).get('content')?.setValue('content')
+      mockDeveloperDocService.createArticle.mockReturnValue(of({ result: { articleId: 'new-art' } }))
+      mockDeveloperDocService.getArticles.mockReturnValue(of({ result: { data: [] } }))
+      mockDeveloperDocService.publishArticle.mockReturnValue(of({}))
+      mockDeveloperDocService.publishSubCategory.mockReturnValue(of({}))
+      const spy = jest.spyOn(component, 'publish')
+      component.saveArticlesData('sub-id', 'PUBLISHED')
+      expect(spy).toHaveBeenCalled()
+    })
+
+    it('should do nothing when articles array is empty in saveArticlesData', () => {
+      component.subCategoryDetails = { articles: [] }
+      while (component.articlesArray.length > 0) component.articlesArray.removeAt(0)
+      component.saveArticlesData('sub-id', 'DRAFT')
+      expect(mockDeveloperDocService.createArticle).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('next - valid form', () => {
+    it('should call performSave with PUBLISHED when form is valid', () => {
+      component.subCategoryForm.get('title')?.setValue('Long enough title here!!')
+      component.subCategoryForm.get('excerpt')?.setValue('A'.repeat(50))
+      component.subCategoryForm.get('category')?.setValue('cat1')
+      component.subCategoryForm.get('visibility')?.setValue(true)
+      component.articlesArray.at(0).get('title')?.setValue('Article Title Here!!!')
+      component.articlesArray.at(0).get('content')?.setValue('A'.repeat(50))
+      mockDeveloperDocService.createSubCategory.mockReturnValue(of({ result: { subCategoryId: 'sub-new' } }))
+      mockDeveloperDocService.createArticle.mockReturnValue(of({ result: { articleId: 'art-new' } }))
+      mockDeveloperDocService.getArticles.mockReturnValue(of({ result: { data: [] } }))
+      const spy = jest.spyOn(component, 'performSave')
+      component.next()
+      expect(spy).toHaveBeenCalledWith('PUBLISHED')
+    })
+  })
+
+  describe('getTagRemainingCharacters', () => {
+    it('should return remaining characters for tag field', () => {
+      component.tagsArray.at(0).patchValue({ value: 'ab' })
+      expect(component.getTagRemainingCharacters(0, 3)).toBe(1)
+    })
+
+    it('should return 0 when tag length exceeds minLength', () => {
+      component.tagsArray.at(0).patchValue({ value: 'abcdef' })
+      expect(component.getTagRemainingCharacters(0, 3)).toBe(0)
+    })
+  })
+
+  describe('onCKEditorChange', () => {
+    it('should update article content and mark as touched/dirty', () => {
+      component.onCKEditorChange(0, '<p>New content</p>')
+      const ctrl = component.articlesArray.at(0).get('content')
+      expect(ctrl?.value).toBe('<p>New content</p>')
+      expect(ctrl?.touched).toBe(true)
+      expect(ctrl?.dirty).toBe(true)
+    })
+  })
+
+  describe('deleteArticle extra', () => {
+    it('should show success after new article (no articleId) removed when array has 2+', () => {
+      component.addArticle()
+      const event = { stopPropagation: jest.fn() }
+      const len = component.articlesArray.length
+      component.deleteArticle(1, event as any)
+      expect(component.articlesArray.length).toBe(len - 1)
+    })
+
+    it('should remain saving when deleteArticle API returns falsy response', () => {
+      component.addArticle()
+      component.articlesArray.at(1).get('articleId')?.setValue('art-x')
+      mockDeveloperDocService.deleteArticle.mockReturnValue(of(null))
+      const event = { stopPropagation: jest.fn() }
+      component.deleteArticle(1, event as any)
+      // isSaving stays true because the falsy response branch doesn't reset it
+      expect(component.isSaving).toBe(true)
+    })
+  })
+
+  describe('markFormGroupTouched with nested FormArray', () => {
+    it('should mark nested FormArray controls as touched', () => {
+      component.markFormGroupTouched(component.subCategoryForm)
+      const articleTitle = component.articlesArray.at(0).get('title')
+      expect(articleTitle?.touched).toBe(true)
     })
   })
 })

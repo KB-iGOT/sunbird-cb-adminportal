@@ -235,13 +235,11 @@ describe('SearchServService', () => {
 
   describe('fetchSocialSearchUsers', () => {
     it('should add org and rootOrg to request', () => {
-      const mockRequest = { q: 'test' }
-      // const mockResponse = { data: [] }
-      // mockSearchApi.getSearchResults.mockReturnValue(of(mockResponse))
+      const mockRequest: any = { q: 'test' }
+      const mockResponse = { data: [] } as any
+      mockSearchApi.getSearchResults.mockReturnValue(of(mockResponse))
 
-      // service.fetchSocialSearchUsers(mockRequest).subscribe(response => {
-      //   expect(response).toEqual(mockResponse)
-      // })
+      service.fetchSocialSearchUsers(mockRequest).subscribe()
 
       expect(mockSearchApi.getSearchResults).toHaveBeenCalledWith({
         ...mockRequest,
@@ -419,6 +417,8 @@ describe('SearchServService', () => {
     it('should fetch translation for single language if not cached', async () => {
       const enTranslations = { contentType: { Course: 'Course' } }
       mockHttp.get.mockReturnValue(of(enTranslations))
+      // seed localStorage without 'en' so the service will fetch it
+      localStorage.setItem('filtersTranslation', JSON.stringify({ all: {} }))
 
       const result = await service.translateSearchFilters('en')
 

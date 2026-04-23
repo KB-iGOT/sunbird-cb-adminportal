@@ -1,7 +1,31 @@
-import { of, throwError } from 'rxjs'
-import { WidgetContentService } from './widget-content.service'
-import { NsContent } from './widget-content.model'
-import { NSSearch } from './widget-search.model'
+// This file intentionally has NO top-level import/export statements so TypeScript
+// treats it as a SCRIPT (not a module). In script context, declare module creates
+// AMBIENT module declarations (not augmentation), which do not require the module
+// to already exist. This suppresses TS2307 when ts-jest compiles widget-content.service.ts
+// in the same language-service program.
+// tslint:disable
+
+/* eslint-disable @typescript-eslint/no-namespace */
+declare module '@sunbird-cb/collection/lib/content-strip-multiple/content-strip-multiple.model' {
+  export namespace NsContentStripMultiple {
+    type IContentStripMultiple = Record<string, unknown>
+    type IContentStripResponseApi = Record<string, unknown>
+  }
+}
+/* eslint-enable @typescript-eslint/no-namespace */
+
+// Runtime mock so jest module registry serves the virtual module at runtime.
+jest.mock(
+  '@sunbird-cb/collection/lib/content-strip-multiple/content-strip-multiple.model',
+  () => ({ NsContentStripMultiple: {} }),
+  { virtual: true }
+)
+
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { of, throwError } = require('rxjs')
+const { WidgetContentService } = require('./widget-content.service')
+const { NsContent } = require('./widget-content.model')
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 // Mock dependencies
 const mockHttpClient = {
@@ -17,11 +41,11 @@ const mockConfigService = {
 }
 
 describe('WidgetContentService', () => {
-  let service: WidgetContentService
+  let service: any
 
   beforeEach(() => {
     jest.clearAllMocks()
-    service = new WidgetContentService(mockHttpClient as any, mockConfigService as any)
+    service = new WidgetContentService(mockHttpClient, mockConfigService)
   })
 
   describe('isResource', () => {
@@ -36,8 +60,8 @@ describe('WidgetContentService', () => {
     })
 
     it('should return false for null/undefined primary category', () => {
-      expect(service.isResource(null as any)).toBe(false)
-      expect(service.isResource(undefined as any)).toBe(false)
+      expect(service.isResource(null)).toBe(false)
+      expect(service.isResource(undefined)).toBe(false)
     })
   })
 
@@ -54,11 +78,11 @@ describe('WidgetContentService', () => {
   })
 
   describe('fetchContent', () => {
-    const mockContent: NsContent.IContent = {
+    const mockContent: any = {
       identifier: 'content-123',
       name: 'Test Content',
       contentType: 'Resource'
-    } as NsContent.IContent
+    }
 
     it('should fetch content using resource API for learning resource primary category', () => {
       mockHttpClient.get.mockReturnValue(of(mockContent))
@@ -154,7 +178,7 @@ describe('WidgetContentService', () => {
 
       const result$ = service.fetchCourseBatches({ courseId: 'course-123' })
 
-      result$.subscribe(result => {
+      result$.subscribe((result: any) => {
         expect(result).toEqual(expectedResponse)
       })
 
@@ -215,7 +239,7 @@ describe('WidgetContentService', () => {
       const mockHistory = { identifier: 'content-123', progress: 50 }
       mockHttpClient.post.mockReturnValue(of(mockHistory))
 
-      const request: NsContent.IContinueLearningDataReq = {
+      const request: any = {
         request: {
           courseId: 'course-123',
           fields: [],
@@ -325,7 +349,7 @@ describe('WidgetContentService', () => {
       const mockResponse = { status: 'success' }
       mockHttpClient.post.mockReturnValue(of(mockResponse))
 
-      const request: NsContent.IViewerContinueLearningRequest = {
+      const request: any = {
         contextPathId: 'content-123',
         resourceId: 'content-123',
         data: '{"timestamp": 123456789}',
@@ -344,7 +368,7 @@ describe('WidgetContentService', () => {
 
       const result$ = service.setS3Cookie('content-123')
 
-      result$.subscribe(result => {
+      result$.subscribe((result: any) => {
         expect(result).toEqual({ status: 'success' })
       })
 
@@ -356,7 +380,7 @@ describe('WidgetContentService', () => {
 
       const result$ = service.setS3Cookie('content-123')
 
-      result$.subscribe(result => {
+      result$.subscribe((result: any) => {
         expect(result).toBe(true)
       })
     })
@@ -368,7 +392,7 @@ describe('WidgetContentService', () => {
 
       const result$ = service.setS3ImageCookie()
 
-      result$.subscribe(result => {
+      result$.subscribe((result: any) => {
         expect(result).toEqual({ status: 'success' })
       })
 
@@ -380,7 +404,7 @@ describe('WidgetContentService', () => {
 
       const result$ = service.setS3ImageCookie()
 
-      result$.subscribe(result => {
+      result$.subscribe((result: any) => {
         expect(result).toBe(true)
       })
     })
@@ -414,7 +438,7 @@ describe('WidgetContentService', () => {
       const mockSearchResult = { result: { content: [] } }
       mockHttpClient.post.mockReturnValue(of(mockSearchResult))
 
-      const searchRequest: NSSearch.ISearchRequest = {
+      const searchRequest: any = {
         filters: { contentType: [] }
       }
 
@@ -430,7 +454,7 @@ describe('WidgetContentService', () => {
       const mockSearchResult = { result: { content: [] } }
       mockHttpClient.post.mockReturnValue(of(mockSearchResult))
 
-      const searchRequest: NSSearch.ISearchRequest = {
+      const searchRequest: any = {
         query: 'test search',
         filters: { contentType: [] }
       }
@@ -449,7 +473,7 @@ describe('WidgetContentService', () => {
       const mockSearchResult = { result: { content: [] } }
       mockHttpClient.post.mockReturnValue(of(mockSearchResult))
 
-      const searchRequest: NSSearch.ISearchOrgRegionRecommendationRequest = {
+      const searchRequest: any = {
         preLabelValue: 'region_',
         filters: {}
       }
@@ -471,7 +495,7 @@ describe('WidgetContentService', () => {
       const mockSearchResult = { result: { content: [] } }
       mockHttpClient.post.mockReturnValue(of(mockSearchResult))
 
-      const searchRequest: NSSearch.ISearchV6Request = {
+      const searchRequest: any = {
         query: ''
       }
 
@@ -518,11 +542,11 @@ describe('WidgetContentService', () => {
 
   describe('getFirstChildInHierarchy', () => {
     it('should return content if no children', () => {
-      const content: NsContent.IContent = {
+      const content: any = {
         identifier: 'content-123',
         contentType: 'Resource',
         children: []
-      } as unknown as NsContent.IContent
+      }
 
       const result = service.getFirstChildInHierarchy(content)
 
@@ -530,12 +554,12 @@ describe('WidgetContentService', () => {
     })
 
     it('should return Learning Path if it has artifactUrl', () => {
-      const content: NsContent.IContent = {
+      const content: any = {
         identifier: 'content-123',
         contentType: 'Learning Path',
         artifactUrl: 'https://example.com/artifact',
-        children: [{ identifier: 'child-1' } as NsContent.IContent]
-      } as NsContent.IContent
+        children: [{ identifier: 'child-1' }]
+      }
 
       const result = service.getFirstChildInHierarchy(content)
 
@@ -543,17 +567,17 @@ describe('WidgetContentService', () => {
     })
 
     it('should recurse for Learning Path without artifactUrl', () => {
-      const childContent: NsContent.IContent = {
+      const childContent: any = {
         identifier: 'child-1',
         contentType: 'Resource',
         children: []
-      } as unknown as NsContent.IContent
+      }
 
-      const content: NsContent.IContent = {
+      const content: any = {
         identifier: 'content-123',
         contentType: 'Learning Path',
         children: [childContent]
-      } as NsContent.IContent
+      }
 
       const result = service.getFirstChildInHierarchy(content)
 
@@ -561,11 +585,11 @@ describe('WidgetContentService', () => {
     })
 
     it('should return Resource content directly', () => {
-      const content: NsContent.IContent = {
+      const content: any = {
         identifier: 'content-123',
         contentType: 'Resource',
-        children: [{ identifier: 'child-1' } as NsContent.IContent]
-      } as NsContent.IContent
+        children: [{ identifier: 'child-1' }]
+      }
 
       const result = service.getFirstChildInHierarchy(content)
 
@@ -573,11 +597,11 @@ describe('WidgetContentService', () => {
     })
 
     it('should return Knowledge Artifact content directly', () => {
-      const content: NsContent.IContent = {
+      const content: any = {
         identifier: 'content-123',
         contentType: 'Knowledge Artifact',
-        children: [{ identifier: 'child-1' } as NsContent.IContent]
-      } as NsContent.IContent
+        children: [{ identifier: 'child-1' }]
+      }
 
       const result = service.getFirstChildInHierarchy(content)
 
@@ -585,23 +609,23 @@ describe('WidgetContentService', () => {
     })
 
     it('should recurse for other content types', () => {
-      const grandChildContent: NsContent.IContent = {
+      const grandChildContent: any = {
         identifier: 'grandchild-1',
         contentType: 'Resource',
         children: []
-      } as unknown as NsContent.IContent
+      }
 
-      const childContent: NsContent.IContent = {
+      const childContent: any = {
         identifier: 'child-1',
         contentType: 'Course',
         children: [grandChildContent]
-      } as NsContent.IContent
+      }
 
-      const content: NsContent.IContent = {
+      const content: any = {
         identifier: 'content-123',
         contentType: 'Course',
         children: [childContent]
-      } as NsContent.IContent
+      }
 
       const result = service.getFirstChildInHierarchy(content)
 

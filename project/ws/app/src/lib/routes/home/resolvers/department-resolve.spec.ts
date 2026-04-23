@@ -2,107 +2,64 @@ import { DepartmentResolve } from './department-resolve'
 import { ProfileV2Service } from '../services/home.servive'
 import { Router } from '@angular/router'
 import { AuthKeycloakService } from '@sunbird-cb/utils-v2'
-import { EMPTY } from 'rxjs'
+import { of, throwError } from 'rxjs'
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router'
 
 describe('DepartmentResolve', () => {
   let resolver: DepartmentResolve
-  let profileServiceMock: jest.Mocked<ProfileV2Service>
-  let routerMock: jest.Mocked<Router>
-  let authServiceMock: jest.Mocked<AuthKeycloakService>
-  let routeSnapshotMock: ActivatedRouteSnapshot
-  let routerStateSnapshotMock: RouterStateSnapshot
+  let profileServiceMock: Partial<ProfileV2Service>
+  let routerMock: Partial<Router>
+  let authServiceMock: Partial<AuthKeycloakService>
 
   beforeEach(() => {
-    // Create mock objects
     profileServiceMock = {
       checkValidLogin: jest.fn(),
-    } as unknown as jest.Mocked<ProfileV2Service>
-
+    }
     routerMock = {
       navigate: jest.fn(),
-    } as unknown as jest.Mocked<Router>
-
+    }
     authServiceMock = {
       force_logout: jest.fn(),
-    } as unknown as jest.Mocked<AuthKeycloakService>
+    }
 
-    routeSnapshotMock = {} as ActivatedRouteSnapshot
-    routerStateSnapshotMock = {} as RouterStateSnapshot
-
-    // Initialize the resolver with mocked dependencies
     resolver = new DepartmentResolve(
-      profileServiceMock,
-      routerMock,
-      authServiceMock
+      profileServiceMock as ProfileV2Service,
+      routerMock as Router,
+      authServiceMock as AuthKeycloakService
     )
+    jest.clearAllMocks()
   })
 
   it('should be created', () => {
     expect(resolver).toBeTruthy()
   })
 
-  it('should resolve successfully when profile service returns valid data', async () => {
-    // Mock data
-    const mockProfileData = {
-      result: {
-        response: {
-          roles: ['SOME_ROLE'],
-          rootOrg: { isSpv: true },
-        },
-      },
-    }
+  it('should resolve and return mapped data when profile service succeeds', async () => {
+    const mockProfileData = { userId: 'abc', name: 'Test User' }
+      ; (profileServiceMock.checkValidLogin as jest.Mock).mockReturnValue(of(mockProfileData))
 
-    // Mock the profileService.checkValidLogin to return successful data
-    // profileServiceMock.checkValidLogin.mockResolvedValue(of(mockProfileData))
+    const result = await resolver.resolve({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
 
-    // Call the resolve method
-    const result = await resolver.resolve(routeSnapshotMock, routerStateSnapshotMock)
-
-    // Subscribe to the observable returned by resolve
     let resolvedData: any
-    result.subscribe(data => {
-      resolvedData = data
-    })
+    result.subscribe((data: any) => { resolvedData = data })
 
-    // Assertions
     expect(profileServiceMock.checkValidLogin).toHaveBeenCalled()
-    expect(resolvedData).toEqual({
-      data: mockProfileData,
-      error: null,
-    })
+    expect(resolvedData).toEqual({ data: mockProfileData, error: null })
     expect(routerMock.navigate).not.toHaveBeenCalled()
     expect(authServiceMock.force_logout).not.toHaveBeenCalled()
   })
 
   it('should navigate to error page and force logout when profile service throws an error', async () => {
-    // Mock the profileService.checkValidLogin to throw an error
-    // profileServiceMock.checkValidLogin.mockResolvedValue(throwError('Error'))
+    ; (profileServiceMock.checkValidLogin as jest.Mock).mockReturnValue(throwError(() => new Error('Unauthorized')))
 
-    // Call the resolve method
-    const result = await resolver.resolve(routeSnapshotMock, routerStateSnapshotMock)
+    const result = await resolver.resolve({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
 
-    // Subscribe to the observable returned by resolve
-    let resolvedData: any
-    result.subscribe(data => {
-      resolvedData = data
-    })
+    let emitted = false
+    result.subscribe({ next: () => { emitted = true }, complete: () => { } })
 
-    // Assertions
     expect(profileServiceMock.checkValidLogin).toHaveBeenCalled()
     expect(routerMock.navigate).toHaveBeenCalledWith(['error-access-forbidden'])
     expect(authServiceMock.force_logout).toHaveBeenCalled()
-    expect(resolvedData).toBeUndefined() // The observable should complete without emitting
-  })
-
-  it('should return EMPTY when error occurs', async () => {
-    // Mock the profileService.checkValidLogin to throw an error
-    // profileServiceMock.checkValidLogin.mockResolvedValue(throwError('Error'))
-
-    // Call the resolve method
-    const result = await resolver.resolve(routeSnapshotMock, routerStateSnapshotMock)
-
-    // Verify that EMPTY is returned
-    expect(result).toBe(EMPTY)
+    expect(emitted).toBe(false) // EMPTY never emits
   })
 })

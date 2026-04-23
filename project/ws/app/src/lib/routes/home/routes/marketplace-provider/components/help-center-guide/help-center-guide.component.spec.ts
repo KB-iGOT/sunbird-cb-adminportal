@@ -10,7 +10,7 @@ import { HelpCenterGuideComponent } from './help-center-guide.component'
 
 describe('HelpCenterGuideComponent', () => {
     let component: HelpCenterGuideComponent
-    const dialog: Partial<MatDialog> = {}
+    const dialog: Partial<MatDialog> = { open: jest.fn() }
 
     beforeAll(() => {
         component = new HelpCenterGuideComponent(

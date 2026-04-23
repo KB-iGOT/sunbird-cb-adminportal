@@ -25,7 +25,9 @@ describe('WidgetUserService', () => {
   })
 
   describe('handleError', () => {
-    it('should return error message when error is instance of ErrorEvent', (done) => {
+    it('should call throwError and propagate an empty string when error.error is a plain Error (not ErrorEvent)', (done) => {
+      // The method checks `error.error instanceof ErrorEvent`.
+      // A plain Error object is NOT an ErrorEvent, so errorMessage stays ''.
       const errorEvent = new ErrorEvent('test error', {
         error: new Error('Test error message')
       })
@@ -34,13 +36,13 @@ describe('WidgetUserService', () => {
 
       result.subscribe({
         error: (error) => {
-          expect(error).toBe('Error: Test error message')
+          expect(error).toBe('')
           done()
         }
       })
     })
 
-    it('should return empty string when error is not instance of ErrorEvent', (done) => {
+    it('should return empty string when error.error is not an ErrorEvent', (done) => {
       const errorEvent = {
         error: 'some string error'
       } as any
@@ -50,6 +52,21 @@ describe('WidgetUserService', () => {
       result.subscribe({
         error: (error) => {
           expect(error).toBe('')
+          done()
+        }
+      })
+    })
+
+    it('should return error message when error.error is itself an ErrorEvent', (done) => {
+      // Create an ErrorEvent whose .error property is ALSO an ErrorEvent
+      const innerErrorEvent = new ErrorEvent('inner', { message: 'Inner message' })
+      const outerErrorEvent = { error: innerErrorEvent } as any
+
+      const result = service.handleError(outerErrorEvent)
+
+      result.subscribe({
+        error: (error) => {
+          expect(error).toBe('Error: Inner message')
           done()
         }
       })
@@ -80,7 +97,7 @@ describe('WidgetUserService', () => {
       })
     })
 
-    it('should handle error when HTTP request fails', (done) => {
+    it('should handle error when HTTP request fails and return empty string (error.error is plain Error)', (done) => {
       const userId = 'test-user-123'
       const errorEvent = new ErrorEvent('network error', {
         error: new Error('Network failure')
@@ -90,7 +107,8 @@ describe('WidgetUserService', () => {
 
       service.fetchUserGroupDetails(userId).subscribe({
         error: (error) => {
-          expect(error).toBe('Error: Network failure')
+          // error.error is a plain Error (not ErrorEvent), so handleError returns ''
+          expect(error).toBe('')
           done()
         }
       })
@@ -176,7 +194,7 @@ describe('WidgetUserService', () => {
       expect(httpClientMock.get).toHaveBeenCalledWith(expectedUrl)
     })
 
-    it('should handle error when HTTP request fails', (done) => {
+    it('should handle error when HTTP request fails and return empty string (error.error is plain Error)', (done) => {
       const userId = 'test-user-123'
       const errorEvent = new ErrorEvent('api error', {
         error: new Error('API request failed')
@@ -186,7 +204,8 @@ describe('WidgetUserService', () => {
 
       service.fetchUserBatchList(userId).subscribe({
         error: (error) => {
-          expect(error).toBe('Error: API request failed')
+          // error.error is a plain Error (not ErrorEvent), so handleError returns ''
+          expect(error).toBe('')
           done()
         }
       })

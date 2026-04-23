@@ -2,7 +2,7 @@ import { TncPublicResolverService } from './tnc-public-resolver.service'
 import { HttpClient } from '@angular/common/http'
 import { of, throwError } from 'rxjs'
 import { NsTnc } from '../models/tnc.model'
-import { IResolveResponse } from '@sunbird-cb/utils'
+import { IResolveResponse } from '@sunbird-cb/utils-v2'
 
 describe('TncPublicResolverService', () => {
   let service: TncPublicResolverService
@@ -66,7 +66,7 @@ describe('TncPublicResolverService', () => {
 
     it('should propagate error when HTTP request fails', (done) => {
       const mockError = new Error('HTTP Error')
-      httpClientMock.get.mockReturnValue(throwError(() => mockError))
+      httpClientMock.get.mockReturnValue(throwError(mockError))
 
       service.getPublicTnc().subscribe({
         next: () => fail('Should not emit success'),
@@ -109,7 +109,7 @@ describe('TncPublicResolverService', () => {
 
     it('should return error response when getPublicTnc fails', (done) => {
       const mockError = new Error('Network Error')
-      httpClientMock.get.mockReturnValue(throwError(() => mockError))
+      httpClientMock.get.mockReturnValue(throwError(mockError))
 
       service.resolve().subscribe((result: IResolveResponse<NsTnc.ITnc>) => {
         expect(result.data).toBeNull()
@@ -133,7 +133,7 @@ describe('TncPublicResolverService', () => {
         statusText: 'Not Found',
         message: 'T&C not found'
       }
-      httpClientMock.get.mockReturnValue(throwError(() => http404Error))
+      httpClientMock.get.mockReturnValue(throwError(http404Error))
 
       service.resolve().subscribe((result: IResolveResponse<NsTnc.ITnc>) => {
         expect(result.data).toBeNull()
@@ -148,7 +148,7 @@ describe('TncPublicResolverService', () => {
         statusText: 'Internal Server Error',
         message: 'Server error occurred'
       }
-      httpClientMock.get.mockReturnValue(throwError(() => http500Error))
+      httpClientMock.get.mockReturnValue(throwError(http500Error))
 
       service.resolve().subscribe((result: IResolveResponse<NsTnc.ITnc>) => {
         expect(result.data).toBeNull()
