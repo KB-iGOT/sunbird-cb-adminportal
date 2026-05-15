@@ -103,6 +103,8 @@ import { ConformationPopupDesignationComponent } from './components/conformation
 import { FileProgressComponent } from './components/file-progress/file-progress.component'
 import { RequestCopyDetailsV2Component } from './routes/request/request-copy-details-v2/request-copy-details-v2.component'
 import { CreateRequestModule as LibCreateRequestModule } from '@sunbird-cb/consumption'
+import { DesignationApprovalListComponent } from './routes/designation-approval/designation-approval-list/designation-approval-list.component'
+import { DesignationApprovalListViewComponent } from './routes/designation-approval/designation-approval-list-view/designation-approval-list-view.component'
 
 @NgModule({
     declarations: [
@@ -158,7 +160,9 @@ import { CreateRequestModule as LibCreateRequestModule } from '@sunbird-cb/consu
         SelectedDesignationPopupComponent,
         ConformationPopupDesignationComponent,
         FileProgressComponent,
-        RequestCopyDetailsV2Component
+        RequestCopyDetailsV2Component,
+        DesignationApprovalListComponent,
+        DesignationApprovalListViewComponent
     ],
     imports: [
         CommonModule,
