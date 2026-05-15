@@ -35,6 +35,7 @@ import { AllRequestComponent } from './routes/request/all-request/all-request.co
 import { KCMMappingComponent } from './routes/kcm-mapping/kcm-mapping.component'
 import { SurveyComponent } from './routes/survey/survey.component'
 import { RequestCopyDetailsV2Component } from './routes/request/request-copy-details-v2/request-copy-details-v2.component'
+import { DesignationApprovalListComponent } from './routes/designation-approval/designation-approval-list/designation-approval-list.component'
 
 const routes: Routes = [
   {
@@ -454,6 +455,19 @@ const routes: Routes = [
         loadChildren: () => import('./routes/peer-validation/peer-validation.module').then(m => m.PeerValidationModule),
         data: {
           pageKey: 'peer-validation',
+        },
+        resolve: {
+          configService: ConfigResolveService,
+        },
+      },
+      {
+        path: 'designation-approval',
+        component: DesignationApprovalListComponent,
+        data: {
+          pageId: 'home/events',
+          module: 'Events',
+          pageType: 'feature',
+          pageKey: 'Events',
         },
         resolve: {
           configService: ConfigResolveService,

@@ -1,0 +1,136 @@
+import { Injectable } from '@angular/core'
+import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { Observable } from 'rxjs'
+import { environment } from '..//../../../../../../../../../src/environments/environment'
+import { map } from 'rxjs/operators'
+// import { catchError, map } from 'rxjs/operators'
+
+const API_END_POINTS = {
+  CREATE_EVENT: '/apis/proxies/v8/event/v4/create',
+  UPDATE_EVENT: '/apis/proxies/v8/event/v4/update',
+  PUBLISH_EVENT: '/apis/proxies/v8/event/v4/publish',
+  SEARCH_EVENT: '/apis/proxies/v8/sunbirdigot/read',
+  GET_PARTICIPANTS: '/apis/protected/v8/portal/mdo/mydepartment?allUsers=true',
+  IMAGE_UPLOAD: '/apis/authContent/upload/igot/dopt/Public',
+  SEARCH_USERS: '/apis/proxies/v8/user/v1/autocomplete',
+  EVENT_DETAILS: '/apis/proxies/v8/event/v4/read',
+  GET_EVENTS: '/apis/proxies/v8/sunbirdigot/search',
+  CREATE_ASSET: 'apis/proxies/v8/action/content/v3/create',
+  UPLOAD_FILE: 'apis/proxies/v8/upload/action/content/v3/upload',
+  ARCHIVE_EVENT: '/apis/proxies/v8/event/v4/retire',
+  FORM_READ: `/apis/v1/form/read`,
+  DESIGNATION_APPROVAL_REQUESTS: `/apis/proxies/v8/ai/cbp/v1/designation/approval-requests/list`,
+  APPROVE_REQUEST: `apis/proxies/v8/ai/cbp/v1/designation/approval-requests/approve`,
+  REJECT_REQUEST: `apis/proxies/v8/ai/cbp/v1/designation/approval-requests/reject`
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class DesignationApprovalService {
+
+  constructor(private http: HttpClient) { }
+
+  crreateAsset(req: any): Observable<any> {
+    return this.http.post<any>(`${API_END_POINTS.CREATE_ASSET}`, req)
+  }
+
+  uploadFile(val: any, formdata: any): Observable<any> {
+    this.http.post<any>(`${API_END_POINTS.UPLOAD_FILE}/${val}`, formdata, {
+      headers: {
+        'content-type': 'application/json',
+      },
+    })
+    return this.http.post<any>(`${API_END_POINTS.UPLOAD_FILE}/${val}`, formdata)
+  }
+
+  createEvent(req: any): Observable<any> {
+    return this.http.post<any>(API_END_POINTS.CREATE_EVENT, req)
+  }
+
+  updateEvent(eventId: any, req: any): Observable<any> {
+    return this.http.patch<any>(`${API_END_POINTS.UPDATE_EVENT}/${eventId}`, req)
+  }
+
+  publishEvent(eventId: string, req: any): Observable<any> {
+    return this.http.post<any>(`${API_END_POINTS.PUBLISH_EVENT}/${eventId}`, req)
+  }
+
+  searchEvent(req: any) {
+    return this.http.post<any>(API_END_POINTS.SEARCH_EVENT, req)
+  }
+
+  getApprovalList() {
+    const headers = new HttpHeaders({
+      'Cache-Control': 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0',
+      Pragma: 'no-cache',
+      Expires: '0',
+    })
+
+    return this.http.get<any>(`${API_END_POINTS.DESIGNATION_APPROVAL_REQUESTS}`, { headers })
+  }
+
+  approveRequest(req: any): Observable<any> {
+    console.log('req', req)
+    return this.http.post<any>(`${API_END_POINTS.APPROVE_REQUEST}`, req)
+  }
+
+  rejectRequest(req: any): Observable<any> {
+    console.log('req', req)
+    return this.http.post<any>(`${API_END_POINTS.REJECT_REQUEST}`, req)
+  }
+
+  getParticipants(): Observable<any> {
+    return this.http.get<any>(API_END_POINTS.GET_PARTICIPANTS)
+  }
+
+  uploadCoverImage(req: any, eventId: string): Observable<any> {
+    return this.http.post<any>(`${API_END_POINTS.IMAGE_UPLOAD}/${eventId}/artifacts`, req)
+  }
+
+  getEvents(): Observable<any> {
+    return this.http.get<any>(API_END_POINTS.SEARCH_EVENT)
+  }
+
+  searchUser(value: any): Observable<any> {
+    return this.http.get<any>(`${API_END_POINTS.SEARCH_USERS}/${value}`)
+  }
+
+  getEventDetails(eventID: any): Observable<any> {
+    return this.http.get<any>(`${API_END_POINTS.EVENT_DETAILS}/${eventID}`)
+  }
+
+  getEventDetailsInEditMode(eventID: any): Observable<any> {
+    return this.http.get<any>(`${API_END_POINTS.EVENT_DETAILS}/${eventID}?mode='edit`)
+  }
+
+  retireEvent(eventId: any): Observable<any> {
+    return this.http.delete<any>(`${API_END_POINTS.ARCHIVE_EVENT}/${eventId}`)
+  }
+
+  getPublicUrl(url: string): string {
+    const mainUrl = url.split('/content').pop() || ''
+    return `${environment.contentHost}/${environment.contentBucket}/content${mainUrl}`
+  }
+
+  getSlwResourceTypeDetail(payload: any): Observable<any> {
+    return this.formReadData(payload).pipe(
+      map((rData: any) => {
+        const finalData = rData && rData.result.form.data
+        return (finalData)
+      }),
+      // catchError((_error: any) => {
+      //   const baseUrl = environment.sitePath
+      //   return this.http.get(`${baseUrl}/netcore.json`).pipe(
+      //     map(data => (data)),
+      //     catchError(err => of({ data: null, error: err })),
+      //   )
+      // }
+      // ),
+    )
+  }
+
+  formReadData(request: any): Observable<any> {
+    return this.http.post<any>(`${API_END_POINTS.FORM_READ}`, request)
+  }
+}
