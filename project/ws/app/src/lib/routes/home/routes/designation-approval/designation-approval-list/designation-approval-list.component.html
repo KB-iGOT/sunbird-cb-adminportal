@@ -28,6 +28,60 @@
             <span *ngIf="approvalRequestCount.rejected > 0"></span> ({{approvalRequestCount.rejected}})</a>
         </div>
       </div>
+      <div class="custom-filter-wrapper">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-filter h-4 w-4">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+          </svg>
+        </div>
+        <div>
+          <strong>Filters</strong>
+        </div>
+
+        <div class="search-box">
+          <mat-icon class="search-icon">search</mat-icon>
+
+          <input type="text" placeholder="Search designation name or email" [(ngModel)]="searchText"
+            (input)="applyFilters()">
+        </div>
+
+        <mat-form-field appearance="outline" class="custom-dropdown">
+          <mat-select [(value)]="selectedDivision" (selectionChange)="applyFilters()">
+
+            <mat-option value="">All Divisions</mat-option>
+
+            <mat-option *ngFor="let division of divisionList" [value]="division">
+
+              {{division}}
+
+            </mat-option>
+
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="custom-dropdown">
+          <mat-select [(value)]="selectedOrganisation" (selectionChange)="applyFilters()">
+
+            <mat-option value="">All Organisations</mat-option>
+
+            <mat-option *ngFor="let org of organisationList" [value]="org">
+
+              {{org}}
+
+            </mat-option>
+
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-stroked-button class="clear-btn" (click)="clearFilters()">
+
+          Clear Filters
+
+        </button>
+
+      </div>
       <ng-container>
         <ws-designation-approval-list-view [tableData]='tabledata' [data]='data' isCreate=true
           [currentFilter]="currentFilter" (actionsClick)="menuActions($event)"></ws-designation-approval-list-view>
