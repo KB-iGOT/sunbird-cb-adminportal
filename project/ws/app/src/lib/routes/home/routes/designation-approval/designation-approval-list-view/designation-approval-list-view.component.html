@@ -1,7 +1,7 @@
 <div class="example-container">
     <div class="example-loading-shade"></div>
     <div class="example-table-container">
-        <div class="container-balanced">
+        <!-- <div class="container-balanced">
             <div class="flex flex-1 custom">
                 <div class="flex-2 search">
                     <div class="rsearch">
@@ -12,14 +12,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="items-end">
-                    <button type="button" mat-button class="create-btn mat-btn-flat" *ngIf="isCreate"
-                        (click)="onCreateClick()">
-                        Create new
-                    </button>
-                </div> -->
+
             </div>
-        </div>
+        </div> -->
         <!-- </mat-form-field> -->
         <mat-table #table matSort [ngStyle]="{'height': bodyHeight}" [matSortActive]="tableData!.sortColumn"
             [matSortDirection]="tableData!.sortState" [dataSource]="dataSource"

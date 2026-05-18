@@ -24,7 +24,14 @@ export class DesignationApprovalListComponent implements OnInit {
   data: any = []
   currentFilter = 'pending'
   approvalRequestCount: any = { pending: 0, approved: 0, rejected: 0 }
+  divisionList: string[] = []
+  organisationList: string[] = []
 
+  selectedDivision = ''
+  selectedOrganisation = ''
+  searchText = ''
+
+  originalData: any[] = []
   constructor(
     public dialog: MatDialog,
     private activeRoute: ActivatedRoute,
@@ -145,6 +152,9 @@ export class DesignationApprovalListComponent implements OnInit {
     console.log('this.currentFilter', this.currentFilter)
     if (eventObj !== undefined) {
       const data: any = eventObj.items
+      const divisionSet = new Set<string>()
+      const organisationSet = new Set<string>()
+      this.originalData = []
 
       this.data = []
       if (data) {
@@ -167,11 +177,27 @@ export class DesignationApprovalListComponent implements OnInit {
           } else if (obj.status?.toLowerCase() === 'rejected') {
             this.approvalRequestCount.rejected += 1
           }
+          // dropdown values
+          if (obj.division) {
+            divisionSet.add(obj.division)
+          }
+
+          if (obj.organisation) {
+            organisationSet.add(obj.organisation)
+          }
           if (obj.status?.toLowerCase() === this.currentFilter?.toLowerCase()) {
 
             this.data.push(eventDataObj)
+
+          }
+          if (obj.status?.toLowerCase() === this.currentFilter?.toLowerCase()) {
+            this.originalData.push(eventDataObj)
           }
         })
+        this.divisionList = Array.from(divisionSet)
+        this.organisationList = Array.from(organisationSet)
+
+        this.data = [...this.originalData]
       }
       console.log('this.data', this.data)
     }
@@ -281,5 +307,33 @@ export class DesignationApprovalListComponent implements OnInit {
     const meDate = Math.floor(moment(`${objData.endDate}T${eTime}`).valueOf() / 1000)
     const cDate = Math.floor(moment(new Date()).valueOf() / 1000)
     return !(cDate >= msDate && cDate <= meDate)
+  }
+
+  applyFilters() {
+    this.data = this.originalData.filter((item: any) => {
+
+      const searchMatch =
+        !this.searchText ||
+        item.designationName?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+        item.email?.toLowerCase().includes(this.searchText.toLowerCase())
+
+      const divisionMatch =
+        !this.selectedDivision ||
+        item.division === this.selectedDivision
+
+      const organisationMatch =
+        !this.selectedOrganisation ||
+        item.organisation === this.selectedOrganisation
+
+      return searchMatch && divisionMatch && organisationMatch
+    })
+  }
+
+  clearFilters() {
+    this.searchText = ''
+    this.selectedDivision = ''
+    this.selectedOrganisation = ''
+
+    this.data = [...this.originalData]
   }
 }
