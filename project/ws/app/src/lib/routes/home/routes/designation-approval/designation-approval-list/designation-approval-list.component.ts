@@ -260,10 +260,12 @@ export class DesignationApprovalListComponent implements OnInit {
             id: $event.row.identifier,
           }
           this.designationApprovalSvc.approveRequest(req).subscribe((response: any) => {
-            if (response && response.responseCode === 'OK') {
+            if (response && response.status === 'approved') {
               this.openSnackbar('Request is successfully approved.')
               this.currentFilter = 'approved'
               this.fetchApprovalRequests(this.currentFilter)
+            } else {
+              this.openSnackbar('Error while approving the request')
             }
           })
         }
@@ -283,10 +285,12 @@ export class DesignationApprovalListComponent implements OnInit {
             id: $event.row.identifier,
           }
           this.designationApprovalSvc.rejectRequest(req).subscribe((response: any) => {
-            if (response && response.responseCode === 'OK') {
+            if (response && response.status === 'rejected') {
               this.openSnackbar('Request is successfully rejected.')
               this.currentFilter = 'rejected'
               this.fetchApprovalRequests(this.currentFilter)
+            } else {
+              this.openSnackbar('Error while rejecting the request')
             }
           })
         }
