@@ -67,7 +67,7 @@
     </mat-paginator>
 </div>
 
-<mat-menu #cardMenu="matMenu">
+<mat-menu #cardMenu="matMenu" [hidden]="currentFilter !== 'pending'">
     <ng-template matMenuContent let-rowData="data">
         <!-- <button (click)="viewRequest(rowData)" mat-menu-item name="channel-analytics-button" class="ws-mat-primary-text"
             aria-label="Analytics">
