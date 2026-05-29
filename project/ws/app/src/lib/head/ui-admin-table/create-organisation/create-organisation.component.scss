@@ -8,6 +8,11 @@
   // min-height: calc(100vh - 164px);
 }
 
+.mat-btn-flat:disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 .filter-12 {
   height: calc(100% - 60px);
   border: 1px solid #ccc;
