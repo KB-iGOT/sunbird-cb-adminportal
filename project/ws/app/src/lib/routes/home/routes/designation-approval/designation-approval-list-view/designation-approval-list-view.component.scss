@@ -838,3 +838,65 @@ mat-header-row {
 .mat-header-cell {
   font-size: 14px !important;
 }
+
+.designation-text {
+  font-weight: 600;
+}
+
+.status-approved {
+    background: #16873a;
+    color: #fff4e5;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 400;
+    text-transform: capitalize;
+}
+
+.status-pending {
+    background: orange;
+    color: #160c01;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 400;
+    text-transform: capitalize;
+
+}
+
+.status-rejected {
+    background: #f42c2c;
+    color: #fff4e5;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 400;
+    text-transform: capitalize;
+}
+
+.division-pill {
+  background: #f4f8ff;
+  color: #043385;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 400;
+    text-transform: capitalize;
+}
+
+.email-text {
+  color: #043385;
+    flex: 1;
+  display: block;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+::ng-deep .mat-column-createdOn {
+  flex: 0 0 150px !important;
+}
+
+::ng-deep .mat-column-designationName {
+  flex: 1 1 180px !important;
+}

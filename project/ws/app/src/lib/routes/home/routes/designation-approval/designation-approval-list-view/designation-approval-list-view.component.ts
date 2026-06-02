@@ -165,7 +165,7 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
     const minutes = new Date(datetime).getMinutes()
     const seconds = new Date(datetime).getSeconds()
     const formatedDate = new Date(year, month, date, hours, minutes, seconds, 0)
-    const format = 'DD MMM YYYY'
+    const format = 'DD-MM-YYYY'
     const readableDateMonth = moment(formatedDate).format(format)
     const finalDateTimeValue = `${readableDateMonth}`
     return new Date(finalDateTimeValue)
