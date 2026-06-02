@@ -206,7 +206,7 @@ export class DesignationApprovalListComponent implements OnInit {
   customDateFormat(date: string, time: string) {
     const fTime = time.split("+")
     const datetimetest = moment(`${date}T${fTime[0]}`).toISOString()
-    const format = 'Do MMM YYYY'
+    const format = 'DD-MM-YYYY'
     const readableDateMonth = moment(datetimetest).format(format)
     const finalDateTimeValue = `${readableDateMonth}`
     return finalDateTimeValue
@@ -214,6 +214,10 @@ export class DesignationApprovalListComponent implements OnInit {
 
   filter(key: string) {
     this.currentFilter = key
+
+    this.searchText = ''
+    this.selectedDivision = ''
+    this.selectedOrganisation = ''
     this.fetchApprovalRequests(key)
   }
 
@@ -225,7 +229,7 @@ export class DesignationApprovalListComponent implements OnInit {
     const minutes = new Date(datetime).getMinutes()
     const seconds = new Date(datetime).getSeconds()
     const formatedDate = new Date(year, month, date, hours, minutes, seconds, 0)
-    const format = 'Do MMM YYYY'
+    const format = 'DD-MM-YYYY'
     const readableDateMonth = moment(formatedDate).format(format)
     const finalDateTimeValue = `${readableDateMonth}`
     return finalDateTimeValue

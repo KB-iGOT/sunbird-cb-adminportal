@@ -23,17 +23,26 @@
                 <mat-header-cell *matHeaderCellDef mat-sort-header class=".h-400-r-14-l color-60"> {{col.displayName}}
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element" (click)="onRowClick(element)">
-                    <span *ngIf="!col.isList && col.key != 'eventName'" class="h-400-r-14-l color-87 textclass">
-                        {{element[col.key]}} {{col.isList}}
+                    <span *ngIf="!col.isList && col.key !== 'status' && col.key !== 'division' && col.key !== 'email'"
+                        class="h-400-r-14-l color-87 textclass" [ngClass]="{
+                        'designation-text': col.key === 'designationName'
+                      }">
+                        {{ element[col.key] }}
                     </span>
-                    <span *ngIf="!col.isList && col.key == 'eventName'" class="h-400-r-14-l color-87 textclass">
-                        <img alt="event-thumbnail" src="{{element.eventThumbnail | pipePublicURL }}" height="40"
-                            width="50" *ngIf="element.eventThumbnail" (click)="showImageDialog(element.eventThumbnail)"
-                            class="cursor">
-                        <img alt="default" src="/assets/icons/Events_default.png" *ngIf="!element.eventThumbnail"
-                            height="40" width="50" class="cursor">
-                        <span class="margin-left-m">{{element[col.key]}} {{col.isList}}</span>
+
+                    <span *ngIf="col.key === 'status'" class="status-pill"
+                        [ngClass]="'status-' + element.status?.toLowerCase()">
+                        {{ element.status }}
                     </span>
+
+                    <span *ngIf="col.key === 'division'" class="division-pill">
+                        {{ element.division }}
+                    </span>
+
+                    <span *ngIf="col.key === 'email'" class="email-text">
+                        {{ element.email }}
+                    </span>
+
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="Menu">
@@ -60,7 +69,7 @@
         </mat-table>
     </div>
     <div *ngIf="dataSource.filteredData.length <= 0" class="h-600-s-20-m color-60 mt-4 mb-4 text-center">
-        No designation approval found
+        No requests found
     </div>
     <mat-paginator [hidden]="dataSource && dataSource.filteredData.length < 1" [length]="length" [pageSize]="pageSize"
         [pageSizeOptions]="pageSizeOptions" class="mt-1">
