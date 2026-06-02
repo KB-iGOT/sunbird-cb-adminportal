@@ -10,8 +10,7 @@
           <ng-container *ngIf="openMode !== 'createNew'">
             <div class="flex items-end gap-6 mb-10">
               <div class="flex justify-center items-center log-frame relative rounded">
-                <input type="file" name="edit-orgLogo" id="edit-orgLogo" class="hidden" (change)="uploadLogo($event)"
-                  accept=".png, .jpeg, .jpg">
+                <input type="file" name="edit-orgLogo" id="edit-orgLogo" class="hidden" (change)="uploadLogo($event)" accept=".png, .jpeg, .jpg">
                 <ng-container *ngIf="selectedLogo">
                   <img class="log" [src]="selectedLogo" alt="log">
 
@@ -42,21 +41,16 @@
                     <span class="lable">Organisation Name</span>
                   </div>
                   <mat-form-field class="w-full">
-                    <input formControlName="organisationName" matInput placeholder="Add organisation name here"
-                      maxlength="100">
-                    <mat-error
-                      *ngIf="controls['organisationName'].touched && controls['organisationName'].errors?.['required']">Organization
+                    <input formControlName="organisationName" matInput placeholder="Add organisation name here" maxlength="100">
+                    <mat-error *ngIf="controls['organisationName'].touched && controls['organisationName'].errors?.['required']">Organization
                       name is
                       required.</mat-error>
-                    <mat-error
-                      *ngIf="controls['organisationName'].touched && controls['organisationName'].errors?.['duplicateOrgName']">This
+                    <mat-error *ngIf="controls['organisationName'].touched && controls['organisationName'].errors?.['duplicateOrgName']">This
                       organization name
                       is already in use.</mat-error>
-                    <mat-error
-                      *ngIf="controls['organisationName'].touched && controls['organisationName'].errors?.['pattern']">
+                    <mat-error *ngIf="controls['organisationName'].touched && controls['organisationName'].errors?.['pattern']">
                       Only ( a-z/A-Z , 0-9 . - &#64; $ / : [ ]' ' !) characters are supported</mat-error>
-                    <mat-error
-                      *ngIf="controls['organisationName'].touched && controls['organisationName'].errors?.['maxlength']">Maximum
+                    <mat-error *ngIf="controls['organisationName'].touched && controls['organisationName'].errors?.['maxlength']">Maximum
                       character length
                       exceeded.</mat-error>
                     <!-- <mat-hint>Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported</mat-hint> -->
@@ -66,8 +60,7 @@
               </ng-container>
 
               <ng-container *ngIf="this.openMode !== 'editMode' && !disableStateBlock">
-                <mat-radio-group aria-labelledby="example-radio-group-label" class="flex gap-12 organisation-form mt-3"
-                  formControlName="category">
+                <mat-radio-group aria-labelledby="example-radio-group-label" class="flex gap-12 organisation-form mt-3" formControlName="category">
 
                   <div [ngClass]="{'active-radio-button': getCategory === 'state'}">
                     <mat-radio-button color="primary" value="state">
@@ -89,12 +82,10 @@
                   </div>
 
                   <mat-form-field class="w-full">
-                    <input type="text" placeholder="Type to search" aria-label="Type to search" matInput
-                      (input)="filterStates($event.target.value)" formControlName="state" [matAutocomplete]="auto"
-                      (keydown)="onkeyDown($event)">
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
-                      (opened)="onAutoCompleteOpened()" (closed)="onAutoCompleteClosed()"
-                      (optionSelected)="onSelectStateMinistry($event.option.value)">
+                    <input type="text" placeholder="Type to search" aria-label="Type to search" matInput (input)="filterStates($event.target.value)"
+                      formControlName="state" [matAutocomplete]="auto" (keydown)="onkeyDown($event)">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (opened)="onAutoCompleteOpened()"
+                      (closed)="onAutoCompleteClosed()" (optionSelected)="onSelectStateMinistry($event.option.value)">
                       <ng-container *ngIf="filteredStates?.length > 0; else noStates">
                         <ng-container *ngFor="let option of filteredStates">
                           <mat-option [value]="option">{{ option.orgName }}</mat-option>
@@ -115,12 +106,10 @@
                   </div>
 
                   <mat-form-field class="w-full">
-                    <input type="text" placeholder="Type to search" aria-label="Type to search" matInput
-                      (input)="filterMinistry($event.target.value)" formControlName="ministry" [matAutocomplete]="auto"
-                      (keydown)="onkeyDown($event)">
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
-                      (optionSelected)="onSelectStateMinistry($event.option.value)" (opened)="onAutoCompleteOpened()"
-                      (closed)="onAutoCompleteClosed()">
+                    <input type="text" placeholder="Type to search" aria-label="Type to search" matInput (input)="filterMinistry($event.target.value)"
+                      formControlName="ministry" [matAutocomplete]="auto" (keydown)="onkeyDown($event)">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectStateMinistry($event.option.value)"
+                      (opened)="onAutoCompleteOpened()" (closed)="onAutoCompleteClosed()">
 
                       <ng-container *ngIf="filteredMinistry?.length > 0; else noMinisry">
                         <ng-container *ngFor="let option of filteredMinistry">
@@ -144,15 +133,13 @@
 
                   <div class="uploadLogoCard flex items-center gap-4">
                     <ng-container *ngIf="!selectedLogo">
-                      <input type="file" name="upload-logo" id="upload-logo" class="hidden"
-                        (change)="uploadLogo($event)" accept=".png, .jpeg, .jpg">
+                      <input type="file" name="upload-logo" id="upload-logo" class="hidden" (change)="uploadLogo($event)" accept=".png, .jpeg, .jpg">
 
                       <div class="h-full flex items-center justify-center">
                         <img src="/assets/icons/upload-colored.svg" alt="upload" width="32" height="32">
                       </div>
                       <div class="flex flex-column justify-center gap-2">
-                        <div class="file-upload-header hover:underline cursor-pointer"
-                          onclick="document.getElementById('upload-logo').click()">
+                        <div class="file-upload-header hover:underline cursor-pointer" onclick="document.getElementById('upload-logo').click()">
                           Click here to upload file
                         </div>
                         <div class="upload-description">
@@ -196,7 +183,7 @@
                     <span class="lable">Description</span>
                   </div>
                   <mat-form-field class="w-full">
-                    <textarea matInput formControlName="description" rows="5" placeholder="Start typing"></textarea>
+                    <textarea matInput formControlName="description" rows="5" placeholder="Start typing" maxlength="1000"></textarea>
                     <mat-error *ngIf="controls['description'].errors?.['maxlength']">Description must not exceed 1000
                       characters.</mat-error>
                     <mat-error *ngIf="controls['description'].errors?.['required']">Description is required.</mat-error>
@@ -253,8 +240,7 @@
         <div class="right-sidenav-footer flex items-center justify-end gap-4 items-center px-5 pt-3 pb-5 bg-white">
           <ng-container *ngIf="openMode !== 'viewMode'">
             <button mat-button class="cancelButton" (click)="closeNaveBar()">Cancel</button>
-            <button mat-flat-button class="mat-btn-flat"
-              [disabled]="isLoading || this.organisationForm.invalid || !selectedLogo"
+            <button mat-flat-button class="mat-btn-flat" [disabled]="isLoading || this.organisationForm.invalid || !selectedLogo"
               (click)="onSubmitCreateOrganization()">{{openMode
               === 'editMode' ? 'Update' : 'Add'}}</button>
           </ng-container>
