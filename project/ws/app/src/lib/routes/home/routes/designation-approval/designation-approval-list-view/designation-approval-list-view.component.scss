@@ -900,3 +900,15 @@ mat-header-row {
 ::ng-deep .mat-column-designationName {
   flex: 1 1 180px !important;
 }
+
+.green {
+  color: #16873a !important;
+  vertical-align: middle !important;
+  margin-top: -10px;
+}
+
+.red {
+  color: #f42c2c !important;
+  vertical-align: middle !important;
+  margin-top: -10px;
+}
