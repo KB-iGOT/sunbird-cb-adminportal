@@ -21,7 +21,8 @@ const API_END_POINTS = {
   FORM_READ: `/apis/v1/form/read`,
   DESIGNATION_APPROVAL_REQUESTS: `/apis/proxies/v8/ai/cbp/v1/designation/approval-requests/list`,
   APPROVE_REQUEST: `apis/proxies/v8/ai/cbp/v1/designation/approval-requests/approve`,
-  REJECT_REQUEST: `apis/proxies/v8/ai/cbp/v1/designation/approval-requests/reject`
+  REJECT_REQUEST: `apis/proxies/v8/ai/cbp/v1/designation/approval-requests/reject`,
+  ORG_READ: `/apis/proxies/v8/org/v1/read`,
 }
 
 @Injectable({
@@ -132,5 +133,10 @@ export class DesignationApprovalService {
 
   formReadData(request: any): Observable<any> {
     return this.http.post<any>(`${API_END_POINTS.FORM_READ}`, request)
+  }
+
+  getOrgRead(req: any): Observable<any> {
+    console.log('req', req)
+    return this.http.post<any>(`${API_END_POINTS.ORG_READ}`, req)
   }
 }

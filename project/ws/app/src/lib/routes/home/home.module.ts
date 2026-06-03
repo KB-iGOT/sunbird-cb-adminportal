@@ -105,6 +105,7 @@ import { RequestCopyDetailsV2Component } from './routes/request/request-copy-det
 import { CreateRequestModule as LibCreateRequestModule } from '@sunbird-cb/consumption'
 import { DesignationApprovalListComponent } from './routes/designation-approval/designation-approval-list/designation-approval-list.component'
 import { DesignationApprovalListViewComponent } from './routes/designation-approval/designation-approval-list-view/designation-approval-list-view.component'
+import { RejectRequestFormComponent } from './routes/reject-request-form/reject-request-form.component'
 
 @NgModule({
     declarations: [
@@ -162,7 +163,8 @@ import { DesignationApprovalListViewComponent } from './routes/designation-appro
         FileProgressComponent,
         RequestCopyDetailsV2Component,
         DesignationApprovalListComponent,
-        DesignationApprovalListViewComponent
+        DesignationApprovalListViewComponent,
+        RejectRequestFormComponent
     ],
     imports: [
         CommonModule,

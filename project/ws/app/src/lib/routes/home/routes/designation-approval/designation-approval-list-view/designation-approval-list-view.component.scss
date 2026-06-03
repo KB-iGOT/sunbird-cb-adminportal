@@ -901,6 +901,8 @@ mat-header-row {
   flex: 1 1 180px !important;
 }
 
+
+
 .green {
   color: #16873a !important;
   vertical-align: middle !important;
@@ -912,3 +914,52 @@ mat-header-row {
   vertical-align: middle !important;
   margin-top: -10px;
 }
+
+
+.action-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px; // reduce space between icons
+  white-space: nowrap;
+}
+
+.action-buttons button {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  padding: 0;
+}
+
+.approve-btn mat-icon {
+  color: #2e7d32;
+}
+
+.reject-btn mat-icon {
+  color: #d32f2f;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  word-break: keep-all;
+  min-width: fit-content;
+}
+
+.mat-column-status {
+  min-width: 120px;
+  width: 120px;
+  margin-left: 20px;
+}
+
+
+

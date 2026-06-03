@@ -20,7 +20,8 @@
             [matSortDirection]="tableData!.sortState" [dataSource]="dataSource"
             class="example-table table1 responsiveTable" *ngIf="dataSource.filteredData.length > 0">
             <ng-container matColumnDef="{{col.key}}" *ngFor="let col of tableData!.columns">
-                <mat-header-cell *matHeaderCellDef mat-sort-header class=".h-400-r-14-l color-60"> {{col.displayName}}
+                <mat-header-cell *matHeaderCellDef mat-sort-header class=".h-400-r-14-l color-60 no-col-padding">
+                    {{col.displayName}}
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element" (click)="onRowClick(element)">
                     <span *ngIf="!col.isList && col.key !== 'status' && col.key !== 'division' && col.key !== 'email'"
@@ -45,16 +46,37 @@
 
                 </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="Menu">
+            <!-- <ng-container matColumnDef="Menu">
                 <mat-header-cell *matHeaderCellDef class="clr-darkish-blue action-header">
 
                 </mat-header-cell>
-                <!-- *ngIf="(currentFilter !== 'archive') && (row && row.canArchive)" -->
                 <mat-cell *matCellDef="let row" class="action-cell">
                     <button type="button" mat-icon-button aria-label="action items" [matMenuTriggerFor]="cardMenu"
                         [matMenuTriggerData]="{'data':row}" class="action-btn">
                         <mat-icon>more_horiz</mat-icon>
                     </button>
+                </mat-cell>
+            </ng-container> -->
+            <ng-container matColumnDef="Menu">
+                <mat-header-cell *matHeaderCellDef class="clr-darkish-blue action-header"
+                    [hidden]="currentFilter !== 'pending'">
+                    Action
+                </mat-header-cell>
+
+                <mat-cell *matCellDef="let row" class="action-cell">
+                    <div class="action-buttons" *ngIf="currentFilter === 'pending'">
+
+                        <button mat-icon-button class="approve-btn" matTooltip="Approve"
+                            (click)="approveRequest(row); $event.stopPropagation()">
+                            <mat-icon class="green">check_circle</mat-icon>
+                        </button>
+
+                        <button mat-icon-button class="reject-btn" matTooltip="Reject"
+                            (click)="rejectRequest(row); $event.stopPropagation()">
+                            <mat-icon class="red">cancel</mat-icon>
+                        </button>
+
+                    </div>
                 </mat-cell>
             </ng-container>
             <mat-header-row *matHeaderRowDef="getFinalColumns()"></mat-header-row>

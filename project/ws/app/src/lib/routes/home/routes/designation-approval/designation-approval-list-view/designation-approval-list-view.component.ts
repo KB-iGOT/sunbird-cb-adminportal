@@ -302,6 +302,9 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
       this.actionsClick.emit({ action: 'reject', row: rowData })
     }
 
+
+
   }
+
 
 }
