@@ -170,7 +170,8 @@ export class DesignationApprovalListComponent implements OnInit {
             status: obj.status,
             organisation: obj.organisation,
             division: obj.division,
-            email: obj.email
+            email: obj.email,
+            reviewer_comments: obj.reviewer_comments ? obj.reviewer_comments : 'No Reason Found'
           }
           if (obj.status?.toLowerCase() === 'pending') {
             this.approvalRequestCount.pending += 1
@@ -265,21 +266,21 @@ export class DesignationApprovalListComponent implements OnInit {
           let req: any = {
             id: $event.row.identifier,
           }
-          this.designationApprovalSvc.getOrgRead({ organisationId: $event.row.organisation_id }).subscribe((orgData: any) => {
-            if (orgData?.result?.response?.frameworkid) {
-              req['frameworkid'] = orgData?.result?.response?.frameworkid
-            }
+          // this.designationApprovalSvc.getOrgRead({ organisationId: $event.row.organisation_id }).subscribe((orgData: any) => {
+          //   if (orgData?.result?.response?.frameworkid) {
+          //     req['frameworkid'] = orgData?.result?.response?.frameworkid
+          //   }
 
-            this.designationApprovalSvc.approveRequest(req).subscribe((response: any) => {
-              if (response && response.status === 'approved') {
-                this.openSnackbar('Request is successfully approved.')
-                this.currentFilter = 'approved'
-                this.fetchApprovalRequests(this.currentFilter)
-              } else {
-                this.openSnackbar('Error while approving the request')
-              }
-            })
+          this.designationApprovalSvc.approveRequest(req).subscribe((response: any) => {
+            if (response && response.status === 'approved') {
+              this.openSnackbar('Request is successfully approved.')
+              this.currentFilter = 'approved'
+              this.fetchApprovalRequests(this.currentFilter)
+            } else {
+              this.openSnackbar('Error while approving the request')
+            }
           })
+          // })
 
         }
       })

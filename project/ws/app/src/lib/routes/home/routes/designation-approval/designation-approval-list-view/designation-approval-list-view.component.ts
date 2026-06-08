@@ -49,6 +49,8 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
   pageSize = 20
   pageSizeOptions = [20, 30, 40]
   finalImg: any
+  showRejectPopupFlag = false
+  rejectionDetail: any
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator
   @ViewChild(MatSort) set matSort(sort: MatSort) {
     if (!this.dataSource.sort) {
@@ -304,6 +306,16 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
 
 
 
+  }
+
+  openRejecttionCommentPopup(element: any) {
+    this.showRejectPopupFlag = true
+    console.log('element', element)
+    this.rejectionDetail = element
+  }
+
+  closeRejectPopup() {
+    this.showRejectPopupFlag = false
   }
 
 

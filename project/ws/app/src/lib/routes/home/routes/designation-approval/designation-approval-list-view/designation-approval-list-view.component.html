@@ -35,6 +35,8 @@
                         [ngClass]="'status-' + element.status?.toLowerCase()">
                         {{ element.status }}
                     </span>
+                    <mat-icon *ngIf="element.status?.toLowerCase() === 'rejected' && col.key === 'status'"
+                        (click)="openRejecttionCommentPopup(element)" class="cursor-pointer ml-5">visibility</mat-icon>
 
                     <span *ngIf="col.key === 'division'" class="division-pill">
                         {{ element.division }}
@@ -118,3 +120,26 @@
 
     </ng-template>
 </mat-menu>
+
+<!-- Popup Overlay -->
+<div class="popup-overlay" *ngIf="showRejectPopupFlag">
+    <div class="popup-card">
+
+        <!-- Close Button -->
+        <button class="close-btn" (click)="closeRejectPopup()">&times;</button>
+
+        <!-- Title -->
+        <h2>Rejection Reason</h2>
+
+        <!-- Subtitle -->
+        <p class="subtitle">
+            This request was rejected for the following reason:
+        </p>
+
+        <!-- Error Box -->
+        <div class="error-box">
+            {{rejectionDetail?.reviewer_comments}}
+        </div>
+
+    </div>
+</div>
