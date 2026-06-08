@@ -8,6 +8,7 @@ import * as _ from 'lodash'
 import { DesignationApprovalService } from '../services/designation-approval.service'
 import { DialogConfirmComponent } from '../../../../../../../../../../src/app/component/dialog-confirm/dialog-confirm.component'
 import { MatSnackBar } from '@angular/material/snack-bar'
+import { RejectRequestFormComponent } from '../../reject-request-form/reject-request-form.component'
 
 @Component({
   selector: 'ws-app-designation-approval-list',
@@ -42,6 +43,7 @@ export class DesignationApprovalListComponent implements OnInit {
   ) {
 
     this.configService = this.activeRoute.snapshot.data.configService
+    console.log('this.configService', this.configService)
     if (this.configSvc.userProfile) {
       this.currentUser = this.configSvc.userProfile && this.configSvc.userProfile.userId
       this.department = this.configSvc.userProfile && this.configSvc.userProfile.departmentName
@@ -168,7 +170,8 @@ export class DesignationApprovalListComponent implements OnInit {
             status: obj.status,
             organisation: obj.organisation,
             division: obj.division,
-            email: obj.email
+            email: obj.email,
+            reviewer_comments: obj.reviewer_comments ? obj.reviewer_comments : 'No Reason Found'
           }
           if (obj.status?.toLowerCase() === 'pending') {
             this.approvalRequestCount.pending += 1
@@ -263,6 +266,11 @@ export class DesignationApprovalListComponent implements OnInit {
           let req: any = {
             id: $event.row.identifier,
           }
+          // this.designationApprovalSvc.getOrgRead({ organisationId: $event.row.organisation_id }).subscribe((orgData: any) => {
+          //   if (orgData?.result?.response?.frameworkid) {
+          //     req['frameworkid'] = orgData?.result?.response?.frameworkid
+          //   }
+
           this.designationApprovalSvc.approveRequest(req).subscribe((response: any) => {
             if (response && response.status === 'approved') {
               this.openSnackbar('Request is successfully approved.')
@@ -272,31 +280,51 @@ export class DesignationApprovalListComponent implements OnInit {
               this.openSnackbar('Error while approving the request')
             }
           })
+          // })
+
         }
       })
     } else if ($event.action === 'reject') {
-      const dialogRef = this.dialogue.open(DialogConfirmComponent, {
-        height: 'auto',
-        width: '25%',
-        data: {
-          title: 'Confirmation',
-          bodyHTML: `Are you sure you want to reject this request.`,
-        },
+      console.log($event.row)
+      // const dialogRef = this.dialogue.open(DialogConfirmComponent, {
+      //   height: 'auto',
+      //   width: '25%',
+      //   data: {
+      //     title: 'Confirmation',
+      //     bodyHTML: `Are you sure you want to reject this request.`,
+      //   },
+      // })
+      // dialogRef.afterClosed().subscribe((response: any) => {
+      //   if (response) {
+      //     let req: any = {
+      //       id: $event.row.identifier,
+      //     }
+      //     this.designationApprovalSvc.rejectRequest(req).subscribe((response: any) => {
+      //       if (response && response.status === 'rejected') {
+      //         this.openSnackbar('Request is successfully rejected.')
+      //         this.currentFilter = 'rejected'
+      //         this.fetchApprovalRequests(this.currentFilter)
+      //       } else {
+      //         this.openSnackbar('Error while rejecting the request')
+      //       }
+      //     })
+      //   }
+      // })
+
+      const dialogRef = this.dialog.open(RejectRequestFormComponent, {
+        width: '750px',
+        maxWidth: '90vw',
+        data: $event.row,
+        panelClass: 'publish-request-popup',
+        minHeight: '400px',          // Set minimum height
+        maxHeight: '90vh',           // Prevent it from going beyond viewport
+        disableClose: true // Optional: prevent closing with outside click
       })
-      dialogRef.afterClosed().subscribe((response: any) => {
-        if (response) {
-          let req: any = {
-            id: $event.row.identifier,
-          }
-          this.designationApprovalSvc.rejectRequest(req).subscribe((response: any) => {
-            if (response && response.status === 'rejected') {
-              this.openSnackbar('Request is successfully rejected.')
-              this.currentFilter = 'rejected'
-              this.fetchApprovalRequests(this.currentFilter)
-            } else {
-              this.openSnackbar('Error while rejecting the request')
-            }
-          })
+
+      dialogRef.afterClosed().subscribe(response => {
+        if (response === 'success') {
+          this.currentFilter = 'rejected'
+          this.fetchApprovalRequests(this.currentFilter)
         }
       })
     }
