@@ -61,14 +61,29 @@ export class DesignationApprovalService {
     return this.http.post<any>(API_END_POINTS.SEARCH_EVENT, req)
   }
 
-  getApprovalList() {
+  getApprovalList(pageSize: number = 25, pageOffset: number = 0, status?: string) {
     const headers = new HttpHeaders({
       'Cache-Control': 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0',
       Pragma: 'no-cache',
       Expires: '0',
     })
 
-    return this.http.get<any>(`${API_END_POINTS.DESIGNATION_APPROVAL_REQUESTS}`, { headers })
+    // Convert 0-based offset to 1-based page number
+    const pageNumber = (pageOffset / pageSize) + 1
+
+    const params: any = {
+      page_size: pageSize.toString(),
+      page: Math.ceil(pageNumber).toString()
+    }
+
+    if (status) {
+      params.status_filter = status
+    }
+
+    return this.http.get<any>(`${API_END_POINTS.DESIGNATION_APPROVAL_REQUESTS}`, {
+      headers,
+      params
+    })
   }
 
   approveRequest(req: any): Observable<any> {
