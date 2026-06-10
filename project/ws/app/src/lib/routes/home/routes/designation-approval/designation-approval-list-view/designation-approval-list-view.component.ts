@@ -1,10 +1,10 @@
 import {
   Component, OnInit, Input, Output, EventEmitter, ViewChild,
-  AfterViewInit, OnChanges, SimpleChanges, Inject, ChangeDetectorRef, AfterViewChecked,
+  AfterViewInit, OnChanges, Inject, ChangeDetectorRef, AfterViewChecked,
 } from '@angular/core'
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatTableDataSource } from '@angular/material/table'
-import { MatPaginator } from '@angular/material/paginator'
+import { MatPaginator, PageEvent } from '@angular/material/paginator'
 import { MatSort } from '@angular/material/sort'
 import * as _ from 'lodash'
 import { ITableData, IColums, IAction } from '../interfaces/interfaces'
@@ -28,6 +28,7 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
 
   @Input() tableData!: ITableData | undefined
   @Input() data?: []
+  @Input() totalCount?: number
   @Input() isUpload?: boolean
   @Input() isCreate?: boolean
   @Input() currentFilter = ''
@@ -40,6 +41,7 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
   @Output() actionsClick?: EventEmitter<any>
   @Output() eOnRowClick = new EventEmitter<any>()
   @Output() eOnCreateClick = new EventEmitter<any>()
+  @Output() pageChanged = new EventEmitter<{ pageIndex: number; pageSize: number }>()
 
   bodyHeight = document.body.clientHeight - 125
   displayedColumns: any = []
@@ -74,7 +76,7 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
     this.dataSource = new MatTableDataSource<any>()
     this.actionsClick = new EventEmitter()
     this.clicked = new EventEmitter()
-    this.dataSource.paginator = this.paginator
+
   }
 
   ngOnInit() {
@@ -84,14 +86,25 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
     this.dataSource.data = this.data
   }
 
-  ngOnChanges(data: SimpleChanges) {
-    this.dataSource.data = _.get(data, 'data.currentValue')
-    this.length = this.dataSource.data.length
-    this.paginator.firstPage()
+  ngOnChanges(data: any) {
+    if (data['data']) {
+      console.log("123 called")
+      this.dataSource.data = _.get(data, 'data.currentValue')
+    }
+
+    if (data['totalCount']) {
+      this.length = _.get(data, 'totalCount.currentValue', 0)
+      console.log('Paginator length=', this.length)
+    } else if (data['data'] && !data['totalCount']) {
+      this.length = this.dataSource.data ? this.dataSource.data.length : 0
+    }
   }
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator
+
+    this.paginator.page.subscribe((event: PageEvent) => {
+      this.onPageChange(event)
+    })
 
     this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
       const searchStr = `
@@ -244,6 +257,13 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
 
   onRowClick(e: any) {
     this.eOnRowClick.emit(e)
+  }
+
+  onPageChange(event: PageEvent) {
+    console.log('called', event.pageIndex, event.previousPageIndex)
+    const pageIndex = event.pageIndex
+    const pageSize = event.pageSize
+    this.pageChanged.emit({ pageIndex, pageSize })
   }
 
   onCreateClick() {

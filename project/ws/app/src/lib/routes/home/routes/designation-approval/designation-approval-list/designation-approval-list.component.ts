@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { ActivatedRoute } from '@angular/router'
 import { ConfigurationsService } from '@sunbird-cb/utils-v2'
@@ -9,6 +9,7 @@ import { DesignationApprovalService } from '../services/designation-approval.ser
 import { DialogConfirmComponent } from '../../../../../../../../../../src/app/component/dialog-confirm/dialog-confirm.component'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { RejectRequestFormComponent } from '../../reject-request-form/reject-request-form.component'
+import { LoaderService } from '../../../services/loader.service'
 
 @Component({
   selector: 'ws-app-designation-approval-list',
@@ -25,13 +26,16 @@ export class DesignationApprovalListComponent implements OnInit {
   data: any = []
   currentFilter = 'pending'
   approvalRequestCount: any = { pending: 0, approved: 0, rejected: 0 }
+  totalApprovalCount: number = 0
   divisionList: string[] = []
   organisationList: string[] = []
 
   selectedDivision = ''
   selectedOrganisation = ''
   searchText = ''
-
+  currentPageSize = 20
+  currentPageIndex = 0
+  isLoading = false
   originalData: any[] = []
   constructor(
     public dialog: MatDialog,
@@ -40,6 +44,8 @@ export class DesignationApprovalListComponent implements OnInit {
     private designationApprovalSvc: DesignationApprovalService,
     private dialogue: MatDialog,
     private snackBar: MatSnackBar,
+    private changeDetectorRef: ChangeDetectorRef,
+    private loaderService: LoaderService
   ) {
 
     this.configService = this.activeRoute.snapshot.data.configService
@@ -144,12 +150,21 @@ export class DesignationApprovalListComponent implements OnInit {
     //     break
     // }
     this.approvalRequestCount = { pending: 0, approved: 0, rejected: 0 }
-    this.designationApprovalSvc.getApprovalList().subscribe((approvalRequest: any) => {
+    this.isLoading = true
+    this.loaderService.changeLoaderState(true)
+    const offset = this.currentPageIndex * this.currentPageSize
+    this.designationApprovalSvc.getApprovalList(this.currentPageSize, offset, this.currentFilter).subscribe((approvalRequest: any) => {
       this.setApprovalListData(approvalRequest)
+
+      this.isLoading = false
+
     })
   }
 
   setApprovalListData(eventObj: any) {
+    console.log('API items', eventObj.items.length)
+    console.log('Filtered items', this.data.length)
+    console.log('Total count', eventObj.pagination.total_items)
     console.log('eventObj', eventObj)
     console.log('this.currentFilter', this.currentFilter)
     if (eventObj !== undefined) {
@@ -197,12 +212,29 @@ export class DesignationApprovalListComponent implements OnInit {
             this.originalData.push(eventDataObj)
           }
         })
-        this.divisionList = Array.from(divisionSet)
-        this.organisationList = Array.from(organisationSet)
+
+        if (this.currentPageIndex === 0) {
+          this.divisionList = Array.from(divisionSet)
+          this.organisationList = Array.from(organisationSet)
+        }
 
         this.data = [...this.originalData]
+
+        // Extract total count from API response if available
+        if (eventObj.pagination.total_items !== undefined) {
+          console.log('eventObj', eventObj)
+          this.totalApprovalCount = eventObj.pagination.total_items
+        } else if (eventObj.totalCount !== undefined) {
+          this.totalApprovalCount = eventObj.pagination.total_items
+        } else {
+          // Fallback: use the count from the current response
+          // Note: This will only show the current page count if API doesn't return total
+          this.totalApprovalCount = this.data.length + (this.currentPageIndex * this.currentPageSize)
+        }
       }
       console.log('this.data', this.data)
+      console.log('this.totalApprovalCount', this.totalApprovalCount)
+      this.changeDetectorRef.markForCheck()
     }
   }
 
@@ -217,6 +249,7 @@ export class DesignationApprovalListComponent implements OnInit {
 
   filter(key: string) {
     this.currentFilter = key
+    this.currentPageIndex = 0
 
     this.searchText = ''
     this.selectedDivision = ''
@@ -275,6 +308,7 @@ export class DesignationApprovalListComponent implements OnInit {
             if (response && response.status === 'approved') {
               this.openSnackbar('Request is successfully approved.')
               this.currentFilter = 'approved'
+              this.currentPageIndex = 0
               this.fetchApprovalRequests(this.currentFilter)
             } else {
               this.openSnackbar('Error while approving the request')
@@ -324,6 +358,7 @@ export class DesignationApprovalListComponent implements OnInit {
       dialogRef.afterClosed().subscribe(response => {
         if (response === 'success') {
           this.currentFilter = 'rejected'
+          this.currentPageIndex = 0
           this.fetchApprovalRequests(this.currentFilter)
         }
       })
@@ -363,6 +398,12 @@ export class DesignationApprovalListComponent implements OnInit {
 
       return searchMatch && divisionMatch && organisationMatch
     })
+  }
+
+  onPageChange(event: { pageIndex: number; pageSize: number }) {
+    this.currentPageIndex = event.pageIndex
+    this.currentPageSize = event.pageSize
+    this.fetchApprovalRequests()
   }
 
   clearFilters() {
