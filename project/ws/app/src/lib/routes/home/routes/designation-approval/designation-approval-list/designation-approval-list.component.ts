@@ -162,11 +162,7 @@ export class DesignationApprovalListComponent implements OnInit {
   }
 
   setApprovalListData(eventObj: any) {
-    console.log('API items', eventObj.items.length)
-    console.log('Filtered items', this.data.length)
-    console.log('Total count', eventObj.pagination.total_items)
-    console.log('eventObj', eventObj)
-    console.log('this.currentFilter', this.currentFilter)
+
     if (eventObj !== undefined) {
       const data: any = eventObj.items
       const divisionSet = new Set<string>()
@@ -222,7 +218,6 @@ export class DesignationApprovalListComponent implements OnInit {
 
         // Extract total count from API response if available
         if (eventObj.pagination.total_items !== undefined) {
-          console.log('eventObj', eventObj)
           this.totalApprovalCount = eventObj.pagination.total_items
         } else if (eventObj.totalCount !== undefined) {
           this.totalApprovalCount = eventObj.pagination.total_items
@@ -233,7 +228,6 @@ export class DesignationApprovalListComponent implements OnInit {
         }
       }
       console.log('this.data', this.data)
-      console.log('this.totalApprovalCount', this.totalApprovalCount)
       this.changeDetectorRef.markForCheck()
     }
   }

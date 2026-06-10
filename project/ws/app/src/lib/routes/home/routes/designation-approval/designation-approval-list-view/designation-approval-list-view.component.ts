@@ -88,13 +88,11 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
 
   ngOnChanges(data: any) {
     if (data['data']) {
-      console.log("123 called")
       this.dataSource.data = _.get(data, 'data.currentValue')
     }
 
     if (data['totalCount']) {
       this.length = _.get(data, 'totalCount.currentValue', 0)
-      console.log('Paginator length=', this.length)
     } else if (data['data'] && !data['totalCount']) {
       this.length = this.dataSource.data ? this.dataSource.data.length : 0
     }
@@ -260,7 +258,6 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
   }
 
   onPageChange(event: PageEvent) {
-    console.log('called', event.pageIndex, event.previousPageIndex)
     const pageIndex = event.pageIndex
     const pageSize = event.pageSize
     this.pageChanged.emit({ pageIndex, pageSize })
