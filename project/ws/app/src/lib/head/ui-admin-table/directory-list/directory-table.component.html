@@ -2,8 +2,8 @@
     <div class="left-overlay" *ngIf="openCreateNavBar || customSelfRegistration"></div>
     <ng-container *ngIf="openCreateNavBar">
         <ws-app-create-organisation [openMode]="openMode" [dropdownList]="dropdownList" [rowData]="rowData"
-            [orgList]="this.dataSource.data" (buttonClick)="buttonClickAction($event)"
-            (organizationCreated)="organizationCreatedEmit($event)">
+            [orgList]="this.dataSource.data" [defaultEntityType]="defaultEntityType"
+            (buttonClick)="buttonClickAction($event)" (organizationCreated)="organizationCreatedEmit($event)">
         </ws-app-create-organisation>
     </ng-container>
     <ng-container *ngIf="customSelfRegistration">
@@ -85,9 +85,11 @@
                             <mat-menu #actionsMenu="matMenu">
                                 <ng-template matMenuContent>
                                     <button mat-menu-item (click)="editOrganization(row)"
-                                        *ngIf="currentTab === 'organisation'">Edit</button>
-                                    <button mat-menu-item (click)="goToRoute('users', row)">Users</button>
-                                    <button mat-menu-item (click)="goToRoute('rolesandaccess', row)">Roles &
+                                        *ngIf="currentTab === 'organisation' || currentTab === 'volunteer'">Edit</button>
+                                    <button mat-menu-item (click)="goToRoute('users', row)"
+                                        *ngIf="currentTab !== 'volunteer'">Users</button>
+                                    <button mat-menu-item (click)="goToRoute('rolesandaccess', row)"
+                                        *ngIf="currentTab !== 'volunteer'">Roles &
                                         Access</button>
                                     <!-- <button mat-menu-item (click)="goToRoute('mentormanage', row)"
                                         *ngIf="currentTab === 'organisation'">Mentor
@@ -97,8 +99,8 @@
                                         Designations</button>
                                     <!-- <button mat-menu-item
                                         (click)="goToRoute('grade_setting', row)">Grades/Group</button> -->
-                                    <button mat-menu-item
-                                        (click)="goToRoute('user_transfer', row)">User Transfer</button>
+                                    <button mat-menu-item (click)="goToRoute('user_transfer', row)"
+                                        *ngIf="currentTab !== 'volunteer'">User Transfer</button>
                                 </ng-template>
                             </mat-menu>
                         </ng-container>

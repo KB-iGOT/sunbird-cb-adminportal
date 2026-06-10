@@ -20,10 +20,10 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators'
 import { BehaviorSubject } from 'rxjs'
 
 @Component({
-    selector: 'ws-widget-directory-table',
-    templateUrl: './directory-table.component.html',
-    styleUrls: ['./directory-table.component.scss'],
-    standalone: false
+  selector: 'ws-widget-directory-table',
+  templateUrl: './directory-table.component.html',
+  styleUrls: ['./directory-table.component.scss'],
+  standalone: false
 })
 export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('searchInput') searchInput!: ElementRef
@@ -67,6 +67,7 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
   customSelfRegistration = false
   selfRegistrationData: any = {}
   dialogRef: any
+  defaultEntityType: 'organisation' | 'volunteer' = 'organisation'
   private filterSubject: BehaviorSubject<any> = new BehaviorSubject<any>('');
   pageIndex = 0
   constructor(
@@ -225,12 +226,11 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
   }
 
   gotoCreateNew() {
-    if (this.selectedDepartment === 'organisation') {
+    if (this.selectedDepartment === 'organisation' || this.selectedDepartment === 'volunteer') {
+      this.defaultEntityType = this.selectedDepartment === 'volunteer' ? 'volunteer' : 'organisation'
       this.openCreateNavBar = true
       this.openMode = 'createNew'
       this.toggleOverlay(true)
-
-      // this.openMode = 'viewMode'
       this.rowData = {}
     } else {
       this.router.navigate([`/app/home/${this.selectedDepartment}/create-department`, { needAddAdmin: true }])

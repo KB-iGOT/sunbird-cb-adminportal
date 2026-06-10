@@ -25,6 +25,12 @@ export class DirectoryService {
         isState: true,
         status: 1,
       }
+    } else if (state === 'volunteer') {
+      filters = {
+        isTenant: true,
+        status: 1,
+        isNgo: true,
+      }
     } else {
       filters = {
         isTenant: true,
