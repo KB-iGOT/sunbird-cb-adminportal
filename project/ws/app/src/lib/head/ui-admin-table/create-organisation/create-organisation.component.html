@@ -195,19 +195,21 @@
 
                   <div class="uploadLogoCard flex items-center gap-4">
                     <ng-container *ngIf="!selectedLogo">
-                      <input type="file" name="upload-logo" id="upload-logo" class="hidden"
+                      <input #uploadLogoInput type="file" name="upload-logo" id="upload-logo" class="hidden"
                         (change)="uploadLogo($event)" accept=".png, .jpeg, .jpg">
 
-                      <div class="h-full flex items-center justify-center">
-                        <img src="/assets/icons/upload-colored.svg" alt="upload" width="32" height="32">
-                      </div>
-                      <div class="flex flex-column justify-center gap-2">
-                        <div class="file-upload-header hover:underline cursor-pointer"
-                          onclick="document.getElementById('upload-logo').click()">
-                          Click here to upload file
+                      <div class="uploadLogoClickableArea flex items-center gap-4 w-full"
+                        (click)="uploadLogoInput.click()">
+                        <div class="h-full flex items-center justify-center">
+                          <img src="/assets/icons/upload-colored.svg" alt="upload" width="32" height="32">
                         </div>
-                        <div class="upload-description">
-                          Max file size: 5 MB, Supports file types: JPG, PNG, JPEG
+                        <div class="flex flex-column justify-center gap-2">
+                          <div class="file-upload-header hover:underline">
+                            Click here to upload file
+                          </div>
+                          <div class="upload-description">
+                            Max file size: 5 MB, Supports file types: JPG, PNG, JPEG
+                          </div>
                         </div>
                       </div>
                     </ng-container>
