@@ -40,13 +40,22 @@ export class DirectoryService {
     }
 
     if (queryText) {
+      let searchFilters: any = {
+        isTenant: true,
+        status: 1,
+      }
+      if (state === 'state') {
+        searchFilters.isState = true
+      } else if (state === 'volunteer') {
+        searchFilters.isNgo = true
+      } else if (state === 'organisation') {
+        searchFilters.isMdo = true
+      } else {
+        searchFilters.isCbp = true
+      }
       const req1 = {
         request: {
-          filters: {
-            isTenant: true,
-            status: 1,
-            ...(state === 'organisation' ? { isMdo: true } : { isCbp: true }),
-          },
+          filters: searchFilters,
           query: queryText,
           limit: pagination.limit || 20,
           offset: pagination.offset || 0,

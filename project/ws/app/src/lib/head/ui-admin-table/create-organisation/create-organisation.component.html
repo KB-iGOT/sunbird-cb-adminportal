@@ -3,7 +3,8 @@
     <div class="filter-overlay-12">
       <div class="filter-12">
         <div class="flex justify-between right-sidenav-header px-5 pt-5 pb-4">
-          <div>{{ openMode === 'createNew' ? 'Create Organisation' : 'MDO Details'}}</div>
+          <div>{{ openMode === 'createNew' ? 'Create Organisation' : (entityType === 'volunteer' ? 'Volunteer Details' :
+            'MDO Details')}}</div>
           <mat-icon class="closeIcon" (click)="closeNaveBar()">close</mat-icon>
         </div>
         <div class="px-5 pt-6">

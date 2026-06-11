@@ -170,6 +170,9 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.currentDept === 'cbp-providers') {
       this.tabsData = this.tabsData.filter(tab => tab?.key !== 'mentormanage' && tab?.key !== 'designation_master')
     }
+    if (this.currentDept === 'volunteer') {
+      this.tabsData = this.tabsData.filter(tab => tab?.key !== 'rolesandaccess' && tab?.key !== 'designation_master' && tab?.key !== 'user_transfer')
+    }
 
 
   }

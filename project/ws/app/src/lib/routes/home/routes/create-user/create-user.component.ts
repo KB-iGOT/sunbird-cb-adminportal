@@ -15,10 +15,10 @@ const EMAIL_PATTERN = /^[a-zA-Z0-9]+[a-zA-Z0-9._-]*[a-zA-Z0-9]+@[a-zA-Z0-9]+([-a
 const MOBILE_PATTERN = '^((\\+91-?)|0)?[0-9]{10}$'
 
 @Component({
-    selector: 'ws-app-create-user',
-    templateUrl: './create-user.component.html',
-    styleUrls: ['./create-user.component.scss'],
-    standalone: false
+  selector: 'ws-app-create-user',
+  templateUrl: './create-user.component.html',
+  styleUrls: ['./create-user.component.scss'],
+  standalone: false
 })
 export class CreateUserComponent implements OnInit {
   createUserForm: UntypedFormGroup
@@ -178,11 +178,25 @@ export class CreateUserComponent implements OnInit {
     const roles: any[] = _.get(this.route, 'snapshot.parent.data.configService.unMappedUser.roles')
     this.directoryService.getDepartmentTitles().subscribe(res => {
       const departmentHeaderArray = JSON.parse(res?.result?.response?.value)
-      if (this.rawCurrentDept === 'organisation' && this.createdDepartment?.depType === 'organisation') {
+      if (this.rawCurrentDept === 'volunteer') {
+        const allRoles: string[] = []
+        departmentHeaderArray?.orgTypeList?.forEach((ele: { flags: string[], isNgo: any, isHidden: any, roles: string[] }) => {
+          const isNgo = ele?.isNgo || (Array.isArray(ele?.flags) && ele.flags.includes('isNgo'))
+          if (isNgo && !ele?.isHidden && ele?.roles) {
+            ele.roles.forEach((role: string) => {
+              if (role && !allRoles.includes(role)) {
+                allRoles.push(role)
+              }
+            })
+          }
+        })
+        this.roles = allRoles
+      } else if (this.rawCurrentDept === 'organisation' && this.createdDepartment?.depType === 'organisation') {
         const allRoles: string[] = []
         const isStateAdmin = roles && roles.indexOf('STATE_ADMIN') >= 0
-        departmentHeaderArray?.orgTypeList?.forEach((ele: { name: any, isHidden: any, roles: string[] }) => {
-          if (!ele?.isHidden && ele?.roles) {
+        departmentHeaderArray?.orgTypeList?.forEach((ele: { name: any, isHidden: any, flags: string[], isNgo: any, roles: string[] }) => {
+          const isNgo = ele?.isNgo || (Array.isArray(ele?.flags) && ele.flags.includes('isNgo'))
+          if (!ele?.isHidden && !isNgo && ele?.roles) {
             ele.roles.forEach((role: string) => {
               if (role && !allRoles.includes(role) && !(isStateAdmin && this.hiddenRolesForOrg.includes(role))) {
                 allRoles.push(role)
