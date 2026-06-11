@@ -402,6 +402,19 @@ export class CreateUserComponent implements OnInit {
   }
 
   navigateTo() {
+    if (this.redirectionPath) {
+      try {
+        const url = new URL(this.redirectionPath, window.location.origin)
+        const queryParams: any = {}
+        url.searchParams.forEach((value, key) => {
+          queryParams[key] = value
+        })
+        this.router.navigate([url.pathname], { queryParams })
+      } catch (_e) {
+        this.router.navigate([this.redirectionPath])
+      }
+      return
+    }
     if (this.createdDepartment) {
       this.router.navigate([`/app/roles/${this.deptId}/users`],
         {
