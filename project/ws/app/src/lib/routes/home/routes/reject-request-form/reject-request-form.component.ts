@@ -54,7 +54,7 @@ export class RejectRequestFormComponent implements OnInit {
 
     const payload = {
       id: this.data?.identifier,
-      rejection_comment: this.rejectRequestForm.value.rejection_comment?.trim()
+      reviewer_comments: this.rejectRequestForm.value.rejection_comment?.trim()
     }
 
     console.log('Reject Payload =>', payload)

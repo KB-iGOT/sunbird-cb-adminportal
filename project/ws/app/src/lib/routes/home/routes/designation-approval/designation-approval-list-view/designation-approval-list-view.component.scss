@@ -898,7 +898,7 @@ mat-header-row {
 }
 
 ::ng-deep .mat-column-designationName {
-  flex: 1 1 180px !important;
+  flex: 1 1 260px !important;
 }
 
 
@@ -956,9 +956,8 @@ mat-header-row {
 }
 
 .mat-column-status {
-  min-width: 120px;
-  width: 120px;
-  margin-left: 20px;
+  flex: 0 0 160px !important;
+  min-width: 160px;
 }
 
 
@@ -1036,4 +1035,42 @@ mat-header-row {
     display: flex;
     flex-direction: row;
     justify-content: end;
+}
+
+// .margin-text {
+//   padding-left: 20px;
+// }
+
+.mat-mdc-header-row,
+.mat-mdc-row {
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
+}
+
+.mat-column-status.mat-mdc-header-cell {
+  justify-content: flex-start !important;
+  text-align: left !important;
+}
+
+:host ::ng-deep .mat-mdc-cell {
+  white-space: normal !important;
+  overflow: visible !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  height: auto !important;
+  line-height: 1.4;
+}
+
+:host ::ng-deep .mat-mdc-cell span,
+::ng-deep .mat-mdc-cell div {
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+}
+
+.overflow-visible {
+  overflow:visible !important;
 }
