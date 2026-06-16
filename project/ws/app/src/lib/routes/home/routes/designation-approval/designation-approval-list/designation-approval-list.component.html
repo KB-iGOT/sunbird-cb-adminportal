@@ -19,15 +19,15 @@
           <a href="javascript:void(0)" class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'pending',
                   'ws-mat-accent-border font-medium':currentFilter !== 'pending'}" mat-button
             (click)="filter('pending');" role="button">Pending Requests
-            <span *ngIf="approvalRequestCount.pending > 0"></span> ({{approvalRequestCount.pending}})</a>
+            <span *ngIf="approvalRequestCount.pending > 0">({{approvalRequestCount.pending}})</span> </a>
           <a href="javascript:void(0)" class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'approved',
                   'ws-mat-accent-border font-medium':currentFilter !== 'approved'}" mat-button
             (click)="filter('approved'); " role="button">Approved Requests
-            <span *ngIf="approvalRequestCount.approved > 0"></span> ({{approvalRequestCount.approved}})</a>
+            <span *ngIf="approvalRequestCount.approved > 0">({{approvalRequestCount.approved}})</span> </a>
           <a href="javascript:void(0)" class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'rejected',
                             'ws-mat-accent-border font-medium':currentFilter !== 'rejected'}" mat-button
             (click)="filter('rejected'); " role="button">Rejected Requests
-            <span *ngIf="approvalRequestCount.rejected > 0"></span> ({{approvalRequestCount.rejected}})</a>
+            <span *ngIf="approvalRequestCount.rejected > 0">({{approvalRequestCount.rejected}})</span> </a>
         </div>
       </div>
       <div class="custom-filter-wrapper">
@@ -88,8 +88,8 @@
         <div class="flex items-center mx-auto fixed-spinner-create" *ngIf="isLoading">
           <mat-spinner [diameter]="40" [strokeWidth]="4"></mat-spinner>
         </div>
-        <ws-designation-approval-list-view [tableData]='tabledata' [data]='data' [totalCount]='totalApprovalCount' isCreate=true
-          [currentFilter]="currentFilter" (actionsClick)="menuActions($event)"
+        <ws-designation-approval-list-view [tableData]='tabledata' [data]='data' [totalCount]='totalApprovalCount'
+          isCreate=true [currentFilter]="currentFilter" (actionsClick)="menuActions($event)"
           (pageChanged)="onPageChange($event)"></ws-designation-approval-list-view>
       </ng-container>
     </mat-card-content>

@@ -85,7 +85,9 @@ export class DesignationApprovalListComponent implements OnInit {
       ],
       needCheckBox: false,
       needHash: false,
-      needUserMenus: true,
+      needUserMenus: true
+
+
     }
     this.fetchApprovalRequests()
 
@@ -94,6 +96,11 @@ export class DesignationApprovalListComponent implements OnInit {
   fetchApprovalRequests(tab?: string) {
     if (tab) {
       this.currentFilter = tab
+      if (this.currentFilter.toLowerCase() === 'pending') {
+        this.tabledata['needUserMenus'] = true
+      } else {
+        this.tabledata['needUserMenus'] = false
+      }
     }
     // const now = moment.utc().format('YYYY-MM-DDTHH:mm:ss.SSSZZ')
     // let requestObj: any
@@ -191,6 +198,8 @@ export class DesignationApprovalListComponent implements OnInit {
           } else if (obj.status?.toLowerCase() === 'rejected') {
             this.approvalRequestCount.rejected += 1
           }
+
+          console.log('this.approvalRequestCount--', this.approvalRequestCount)
           // dropdown values
           if (obj.division) {
             divisionSet.add(obj.division)
