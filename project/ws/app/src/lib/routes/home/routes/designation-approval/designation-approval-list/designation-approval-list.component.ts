@@ -37,6 +37,9 @@ export class DesignationApprovalListComponent implements OnInit {
   currentPageIndex = 0
   isLoading = false
   originalData: any[] = []
+  allCurrentFilterData: any[] = []
+  isAllCurrentFilterDataLoaded = false
+  private readonly filterDataFetchPageSize = 100
   constructor(
     public dialog: MatDialog,
     private activeRoute: ActivatedRoute,
@@ -149,6 +152,15 @@ export class DesignationApprovalListComponent implements OnInit {
     //     }
     //     break
     // }
+    if (this.hasActiveFilters()) {
+      if (this.isAllCurrentFilterDataLoaded) {
+        this.applyFiltersOnLoadedData()
+      } else {
+        this.loadAllDataForFilters()
+      }
+      return
+    }
+
     this.approvalRequestCount = { pending: 0, approved: 0, rejected: 0 }
     this.isLoading = true
     this.loaderService.changeLoaderState(true)
@@ -157,14 +169,108 @@ export class DesignationApprovalListComponent implements OnInit {
       this.setApprovalListData(approvalRequest)
 
       this.isLoading = false
+      this.loaderService.changeLoaderState(false)
 
     })
+  }
+
+  private hasActiveFilters() {
+    return !!(this.searchText || this.selectedDivision || this.selectedOrganisation)
+  }
+
+  private loadAllDataForFilters() {
+    this.isLoading = true
+    this.loaderService.changeLoaderState(true)
+    this.allCurrentFilterData = []
+
+    const fetchPage = (pageIndex: number) => {
+      const offset = pageIndex * this.filterDataFetchPageSize
+      this.designationApprovalSvc.getApprovalList(this.filterDataFetchPageSize, offset, this.currentFilter).subscribe((approvalRequest: any) => {
+        const mappedData = this.mapApprovalItems(_.get(approvalRequest, 'items', []))
+        this.allCurrentFilterData = this.allCurrentFilterData.concat(mappedData)
+
+        const totalItems = _.get(approvalRequest, 'pagination.total_items', this.allCurrentFilterData.length)
+        const hasMoreData = this.allCurrentFilterData.length < totalItems && mappedData.length > 0
+
+        if (hasMoreData) {
+          fetchPage(pageIndex + 1)
+          return
+        }
+
+        this.isAllCurrentFilterDataLoaded = true
+        this.updateFilterOptions(this.allCurrentFilterData)
+        this.applyFiltersOnLoadedData()
+        this.isLoading = false
+        this.loaderService.changeLoaderState(false)
+      }, () => {
+        this.isLoading = false
+        this.loaderService.changeLoaderState(false)
+      })
+    }
+
+    fetchPage(0)
+  }
+
+  private updateFilterOptions(sourceData: any[]) {
+    const divisionSet = new Set<string>()
+    const organisationSet = new Set<string>()
+
+    sourceData.forEach(item => {
+      if (item.division) {
+        divisionSet.add(item.division)
+      }
+      if (item.organisation) {
+        organisationSet.add(item.organisation)
+      }
+    })
+
+    this.divisionList = Array.from(divisionSet)
+    this.organisationList = Array.from(organisationSet)
+  }
+
+  private applyFiltersOnLoadedData() {
+    const filteredData = this.allCurrentFilterData.filter((item: any) => {
+      const searchMatch =
+        !this.searchText ||
+        item.designationName?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+        item.email?.toLowerCase().includes(this.searchText.toLowerCase())
+
+      const divisionMatch =
+        !this.selectedDivision ||
+        item.division === this.selectedDivision
+
+      const organisationMatch =
+        !this.selectedOrganisation ||
+        item.organisation === this.selectedOrganisation
+
+      return searchMatch && divisionMatch && organisationMatch
+    })
+
+    this.totalApprovalCount = filteredData.length
+
+    const startIndex = this.currentPageIndex * this.currentPageSize
+    const endIndex = startIndex + this.currentPageSize
+    this.originalData = filteredData
+    this.data = filteredData.slice(startIndex, endIndex)
+  }
+
+  private mapApprovalItems(items: any[]) {
+    return items.map((obj: any) => ({
+      identifier: obj.id,
+      designationName: obj.designation_name ? obj.designation_name.substring(0, 100) : '',
+      createdOn: this.allEventDateFormat(obj.created_at),
+      status: obj.status,
+      organisation: obj.organisation,
+      division: obj.division,
+      email: obj.email,
+      reviewer_comments: obj.reviewer_comments ? obj.reviewer_comments : 'No Reason Found',
+    }))
   }
 
   setApprovalListData(eventObj: any) {
 
     if (eventObj !== undefined) {
-      const data: any = eventObj.items
+      const data = this.mapApprovalItems(_.get(eventObj, 'items', []))
       const divisionSet = new Set<string>()
       const organisationSet = new Set<string>()
       this.originalData = []
@@ -173,17 +279,6 @@ export class DesignationApprovalListComponent implements OnInit {
       if (data) {
         Object.keys(data).forEach((index: any) => {
           const obj = data[index]
-
-          const eventDataObj = {
-            identifier: obj.id,
-            designationName: obj.designation_name.substring(0, 100),
-            createdOn: this.allEventDateFormat(obj.created_at),
-            status: obj.status,
-            organisation: obj.organisation,
-            division: obj.division,
-            email: obj.email,
-            reviewer_comments: obj.reviewer_comments ? obj.reviewer_comments : 'No Reason Found'
-          }
           if (obj.status?.toLowerCase() === 'pending') {
             this.approvalRequestCount.pending += 1
           } else if (obj.status?.toLowerCase() === 'approved') {
@@ -201,11 +296,11 @@ export class DesignationApprovalListComponent implements OnInit {
           }
           if (obj.status?.toLowerCase() === this.currentFilter?.toLowerCase()) {
 
-            this.data.push(eventDataObj)
+            this.data.push(obj)
 
           }
           if (obj.status?.toLowerCase() === this.currentFilter?.toLowerCase()) {
-            this.originalData.push(eventDataObj)
+            this.originalData.push(obj)
           }
         })
 
@@ -244,6 +339,8 @@ export class DesignationApprovalListComponent implements OnInit {
   filter(key: string) {
     this.currentFilter = key
     this.currentPageIndex = 0
+    this.isAllCurrentFilterDataLoaded = false
+    this.allCurrentFilterData = []
 
     this.searchText = ''
     this.selectedDivision = ''
@@ -375,28 +472,19 @@ export class DesignationApprovalListComponent implements OnInit {
   }
 
   applyFilters() {
-    this.data = this.originalData.filter((item: any) => {
-
-      const searchMatch =
-        !this.searchText ||
-        item.designationName?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        item.email?.toLowerCase().includes(this.searchText.toLowerCase())
-
-      const divisionMatch =
-        !this.selectedDivision ||
-        item.division === this.selectedDivision
-
-      const organisationMatch =
-        !this.selectedOrganisation ||
-        item.organisation === this.selectedOrganisation
-
-      return searchMatch && divisionMatch && organisationMatch
-    })
+    this.currentPageIndex = 0
+    this.fetchApprovalRequests()
   }
 
   onPageChange(event: { pageIndex: number; pageSize: number }) {
     this.currentPageIndex = event.pageIndex
     this.currentPageSize = event.pageSize
+
+    if (this.hasActiveFilters()) {
+      this.applyFiltersOnLoadedData()
+      return
+    }
+
     this.fetchApprovalRequests()
   }
 
@@ -404,7 +492,10 @@ export class DesignationApprovalListComponent implements OnInit {
     this.searchText = ''
     this.selectedDivision = ''
     this.selectedOrganisation = ''
+    this.currentPageIndex = 0
+    this.isAllCurrentFilterDataLoaded = false
+    this.allCurrentFilterData = []
 
-    this.data = [...this.originalData]
+    this.fetchApprovalRequests()
   }
 }
