@@ -32,6 +32,7 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
   @Input() isUpload?: boolean
   @Input() isCreate?: boolean
   @Input() currentFilter = ''
+  @Input() currentPageIndex = 0
 
   @Input() columns?: IColums[]
   @Input() needCheckBox?: boolean
