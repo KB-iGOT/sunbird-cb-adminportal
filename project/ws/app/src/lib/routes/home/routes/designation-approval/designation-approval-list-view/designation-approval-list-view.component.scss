@@ -960,6 +960,29 @@ mat-header-row {
   min-width: 160px;
 }
 
+::ng-deep .cdk-header-row .mat-column-division {
+  flex: 0 0 110px !important;
+  padding-left: 0px !important;
+  justify-content: center !important;
+}
+::ng-deep .cdk-header-row .mat-column-status {
+  flex: 0 0 150px !important;
+  padding-left: 0px !important;
+  justify-content: left !important;
+}
+::ng-deep .cdk-header-row .mat-column-Menu {
+  flex: 0 0 110px !important;
+  padding-left: 0px !important;
+  justify-content: left !important;
+}
+::ng-deep .mat-column-email {
+  flex: 1 1 160px !important;
+}
+
+::ng-deep .mat-column-status {
+  flex: 0 0 150px !important;
+
+}
 
 
 .popup-overlay {
