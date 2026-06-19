@@ -10,12 +10,12 @@ import { UIDirectoryTableComponent } from '../../../../head/ui-admin-table/direc
 import { DatePipe } from '@angular/common'
 
 @Component({
-    selector: 'ws-app-directory',
-    templateUrl: './directory.component.html',
-    styleUrls: ['./directory.component.scss'],
-    /* tslint:disable */
-    host: { class: 'flex flex-1' },
-    standalone: false
+  selector: 'ws-app-directory',
+  templateUrl: './directory.component.html',
+  styleUrls: ['./directory.component.scss'],
+  /* tslint:disable */
+  host: { class: 'flex flex-1' },
+  standalone: false
 })
 export class DirectoryViewComponent implements OnInit {
   @ViewChild(UIDirectoryTableComponent)
@@ -151,6 +151,23 @@ export class DirectoryViewComponent implements OnInit {
       if (!isAllowed) {
         delete this.tabledata.link
       }
+    } else if (this.currentFilter === 'volunteer') {
+      this.tabledata = {
+        columns: [
+          { displayName: 'Organisation', key: 'organisation' },
+          { displayName: 'Type', key: 'type' },
+          { displayName: 'State/Center', key: 'stateOrMinistry' },
+          { displayName: 'Created On', key: 'createdOn' },
+        ],
+        actions: [{ name: '', label: '', icon: 'remove_red_eye', type: 'menu' }],
+        needCheckBox: false,
+        needHash: false,
+        sortColumn: '',
+        sortState: 'asc',
+        showNewNoContent: true,
+        loader: true,
+        tableDataCount: this.totalCount
+      }
     } else {
       this.tabledata = {
         // actions: [{ name: 'Edit', label: 'Edit info', icon: 'remove_red_eye', type: 'button' }],
@@ -245,6 +262,8 @@ export class DirectoryViewComponent implements OnInit {
         key = 'ministry'
       } else if (lowerValue === 'organisation') {
         key = 'organisation'
+      } else if (lowerValue === 'volunteer') {
+        key = 'volunteer'
       } else if (lowerValue === 'orghierarchies') {
         key = 'orgHierarchies'
       } else {
@@ -421,6 +440,34 @@ export class DirectoryViewComponent implements OnInit {
             }
             filteredData2.push(obj)
             // }
+          })
+          break
+        case 'volunteer':
+          this.wholeData2.forEach((element: any) => {
+            const department = key
+            const orgType = element?.ministryorstatetype ? element?.ministryorstatetype.charAt(0).toUpperCase() + element?.ministryorstatetype.slice(1) :
+              element?.ministryOrStateType ? element?.ministryOrStateType.charAt(0).toUpperCase() + element?.ministryOrStateType.slice(1) : ''
+            const obj = {
+              id: element.id,
+              currentDepartment: department,
+              type: orgType,
+              user: element.noOfMembers || 0,
+              head: department,
+              typeid: element.organisationSubType,
+              organisation: element.orgName,
+              createdBy: element.createdBy,
+              createdOn: this.transformDate(element.createdDate),
+              channel: element.channel,
+              logo: element.logo,
+              description: element.description,
+              qrRegistrationLink: element?.qrRegistrationLink || null,
+              registrationLink: element?.registrationLink || null,
+              startDateRegistration: element?.startDateRegistration || null,
+              endDateRegistration: element?.endDateRegistration || null,
+              isState: element?.isState || false,
+              stateOrMinistry: element?.ministryOrStateName || element?.ministryorstatename || null,
+            }
+            filteredData2.push(obj)
           })
           break
         case 'orgHierarchies':
