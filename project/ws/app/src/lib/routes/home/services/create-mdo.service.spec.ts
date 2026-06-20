@@ -5,7 +5,7 @@ const API_END_POINTS = {
   GET_ALL_DEPARTMENTS: '/apis/protected/v8/portal/departmentType/',
   CREATE_DEPARTMENT: '/apis/proxies/v8/org/v1/create',
   UPDATE_DEPARTMENT: '/apis/proxies/v8/org/v1/update',
-  ASSIGN_ADMIN_TO_CREATED_DEPARTMENT: '/apis/proxies/v8/user/private/v1/assign/role',
+  ASSIGN_ADMIN_TO_CREATED_DEPARTMENT: '/apis/proxies/v8/user/v1/role/assign',
   GET_DEPARTMENT_BY_ID: '/apis/protected/v8/portal/deptAction/',
   MIGRATE_DEPARTMENT: '/apis/proxies/v8/user/private/v1/migrate',
   GET_ALL_STATES: '/apis/public/v8/org/v1/list',
