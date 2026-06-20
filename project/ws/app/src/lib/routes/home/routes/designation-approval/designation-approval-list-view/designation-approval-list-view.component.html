@@ -100,7 +100,7 @@
         No requests found
     </div>
     <mat-paginator [hidden]="dataSource && dataSource.filteredData.length < 1" [length]="totalCount"
-        [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" class="mt-1">
+        [pageIndex]="currentPageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" class="mt-1">
     </mat-paginator>
 </div>
 
