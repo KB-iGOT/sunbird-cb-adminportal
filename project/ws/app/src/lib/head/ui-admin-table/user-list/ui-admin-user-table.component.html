@@ -49,7 +49,7 @@
                 </button>
             </div>
             <div *ngIf="!isReports">
-                <button mat-raised-button type="button" *ngIf="needAddAdmin"
+                <button mat-raised-button type="button" *ngIf="needAddAdmin && departmentRole !== 'volunteer'"
                     class="text-white ws-mat-primary-background text-white margin-right-m custom-btn mat-btn-flat"
                     (click)="openPopup()">
                     <b class="text-white">Add admin</b>

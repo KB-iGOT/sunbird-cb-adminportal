@@ -10,20 +10,23 @@
   <div class="flex-display" [ngClass]="{ 'override-text-css': isReportsPath}">
 
     <ws-widget-ui-user-table *ngIf="currentTab==='users'" [tableData]="tabledata" [data]="data"
-      [totalRecords]="totalRecordsCount" [otherInput]="createdDepartment" [needAddAdmin]="true"
+      [totalRecords]="totalRecordsCount" [otherInput]="createdDepartment" [needAddAdmin]="currentDept !== 'volunteer'"
       [needCreateUser]="isAllowed(allowedCreateRoles)" (actionsClick)="editUser($event)"
       (searchByEnterKey)="onEnterkySearch($event)" [isSurveySearch]="true">
     </ws-widget-ui-user-table>
 
-    <ws-app-roles-access *ngIf="currentTab==='rolesandaccess'" (clickedDepartment)="fClickedDepartment($event)"></ws-app-roles-access>
+    <ws-app-roles-access *ngIf="currentTab==='rolesandaccess'"
+      (clickedDepartment)="fClickedDepartment($event)"></ws-app-roles-access>
 
     <ws-app-mentor-manage *ngIf="currentTab==='mentormanage'"></ws-app-mentor-manage>
 
     <ws-app-grade-setting *ngIf="currentTab === 'grade_setting'"></ws-app-grade-setting>
 
-    <ws-app-designations *ngIf="currentTab === 'designation_master'" [goToImportMaster]="goToImportMaster"></ws-app-designations>
+    <ws-app-designations *ngIf="currentTab === 'designation_master'"
+      [goToImportMaster]="goToImportMaster"></ws-app-designations>
 
-    <ws-app-user-bulk-transfer *ngIf="currentTab === 'user_transfer' && orgDataLoaded" [selectedOrgData]="orgData"></ws-app-user-bulk-transfer>
+    <ws-app-user-bulk-transfer *ngIf="currentTab === 'user_transfer' && orgDataLoaded"
+      [selectedOrgData]="orgData"></ws-app-user-bulk-transfer>
 
   </div>
 </div>
