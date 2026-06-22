@@ -29,11 +29,16 @@
               [routerLink]="'/app/home/directory/organisation'" (click)="filter(department.toLowerCase())"
               role="button">
               Organisation</a>
+
           </div>
           <a class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'orgHierarchies',
                         'ws-mat-accent-border font-medium':currentFilter !== 'state'}" mat-button
             [routerLink]="'/app/home/directory/orgHierarchies'" (click)="filter('orgHierarchies')" role="button">
             Organisation Hierarchies</a>
+          <a class="filter-option" [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'volunteer',
+                        'ws-mat-accent-border font-medium':currentFilter !== 'volunteer'}" mat-button
+            [routerLink]="'/app/home/directory/volunteer'" (click)="filter('volunteer')" role="button">
+            Volunteer</a>
         </div>
       </div>
       <ng-container *ngIf="currentFilter !== 'orgHierarchies'">

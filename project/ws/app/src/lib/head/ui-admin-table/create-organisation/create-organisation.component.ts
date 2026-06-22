@@ -26,6 +26,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       ministriesList: [],
     }
   @Input() openMode: string = ''
+  @Input() defaultEntityType: 'organisation' | 'volunteer' = 'organisation'
   @Output() buttonClick = new EventEmitter()
   @Output() organizationCreated = new EventEmitter<any>()
 
@@ -50,6 +51,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
   isMatcompleteOpened = false
   isStateLogin = false
   disableStateBlock = false
+  entityType: 'organisation' | 'volunteer' = 'organisation'
   EXCLUDED_MINISRIES: string[] = []
   stateName: string = ''
   constructor(
@@ -68,6 +70,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
     this.EXCLUDED_MINISRIES = this.activatedRoute.snapshot.parent ?
       this.activatedRoute.snapshot.parent?.data?.pageData?.data?.excludedOrganizationsSborgId : []
 
+    this.entityType = this.defaultEntityType
     this.initialization()
     if (this.openMode === 'editMode') {
       this.editOrganization(this.rowData)
@@ -220,6 +223,21 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
     return this.organisationForm?.controls?.category?.value
   }
 
+  onEntityTypeChange() {
+    this.organisationForm.reset({
+      organisationName: '',
+      category: 'State',
+      state: '',
+      ministry: '',
+      description: ''
+    })
+    this.selectedLogo = null
+    this.selectedLogoName = ''
+    this.selectedLogoFile = null
+    this.filteredStates = [...this.statesList]
+    this.filteredMinistry = [...this.ministriesList]
+  }
+
   closeNaveBar() {
     const event = {
       action: 'close'
@@ -231,7 +249,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
     let payload: any = {
       orgName: this.controls['organisationName']?.value || "",
       channel: this.controls['organisationName']?.value || "",
-      organisationType: "mdo",
+      organisationType: this.entityType === 'volunteer' ? 'ngo' : 'mdo',
       organisationSubType: "board",
       isTenant: true,
       requestedBy: this.loggedInUserId,

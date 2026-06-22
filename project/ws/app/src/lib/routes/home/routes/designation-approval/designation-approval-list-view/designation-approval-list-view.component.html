@@ -18,7 +18,8 @@
         <!-- </mat-form-field> -->
         <mat-table #table matSort [ngStyle]="{'height': bodyHeight}" [matSortActive]="tableData!.sortColumn"
             [matSortDirection]="tableData!.sortState" [dataSource]="dataSource"
-            [class]="currentFilter == 'pending' ? 'example-table table1 responsiveTable pending' : currentFilter == 'approved' ? 'example-table table1 responsiveTable approved' :  'example-table table1 responsiveTable rejected'" *ngIf="dataSource.filteredData.length > 0">
+            [class]="currentFilter == 'pending' ? 'example-table table1 responsiveTable pending' : currentFilter == 'approved' ? 'example-table table1 responsiveTable approved' :  'example-table table1 responsiveTable rejected'"
+            *ngIf="dataSource.filteredData.length > 0">
             <ng-container matColumnDef="{{col.key}}" *ngFor="let col of tableData!.columns">
                 <mat-header-cell *matHeaderCellDef mat-sort-header class="h-400-r-14-l color-60 no-col-padding"
                     [ngClass]="{'margin-text': (col.key === 'organisation' || col.key === 'division' || col.key === 'email' || col.key === 'status' || col.key === 'action') }">
@@ -98,8 +99,8 @@
     <div *ngIf="dataSource.filteredData.length <= 0" class="h-600-s-20-m color-60 mt-4 mb-4 text-center">
         No requests found
     </div>
-    <mat-paginator [hidden]="dataSource && dataSource.filteredData.length < 1" [length]="totalCount" [pageIndex]="currentPageIndex" [pageSize]="pageSize"
-        [pageSizeOptions]="pageSizeOptions" class="mt-1">
+    <mat-paginator [hidden]="dataSource && dataSource.filteredData.length < 1" [length]="totalCount"
+        [pageIndex]="currentPageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" class="mt-1">
     </mat-paginator>
 </div>
 

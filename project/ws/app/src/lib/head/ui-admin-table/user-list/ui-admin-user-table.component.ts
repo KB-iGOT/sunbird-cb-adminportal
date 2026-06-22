@@ -19,10 +19,10 @@ import { environment } from '../../../../../../../../src/environments/environmen
 import { PageEvent } from '@angular/material/paginator'
 
 @Component({
-    selector: 'ws-widget-ui-user-table',
-    templateUrl: './ui-admin-user-table.component.html',
-    styleUrls: ['./ui-admin-user-table.component.scss'],
-    standalone: false
+  selector: 'ws-widget-ui-user-table',
+  templateUrl: './ui-admin-user-table.component.html',
+  styleUrls: ['./ui-admin-user-table.component.scss'],
+  standalone: false
 })
 export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() tableData!: ITableData | undefined
@@ -293,6 +293,8 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
         return 'mdo'
       case 'state':
         return 'state'
+      case 'volunteer':
+        return 'volunteer'
       default:
         return 'cbp-providers'
     }
