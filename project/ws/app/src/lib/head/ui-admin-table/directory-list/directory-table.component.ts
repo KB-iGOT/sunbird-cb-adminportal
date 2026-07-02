@@ -15,6 +15,8 @@ import { environment } from '../../../../../../../../src/environments/environmen
 import { MatDialog } from '@angular/material/dialog'
 import { InfoModalComponent } from '../../info-modal/info-modal.component'
 import { CreateMDOService } from '../../../routes/home/services/create-mdo.services'
+import { OrgHierarchyService } from '../services/org-hierarchy.service'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { DesignationsService } from '../../../routes/create-mdo/routes/designation/services/designations.service'
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators'
 import { BehaviorSubject } from 'rxjs'
@@ -74,6 +76,8 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
     private router: Router, private events: EventService, public dialog: MatDialog,
     private designationsService: DesignationsService,
     private createMdoService: CreateMDOService,
+    private orgHierarchyService: OrgHierarchyService,
+    private snackBar: MatSnackBar,
   ) {
     this.dataSource = new MatTableDataSource<any>()
     this.actionsClick = new EventEmitter()
@@ -360,6 +364,28 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
     this.openMode = 'editMode'
     this.rowData = data
     this.toggleOverlay(true)
+  }
+
+  updateVolunteerStatus(row: any, status: 0 | 1) {
+    const request = {
+      request: {
+        organisationId: row.id,
+        status,
+      },
+    }
+    this.orgHierarchyService.setOrgStatus(request).subscribe({
+      next: () => {
+        this.snackBar.open(
+          `Organisation successfully ${status === 1 ? 'activated' : 'deactivated'}.`, 'X', { panelClass: ['success'] })
+        this.pageIndex = 0
+        this.searchByEnterKey.emit(this.searchValue?.length > 2 ? this.searchValue : '')
+      },
+      error: (error: any) => {
+        const errorMessage = _.get(error, 'error.params.errmsg')
+          || `Failed to ${status === 1 ? 'activate' : 'deactivate'} organisation.`
+        this.snackBar.open(errorMessage, 'X', { panelClass: ['error'] })
+      },
+    })
   }
 
   linkGeneratedEmit(event: any): void {

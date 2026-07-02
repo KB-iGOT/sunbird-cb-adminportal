@@ -466,6 +466,7 @@ export class DirectoryViewComponent implements OnInit {
               endDateRegistration: element?.endDateRegistration || null,
               isState: element?.isState || false,
               stateOrMinistry: element?.ministryOrStateName || element?.ministryorstatename || null,
+              status: element?.status,
             }
             filteredData2.push(obj)
           })
@@ -499,6 +500,7 @@ export class DirectoryViewComponent implements OnInit {
             startDateRegistration: dept.startDateRegistration,
             endDateRegistration: dept.endDateRegistration,
             stateOrMinistry: dept.stateOrMinistry,
+            status: dept.status,
           }
         })
         this.data = [...this.data]
