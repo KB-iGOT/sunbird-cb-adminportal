@@ -144,7 +144,18 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.telemetrySvc.start('app', '', { module: 'Home', pageId: 'Home' })
   }
   ngAfterViewInit() {
-    // this.elementPosition = this.menuElement.nativeElement.offsetTop
+    setTimeout(() => {
+      this.applyMenuTooltips()
+
+      const observer = new MutationObserver(() => {
+        this.applyMenuTooltips()
+      })
+
+      observer.observe(this.menuElement.nativeElement, {
+        childList: true,
+        subtree: true,
+      })
+    })
   }
   bindUrl(path: string) {
     if (path) {
@@ -188,5 +199,43 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
   }
+  // private applyMenuTooltips(): void {
+  //   const menuItems =
+  //     this.menuElement.nativeElement.querySelectorAll('.menu-text')
 
+  //   menuItems.forEach((item: HTMLElement) => {
+  //     const text = item.textContent?.trim()
+
+  //     const anchor = item.closest('a')
+
+  //     if (text && anchor && !anchor.getAttribute('title')) {
+  //       anchor.setAttribute('title', text)
+  //     }
+  //   })
+  // }
+
+  private applyMenuTooltips(): void {
+    const menuItems =
+      this.menuElement.nativeElement.querySelectorAll('.menu-text')
+
+    menuItems.forEach((item: HTMLElement) => {
+      const anchor = item.closest('a')
+
+      if (!anchor) {
+        return
+      }
+
+      const isTruncated = item.innerText.trim().length > 25
+
+      if (isTruncated) {
+        anchor.setAttribute('title', item.innerText.trim())
+      } else {
+        anchor.removeAttribute('title')
+      }
+    })
+  }
+  @HostListener('window:resize')
+  onResize(): void {
+    this.applyMenuTooltips()
+  }
 }
