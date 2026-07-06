@@ -10,7 +10,8 @@ const API_END_POINTS = {
   BULKUPLOAD_FRAMEWORK: '/apis/proxies/v8/organisation/v1/hierarchy/bulkUpload/',
   DOWNLOAD_SAMPLE_TEMPLATE: '/apis/proxies/v8/organisation/v1/getMappingFile/sample/',
   ORG_READ: '/apis/proxies/v8/org/v1/read',
-  BULKUPLOAD_PROGRESS: '/apis/proxies/v8/organisation/v1/hierarchy/progress/details/bulkUpload/'
+  BULKUPLOAD_PROGRESS: '/apis/proxies/v8/organisation/v1/hierarchy/progress/details/bulkUpload/',
+  ACTIVATE_DEACTIVATE_VOLUNTEER:'apis/proxies/v8/org/v1/status/update'
 }
 
 @Injectable({
@@ -75,5 +76,9 @@ export class OrgHierarchyService {
 
   getParentOrgData(): any {
     return this.parentOrgData
+  }
+
+  setOrgStatus(request: any): Observable<any> {
+    return this.http.patch<any>(API_END_POINTS.ACTIVATE_DEACTIVATE_VOLUNTEER, request)
   }
 }

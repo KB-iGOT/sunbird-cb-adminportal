@@ -955,9 +955,12 @@ mat-header-row {
   min-width: fit-content;
 }
 
+.mat-column-status {
+  flex: 0 0 160px !important;
+  min-width: 160px;
+}
+
 .pending {
-
-
 
 .action-header {
   justify-content: center;
@@ -1070,6 +1073,43 @@ mat-header-row {
     flex-direction: row;
     justify-content: end;
 }
+
+// .margin-text {
+//   padding-left: 20px;
+// }
+
+.mat-mdc-header-row,
+.mat-mdc-row {
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
+}
+
+.mat-column-status.mat-mdc-header-cell {
+  justify-content: flex-start !important;
+  text-align: left !important;
+}
+
+:host ::ng-deep .mat-mdc-cell {
+  white-space: normal !important;
+  overflow: visible !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  height: auto !important;
+  line-height: 1.4;
+}
+
+:host ::ng-deep .mat-mdc-cell span,
+::ng-deep .mat-mdc-cell div {
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+}
+
+.overflow-visible {
+  overflow:visible !important;
 .approved {
 
   // ::ng-deep mat-mdc-header-row .mat-column-division {

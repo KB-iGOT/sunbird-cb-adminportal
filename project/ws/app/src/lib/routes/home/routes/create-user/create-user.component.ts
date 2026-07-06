@@ -300,7 +300,7 @@ export class CreateUserComponent implements OnInit {
     this.disableCreateButton = true
     this.displayLoader = true
     this.raiseTelemetry()
-    const userreq = {
+    const userreq: any = {
       personalDetails: {
         email: form.value.email,
         firstName: form.value.fname,
@@ -310,6 +310,9 @@ export class CreateUserComponent implements OnInit {
         channel: form.value.deptId,
         roles: this.createUserForm.value.role,
       },
+    }
+    if (this.rawCurrentDept === 'volunteer') {
+      userreq.personalDetails.designation = 'VOLUNTEER'
     }
     if (userreq.personalDetails.roles.includes('MDO_LEADER') && (this.mdoLeadersCount > 0)) {
       this.openSnackbar(`MDO Leader role has already been allocated to another user from the Ministry; kindly revise the role for that user before assigning a different user as an MDO Leader`)
