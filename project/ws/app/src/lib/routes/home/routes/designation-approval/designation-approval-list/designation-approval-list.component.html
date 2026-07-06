@@ -89,8 +89,8 @@
           <mat-spinner [diameter]="40" [strokeWidth]="4"></mat-spinner>
         </div>
         <ws-designation-approval-list-view [tableData]='tabledata' [data]='data' [totalCount]='totalApprovalCount'
-          isCreate=true [currentFilter]="currentFilter" (actionsClick)="menuActions($event)"
-          (pageChanged)="onPageChange($event)"></ws-designation-approval-list-view>
+          isCreate=true [currentPageIndex]="currentPageIndex" [currentFilter]="currentFilter"
+          (actionsClick)="menuActions($event)" (pageChanged)="onPageChange($event)"></ws-designation-approval-list-view>
       </ng-container>
     </mat-card-content>
   </mat-card>
