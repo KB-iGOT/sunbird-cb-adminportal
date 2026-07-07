@@ -28,7 +28,6 @@ export class DirectoryService {
     } else if (state === 'volunteer') {
       filters = {
         isTenant: true,
-        status: 1,
         isNgo: true,
       }
     } else {
@@ -48,6 +47,7 @@ export class DirectoryService {
         searchFilters.isState = true
       } else if (state === 'volunteer') {
         searchFilters.isNgo = true
+        delete searchFilters.status
       } else if (state === 'organisation') {
         searchFilters.isMdo = true
       } else {

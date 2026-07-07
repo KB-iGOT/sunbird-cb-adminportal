@@ -158,6 +158,7 @@ export class DirectoryViewComponent implements OnInit {
           { displayName: 'Type', key: 'type' },
           { displayName: 'State/Center', key: 'stateOrMinistry' },
           { displayName: 'Created On', key: 'createdOn' },
+          { displayName: 'Status', key: 'statusLabel' },
         ],
         actions: [{ name: '', label: '', icon: 'remove_red_eye', type: 'menu' }],
         needCheckBox: false,
@@ -467,6 +468,7 @@ export class DirectoryViewComponent implements OnInit {
               isState: element?.isState || false,
               stateOrMinistry: element?.ministryOrStateName || element?.ministryorstatename || null,
               status: element?.status,
+              statusLabel: element?.status === 1 ? 'Active' : 'Inactive',
             }
             filteredData2.push(obj)
           })
@@ -501,6 +503,7 @@ export class DirectoryViewComponent implements OnInit {
             endDateRegistration: dept.endDateRegistration,
             stateOrMinistry: dept.stateOrMinistry,
             status: dept.status,
+            statusLabel: dept.statusLabel,
           }
         })
         this.data = [...this.data]
