@@ -55,7 +55,7 @@ export class CreateUserComponent implements OnInit {
   disableRequired = false
   stateAdminRoles = ["STATE_ADMIN", "PUBLIC"]
   rawCurrentDept = ''
-  hiddenRolesForOrg = ['DASHBOARD_ADMIN', 'SPV_ADMIN', 'SPV_PUBLISHER', 'CBC_ADMIN', 'CBC_MEMBER', 'PROGRAM_INSTRUCTOR', 'STATE_ADMIN']
+  hiddenRolesForOrg = ['CBC_ADMIN', 'CBC_MEMBER']
   // hideRole: any = []
 
   constructor(
@@ -179,18 +179,27 @@ export class CreateUserComponent implements OnInit {
     this.directoryService.getDepartmentTitles().subscribe(res => {
       const departmentHeaderArray = JSON.parse(res?.result?.response?.value)
       if (this.rawCurrentDept === 'organisation' && this.createdDepartment?.depType === 'organisation') {
-        const allRoles: string[] = []
         const isStateAdmin = roles && roles.indexOf('STATE_ADMIN') >= 0
-        departmentHeaderArray?.orgTypeList?.forEach((ele: { name: any, isHidden: any, roles: string[] }) => {
-          if (!ele?.isHidden && ele?.roles) {
-            ele.roles.forEach((role: string) => {
-              if (role && !allRoles.includes(role) && !(isStateAdmin && this.hiddenRolesForOrg.includes(role))) {
-                allRoles.push(role)
-              }
-            })
+        const filteredOrgTypeList = (departmentHeaderArray?.orgTypeList || []).map((org: { name: any, isHidden: any, roles: string[] }) => {
+          if (org?.isHidden) {
+            return { ...org, roles: [...(org?.roles || [])] }
           }
+
+          const filteredRoles = (org?.roles || []).filter((role: string) => {
+            if (!role) {  return false }
+            if (this.hiddenRolesForOrg.includes(role)) { return false }
+            if (!isStateAdmin && role === 'STATE_ADMIN') { return false }
+            return true
+          })
+
+          return { ...org, roles: filteredRoles}
         })
-        this.roles = allRoles
+
+        this.roles = [...new Set(
+          filteredOrgTypeList
+            .filter((org: { isHidden: any, roles: string[] }) => !org?.isHidden)
+            .flatMap((org: { roles: string[] }) => org?.roles || [])
+        )]
       } else {
         departmentHeaderArray?.orgTypeList?.forEach((ele: { name: any, isHidden: any, roles: [] }) => {
           if (environment?.cbpProviderRoles && environment.cbpProviderRoles.includes(this.currentDept.toLowerCase())) {
