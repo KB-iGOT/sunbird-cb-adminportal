@@ -108,7 +108,7 @@ describe('CreateMDOService', () => {
       }
 
       expect(httpClient.post).toHaveBeenCalledWith(
-        '/apis/proxies/v8/user/private/v1/assign/role',
+        '/apis/proxies/v8/user/v1/role/assign',
         expectedPayload
       )
     })
