@@ -55,7 +55,7 @@ export class CreateUserComponent implements OnInit {
   disableRequired = false
   stateAdminRoles = ["STATE_ADMIN", "PUBLIC"]
   rawCurrentDept = ''
-  hiddenRolesForOrg = ['DASHBOARD_ADMIN', 'SPV_ADMIN', 'SPV_PUBLISHER', 'CBC_ADMIN', 'CBC_MEMBER', 'PROGRAM_INSTRUCTOR', 'STATE_ADMIN']
+  hiddenRolesForOrg = ['CBC_ADMIN', 'CBC_MEMBER']
   // hideRole: any = []
 
   constructor(

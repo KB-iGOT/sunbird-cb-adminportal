@@ -24,7 +24,7 @@ const API_END_POINTS = {
   SEARCH_USER_TABLE: '/apis/proxies/v8/user/v1/search',
   ALL_USERS_BY_DEPARTMENT: '/apis/protected/v8/portal/spv/department',
   GET_ALL_USERS_V3: '/apis/proxies/v8/user/v3/search',
-  ADD_USER_TO_DEPARTMENT_MENTOR: '/apis/proxies/v8/user/private/v1/assign/role',
+  ADD_USER_TO_DEPARTMENT_MENTOR: '/apis/proxies/v8/user/v1/role/assign',
 }
 
 @Injectable({
