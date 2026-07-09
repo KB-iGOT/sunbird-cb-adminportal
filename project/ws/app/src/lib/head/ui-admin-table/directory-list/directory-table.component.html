@@ -88,7 +88,7 @@
                                         *ngIf="currentTab === 'organisation' || currentTab === 'volunteer'">Edit</button>
                                     <button mat-menu-item (click)="updateVolunteerStatus(row, 1)"
                                         *ngIf="currentTab === 'volunteer' && row.status === 0">Activate</button>
-                                    <button mat-menu-item (click)="updateVolunteerStatus(row, 0)"
+                                    <button mat-menu-item (click)="confirmDeactivate(row)"
                                         *ngIf="currentTab === 'volunteer' && row.status === 1">Deactivate</button>
                                     <button mat-menu-item (click)="goToRoute('users', row)"
                                         *ngIf="currentTab !== 'volunteer'">Users</button>

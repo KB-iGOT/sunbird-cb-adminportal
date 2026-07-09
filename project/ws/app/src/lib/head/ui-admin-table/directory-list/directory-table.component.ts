@@ -366,6 +366,26 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
     this.toggleOverlay(true)
   }
 
+  confirmDeactivate(row: any) {
+    const dialogRef = this.dialog.open(InfoModalComponent, {
+      panelClass: 'info-dialog',
+      disableClose: true,
+      autoFocus: false,
+      data: {
+        type: 'confirm',
+        title: 'Are you sure you want to deactivate this organisation?',
+        subTitle: 'Users under this organisation will no longer be able to log in.',
+        primaryAction: 'Deactivate',
+        secondaryAction: 'Cancel',
+      },
+    })
+    dialogRef.afterClosed().subscribe((res: any) => {
+      if (res && res.confirmed) {
+        this.updateVolunteerStatus(row, 0)
+      }
+    })
+  }
+
   updateVolunteerStatus(row: any, status: 0 | 1) {
     const request = {
       request: {
@@ -377,8 +397,10 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
       next: () => {
         this.snackBar.open(
           `Organisation successfully ${status === 1 ? 'activated' : 'deactivated'}.`, 'X', { panelClass: ['success'] })
-        this.pageIndex = 0
-        this.searchByEnterKey.emit(this.searchValue?.length > 2 ? this.searchValue : '')
+        setTimeout(() => {
+          this.pageIndex = 0
+          this.searchByEnterKey.emit(this.searchValue?.length > 2 ? this.searchValue : '')
+        }, 1000)
       },
       error: (error: any) => {
         const errorMessage = _.get(error, 'error.params.errmsg')
