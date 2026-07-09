@@ -23,9 +23,9 @@
       <p *ngIf="data.subTitle" class="new-color text-sm">{{ data.subTitle }}</p>
     </div>
     <div class="actions flex justify-center items-center gap-4 my-6">
-      <button  class="bg-blue-600 hover:bg-blue-700 text-white font-large px-4 py-2 rounded border-0" (click)="rejected()">{{ data.secondaryAction
+      <button (click)="rejected()" class="mat-btn-flat" cdkFocusInitial>{{ data.secondaryAction
         || 'Cancel' }}</button>
-      <button mat-stroked-button (click)="confirmed()">{{ data.primaryAction || 'Confirm'
+      <button (click)="confirmed()" class="mat-btn-outline"  >{{ data.primaryAction || 'Confirm'
         }}</button>
     </div>
   </div>
