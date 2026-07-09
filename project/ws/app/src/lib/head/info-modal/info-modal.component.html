@@ -23,7 +23,7 @@
       <p *ngIf="data.subTitle" class="new-color text-sm">{{ data.subTitle }}</p>
     </div>
     <div class="actions flex justify-center items-center gap-4 my-6">
-      <button (click)="rejected()" class="mat-btn-flat"cdkFocusInitial>{{ data.secondaryAction
+      <button (click)="rejected()" class="mat-btn-flat" cdkFocusInitial>{{ data.secondaryAction
         || 'Cancel' }}</button>
       <button (click)="confirmed()" class="mat-btn-outline"  >{{ data.primaryAction || 'Confirm'
         }}</button>
