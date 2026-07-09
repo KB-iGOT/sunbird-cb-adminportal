@@ -101,6 +101,12 @@
                       Center
                     </mat-radio-button>
                   </div>
+                  <div *ngIf="entityType === 'volunteer'"
+                    [ngClass]="{'active-radio-button': getCategory === 'autonomous'}">
+                    <mat-radio-button color="primary" value="autonomous">
+                      Autonomous
+                    </mat-radio-button>
+                  </div>
                 </mat-radio-group>
               </ng-container>
 
@@ -155,6 +161,34 @@
                     </mat-autocomplete>
 
                     <mat-error *ngIf="controls['ministry'].errors?.['required']">Center is required.</mat-error>
+                  </mat-form-field>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="getCategory === 'autonomous' && entityType === 'volunteer'">
+                <div class="grayBox p-4 mt-5 flex flex-column gap-1 organisation-form mat-field-rounded">
+                  <div class="flex items-center gap-1 required">
+                    <span class="lable">Autonomous Organisation</span>
+                  </div>
+
+                  <mat-form-field class="w-full">
+                    <input type="text" placeholder="Type to search" aria-label="Type to search" matInput
+                      (input)="filterAutonomous($event.target.value)" formControlName="autonomous"
+                      [matAutocomplete]="autoAutonomous" (keydown)="onkeyDown($event)">
+                    <mat-autocomplete #autoAutonomous="matAutocomplete" [displayWith]="displayFn"
+                      (opened)="onAutoCompleteOpened()" (closed)="onAutoCompleteClosed()">
+
+                      <ng-container *ngIf="filteredAutonomous?.length > 0; else noAutonomous">
+                        <ng-container *ngFor="let option of filteredAutonomous">
+                          <mat-option [value]="option">{{ option.orgName }}</mat-option>
+                        </ng-container>
+                      </ng-container>
+                      <ng-template #noAutonomous>
+                        <mat-option disabled>No organisations found</mat-option>
+                      </ng-template>
+                    </mat-autocomplete>
+
+                    <mat-error *ngIf="controls['autonomous'].errors?.['required']">Autonomous organisation is
+                      required.</mat-error>
                   </mat-form-field>
                 </div>
               </ng-container>

@@ -6,8 +6,8 @@ import { CreateMDOService } from '../../../routes/home/services/create-mdo.servi
 import { ActivatedRoute } from '@angular/router'
 import { LoaderService } from '../../../routes/home/services/loader.service'
 import { IUploadedLogoresponse } from '../interface/interfaces'
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators'
-import { Subject } from 'rxjs'
+import { catchError, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators'
+import { of, Subject } from 'rxjs'
 @Component({
   selector: 'ws-app-create-organisation',
   templateUrl: './create-organisation.component.html',
@@ -41,6 +41,8 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
   isLoading = false
   filteredStates: any[] = []
   filteredMinistry: any[] = []
+  filteredAutonomous: any[] = []
+  private autonomousSearch$ = new Subject<string>()
   heirarchyObject: any
   selectedLogoFile: any
   uploadedLogoResponse!: IUploadedLogoresponse
@@ -143,6 +145,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       category: new FormControl(_.get(this.rowData, 'type', '') || 'State', [Validators.required]),
       state: new FormControl(_.get(this.rowData, 'state', '')),
       ministry: new FormControl(_.get(this.rowData, 'ministry', '')),
+      autonomous: new FormControl(''),
       description: new FormControl(_.get(this.rowData, 'description', ''), [Validators.required, Validators.maxLength(1000)])
     })
 
@@ -182,6 +185,16 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
     )
   }
 
+  filterAutonomous(value: string): void {
+    this.autonomousSearch$.next(value || '')
+  }
+
+  private resetAutonomousControl(): void {
+    this.organisationForm.controls.autonomous.setValue('')
+    this.organisationForm.controls.autonomous.clearValidators()
+    this.organisationForm.controls.autonomous.updateValueAndValidity()
+  }
+
   valueChangeEvents() {
     if (this.organisationForm && this.organisationForm.controls.category) {
       this.organisationForm.controls.category.valueChanges
@@ -192,15 +205,38 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
             this.organisationForm.controls.ministry.setValue('')
             this.organisationForm.controls.ministry.clearValidators()
             this.organisationForm.controls.ministry.updateValueAndValidity()
+            this.resetAutonomousControl()
           } else if (val === 'ministry') {
             this.organisationForm.controls.ministry.setValidators([Validators.required])
             this.organisationForm.controls.ministry.updateValueAndValidity()
             this.organisationForm.controls.state.setValue('')
             this.organisationForm.controls.state.clearValidators()
             this.organisationForm.controls.state.updateValueAndValidity()
+            this.resetAutonomousControl()
+          } else if (val === 'autonomous') {
+            this.organisationForm.controls.autonomous.setValidators([Validators.required])
+            this.organisationForm.controls.autonomous.updateValueAndValidity()
+            this.organisationForm.controls.state.setValue('')
+            this.organisationForm.controls.state.clearValidators()
+            this.organisationForm.controls.state.updateValueAndValidity()
+            this.organisationForm.controls.ministry.setValue('')
+            this.organisationForm.controls.ministry.clearValidators()
+            this.organisationForm.controls.ministry.updateValueAndValidity()
+            this.filterAutonomous('')
           }
         })
     }
+
+    this.autonomousSearch$
+      .pipe(
+        debounceTime(300),
+        takeUntil(this.untilDestroyed$),
+        switchMap((query: string) => this.createMDOService.searchAutonomousOrgs(query)
+          .pipe(catchError(() => of({}))))
+      )
+      .subscribe((res: any) => {
+        this.filteredAutonomous = _.get(res, 'result.response.content') || []
+      })
 
 
     this.organisationForm.controls.organisationName.valueChanges
@@ -229,6 +265,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       category: 'State',
       state: '',
       ministry: '',
+      autonomous: '',
       description: ''
     })
     this.selectedLogo = null
@@ -272,6 +309,11 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       } else {
         return // Exit function in case of error
       }
+    } else if (this.controls['category']?.value === 'autonomous') {
+      const autonomousOrg = this.controls['autonomous']?.value
+      payload.parentMapId = autonomousOrg?.id || ""
+      // payload['sbRootOrgId'] = autonomousOrg?.sbOrgId || autonomousOrg?.id || ""
+      // payload['ministryOrStateId'] = autonomousOrg?.sbOrgId || autonomousOrg?.id || ""
     } else if (this.controls['ministry']?.value?.mapId) {
       payload.parentMapId = this.controls['ministry'].value?.mapId || ""// Assign ministry mapId
       payload['sbRootOrgId'] = this.controls['ministry']?.value?.sbOrgId || ""
