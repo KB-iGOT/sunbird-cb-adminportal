@@ -25,6 +25,9 @@ export class InfoModalComponent {
     else if (this.data.type === 'delete') {
       sendToParent.isDelete = true
     }
+    else if (this.data.type === 'confirm') {
+      sendToParent.confirmed = true
+    }
     this.dialogRef.close(sendToParent)
   }
 
@@ -39,6 +42,9 @@ export class InfoModalComponent {
     }
     else if (this.data.type === 'delete') {
       sendToParent.isDelete = false
+    }
+    else if (this.data.type === 'confirm') {
+      sendToParent.confirmed = false
     }
     this.dialogRef.close(sendToParent)
   }

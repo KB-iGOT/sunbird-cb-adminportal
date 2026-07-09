@@ -15,6 +15,22 @@
   </div>
 </ng-container>
 
+<ng-container *ngIf="data.type === 'confirm'">
+  <div class="info-dialog-wrapper">
+    <div class="text-center mt-8 px-6">
+      <img src="/assets/icons/i-icon-large.svg" alt="i-icon" class="mb-4">
+      <p class="brand-color text-base max-w-456 block">{{ data.title }}</p>
+      <p *ngIf="data.subTitle" class="new-color text-sm">{{ data.subTitle }}</p>
+    </div>
+    <div class="actions flex justify-center items-center gap-4 my-6">
+      <button  class="bg-blue-600 hover:bg-blue-700 text-white font-large px-4 py-2 rounded border-0" (click)="rejected()">{{ data.secondaryAction
+        || 'Cancel' }}</button>
+      <button mat-stroked-button (click)="confirmed()">{{ data.primaryAction || 'Confirm'
+        }}</button>
+    </div>
+  </div>
+</ng-container>
+
 <ng-container *ngIf="data.type === 'generate-link-loader'">
   <div class="info-dialog-wrapper">
     <div class="text-center mt-12">
