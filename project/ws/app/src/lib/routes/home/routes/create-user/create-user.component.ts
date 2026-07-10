@@ -1,5 +1,5 @@
 import { CreateMDOService } from './../../services/create-mdo.services'
-import { Component, OnInit } from '@angular/core'
+import { Component, DestroyRef, inject, OnInit } from '@angular/core'
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
 import { UsersService } from '../../services/users.service'
 import { MatSnackBar } from '@angular/material/snack-bar'
@@ -9,18 +9,22 @@ import * as _ from 'lodash'
 import { environment } from '../../../../../../../../../src/environments/environment'
 import { EventService } from '@sunbird-cb/utils-v2'
 import { ProfileV2UtillService } from '../../services/home-utill.service'
+import { forkJoin } from 'rxjs'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 
 // const EMAIL_PATTERN_OLD = /^[a-z0-9_-]+(?:\.[a-z0-9_-]+)*@((?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?){2,}\.){1,3}(?:\w){2,}$/
 const EMAIL_PATTERN = /^[a-zA-Z0-9]+[a-zA-Z0-9._-]*[a-zA-Z0-9]+@[a-zA-Z0-9]+([-a-zA-Z0-9]*[a-zA-Z0-9]+)?(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$/
 const MOBILE_PATTERN = '^((\\+91-?)|0)?[0-9]{10}$'
 
 @Component({
-    selector: 'ws-app-create-user',
-    templateUrl: './create-user.component.html',
-    styleUrls: ['./create-user.component.scss'],
-    standalone: false
+  selector: 'ws-app-create-user',
+  templateUrl: './create-user.component.html',
+  styleUrls: ['./create-user.component.scss'],
+  standalone: false
 })
 export class CreateUserComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
+
   createUserForm: UntypedFormGroup
   namePatern = `^[a-zA-Z\\s\\']{1,32}$`
   rolesList: any = []
@@ -56,6 +60,8 @@ export class CreateUserComponent implements OnInit {
   stateAdminRoles = ["STATE_ADMIN", "PUBLIC"]
   rawCurrentDept = ''
   hiddenRolesForOrg = ['CBC_ADMIN', 'CBC_MEMBER']
+  organisationType: number = 0
+
   // hideRole: any = []
 
   constructor(
@@ -81,6 +87,7 @@ export class CreateUserComponent implements OnInit {
       this.deptId = params['id']
       this.orgName = params['orgName']
       this.rawCurrentDept = params['currentDept'] || ''
+      this.organisationType = params['organisationType'] || 0
       // this.currentDept = params['currentDept']
       this.currentDept = params['subOrgType']
       this.redirectionPath = params['redirectionPath']
@@ -173,49 +180,58 @@ export class CreateUserComponent implements OnInit {
       allowSearchFilter: true,
     }
   }
+
   getAllDepartmentsHeaderAPI() {
-    // const userOrgName = _.get(this.route, 'snapshot.parent.data.configService.unMappedUser.rootOrg')
     const roles: any[] = _.get(this.route, 'snapshot.parent.data.configService.unMappedUser.roles')
-    this.directoryService.getDepartmentTitles().subscribe(res => {
-      const departmentHeaderArray = JSON.parse(res?.result?.response?.value)
-      if (this.rawCurrentDept === 'organisation' && this.createdDepartment?.depType === 'organisation') {
-        const isStateAdmin = roles && roles.indexOf('STATE_ADMIN') >= 0
-        const filteredOrgTypeList = (departmentHeaderArray?.orgTypeList || []).map((org: { name: any, isHidden: any, roles: string[] }) => {
-          if (org?.isHidden) {
-            return { ...org, roles: [...(org?.roles || [])] }
-          }
 
-          const filteredRoles = (org?.roles || []).filter((role: string) => {
-            if (!role) {  return false }
-            if (this.hiddenRolesForOrg.includes(role)) { return false }
-            if (!isStateAdmin && role === 'STATE_ADMIN') { return false }
-            return true
-          })
-
-          return { ...org, roles: filteredRoles}
-        })
-
-        this.roles = [...new Set(
-          filteredOrgTypeList
-            .filter((org: { isHidden: any, roles: string[] }) => !org?.isHidden)
-            .flatMap((org: { roles: string[] }) => org?.roles || [])
-        )]
-      } else {
-        departmentHeaderArray?.orgTypeList?.forEach((ele: { name: any, isHidden: any, roles: [] }) => {
-          if (environment?.cbpProviderRoles && environment.cbpProviderRoles.includes(this.currentDept.toLowerCase())) {
-            this.currentDept = 'CBP'
-          }
-          if (ele?.name && this.currentDept && ele.name === this.currentDept.toUpperCase()) {
-            if (roles && roles.indexOf('STATE_ADMIN') >= 0) {
-              this.roles = this.stateAdminRoles
-            } else {
-              this.roles = ele.roles
-            }
-          }
-        })
-      }
-
+    forkJoin({
+      orgTypeList: this.directoryService.getOrgTypeList$(),
+      orgTypeConfig: this.directoryService.getOrgTypeConfig$(),
     })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(({ orgTypeList }: any) => {
+        const departmentHeaderArray = orgTypeList
+        if (this.rawCurrentDept === 'organisation' && this.createdDepartment?.depType === 'organisation') {
+          this.roles = this.resolveRolesByValue(
+            departmentHeaderArray,
+            this.directoryService.holdOrgTypeConfig(),
+            this.organisationType
+          )
+        } else {
+          departmentHeaderArray?.orgTypeList?.forEach((ele: { name: any, isHidden: any, roles: [] }) => {
+            if (environment?.cbpProviderRoles && environment.cbpProviderRoles.includes(this.currentDept.toLowerCase())) {
+              this.currentDept = 'CBP'
+            }
+            if (ele?.name && this.currentDept && ele.name === this.currentDept.toUpperCase()) {
+              if (roles && roles.indexOf('STATE_ADMIN') >= 0) {
+                this.roles = this.stateAdminRoles
+              } else {
+                this.roles = ele.roles
+              }
+            }
+          })
+        }
+      })
+  }
+
+  private resolveRolesByValue(
+    departmentHeaderArray: any,
+    orgTypeConfig: any,
+    value: number,
+  ): string[] {
+    const orgTypeList: any[] = departmentHeaderArray?.orgTypeList ?? []
+    const configFields: any[] = orgTypeConfig?.fields ?? []
+
+    const deptFlags: string[] =
+      configFields.find(f => f?.value === Number(value))?.flagNameList ?? []
+
+    const collected: string[] = _.flatMap(orgTypeList, (org: any) => {
+      const orgFlags: string[] = Array.isArray(org?.flags) ? org.flags : []
+      const isMatch = deptFlags.some(flag => orgFlags.includes(flag))
+      return isMatch ? (org?.roles ?? []) : []
+    })
+
+    return _.uniq(collected)
   }
   // getAllDept() {
   //   this.usersSvc.getAllDepartments().subscribe(res => {
@@ -246,6 +262,7 @@ export class CreateUserComponent implements OnInit {
   //     })
   //   })
   // }
+
 
   /** methods related to Dropdown */
   onItemSelect(item: any[]) {
@@ -407,6 +424,7 @@ export class CreateUserComponent implements OnInit {
             depatName: this.createdDepartment.depName,
             subOrgType: this.getSubOrgType(),
             orgName: this.orgName,
+            organisationType: this.organisationType
           }
         })
 
@@ -521,3 +539,4 @@ export class CreateUserComponent implements OnInit {
     return this.currentDept
   }
 }
+
