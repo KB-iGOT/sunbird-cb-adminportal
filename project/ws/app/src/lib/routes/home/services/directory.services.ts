@@ -34,7 +34,7 @@ export class DirectoryService {
       filters = {
         isTenant: true,
         status: 1,
-        ...(state === 'organisation' ? { isMdo: true } : { isCbp: true }),
+        ...(state === 'organisation' ? { orFilters: { isMdo: true, isAutonomousNgo: true } } : { isCbp: true }),
       }
     }
 
@@ -49,7 +49,7 @@ export class DirectoryService {
         searchFilters.isNgo = true
         delete searchFilters.status
       } else if (state === 'organisation') {
-        searchFilters.isMdo = true
+        searchFilters.orFilters = { isMdo: true, isAutonomousNgo: true }
       } else {
         searchFilters.isCbp = true
       }

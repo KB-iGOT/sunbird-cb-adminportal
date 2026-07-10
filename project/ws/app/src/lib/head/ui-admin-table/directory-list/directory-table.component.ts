@@ -373,7 +373,7 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
       autoFocus: false,
       data: {
         type: 'confirm',
-        title: 'Are you sure you want to deactivate this organisation?',
+        title: `Are you sure you want to deactivate this "${row.organisation}" organisation?`,
         subTitle: 'Users under this organisation will no longer be able to log in.',
         primaryAction: 'Deactivate',
         secondaryAction: 'Cancel',
@@ -382,6 +382,26 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
     dialogRef.afterClosed().subscribe((res: any) => {
       if (res && res.confirmed) {
         this.updateVolunteerStatus(row, 0)
+      }
+    })
+  }
+
+  confirmActivate(row: any) {
+    const dialogRef = this.dialog.open(InfoModalComponent, {
+      panelClass: 'info-dialog',
+      disableClose: true,
+      autoFocus: false,
+      data: {
+        type: 'confirm',
+        title: `Are you sure you want to activate this "${row.organisation}" organisation?`,
+        subTitle: 'Users under this organisation will be able to log in again.',
+        primaryAction: 'Activate',
+        secondaryAction: 'Cancel',
+      },
+    })
+    dialogRef.afterClosed().subscribe((res: any) => {
+      if (res && res.confirmed) {
+        this.updateVolunteerStatus(row, 1)
       }
     })
   }
