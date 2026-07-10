@@ -60,7 +60,7 @@ export class CreateUserComponent implements OnInit {
   stateAdminRoles = ["STATE_ADMIN", "PUBLIC"]
   rawCurrentDept = ''
   hiddenRolesForOrg = ['CBC_ADMIN', 'CBC_MEMBER']
-  organisationType: number = 0
+  organisationType: number = 128
 
   // hideRole: any = []
 
@@ -87,7 +87,7 @@ export class CreateUserComponent implements OnInit {
       this.deptId = params['id']
       this.orgName = params['orgName']
       this.rawCurrentDept = params['currentDept'] || ''
-      this.organisationType = params['organisationType'] || 0
+      this.organisationType = params['organisationType'] || 128
       // this.currentDept = params['currentDept']
       this.currentDept = params['subOrgType']
       this.redirectionPath = params['redirectionPath']
