@@ -19,10 +19,10 @@ import { environment } from '../../../../../../../../src/environments/environmen
 import { PageEvent } from '@angular/material/paginator'
 
 @Component({
-    selector: 'ws-widget-ui-user-table',
-    templateUrl: './ui-admin-user-table.component.html',
-    styleUrls: ['./ui-admin-user-table.component.scss'],
-    standalone: false
+  selector: 'ws-widget-ui-user-table',
+  templateUrl: './ui-admin-user-table.component.html',
+  styleUrls: ['./ui-admin-user-table.component.scss'],
+  standalone: false
 })
 export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() tableData!: ITableData | undefined
@@ -72,6 +72,7 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
   searchText: string = ''
   searchValue: string = ''
   moreThanTwoChar = false
+  organisationType: number = 0
   constructor(
     private router: Router, public dialog: MatDialog,
     private activatedRoute: ActivatedRoute,
@@ -104,7 +105,8 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
       this.orgName = params['orgName']
       this.departmentId = params['roleId']
       this.reportsPath = params['path']
-      this.subOrgType = params['subOrgType']
+      this.subOrgType = params['subOrgType'],
+        this.organisationType = params['organisationType']
 
       if (this.needCreateUser !== false && (this.departmentRole && this.departmentRole !== 'ministry') && this.departmentId) {
         this.needAddAdmin = true
@@ -280,8 +282,8 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
           createDept: JSON.stringify(this.otherInput),
           orgName: this.orgName,
           redirectionPath: window.location.href,
-          subOrgType: this.getSubOrgType()
-
+          subOrgType: this.getSubOrgType(),
+          organisationType: this.organisationType
         },
       })
   }
