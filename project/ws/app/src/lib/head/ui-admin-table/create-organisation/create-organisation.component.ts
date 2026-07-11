@@ -6,8 +6,8 @@ import { CreateMDOService } from '../../../routes/home/services/create-mdo.servi
 import { ActivatedRoute } from '@angular/router'
 import { LoaderService } from '../../../routes/home/services/loader.service'
 import { IUploadedLogoresponse } from '../interface/interfaces'
-import { catchError, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators'
-import { of, Subject } from 'rxjs'
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators'
+import { Subject } from 'rxjs'
 @Component({
   selector: 'ws-app-create-organisation',
   templateUrl: './create-organisation.component.html',
@@ -41,8 +41,8 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
   isLoading = false
   filteredStates: any[] = []
   filteredMinistry: any[] = []
+  autonomousList: any[] = []
   filteredAutonomous: any[] = []
-  private autonomousSearch$ = new Subject<string>()
   heirarchyObject: any
   selectedLogoFile: any
   uploadedLogoResponse!: IUploadedLogoresponse
@@ -124,6 +124,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       this.filteredMinistry = [...this.ministriesList]
 
     }
+    this.getAutonomousOrgs()
     // let stateOrMinistryData = {}
     // if (_.get(this.rowData, 'type', '').toLowerCase() === 'state') {
     //   const stateName = _.get(this.rowData, 'stateOrMinistry', '')
@@ -186,7 +187,17 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
   }
 
   filterAutonomous(value: string): void {
-    this.autonomousSearch$.next(value || '')
+    const filterValue = (value || '').toLowerCase()
+    this.filteredAutonomous = this.autonomousList.filter((option: any) =>
+      option.orgName.toLowerCase().includes(filterValue)
+    )
+  }
+
+  getAutonomousOrgs(): void {
+    this.createMDOService.getStatesOrMinisteries('globalngo').subscribe((res: any) => {
+      this.autonomousList = _.orderBy(_.get(res, 'result.response.content') || [], ['orgName'], ['asc'])
+      this.filteredAutonomous = [...this.autonomousList]
+    })
   }
 
   private resetAutonomousControl(): void {
@@ -227,18 +238,6 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
         })
     }
 
-    this.autonomousSearch$
-      .pipe(
-        debounceTime(300),
-        takeUntil(this.untilDestroyed$),
-        switchMap((query: string) => this.createMDOService.searchAutonomousOrgs(query)
-          .pipe(catchError(() => of({}))))
-      )
-      .subscribe((res: any) => {
-        this.filteredAutonomous = _.get(res, 'result.response.content') || []
-      })
-
-
     this.organisationForm.controls.organisationName.valueChanges
       .pipe(takeUntil(this.untilDestroyed$), debounceTime(500), distinctUntilChanged())
       .subscribe((_value) => {
@@ -273,6 +272,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
     this.selectedLogoFile = null
     this.filteredStates = [...this.statesList]
     this.filteredMinistry = [...this.ministriesList]
+    this.filteredAutonomous = [...this.autonomousList]
   }
 
   closeNaveBar() {
@@ -311,9 +311,8 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       }
     } else if (this.controls['category']?.value === 'autonomous') {
       const autonomousOrg = this.controls['autonomous']?.value
-      payload.parentMapId = autonomousOrg?.id || ""
-      // payload['sbRootOrgId'] = autonomousOrg?.sbOrgId || autonomousOrg?.id || ""
-      // payload['ministryOrStateId'] = autonomousOrg?.sbOrgId || autonomousOrg?.id || ""
+      payload.parentMapId = autonomousOrg?.mapId || ""
+      payload['sbRootOrgId'] = autonomousOrg?.sbOrgId ||""
     } else if (this.controls['ministry']?.value?.mapId) {
       payload.parentMapId = this.controls['ministry'].value?.mapId || ""// Assign ministry mapId
       payload['sbRootOrgId'] = this.controls['ministry']?.value?.sbOrgId || ""

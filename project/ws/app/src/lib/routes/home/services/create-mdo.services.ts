@@ -124,25 +124,6 @@ export class CreateMDOService {
     return this.http.post(API_END_POINTS.SEARCH_ORG, req)
   }
 
-  searchAutonomousOrgs(query: string, limit = 500, offset = 0) {
-    const req: any = {
-      request: {
-        filters: {
-          isTenant: true,
-          status: 1,
-          isMdo: true,
-          isAutonomousNgo: true,
-        },
-        limit,
-        offset,
-      },
-    }
-    if (query) {
-      req.request.query = query
-    }
-    return this.http.post(API_END_POINTS.SEARCH_ORG, req)
-  }
-
   signUpSearch(identifier: any) {
     const req = {
       request: {
