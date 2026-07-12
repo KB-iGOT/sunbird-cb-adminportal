@@ -19,6 +19,7 @@ export class DirectoryService {
   }
   getAllDepartmentsKong(queryText: any, pagination: { limit: number, offset: number }, state?: string,): Observable<any> {
     let filters
+    let orFilters
     if (state !== undefined && state === 'state') {
       filters = {
         isTenant: true,
@@ -34,7 +35,10 @@ export class DirectoryService {
       filters = {
         isTenant: true,
         status: 1,
-        ...(state === 'organisation' ? { orFilters: { isMdo: true, isAutonomousNgo: true } } : { isCbp: true }),
+        ...(state === 'organisation' ? {} : { isCbp: true }),
+      }
+      if (state === 'organisation') {
+        orFilters = { isMdo: true, isAutonomousNgo: true }
       }
     }
 
@@ -43,19 +47,21 @@ export class DirectoryService {
         isTenant: true,
         status: 1,
       }
+      let searchOrFilters
       if (state === 'state') {
         searchFilters.isState = true
       } else if (state === 'volunteer') {
         searchFilters.isNgo = true
         delete searchFilters.status
       } else if (state === 'organisation') {
-        searchFilters.orFilters = { isMdo: true, isAutonomousNgo: true }
+        searchOrFilters = { isMdo: true, isAutonomousNgo: true }
       } else {
         searchFilters.isCbp = true
       }
       const req1 = {
         request: {
           filters: searchFilters,
+          ...(searchOrFilters ? { orFilters: searchOrFilters } : {}),
           query: queryText,
           limit: pagination.limit || 20,
           offset: pagination.offset || 0,
@@ -67,6 +73,7 @@ export class DirectoryService {
     const req = {
       request: {
         filters,
+        ...(orFilters ? { orFilters } : {}),
         sort_by: {
           createdDate: "desc",
         },
