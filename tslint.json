@@ -1,27 +1,22 @@
 {
   "defaultSeverity": "error",
-  "extends": ["tslint-config-airbnb", "tslint-angular"],
+  "extends": ["tslint-config-airbnb"],
   "rules": {
-    "component-selector": [true, "element", "ws", "viewer", "kebab-case"],
-    "directive-selector": [
-      true,
-      "attribute",
-      "ws",
-      "camelCase"
-    ],
-    "deprecation": {
-      "severity": "warning"
-    },
+    "deprecation": false,
+    "object-curly-spacing": false,
+    "array-bracket-spacing": false,
     "semicolon": [true, "never"],
     "ter-indent": [false],
     "arrow-parens": [true, "ban-single-arg-parens"],
     "ter-arrow-parens": [true, "as-needed"],
     "no-console": true,
+    "no-non-null-assertion": false,
+    "object-literal-key-quotes": [false],
     "interface-name": [true, "always-prefix"],
     "max-line-length": [
       true,
       {
-        "limit": 1000,
+        "limit": 140,
         "ignore-pattern": "^import |^export {(.*?)}",
         "check-strings": true,
         "check-regex": true
@@ -58,5 +53,10 @@
         "singleline": "never"
       }
     }
+  },
+  "linterOptions": {
+    "exclude": [
+      "**/*.spec.ts"
+    ]
   }
 }
