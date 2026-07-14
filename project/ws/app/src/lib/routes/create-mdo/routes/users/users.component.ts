@@ -57,7 +57,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   allowedCreateRoles = ['DASHBOARD_ADMIN', 'SPV_ADMIN', 'SPV_PUBLISHER', 'STATE_ADMIN']
   orgDataLoaded: boolean = false
   orgData: any
-
+  organisationType: number = 0
   constructor(private usersSvc: UsersService, private router: Router,
     private route: ActivatedRoute,
     private profile: ProfileV2Service,
@@ -125,6 +125,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
       this.deptName = params['depatName']
       this.currentTab = params['tab'] || 'users'
       this.subOrgType = params['subOrgType']
+      this.organisationType = params['organisationType'] || 0
       this.isReportsPath = this.router.url.includes('path=reports')
 
       if (this.currentTab.split('/').length > 1 && this.currentTab.split('/')[1] === 'import-designation') {
@@ -338,7 +339,8 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
         createDept: JSON.stringify({ depName: this.deptName, depType: this.currentDept }),
         orgName: this.deptName,
         redirectionPath: window.location.href,
-        subOrgType: this.getSubOrgType()
+        subOrgType: this.getSubOrgType(),
+        organisationType: this.organisationType
       }, state: { userData: event.row, updateButton: true },
     })
   }

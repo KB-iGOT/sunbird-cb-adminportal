@@ -13,10 +13,10 @@ import { MatDialog } from '@angular/material/dialog'
 import { BulkUploadOrgComponent } from '../../bulk-upload-org/bulk-upload-org.component'
 
 @Component({
-    selector: 'ws-app-org-hierarchy-mapping',
-    templateUrl: './org-hierarchy-mapping.component.html',
-    styleUrls: ['./org-hierarchy-mapping.component.scss'],
-    standalone: false
+  selector: 'ws-app-org-hierarchy-mapping',
+  templateUrl: './org-hierarchy-mapping.component.html',
+  styleUrls: ['./org-hierarchy-mapping.component.scss'],
+  standalone: false
 })
 export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   @ViewChild('singleSelect') singleSelect!: MatSelect
@@ -266,7 +266,8 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     this.loaderService.setLoaderState($event)
   }
 
-  redirectOrg(event: any) {
+  async redirectOrg(event: any) {
+    const orgDetails = await this.readOrganizationDetails(event.additionalProperties.orgId)
     this.router.navigate([`/app/roles/${event.additionalProperties.orgId}/users`], {
       queryParams:
       {
@@ -277,9 +278,29 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
         tab: 'users',
         // subOrgType: !this.isAllowed(this.allowedCreateRoles) ? 'ministry' : role.data.type ? role.data.type : 'cbp-providers'
         // subOrgType: !this.isAllowed(this.allowedCreateRoles) ? 'ministry' : role.data.type ? role.data.type : 'ministry'
-        subOrgType: (this.checkIfStateAdmin()) ? 'state' : this.selectedOrgType
+        subOrgType: (this.checkIfStateAdmin()) ? 'state' : this.selectedOrgType,
+        organisationType: orgDetails?.length && orgDetails[0]?.organisationType
       }
     })
+  }
+
+  async readOrganizationDetails(identifier: string) {
+    const requestBody = {
+      "request": {
+        "filters": {
+          "status": 1, "identifier": identifier
+        },
+        "limit": 10,
+        "offset": 0,
+        "fields": ["identifier", "organisationType", "organisationSubType", "channel", "orgName"
+        ]
+      }
+    }
+    const listRes = await this.orgHieService.getCenterOrStateList(requestBody).toPromise()
+    if (listRes && listRes.result && listRes.result.response && listRes.result.response.content) {
+      return listRes.result.response.content
+    }
+    return null
   }
 
   async downloadTemplate() {

@@ -224,7 +224,8 @@ export class DirectoryViewComponent implements OnInit {
         tab: role.type,
         // subOrgType: !this.isAllowed(this.allowedCreateRoles) ? 'ministry' : role.data.type ? role.data.type : 'cbp-providers'
         // subOrgType: !this.isAllowed(this.allowedCreateRoles) ? 'ministry' : role.data.type ? role.data.type : 'ministry'
-        subOrgType: this.getSubOrgType(role?.data?.type, role?.data)
+        subOrgType: this.getSubOrgType(role?.data?.type, role?.data),
+        organisationType: role?.data?.organisationType || 0
       }
     })
   }
@@ -437,6 +438,7 @@ export class DirectoryViewComponent implements OnInit {
               endDateRegistration: element?.endDateRegistration || null,
               isState: element?.isState || false,
               stateOrMinistry: element?.ministryOrStateName || element?.ministryorstatename || null,
+              organisationType: element?.organisationType || null,
 
             }
             filteredData2.push(obj)
@@ -504,6 +506,7 @@ export class DirectoryViewComponent implements OnInit {
             stateOrMinistry: dept.stateOrMinistry,
             status: dept.status,
             statusLabel: dept.statusLabel,
+            organisationType: dept.organisationType,
           }
         })
         this.data = [...this.data]
