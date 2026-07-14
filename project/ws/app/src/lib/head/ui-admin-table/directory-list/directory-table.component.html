@@ -86,12 +86,11 @@
                                 <ng-template matMenuContent>
                                     <button mat-menu-item (click)="editOrganization(row)"
                                         *ngIf="currentTab === 'organisation' || currentTab === 'volunteer'">Edit</button>
+                                    <button mat-menu-item (click)="goToRoute('users', row)">Users</button>
                                     <button mat-menu-item (click)="confirmActivate(row)"
                                         *ngIf="currentTab === 'volunteer' && row.status === 0">Activate</button>
                                     <button mat-menu-item (click)="confirmDeactivate(row)"
                                         *ngIf="currentTab === 'volunteer' && row.status === 1">Deactivate</button>
-                                    <button mat-menu-item (click)="goToRoute('users', row)"
-                                        *ngIf="currentTab !== 'volunteer'">Users</button>
                                     <button mat-menu-item (click)="goToRoute('rolesandaccess', row)"
                                         *ngIf="currentTab !== 'volunteer'">Roles &
                                         Access</button>
