@@ -181,54 +181,183 @@ export class CreateUserComponent implements OnInit {
     }
   }
 
+  // getAllDepartmentsHeaderAPI() {
+  //   const roles: any[] = _.get(this.route, 'snapshot.parent.data.configService.unMappedUser.roles')
+
+  //   forkJoin({
+  //     orgTypeList: this.directoryService.getOrgTypeList$(),
+  //     orgTypeConfig: this.directoryService.getOrgTypeConfig$(),
+  //   })
+  //     .pipe(takeUntilDestroyed(this.destroyRef))
+  //     .subscribe(({ orgTypeList }: any) => {
+  //       const departmentHeaderArray = orgTypeList
+  //       if (this.rawCurrentDept === 'organisation' && this.createdDepartment?.depType === 'organisation') {
+  //         this.roles = this.resolveRolesByValue(
+  //           departmentHeaderArray,
+  //           this.directoryService.holdOrgTypeConfig(),
+  //           this.organisationType
+  //         )
+  //       } else {
+  //         departmentHeaderArray?.orgTypeList?.forEach((ele: { name: any, isHidden: any, roles: [] }) => {
+  //           if (environment?.cbpProviderRoles && environment.cbpProviderRoles.includes(this.currentDept.toLowerCase())) {
+  //             this.currentDept = 'CBP'
+  //           }
+  //           if (ele?.name && this.currentDept && ele.name === this.currentDept.toUpperCase()) {
+  //             if (roles && roles.indexOf('STATE_ADMIN') >= 0) {
+  //               this.roles = this.stateAdminRoles
+  //             } else {
+  //               this.roles = ele.roles
+  //             }
+  //           }
+  //         })
+  //       }
+  //     })
+  // }
   getAllDepartmentsHeaderAPI() {
-    const roles: any[] = _.get(this.route, 'snapshot.parent.data.configService.unMappedUser.roles')
+    const roles: any[] = _.get(
+      this.route,
+      'snapshot.parent.data.configService.unMappedUser.roles'
+    )
 
     forkJoin({
       orgTypeList: this.directoryService.getOrgTypeList$(),
       orgTypeConfig: this.directoryService.getOrgTypeConfig$(),
     })
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(({ orgTypeList }: any) => {
-        const departmentHeaderArray = orgTypeList
-        if (this.rawCurrentDept === 'organisation' && this.createdDepartment?.depType === 'organisation') {
+      .subscribe(({ orgTypeList, orgTypeConfig }: any) => {
+
+        if (
+          this.rawCurrentDept === 'organisation' &&
+          this.createdDepartment?.depType === 'organisation'
+        ) {
           this.roles = this.resolveRolesByValue(
-            departmentHeaderArray,
-            this.directoryService.holdOrgTypeConfig(),
+            orgTypeList,
+            orgTypeConfig,
             this.organisationType
           )
-        } else {
-          departmentHeaderArray?.orgTypeList?.forEach((ele: { name: any, isHidden: any, roles: [] }) => {
-            if (environment?.cbpProviderRoles && environment.cbpProviderRoles.includes(this.currentDept.toLowerCase())) {
+          return
+        }
+
+        if (this.rawCurrentDept === 'volunteer') {
+          const allRoles: string[] = []
+
+          orgTypeList?.orgTypeList?.forEach(
+            (ele: {
+              flags: string[]
+              isNgo: boolean
+              isHidden: boolean
+              roles: string[]
+            }) => {
+              const isNgo =
+                ele?.isNgo ||
+                (Array.isArray(ele?.flags) &&
+                  ele.flags.includes('isNgo'))
+
+              if (!isNgo || ele?.isHidden || !ele?.roles) {
+                return
+              }
+
+              ele.roles.forEach(role => {
+                if (role && !allRoles.includes(role)) {
+                  allRoles.push(role)
+                }
+              })
+            }
+          )
+
+          this.roles = allRoles
+          return
+        }
+
+        orgTypeList?.orgTypeList?.forEach(
+          (ele: { name: string; roles: string[] }) => {
+
+            if (
+              environment?.cbpProviderRoles &&
+              environment.cbpProviderRoles.includes(
+                this.currentDept.toLowerCase()
+              )
+            ) {
               this.currentDept = 'CBP'
             }
-            if (ele?.name && this.currentDept && ele.name === this.currentDept.toUpperCase()) {
-              if (roles && roles.indexOf('STATE_ADMIN') >= 0) {
+
+            if (
+              ele?.name &&
+              this.currentDept &&
+              ele.name === this.currentDept.toUpperCase()
+            ) {
+              if (roles?.includes('STATE_ADMIN')) {
                 this.roles = this.stateAdminRoles
               } else {
                 this.roles = ele.roles
               }
             }
-          })
-        }
+          }
+        )
       })
   }
 
+
+
+  // private resolveRolesByValue(
+  //   departmentHeaderArray: any,
+  //   orgTypeConfig: any,
+  //   value: number,
+  // ): string[] {
+  //   const orgTypeList: any[] = departmentHeaderArray?.orgTypeList ?? []
+  //   const configFields: any[] = orgTypeConfig?.fields ?? []
+
+  //   const deptFlags: string[] =
+  //     configFields.find(f => f?.value === Number(value))?.flagNameList ?? []
+
+  //   const collected: string[] = _.flatMap(orgTypeList, (org: any) => {
+  //     const orgFlags: string[] = Array.isArray(org?.flags) ? org.flags : []
+  //     const isMatch = deptFlags.some(flag => orgFlags.includes(flag))
+  //     return isMatch ? (org?.roles ?? []) : []
+  //   })
+
+  //   return _.uniq(collected)
+  // }
   private resolveRolesByValue(
     departmentHeaderArray: any,
     orgTypeConfig: any,
     value: number,
   ): string[] {
-    const orgTypeList: any[] = departmentHeaderArray?.orgTypeList ?? []
-    const configFields: any[] = orgTypeConfig?.fields ?? []
 
-    const deptFlags: string[] =
-      configFields.find(f => f?.value === Number(value))?.flagNameList ?? []
+    const roles: any[] = _.get(
+      this.route,
+      'snapshot.parent.data.configService.unMappedUser.roles'
+    )
 
-    const collected: string[] = _.flatMap(orgTypeList, (org: any) => {
-      const orgFlags: string[] = Array.isArray(org?.flags) ? org.flags : []
-      const isMatch = deptFlags.some(flag => orgFlags.includes(flag))
-      return isMatch ? (org?.roles ?? []) : []
+    const isStateAdmin =
+      roles && roles.indexOf('STATE_ADMIN') >= 0
+
+    const orgTypeList = departmentHeaderArray?.orgTypeList ?? []
+    const configFields = orgTypeConfig?.fields ?? []
+
+    const deptFlags =
+      configFields.find(
+        (field: any) => field?.value === Number(value)
+      )?.flagNameList ?? []
+
+    const collected = _.flatMap(orgTypeList, (org: any) => {
+
+      const orgFlags = Array.isArray(org?.flags)
+        ? org.flags
+        : []
+
+      const isMatch = deptFlags.some((flag: string) =>
+        orgFlags.includes(flag)
+      )
+
+      if (!isMatch || org?.isHidden) {
+        return []
+      }
+
+      return (org?.roles ?? []).filter(
+        (role: string) =>
+          !(isStateAdmin && this.hiddenRolesForOrg.includes(role))
+      )
     })
 
     return _.uniq(collected)
