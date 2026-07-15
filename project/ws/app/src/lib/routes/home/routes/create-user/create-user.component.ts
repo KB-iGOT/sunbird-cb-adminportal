@@ -181,38 +181,6 @@ export class CreateUserComponent implements OnInit {
     }
   }
 
-  // getAllDepartmentsHeaderAPI() {
-  //   const roles: any[] = _.get(this.route, 'snapshot.parent.data.configService.unMappedUser.roles')
-
-  //   forkJoin({
-  //     orgTypeList: this.directoryService.getOrgTypeList$(),
-  //     orgTypeConfig: this.directoryService.getOrgTypeConfig$(),
-  //   })
-  //     .pipe(takeUntilDestroyed(this.destroyRef))
-  //     .subscribe(({ orgTypeList }: any) => {
-  //       const departmentHeaderArray = orgTypeList
-  //       if (this.rawCurrentDept === 'organisation' && this.createdDepartment?.depType === 'organisation') {
-  //         this.roles = this.resolveRolesByValue(
-  //           departmentHeaderArray,
-  //           this.directoryService.holdOrgTypeConfig(),
-  //           this.organisationType
-  //         )
-  //       } else {
-  //         departmentHeaderArray?.orgTypeList?.forEach((ele: { name: any, isHidden: any, roles: [] }) => {
-  //           if (environment?.cbpProviderRoles && environment.cbpProviderRoles.includes(this.currentDept.toLowerCase())) {
-  //             this.currentDept = 'CBP'
-  //           }
-  //           if (ele?.name && this.currentDept && ele.name === this.currentDept.toUpperCase()) {
-  //             if (roles && roles.indexOf('STATE_ADMIN') >= 0) {
-  //               this.roles = this.stateAdminRoles
-  //             } else {
-  //               this.roles = ele.roles
-  //             }
-  //           }
-  //         })
-  //       }
-  //     })
-  // }
   getAllDepartmentsHeaderAPI() {
     const roles: any[] = _.get(
       this.route,
@@ -298,26 +266,6 @@ export class CreateUserComponent implements OnInit {
   }
 
 
-
-  // private resolveRolesByValue(
-  //   departmentHeaderArray: any,
-  //   orgTypeConfig: any,
-  //   value: number,
-  // ): string[] {
-  //   const orgTypeList: any[] = departmentHeaderArray?.orgTypeList ?? []
-  //   const configFields: any[] = orgTypeConfig?.fields ?? []
-
-  //   const deptFlags: string[] =
-  //     configFields.find(f => f?.value === Number(value))?.flagNameList ?? []
-
-  //   const collected: string[] = _.flatMap(orgTypeList, (org: any) => {
-  //     const orgFlags: string[] = Array.isArray(org?.flags) ? org.flags : []
-  //     const isMatch = deptFlags.some(flag => orgFlags.includes(flag))
-  //     return isMatch ? (org?.roles ?? []) : []
-  //   })
-
-  //   return _.uniq(collected)
-  // }
   private resolveRolesByValue(
     departmentHeaderArray: any,
     orgTypeConfig: any,
