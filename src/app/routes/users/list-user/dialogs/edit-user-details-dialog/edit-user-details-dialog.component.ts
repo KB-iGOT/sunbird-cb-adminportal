@@ -8,10 +8,17 @@ import { UsersService } from '../../../users.service'
 import { EDITABLE_FIELDS, IUserProfile } from '../../../models/users.models'
 import { DesignationSelectorComponent } from '../../../shared/designation-selector/designation-selector.component'
 
-
 // Cadre config interfaces
 interface ICadre { id: string; name: string; startBatchYear: number; endBatchYear: number; exculsionYearList?: number[] }
-interface ICivilService { id: string; name: string; cadreList?: ICadre[]; cadreControllingAuthority?: string; commonBatchStartYear?: number; commonBatchEndYear?: number; commonBatchExclusionYearList?: number[] }
+interface ICivilService {
+  id: string
+  name: string
+  cadreList?: ICadre[]
+  cadreControllingAuthority?: string
+  commonBatchStartYear?: number
+  commonBatchEndYear?: number
+  commonBatchExclusionYearList?: number[]
+}
 interface ICivilServiceType { id: string; name: string; serviceList: ICivilService[] }
 
 const CADRE_SERVICES = ['Indian Administrative Service (IAS)', 'Indian Police Service (IPS)', 'Indian Forest Service (IFoS)']
@@ -78,7 +85,10 @@ export class EditUserDetailsDialogComponent implements OnInit {
       civilServiceType: [(personal.isCadre === true || personal.isCadre === 'true') ? (cadreDetails.civilServiceType || '') : ''],
       civilServiceName: [(personal.isCadre === true || personal.isCadre === 'true') ? (cadreDetails.civilServiceName || '') : ''],
       cadreName: [(personal.isCadre === true || personal.isCadre === 'true') ? (cadreDetails.cadreName || '') : ''],
-      cadreBatch: [(personal.isCadre === true || personal.isCadre === 'true') && cadreDetails.cadreBatch != null ? String(cadreDetails.cadreBatch) : ''],
+      cadreBatch: [
+        (personal.isCadre === true || personal.isCadre === 'true') && cadreDetails.cadreBatch != null
+          ? String(cadreDetails.cadreBatch) : '',
+      ],
       isOnCentralDeputation: [(personal.isCadre === true || personal.isCadre === 'true') && cadreDetails.isOnCentralDeputation === true],
     })
 
@@ -99,6 +109,7 @@ export class EditUserDetailsDialogComponent implements OnInit {
           // tslint:disable-next-line:no-console
           console.log('[EditDialog] cadreConfig parsed:', this.cadreConfig)
         } catch (e) {
+          // tslint:disable-next-line:no-console
           console.error('[EditDialog] Failed to parse cadre config:', e)
           this.cadreConfig = null
         }
@@ -214,6 +225,7 @@ export class EditUserDetailsDialogComponent implements OnInit {
     // Always clear sub-fields on any toggle — fresh start in both directions
     this.editForm.patchValue({
       civilServiceType: '', civilServiceName: '', cadreName: '', cadreBatch: '', isOnCentralDeputation: false,
+      // tslint:disable-next-line:align
     }, { emitEvent: false })
     this.rebuildServiceNames()
     this.rebuildCadreList()
@@ -224,6 +236,7 @@ export class EditUserDetailsDialogComponent implements OnInit {
   private onCivilServiceTypeChange(): void {
     this.editForm.patchValue({
       civilServiceName: '', cadreName: '', cadreBatch: '', isOnCentralDeputation: false,
+      // tslint:disable-next-line:align
     }, { emitEvent: false })
     this.rebuildServiceNames()
     this.cadreList = []
@@ -234,6 +247,7 @@ export class EditUserDetailsDialogComponent implements OnInit {
   private onCivilServiceNameChange(): void {
     this.editForm.patchValue({
       cadreName: '', cadreBatch: '', isOnCentralDeputation: false,
+      // tslint:disable-next-line:align
     }, { emitEvent: false })
     this.rebuildCadreList()
     this.rebuildYears()
@@ -298,6 +312,7 @@ export class EditUserDetailsDialogComponent implements OnInit {
     this.dialogRef.disableClose = true
 
     // Build requests sequentially via chained calls
+    // tslint:disable-next-line:prefer-array-literal
     const requests: Array<() => Promise<void>> = []
 
     // 1) Personal + Additional via extPatchUser
@@ -362,6 +377,7 @@ export class EditUserDetailsDialogComponent implements OnInit {
           }
         }
         const cadrePayload: any = {
+          // tslint:disable-next-line:object-shorthand-properties-first
           request: { userId: this.user.userId, profileDetails },
         }
         this.usersService.extPatchUser(cadrePayload).subscribe(() => resolve(), (err: any) => reject(err))
@@ -392,7 +408,7 @@ export class EditUserDetailsDialogComponent implements OnInit {
     // Execute sequentially
     this.executeSequential(requests, 0)
   }
-
+  // tslint:disable-next-line:prefer-array-literal
   private executeSequential(requests: Array<() => Promise<void>>, idx: number): void {
     if (idx >= requests.length) {
       this.isSaving = false

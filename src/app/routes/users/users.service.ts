@@ -16,7 +16,7 @@ const API_END_POINTS = {
   CREATE_USER: `${API_PROTECTED}/user/profileDetails/createUser`,
   MIGRATE_USER: `${API_BASE}/user/private/v1/migrate`,
   RESET_PASSWORD: `${API_PROTECTED}/user/password/reset`,
-  FETCH_GROUPS: `/api/user/v1/groups`,
+  FETCH_GROUPS: '/api/user/v1/groups',
   FETCH_CADRE_DATA: `${API_BASE}/data/v2/system/settings/get/cadreConfig`,
   FETCH_DESIGNATIONS: `${API_PROTECTED}/proxies/v8/sunbirdigot/v4/search`,
   FETCH_MASTER_LANGUAGES: `${API_PROTECTED}/user/v1/master-languages`,
@@ -37,8 +37,6 @@ export class UsersService {
     return this.http.post<any>(API_END_POINTS.USER_BY_EMAIL, payload)
   }
 
-
-
   updateUserExt(payload: any): Observable<any> {
     return this.http.post<any>(API_END_POINTS.UPDATE_USER_ADMIN_EXT, payload)
   }
@@ -49,6 +47,7 @@ export class UsersService {
 
   assignUserRoles(userId: string, orgId: string, roles: string[]): Observable<any> {
     return this.http.post<any>(API_END_POINTS.ASSIGN_USER_ROLES, {
+      // tslint:disable-next-line:object-shorthand-properties-first
       request: { userId, organisationId: orgId, roles },
     })
   }
@@ -82,11 +81,17 @@ export class UsersService {
   }
 
   /** Search iGOT master designations */
-  searchMasterDesignations(query: string, pageSize = 50, pageNumber = 0): Observable<{ items: { name: string; identifier: string }[]; totalCount: number }> {
+  searchMasterDesignations(
+    query: string,
+    pageSize = 50,
+    pageNumber = 0
+  ): Observable<{ items: { name: string; identifier: string }[]; totalCount: number }> {
     const body: any = {
       filterCriteriaMap: { status: 'Active' },
       requestedFields: [],
+      // tslint:disable-next-line:object-shorthand-properties-first
       pageNumber,
+      // tslint:disable-next-line:object-shorthand-properties-first
       pageSize,
     }
     if (query) { body['searchString'] = query }
@@ -128,6 +133,7 @@ export class UsersService {
         filters: { isTenant: true, status: 1, isMdo: true },
         limit: 50,
         offset: 0,
+        // tslint:disable-next-line:object-shorthand-properties-first
         query,
       },
     }).pipe(

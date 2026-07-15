@@ -69,8 +69,6 @@ export class RoleAssignmentDialogComponent implements OnInit {
     )
   }
 
-
-
   toggleRole(role: string): void {
     const idx = this.selectedRoles.indexOf(role)
     if (idx > -1) {
@@ -106,18 +104,21 @@ export class RoleAssignmentDialogComponent implements OnInit {
           limit: 1,
           filters: {
             status: 1,
+            // tslint:disable-next-line:object-shorthand-properties-first
             rootOrgId,
             'organisations.roles': ['MDO_LEADER'],
           },
           offset: 0,
         },
       }
-
       this.usersService.getUsers(payload).subscribe(
         (res: any) => {
           const count = res?.result?.response?.count || 0
           if (count > 0) {
-            this.mdoLeaderWarning = `Another user already holds the MDO_LEADER role in this organization. Assigning it here may cause conflicts.`
+            this.mdoLeaderWarning = [
+              'Another user already holds the MDO_LEADER role in this organization.',
+              'Assigning it here may cause conflicts.',
+            ].join(' ')
           }
         },
       )
