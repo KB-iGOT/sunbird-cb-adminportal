@@ -6,7 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
     selector: 'ws-app-conformation-popup',
     templateUrl: './conformation-popup.component.html',
     styleUrls: ['./conformation-popup.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class ConformationPopupComponent implements OnInit {
 
@@ -29,7 +29,7 @@ export class ConformationPopupComponent implements OnInit {
 
   initializeInputForm() {
     this.inputForm = this.fb.group({
-      inputValue: ['']
+      inputValue: [''],
     })
 
     if (this.dialogDetails?.inputDetails?.required) {
@@ -40,7 +40,7 @@ export class ConformationPopupComponent implements OnInit {
     // Set initial value if provided in dialog data
     if (this.dialogDetails?.inputDetails?.value) {
       this.inputForm.patchValue({
-        inputValue: this.dialogDetails.inputDetails.value
+        inputValue: this.dialogDetails.inputDetails.value,
       })
     }
   }

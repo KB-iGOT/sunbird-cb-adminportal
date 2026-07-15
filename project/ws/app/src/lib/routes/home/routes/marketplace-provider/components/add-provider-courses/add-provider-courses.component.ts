@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router'
     selector: 'ws-app-add-provider-courses',
     templateUrl: './add-provider-courses.component.html',
     styleUrls: ['./add-provider-courses.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class AddProviderCoursesComponent implements OnInit {
   @Output() action: EventEmitter<any> = new EventEmitter<any>()

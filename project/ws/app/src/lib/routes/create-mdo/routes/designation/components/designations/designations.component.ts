@@ -14,7 +14,7 @@ import { ConformationPopupDesignationComponent } from '../../../../../home/compo
   selector: 'ws-app-designations',
   templateUrl: './designations.component.html',
   styleUrls: ['./designations.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class DesignationsComponent implements OnInit {
   @Input() goToImportMaster: boolean = false
@@ -139,7 +139,7 @@ export class DesignationsComponent implements OnInit {
         setTimeout(() => {
           // this.getOrgReadData()
           this.getRoutesData()
-        }, 5000)
+        },         5000)
       }
     })
   }
@@ -237,8 +237,8 @@ export class DesignationsComponent implements OnInit {
         videoLink: url,
       },
       disableClose: true,
-      width: "675px",
-      height: "400px"
+      width: '675px',
+      height: '400px',
     })
   }
 
@@ -266,7 +266,7 @@ export class DesignationsComponent implements OnInit {
           messages: [
             {
               msgClass: '',
-              msg: `Please note that doing so will result in the loss of role mapping.`,
+              msg: 'Please note that doing so will result in the loss of role mapping.',
             },
           ],
         },
@@ -339,7 +339,7 @@ export class DesignationsComponent implements OnInit {
             if (action && action === 'delete') {
               this.openSnackbar(_.get(this.designationConfig, 'termRemoveMsg'))
             }
-          }, refreshTime)
+          },         refreshTime)
         }
       },
       error: () => {
@@ -353,7 +353,7 @@ export class DesignationsComponent implements OnInit {
   private openSnackbar(primaryMsg: any, duration: number = 5000, type?: string) {
     this.snackBar.open(primaryMsg, 'X', {
       duration,
-      panelClass: [type ? type : '']
+      panelClass: [type ? type : ''],
 
     })
   }

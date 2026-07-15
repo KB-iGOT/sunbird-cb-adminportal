@@ -4,15 +4,15 @@ import { MatDialog } from '@angular/material/dialog'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ConfigurationsService, EventService, WsEvents } from '@sunbird-cb/utils-v2'
 /* tslint:disable */
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { DirectoryService } from '../../services/directory.services'
 import { UIDirectoryTableComponent } from '../../../../head/ui-admin-table/directory-list/directory-table.component'
 
 @Component({
-    selector: 'ws-app-reports',
-    templateUrl: './reports.component.html',
-    styleUrls: ['./reports.component.scss'],
-    standalone: false
+  selector: 'ws-app-reports',
+  templateUrl: './reports.component.html',
+  styleUrls: ['./reports.component.scss'],
+  standalone: false
 })
 export class ReportsComponent implements OnInit {
 

@@ -108,7 +108,7 @@ export class CreateMDOService {
   }
 
   createOrganization(request: any) {
-    return this.http.post<any>(`${API_END_POINTS.CREATE_STATE_OR_MINISTRY}`, { request: request })
+    return this.http.post<any>(`${API_END_POINTS.CREATE_STATE_OR_MINISTRY}`, { request })
   }
 
   searchOrgs(orgName: any, type: any) {
@@ -128,8 +128,8 @@ export class CreateMDOService {
     const req = {
       request: {
         filters: {
-          "identifier": identifier
-        }
+          'identifier': identifier,
+        },
       },
     }
     return this.http.post(API_END_POINTS.SEARCH_ORG, req)

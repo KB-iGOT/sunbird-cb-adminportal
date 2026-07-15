@@ -9,7 +9,7 @@ import { TenantAdminService } from '../../../../services/tenant-admin.service'
     providers: [TenantAdminService],
     templateUrl: './edit-department-dialog.component.html',
     styleUrls: ['./edit-department-dialog.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class EditDepartmentDialogComponent implements OnInit {
   editForm: UntypedFormGroup

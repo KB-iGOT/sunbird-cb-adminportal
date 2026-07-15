@@ -5,7 +5,7 @@ import { IWsSocialSearchResultData } from '../../models/search.model'
     selector: 'ws-app-blogs-card',
     templateUrl: './blogs-card.component.html',
     styleUrls: ['./blogs-card.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class BlogsCardComponent implements OnInit {
   @Input() result: IWsSocialSearchResultData = {} as IWsSocialSearchResultData

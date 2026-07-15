@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ConfigurationsService, EventService, WsEvents } from '@sunbird-cb/utils-v2'
 /* tslint:disable */
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { UsersService } from '../../services/users.service'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { environment } from 'src/environments/environment'
@@ -184,7 +184,7 @@ export class UsersViewComponent implements OnInit {
   }
 
   onCreateClick() {
-    this.router.navigate([`/app/home/create-user`])
+    this.router.navigate(['/app/home/create-user'])
   }
 
   menuActions($event: { action: string, row: any }) {

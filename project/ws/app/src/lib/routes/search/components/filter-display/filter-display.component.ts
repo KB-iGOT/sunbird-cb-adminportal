@@ -7,7 +7,7 @@ import { SearchServService } from '../../services/search-serv.service'
     selector: 'ws-app-filter-display',
     templateUrl: './filter-display.component.html',
     styleUrls: ['./filter-display.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class FilterDisplayComponent implements OnInit {
   @Input() filtersResponse: IFilterUnitResponse[] = []

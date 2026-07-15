@@ -68,7 +68,7 @@ export class RejectRequestFormComponent implements OnInit {
         })
       )
       .subscribe({
-        next: (res) => {
+        next:res => {
           // tslint:disable:no-console
           console.log('Reject Response =>', res)
 
@@ -77,13 +77,13 @@ export class RejectRequestFormComponent implements OnInit {
             'X',
             {
               duration: 3000,
-              panelClass: ['snackbar-success']
+              panelClass: ['snackbar-success'],
             }
           )
 
           this.dialogRef.close('success')
         },
-        error: (err) => {
+        error:err => {
           this.loading = false
           console.error(err)
 
@@ -97,10 +97,10 @@ export class RejectRequestFormComponent implements OnInit {
             'X',
             {
               duration: 5000,
-              panelClass: ['snackbar-error']
+              panelClass: ['snackbar-error'],
             }
           )
-        }
+        },
       })
   }
 }

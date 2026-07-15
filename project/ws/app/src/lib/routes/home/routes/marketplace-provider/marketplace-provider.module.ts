@@ -37,7 +37,7 @@ import { MatRadioModule } from '@angular/material/radio'
 import { MatSlideToggleModule as MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatSidenavModule } from '@angular/material/sidenav'
-import { MatRippleModule } from '@angular/material/core'
+import { MatOptionModule, MatRippleModule } from '@angular/material/core'
 import { PaginationModule } from '@sunbird-cb/consumption'
 import { ConfigureProviderComponent } from './components/configure-provider/configure-provider.component'
 import { ConfigureProviderMenuComponent } from './components/configure-provider-menu/configure-provider-menu.component'
@@ -55,7 +55,6 @@ import { SsoConfigureSettingsComponent } from './components/sso-configure-settin
 import { LoadingPopupComponent } from './dialogs/loading-popup/loading-popup.component'
 import { MaxLengthNumberDirective } from './directives/max-length-number.directive'
 import { MatAutocompleteModule } from '@angular/material/autocomplete'
-import { MatOptionModule } from '@angular/material/core'
 
 const routes: Routes = [
   {
@@ -107,7 +106,7 @@ const routes: Routes = [
       providerDetails: ProviderResolveService,
 
     },
-    runGuardsAndResolvers: 'paramsOrQueryParamsChange'
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
   },
 
 ]
@@ -140,7 +139,7 @@ const routes: Routes = [
     SsoIntegrationComponent,
     SsoConfigureSettingsComponent,
     LoadingPopupComponent,
-    MaxLengthNumberDirective
+    MaxLengthNumberDirective,
   ],
   imports: [
     CommonModule,
@@ -172,7 +171,7 @@ const routes: Routes = [
     MatRippleModule,
     PaginationModule,
     MatAutocompleteModule,
-    MatOptionModule
+    MatOptionModule,
   ],
   providers: [DatePipe, LoaderService],
   exports: [RouterModule],

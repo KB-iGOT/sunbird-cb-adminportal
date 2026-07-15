@@ -19,6 +19,6 @@ import { AvatarPhotoComponent } from './avatar-photo.component'
         MatRippleModule,
         SbUiResolverModule,
     ],
-    exports: [AvatarPhotoComponent]
+    exports: [AvatarPhotoComponent],
 })
 export class AvatarPhotoModule { }

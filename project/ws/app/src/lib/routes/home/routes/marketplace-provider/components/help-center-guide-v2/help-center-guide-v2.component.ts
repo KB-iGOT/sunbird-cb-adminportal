@@ -14,18 +14,18 @@ import { MatDialog } from '@angular/material/dialog'
             state('collapsed', style({
                 height: '0',
                 overflow: 'hidden',
-                opacity: 0
+                opacity: 0,
             })),
             state('expanded', style({
                 height: '*',
-                opacity: 1
+                opacity: 1,
             })),
             transition('collapsed <=> expanded', [
-                animate('300ms ease-in-out')
-            ])
-        ])
+                animate('300ms ease-in-out'),
+            ]),
+        ]),
     ],
-    standalone: false
+    standalone: false,
 })
 export class HelpCenterGuideComponentV2 implements OnInit {
 
@@ -34,7 +34,6 @@ export class HelpCenterGuideComponentV2 implements OnInit {
   showTopSection = false
   playVideo = false
   showDetailToggle = false
-
 
   constructor(
     private dialog: MatDialog
@@ -60,7 +59,7 @@ export class HelpCenterGuideComponentV2 implements OnInit {
     if (document.querySelector('.flex')) {
       setTimeout(() => {
         window.dispatchEvent(new Event('resize'))
-      }, 100)
+      },         100)
     }
   }
 

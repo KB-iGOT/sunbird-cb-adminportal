@@ -9,7 +9,7 @@ import { IWidgetBtnContentFeedbackV2 } from '../../models/btn-content-feedback-v
     selector: 'ws-widget-btn-content-feedback-v2',
     templateUrl: './btn-content-feedback-v2.component.html',
     styleUrls: ['./btn-content-feedback-v2.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class BtnContentFeedbackV2Component extends WidgetBaseComponent
   implements OnInit, NsWidgetResolver.IWidgetData<IWidgetBtnContentFeedbackV2> {

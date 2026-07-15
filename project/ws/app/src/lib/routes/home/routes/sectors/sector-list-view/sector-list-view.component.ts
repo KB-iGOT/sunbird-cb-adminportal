@@ -13,7 +13,7 @@ import { sectorConstants } from '../sectors-constats.model'
     selector: 'ws-sector-list-view',
     templateUrl: './sector-list-view.component.html',
     styleUrls: ['./sector-list-view.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class SectorListViewComponent implements OnInit {
   @Input() tableData!: ITableData | undefined

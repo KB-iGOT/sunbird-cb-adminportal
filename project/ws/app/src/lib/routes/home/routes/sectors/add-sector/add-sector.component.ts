@@ -15,7 +15,7 @@ import { sectorConstants } from '../sectors-constats.model'
     selector: 'ws-app-add-sector',
     templateUrl: './add-sector.component.html',
     styleUrls: ['./add-sector.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class AddSectorComponent implements OnInit {
 
@@ -61,10 +61,10 @@ export class AddSectorComponent implements OnInit {
     this.sectorsService.createSector(reqestBody).subscribe((resp: any) => {
       if (resp && resp.responseCode === 'OK') {
         this.snackBar.open('Sector is successfuly created.')
-        this.router.navigate([`/app/home/sectors`])
+        this.router.navigate(['/app/home/sectors'])
       }
       this.isLoading = false
-    }, eResp => {
+    },                                                     eResp => {
       if (eResp && eResp.error && eResp.error.responseCode === 'BAD_REQUEST') {
         this.snackBar.open(eResp.error.params.errmsg)
       }
