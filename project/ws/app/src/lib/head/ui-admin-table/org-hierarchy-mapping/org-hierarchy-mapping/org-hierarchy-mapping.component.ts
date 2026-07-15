@@ -498,7 +498,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
       maxHeight: '100vh',
       autoFocus: false,
     })
-    dialogRef.afterClosed().subscribe(async result => {
+    dialogRef.afterClosed().subscribe(async () => {
       if (this.checkIfStateAdmin()) {
         await this.getOrgReadAndDetails()
       } else {

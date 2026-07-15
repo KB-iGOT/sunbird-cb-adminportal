@@ -413,10 +413,12 @@ export class CreateUserComponent implements OnInit {
     }
     if (this.createdDepartment) {
       this.router.navigate([`/app/roles/${this.deptId}/users`],
+        // tslint:disable-next-line:align
         {
           queryParams:
           {
 
+            // tslint:disable-next-line:max-line-length
             currentDept: this.getCurrentDept() === 'mdo' || this.getCurrentDept() === 'state' ? 'organisation' : this.getCurrentDept() === 'cbp' ? this.getSubOrgType() : this.currentDept,
             roleId: this.deptId,
             depatName: this.createdDepartment.depName,
