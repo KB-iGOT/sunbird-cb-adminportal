@@ -7,8 +7,8 @@ import { MatSnackBar } from '@angular/material/snack-bar'
 
 const API_ENDPOINTS = {
   // bulkUpload: `/apis/proxies/v8/user/v1/bulkupload`,
-  bulkUpload: `/apis/proxies/v8/user/v2/bulkupload`, // csv support
-  downloadReport: `/apis/protected/v8/admin/userRegistration/bulkUploadReport`,
+  bulkUpload: '/apis/proxies/v8/user/v2/bulkupload', // csv support
+  downloadReport: '/apis/protected/v8/admin/userRegistration/bulkUploadReport',
   getBulkUploadData: '/apis/proxies/v8/user/v1/bulkupload',
   getBulkApproval: '/apis/proxies/v8/workflow/admin/bulkupdate/getstatus',
   // bulkApprovalUpload: `/apis/proxies/v8/workflow/admin/transition/bulkupdate`,
@@ -38,7 +38,7 @@ const API_ENDPOINTS = {
   GET_BULK_UPLOAD_USER_TRANSFER: (orgHierarchyFramworkId: string) =>
     `/apis/proxies/v8/user/v1/org-migration/bulk-upload/${orgHierarchyFramworkId}`,
   GET_BULK_UPLOAD_USER_TRANSFER_STATUS: (filePath: string) =>
-    `/apis/proxies/v8/user/v1/org-migration/bulk-upload/progress/${filePath}`
+    `/apis/proxies/v8/user/v1/org-migration/bulk-upload/progress/${filePath}`,
 }
 
 @Injectable()
@@ -80,6 +80,7 @@ export class FileService {
           fileSaver.saveAs(res.body, filename || 'sample.xlsx')
         }
 
+        // tslint:disable-next-line:align
       }, () => (this.matSnackBar.open('Could not download the file')
       ))
   }
@@ -187,14 +188,17 @@ export class FileService {
     return API_ENDPOINTS.GET_BULK_UPLOAD_COMPETENCY_STATUS(fileName)
   }
 
-
   public downloadSampleBulkUserTransferFile(downloadAsFileName: string, orgHierarchyFramworkId: string): void {
-    this.http.get(API_ENDPOINTS.GET_BULK_USER_TRANSFER_UPLOAD_SAMPLE_FILE(orgHierarchyFramworkId), { responseType: 'blob' }).subscribe((res: any) => {
+    this.http.get(
+      API_ENDPOINTS.GET_BULK_USER_TRANSFER_UPLOAD_SAMPLE_FILE(orgHierarchyFramworkId),
+      { responseType: 'blob' }
+    ).subscribe((res: any) => {
       fileSaver.saveAs(res, downloadAsFileName)
     })
   }
 
   public uploadBulkUserTransfer(fileContent: FormData, selectedOrgData?: any, parentOrgData?: any): Observable<any> {
+    // tslint:disable-next-line:max-line-length
     return this.http.post<any>(`${API_ENDPOINTS.GET_BULK_UPLOAD_USER_TRANSFER(parentOrgData?.orgHierarchyFrameworkId || '')}?orgId=${selectedOrgData?.rootOrgId || ''}`, fileContent)
       .pipe(finalize(() => this.displayLoader$.next(false)))
   }
@@ -202,6 +206,5 @@ export class FileService {
   public statusOfBulkUserTransfer(orgId: string): Observable<any> {
     return this.http.get<any>(API_ENDPOINTS.GET_BULK_UPLOAD_USER_TRANSFER_STATUS(orgId))
   }
-
 
 }

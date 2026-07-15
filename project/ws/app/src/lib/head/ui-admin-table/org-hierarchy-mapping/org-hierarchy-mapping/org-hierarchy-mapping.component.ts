@@ -254,6 +254,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
             this.organizationCtrl.setValue(selectedOrg.identifier)
           }
           this.snackbar.open(`Framework created successfully for ${selectedOrg.orgName}`)
+          // tslint:disable-next-line:align
         }, 2000)
       } else {
         this.loaderService.setLoaderState(false)
@@ -340,6 +341,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   getselectedOrgData() {
     if (this.checkIfStateAdmin()) {
       return this.orgReadData
+      // tslint:disable-next-line:no-else-after-return
     } else {
       if (this.allOrganizations.filter((v: any) => v.identifier === this.organizationCtrl.value).length) {
         return this.allOrganizations.filter((v: any) => v.identifier === this.organizationCtrl.value)[0]
@@ -514,6 +516,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     // Recreate the tree view component in the next change detection cycle
     setTimeout(() => {
       this.showTreeView = true
+      // tslint:disable-next-line:align
     }, 0)
   }
 

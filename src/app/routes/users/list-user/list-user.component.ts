@@ -139,6 +139,7 @@ export class ListUserComponent implements OnInit {
         fields: [],
         facets: ['rootChannel'],
         limit: this.rowsPerPage,
+        // tslint:disable-next-line:object-shorthand-properties-first
         filters,
         sort_by: { createdDate: 'desc' },
         offset: this.page * this.rowsPerPage,

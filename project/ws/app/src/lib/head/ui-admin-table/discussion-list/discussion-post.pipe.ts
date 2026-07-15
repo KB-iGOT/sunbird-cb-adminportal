@@ -3,7 +3,7 @@ import * as _ from 'lodash'
 
 @Pipe({
     name: 'listPipe',
-    standalone: false
+    standalone: false,
 })
 export class ListPipePipe implements PipeTransform {
 

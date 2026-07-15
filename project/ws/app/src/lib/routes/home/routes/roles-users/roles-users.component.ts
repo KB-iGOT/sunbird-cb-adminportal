@@ -9,7 +9,7 @@ import { UsersService } from '../../services/users.service'
     selector: 'ws-app-roles-users',
     templateUrl: './roles-users.component.html',
     styleUrls: ['./roles-users.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class RolesUsersComponent implements OnInit, AfterViewInit, OnDestroy {
   tabledata: any = []
@@ -241,7 +241,7 @@ export class RolesUsersComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate(['app/home/create-user'], {
       queryParams: {
         id: this.orgiId,
-        currentDept: "organisation",
+        currentDept: 'organisation',
         createDept: JSON.stringify(this.createdDepartment),
         orgName: this.deptName,
         redirectionPath: window.location.href,

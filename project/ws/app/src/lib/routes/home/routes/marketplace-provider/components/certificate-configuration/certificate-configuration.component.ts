@@ -12,10 +12,10 @@ import { SnackbarComponent } from '@sunbird-cb/consumption'
 import { jsPDF } from 'jspdf'
 
 @Component({
-    selector: 'ws-app-certificate-configuration',
-    templateUrl: './certificate-configuration.component.html',
-    styleUrls: ['./certificate-configuration.component.scss'],
-    standalone: false
+  selector: 'ws-app-certificate-configuration',
+  templateUrl: './certificate-configuration.component.html',
+  styleUrls: ['./certificate-configuration.component.scss'],
+  standalone: false,
 })
 export class CertificateConfigurationComponent implements OnChanges {
   @Input() providerDetails: any
@@ -27,9 +27,9 @@ export class CertificateConfigurationComponent implements OnChanges {
   FILE_UPLOAD_MAX_SIZE: number = 100 * 1024 * 1024
   FILE_UPLOAD_MAX_SIZE_LOGO: number = 1 * 1024 * 1024 * 1024
 
-  private readonly TARGET_HEIGHT = 73;
-  private readonly TARGET_Y_CENTER = 104;
-  private readonly TARGET_X_START = 1050;
+  private readonly TARGET_HEIGHT = 73
+  private readonly TARGET_Y_CENTER = 104
+  private readonly TARGET_X_START = 1050
 
   contentFile: any
   certificateUrl = ''
@@ -73,7 +73,7 @@ export class CertificateConfigurationComponent implements OnChanges {
 
   initializeForm() {
     this.providerForm = this.formBuilder.group({
-      providerName: [this.providerDetalsBeforUpdate?.data?.contentPartnerName || '', Validators.required]
+      providerName: [this.providerDetalsBeforUpdate?.data?.contentPartnerName || '', Validators.required],
     })
   }
 
@@ -146,7 +146,7 @@ export class CertificateConfigurationComponent implements OnChanges {
 
     // Read file as data URL for preview
     const reader = new FileReader()
-    reader.onload = (event) => {
+    reader.onload = event => {
       const imageData = event.target?.result
 
       if (uploadType === 'logo') {
@@ -251,6 +251,7 @@ export class CertificateConfigurationComponent implements OnChanges {
             const successMsg = 'Certificate saved successfully.'
             this.showSnackBar(successMsg, 'success')
             this.sendProviderDetailsUpdateEvent()
+            // tslint:disable-next-line:align
           }, 1000)
         }
       },
@@ -296,6 +297,7 @@ export class CertificateConfigurationComponent implements OnChanges {
   showSnackBar(message: string, type: 'error' | 'success') {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: {
+        // tslint:disable-next-line:object-literal-shorthand
         message: message, type: type,
       }, duration: 5000, panelClass: type,
     })
@@ -305,7 +307,7 @@ export class CertificateConfigurationComponent implements OnChanges {
   private mergeLogo(): void {
     try {
       const certificateReader = new FileReader()
-      certificateReader.onload = (certEvent) => {
+      certificateReader.onload = certEvent => {
         const certificateSvgContent = certEvent.target?.result as string
 
         // If selectedLogoImage is a data URL, we need to convert it
@@ -314,12 +316,12 @@ export class CertificateConfigurationComponent implements OnChanges {
           const base64Content = this.selectedLogoImage.split(',')[1]
           const binaryString = atob(base64Content)
           const bytes = new Uint8Array(binaryString.length)
-          for (let i = 0; i < binaryString.length; i++) {
+          for (let i = 0; i < binaryString.length; i += 1) {
             bytes[i] = binaryString.charCodeAt(i)
           }
           const logoBlob = new Blob([bytes])
           const logoReader = new FileReader()
-          logoReader.onload = (logoEvent) => {
+          logoReader.onload = logoEvent => {
             this.processMergeLogo(certificateSvgContent, logoEvent.target?.result as string)
           }
           logoReader.readAsText(logoBlob)
@@ -400,7 +402,10 @@ export class CertificateConfigurationComponent implements OnChanges {
 
     // --- Dimension Extraction & Alignment Logic ---
     const viewBox = logoSvg.getAttribute('viewBox')
-    let minX = 0, minY = 0, logoWidth = 100, logoHeight = 100
+    let minX = 0
+    let minY = 0
+    let logoWidth = 100
+    let logoHeight = 100
 
     if (viewBox) {
       const vbParts = viewBox.split(/[\s,]+/).map(parseFloat)
@@ -467,7 +472,6 @@ export class CertificateConfigurationComponent implements OnChanges {
     return serializer.serializeToString(certDoc)
   }
 
-
   downloadPDF() {
     if (this.certificateUploaded && this.contentFile) {
       const img = new Image()
@@ -489,7 +493,7 @@ export class CertificateConfigurationComponent implements OnChanges {
         const pdf = new jsPDF({
           orientation: img.width > img.height ? 'landscape' : 'portrait',
           unit: 'px',
-          format: [img.width, img.height]
+          format: [img.width, img.height],
         })
 
         pdf.addImage(imgData, 'PNG', 0, 0, img.width, img.height)
@@ -505,7 +509,6 @@ export class CertificateConfigurationComponent implements OnChanges {
       this.showSnackBar('No certificate available for download', 'error')
     }
   }
-
 
   useDefaultTemplate() {
     if (!this.defaultCertificateTemplateUrl) {

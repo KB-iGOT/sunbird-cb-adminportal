@@ -80,12 +80,20 @@ export class UsersHomeComponent implements OnInit, OnDestroy {
       const leftData = this.activeRoute.snapshot.data.pageData.data.menus
       // Patch in dynamic values (logo, org name, roles) - same pattern as home.component.ts
       _.set(leftData, 'widgetData.logo', true)
-      _.set(leftData, 'widgetData.logoPath',
-        _.get(this.activeRoute, 'snapshot.data.department.data.logo',
-          _.get(this.configSvc, 'unMappedUser.thumbnail', '')))
-      _.set(leftData, 'widgetData.name',
-        _.get(this.activeRoute, 'snapshot.data.configService.unMappedUser.rootOrg.orgName',
-          _.get(this.configSvc, 'unMappedUser.rootOrg.orgName', 'User Management')))
+      _.set(
+        leftData,
+        'widgetData.logoPath',
+        _.get(this.activeRoute, 'snapshot.data.department.data.logo', _.get(this.configSvc, 'unMappedUser.thumbnail', ''))
+      )
+      _.set(
+        leftData,
+        'widgetData.name',
+        _.get(
+          this.activeRoute,
+          'snapshot.data.configService.unMappedUser.rootOrg.orgName',
+          _.get(this.configSvc, 'unMappedUser.rootOrg.orgName', 'User Management')
+        )
+      )
       _.set(leftData, 'widgetData.userRoles', this.myRoles)
       this.widgetData = leftData
     } else {
@@ -109,6 +117,7 @@ export class UsersHomeComponent implements OnInit, OnDestroy {
           routerLink: url,
         })
       }
+
       this.widgetData = {
         widgetType: 'leftMenu',
         widgetSubType: 'leftMenu',
@@ -116,6 +125,7 @@ export class UsersHomeComponent implements OnInit, OnDestroy {
           name: _.get(this.configSvc, 'unMappedUser.rootOrg.orgName', 'User Management'),
           logo: true,
           logoPath: _.get(this.configSvc, 'unMappedUser.thumbnail', ''),
+          // tslint:disable-next-line:object-shorthand-properties-first
           menus,
           userRoles: this.myRoles,
         },

@@ -729,6 +729,7 @@ export class EditEventComponent implements OnInit, OnDestroy {
           this.displayLoader = false
           this.openSnackbar('Event details are successfuly updated.')
           this.router.navigate(['/app/home/events'])
+          // tslint:disable-next-line:align
         }, 5000)
       },
       (err: any) => {
@@ -819,6 +820,7 @@ export class EditEventComponent implements OnInit, OnDestroy {
               control.setValue(eventObj.resourceTypeDetails.stateOrMinistryName)
 
             }
+            // tslint:disable-next-line:align
           }, 0)
 
         }

@@ -11,7 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar'
     templateUrl: './content-upload.component.html',
     styleUrls: ['./content-upload.component.scss'],
     providers: [DatePipe],
-    standalone: false
+    standalone: false,
 })
 export class ContentUploadComponent implements OnInit, OnChanges {
   //#region (global variables)
@@ -27,10 +27,18 @@ export class ContentUploadComponent implements OnInit, OnChanges {
   helpCenterGuide = {
     header: 'Content Upload Details: Video Guides and Tips',
     guideNotes: [
-      'While uploading the course catalog, ensure to define key properties such as Content Details, Certificate Configuration, and Progress Transform Settings. These are essential for accurate tracking and effective learner engagement. you will have the provision to update the properties later also.',
-      'Upload the course catalog using a CSV or XLSX file. Once uploaded, the system will indicate whether the courses are live. Non-published courses and published courses will be displayed in separate tabs for better organization. Additionally, you can download detailed logs for reference and troubleshooting.',
+      [
+        'While uploading the course catalog, ensure to define key properties such as Content Details, Certificate Configuration,',
+        'and Progress Transform Settings. These are essential for accurate tracking and effective learner engagement.',
+        'you will have the provision to update the properties later also.',
+      ].join(' '),
+      [
+        'Upload the course catalog using a CSV or XLSX file. Once uploaded, the system will indicate whether the courses are live.',
+        'Non-published courses and published courses will be displayed in separate tabs for better organization.',
+        'Additionally, you can download detailed logs for reference and troubleshooting.',
+      ].join(' '),
     ],
-    helpVideoLink: `/assets/public/content/guide-videos/CIOS_Updated_demo.mp4`,
+    helpVideoLink: '/assets/public/content/guide-videos/CIOS_Updated_demo.mp4',
   }
 
   contentTableData: any
@@ -61,7 +69,6 @@ export class ContentUploadComponent implements OnInit, OnChanges {
   }[] = []
   unPublishedCoursesSearchKey = ''
   unPublishedCoursesTablePaginationDetails: any
-
 
   defaultPagination = {
     startIndex: 0,
@@ -384,7 +391,7 @@ export class ContentUploadComponent implements OnInit, OnChanges {
             this.showSnackBar(msg)
             setTimeout(() => {
               this.getUnPublishedCoursesList()
-            }, 2000)
+            },         2000)
           }
         },
         error: (error: HttpErrorResponse) => {
