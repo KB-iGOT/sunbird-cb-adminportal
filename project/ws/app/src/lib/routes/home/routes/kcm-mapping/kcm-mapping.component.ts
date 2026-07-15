@@ -9,7 +9,7 @@ import * as _ from 'lodash'
     selector: 'ws-app-kcm-mapping',
     templateUrl: './kcm-mapping.component.html',
     styleUrls: ['./kcm-mapping.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class KCMMappingComponent implements OnInit {
   environmentVal: any
@@ -37,7 +37,7 @@ export class KCMMappingComponent implements OnInit {
   callResizeEvent(_event: any) {
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'))
-    }, 100)
+    },         100)
   }
 
   openVideoPopup() {

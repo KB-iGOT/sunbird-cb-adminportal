@@ -9,12 +9,12 @@ import { DesignationApprovalService } from '../designation-approval/services/des
   selector: 'app-reject-request-form',
   templateUrl: './reject-request-form.component.html',
   styleUrls: ['./reject-request-form.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class RejectRequestFormComponent implements OnInit {
 
   rejectRequestForm: FormGroup | any
-  loading = false;
+  loading = false
 
   constructor(
     public dialogRef: MatDialogRef<RejectRequestFormComponent>,
@@ -32,7 +32,7 @@ export class RejectRequestFormComponent implements OnInit {
     this.rejectRequestForm = this.fb.group({
       rejection_comment: ['', [
         Validators.required,
-        Validators.pattern(/^(?!\s*$).+/)
+        Validators.pattern(/^(?!\s*$).+/),
       ]],
     })
   }
@@ -54,10 +54,10 @@ export class RejectRequestFormComponent implements OnInit {
 
     const payload = {
       id: this.data?.identifier,
-      reviewer_comments: this.rejectRequestForm.value.rejection_comment?.trim()
+      reviewer_comments: this.rejectRequestForm.value.rejection_comment?.trim(),
     }
-
-    console.log('Reject Payload =>', payload)
+    // tslint:disable:no-console
+    // console.log('Reject Payload =>', payload)
 
     this.loading = true
 
@@ -69,6 +69,7 @@ export class RejectRequestFormComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
+          // tslint:disable:no-console
           console.log('Reject Response =>', res)
 
           this.snackBar.open(

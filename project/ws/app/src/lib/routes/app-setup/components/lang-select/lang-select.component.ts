@@ -11,7 +11,7 @@ import { UntypedFormControl, Validators } from '@angular/forms'
     selector: 'ws-app-lang-select',
     templateUrl: './lang-select.component.html',
     styleUrls: ['./lang-select.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class LangSelectComponent implements OnInit {
   constructor(

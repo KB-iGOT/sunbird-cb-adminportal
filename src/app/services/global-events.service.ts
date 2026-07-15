@@ -4,12 +4,12 @@ import { DomSanitizer } from '@angular/platform-browser'
 import { Subject } from 'rxjs'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GlobalEventsService {
 
-  private loaderSubject = new Subject<boolean>();
-  loaderState$ = this.loaderSubject.asObservable();
+  private loaderSubject = new Subject<boolean>()
+  loaderState$ = this.loaderSubject.asObservable()
 
   constructor(
     private iconRegistry: MatIconRegistry,

@@ -10,7 +10,7 @@ interface ITimer {
     selector: 'ws-app-event-banner',
     templateUrl: './event-banner.component.html',
     styleUrls: ['./event-banner.component.scss'],
-    standalone: false
+    standalone: false,
 })
 
 export class EventBannerComponent implements OnDestroy, OnChanges, OnInit {

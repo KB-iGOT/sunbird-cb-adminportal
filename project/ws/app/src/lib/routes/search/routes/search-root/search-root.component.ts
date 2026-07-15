@@ -7,7 +7,7 @@ import { ConfigurationsService, NsPage } from '@sunbird-cb/utils-v2'
     selector: 'ws-app-search-root',
     templateUrl: './search-root.component.html',
     styleUrls: ['./search-root.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class SearchRootComponent implements OnInit {
   searchTabs: IFeatureSearchConfig = {

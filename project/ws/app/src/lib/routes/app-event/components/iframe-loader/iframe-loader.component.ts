@@ -8,7 +8,7 @@ import { EventService } from '../../services/event.service'
     selector: 'ws-app-iframe-loader',
     templateUrl: './iframe-loader.component.html',
     styleUrls: ['./iframe-loader.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class IframeLoaderComponent implements OnInit {
   iframeSrc: SafeResourceUrl | null = null

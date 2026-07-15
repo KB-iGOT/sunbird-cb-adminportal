@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
     selector: 'ws-app-conformation-popup-designation-popup',
     templateUrl: './conformation-popup-designation.component.html',
     styleUrls: ['./conformation-popup-designation.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class ConformationPopupDesignationComponent implements OnInit {
 

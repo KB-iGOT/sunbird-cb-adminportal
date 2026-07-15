@@ -17,7 +17,7 @@ import { NsWidgetResolver } from '@sunbird-cb/resolver-v2'
     selector: 'ws-app-social',
     templateUrl: './social.component.html',
     styleUrls: ['./social.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class SocialComponent implements OnInit, OnDestroy {
   defaultSideNavBarOpenedSubscription: Subscription | null = null
@@ -205,7 +205,7 @@ export class SocialComponent implements OnInit, OnDestroy {
     return item.identifier
   }
   toggleBestResults() {
-    try { //NOSONAR
+    try { // NOSONAR
       this.query = !this.query
       this.searchRequestObject.postKind = this.query ? 'Query' : 'Blog'
       this.searchRequestObject.pageNo = 0
@@ -220,7 +220,7 @@ export class SocialComponent implements OnInit, OnDestroy {
   }
 
   sortOrder(type: string) {
-    try { //NOSONAR
+    try { // NOSONAR
       this.router.navigate([], {
         queryParams: { sort: type },
         queryParamsHandling: 'merge',

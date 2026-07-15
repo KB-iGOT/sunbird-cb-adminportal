@@ -6,7 +6,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
     selector: 'ws-dialog-confirm',
     templateUrl: './dialog-confirm.component.html',
     styleUrls: ['./dialog-confirm.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class DialogConfirmComponent {
 

@@ -11,7 +11,7 @@ import { sectorConstants } from '../sectors/sectors-constats.model'
     selector: 'ws-utils-image-crop',
     templateUrl: './image-crop.component.html',
     styleUrls: ['./image-crop.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class ImageCropComponent implements OnInit {
   // need to set for creator Logo

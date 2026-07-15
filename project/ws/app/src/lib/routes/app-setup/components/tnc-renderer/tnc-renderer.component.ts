@@ -6,7 +6,7 @@ import { MatSelectChange as MatSelectChange } from '@angular/material/select'
     selector: 'ws-app-tnc-renderer',
     templateUrl: './tnc-renderer.component.html',
     styleUrls: ['./tnc-renderer.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class TncRendererComponent implements OnInit, OnChanges {
 

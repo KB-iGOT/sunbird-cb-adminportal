@@ -22,7 +22,7 @@ export interface IContentShareData {
   selector: 'ws-designation-approval-list-view',
   templateUrl: './designation-approval-list-view.component.html',
   styleUrls: ['./designation-approval-list-view.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class DesignationApprovalListViewComponent implements OnInit, AfterViewInit, OnChanges, AfterViewChecked {
 
@@ -265,7 +265,7 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
   }
 
   onCreateClick() {
-    this.router.navigate([`/app/home/events/create-event`])
+    this.router.navigate(['/app/home/events/create-event'])
     // this.telemetrySvc.impression()
     // this.events.raiseInteractTelemetry(
     //   {
@@ -307,6 +307,7 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
   }
 
   approveRequest(rowData: any) {
+    // tslint:disable-next-line:no-console
     console.log('rowData', rowData)
 
     if (this.actionsClick) {
@@ -316,18 +317,18 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
   }
 
   rejectRequest(rowData: any) {
+    // tslint:disable-next-line:no-console
     console.log('rowData', rowData)
 
     if (this.actionsClick) {
       this.actionsClick.emit({ action: 'reject', row: rowData })
     }
 
-
-
   }
 
   openRejecttionCommentPopup(element: any) {
     this.showRejectPopupFlag = true
+    // tslint:disable-next-line:no-console
     console.log('element', element)
     this.rejectionDetail = element
   }
@@ -335,6 +336,5 @@ export class DesignationApprovalListViewComponent implements OnInit, AfterViewIn
   closeRejectPopup() {
     this.showRejectPopupFlag = false
   }
-
 
 }

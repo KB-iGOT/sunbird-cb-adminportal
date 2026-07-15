@@ -7,7 +7,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators'
 import { EventsService } from '../services/events.service'
 import { HttpClient } from '@angular/common/http'
 // tslint:disable-next-line
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { ProfileV2UtillService } from '../services/home-utill.service'
 
 export interface IParticipantElement {
@@ -20,7 +20,7 @@ export interface IParticipantElement {
     selector: 'ws-app-participants',
     templateUrl: './participants.component.html',
     styleUrls: ['./participants.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class ParticipantsComponent implements OnInit {
 

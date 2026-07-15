@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs'
     selector: 'ws-app-about-home',
     templateUrl: './about-home.component.html',
     styleUrls: ['./about-home.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class AboutHomeComponent implements OnInit, OnDestroy {
   objectKeys = Object.keys

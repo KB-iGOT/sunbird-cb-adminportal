@@ -39,7 +39,7 @@ export const MY_FORMATS = {
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
-  standalone: false
+  standalone: false,
 })
 export class EditEventComponent implements OnInit, OnDestroy {
 
@@ -58,13 +58,14 @@ export class EditEventComponent implements OnInit, OnDestroy {
   @Output() eOnCreateClick = new EventEmitter<any>()
 
   createEventForm: UntypedFormGroup
-  namePatern = `^[a-zA-Z\\s\\']{1,32}$`
+  namePatern = "^[a-zA-Z\\s\\']{1,32}$"
   department: any = {}
   departmentName = ''
   toastSuccess: any
   pictureObj: any
   myreg = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/|v\/|live\/)|youtu\.be\/)[A-Za-z0-9_\-]+/
   eventTitleRegex = new RegExp(
+    // tslint:disable-next-line:max-line-length
     /^[\u0900-\u097F\u0980-\u09FF\u0C00-\u0C7F\u0B80-\u0BFF\u0C80-\u0CFF\u0D00-\u0D7F\u0A80-\u0AFF\u0B00-\u0B7F\u0A00-\u0A7Fa-zA-Z0-9\(\)\$\[\]\.\-,:!'\" _\/]*$/ // NOSONAR
   )
   // myreg = /(^|\s)((https?:\/\/)?[\w-]+(\.[\w-]+)+\.?(:\d+)?(\/\S*)?)/gi
@@ -73,7 +74,10 @@ export class EditEventComponent implements OnInit, OnDestroy {
   // eventTypes = [
   //   { title: 'Webinar', desc: 'General discussion involving', border: 'rgb(0, 116, 182)', disabled: false },
   // ]
-  evntTypesList = ['Webinar', 'Karmayogi Talks', 'Karmayogi Saptah', 'Rajya Karmayogi Saptah', 'Sadhana Saptah', 'Samuhik Charcha - NLW 2026']
+  evntTypesList = [
+    'Webinar', 'Karmayogi Talks', 'Karmayogi Saptah', 'Rajya Karmayogi Saptah', 'Sadhana Saptah',
+    'Samuhik Charcha - NLW 2026',
+  ]
   stateList = []
   timeArr = [
     { value: '00:00' }, { value: '00:15' }, { value: '00:30' }, { value: '00:45' },
@@ -173,7 +177,7 @@ export class EditEventComponent implements OnInit, OnDestroy {
       eventPicture: new UntypedFormControl('', [Validators.required]),
       eventTitle: new UntypedFormControl('', [
         Validators.required,
-        Validators.pattern(this.eventTitleRegex) // Add your pattern here
+        Validators.pattern(this.eventTitleRegex), // Add your pattern here
       ]),
       // summary: new FormControl('', []),
       description: new UntypedFormControl('', [Validators.required, preventHtmlAndJs()]),
@@ -226,7 +230,12 @@ export class EditEventComponent implements OnInit, OnDestroy {
         this.imageSrcURL = eventObj.appIcon
         this.eventimageURL = eventObj.appIcon
 
-        if (eventObj && eventObj.resourceTypeDetails && eventObj.resourceTypeDetails.stateOrMinistryName && eventObj.resourceType === 'Rajya Karmayogi Saptah') {
+        if (
+          eventObj &&
+          eventObj.resourceTypeDetails &&
+          eventObj.resourceTypeDetails.stateOrMinistryName &&
+          eventObj.resourceType === 'Rajya Karmayogi Saptah'
+        ) {
           this.showRajyaField = true
           this.getSlwResourceTypeDetail(eventObj)
 
@@ -319,13 +328,13 @@ export class EditEventComponent implements OnInit, OnDestroy {
       now.setMinutes(now.getMinutes() + this.eventBufferTime) // assuming this.eventBufferTime = 30
 
       // Format buffered time as "HH:mm"
-      const bufferedTime = `${('0' + now.getHours()).slice(-2)}:${('0' + now.getMinutes()).slice(-2)}`
+      const bufferedTime = `${`0${now.getHours()}`.slice(-2)}:${`0${now.getMinutes()}`.slice(-2)}`
 
       // Update time array with disabled flags
       this.newtimearray = this.timeArr.map(slot => {
         return {
           value: slot?.value,
-          disabled: slot?.value <= bufferedTime
+          disabled: slot?.value <= bufferedTime,
         }
       })
     }
@@ -603,7 +612,7 @@ export class EditEventComponent implements OnInit, OnDestroy {
             versionKey: this.eventObject.versionKey,
             startDateTime: this.combineDateAndTime(
               moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
-              this.createEventForm.controls['eventTime'].value + ':00+05:30'),
+              `${this.createEventForm.controls['eventTime'].value}:00+05:30`),
             endDateTime: this.combineDateAndTime(
               newendDate ? newendDate : moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
               finalTime
@@ -630,7 +639,7 @@ export class EditEventComponent implements OnInit, OnDestroy {
             learningObjective: this.createEventForm.controls['agenda'].value,
             expiryDate: expiryDateTime,
             duration: eventDurationMinutes,
-            //registrationLink: this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value),
+            // registrationLink: this.youTubeUrlChange(this.createEventForm.controls['conferenceLink'].value),
             resourceType: this.createEventForm.controls['eventType'].value,
             categoryType: 'Article',
             creatorDetails: this.createEventForm.controls['presenters'].value,
@@ -649,7 +658,7 @@ export class EditEventComponent implements OnInit, OnDestroy {
             versionKey: this.eventObject.versionKey,
             startDateTime: this.combineDateAndTime(
               moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
-              this.createEventForm.controls['eventTime'].value + ':00+05:30'),
+              `${this.createEventForm.controls['eventTime'].value}:00+05:30`),
             endDateTime: this.combineDateAndTime(
               newendDate ? newendDate : moment(this.createEventForm.controls['eventDate'].value).format('YYYY-MM-DD'),
               finalTime
@@ -714,12 +723,12 @@ export class EditEventComponent implements OnInit, OnDestroy {
     }
     this.eventsSvc.publishEvent(identifierkey, reqestBody).subscribe(
       res => {
-        // tslint:disable-next-line:align
-        console.log("res", res)
+        // tslint:disable-next-line:align no-console
+        console.log('res', res)
         setTimeout(() => {
           this.displayLoader = false
           this.openSnackbar('Event details are successfuly updated.')
-          this.router.navigate([`/app/home/events`])
+          this.router.navigate(['/app/home/events'])
         }, 5000)
       },
       (err: any) => {
@@ -757,7 +766,7 @@ export class EditEventComponent implements OnInit, OnDestroy {
   }
 
   goToList() {
-    this.router.navigate([`/app/home/events`]), // NOSONAR
+    this.router.navigate(['/app/home/events']), // NOSONAR
       // this.telemetrySvc.impression()
 
       this.events.raiseInteractTelemetry(
@@ -775,12 +784,12 @@ export class EditEventComponent implements OnInit, OnDestroy {
       panelClass: 'remove-overflow',
     })
     this.dialogRef.afterClosed().subscribe(() => {
-      this.router.navigate([`/app/home/events`])
+      this.router.navigate(['/app/home/events'])
     })
   }
 
   resetDateField() {
-    let eventTypeControl = this.createEventForm.get('eventType')
+    const eventTypeControl = this.createEventForm.get('eventType')
     if (eventTypeControl && eventTypeControl.value === 'Rajya Karmayogi Saptah') {
       this.showRajyaField = true
       this.createEventForm.controls['state'].setValidators([Validators.required])
@@ -791,15 +800,15 @@ export class EditEventComponent implements OnInit, OnDestroy {
   }
 
   getSlwResourceTypeDetail(eventObj: any) {
-    let payload = {
-      "request": {
-        "type": "page",
-        "subType": "slwResourceTypeDetails",
-        "action": "page-configuration",
-        "component": "spv", "rootOrgId": "*"
-      }
+    const payload = {
+      'request': {
+        'type': 'page',
+        'subType': 'slwResourceTypeDetails',
+        'action': 'page-configuration',
+        'component': 'spv', 'rootOrgId': '*',
+      },
     }
-    this.eventsSvc.getSlwResourceTypeDetail(payload).subscribe((data) => {
+    this.eventsSvc.getSlwResourceTypeDetail(payload).subscribe(data => {
       if (data && data.slwResourceTypeDetails && data.slwResourceTypeDetails.length) {
         this.stateList = data.slwResourceTypeDetails
         if (this.stateList && this.stateList.length) {
@@ -814,7 +823,7 @@ export class EditEventComponent implements OnInit, OnDestroy {
 
         }
 
-        //this.createEventForm.get['state'].setValue(this.stateList[0]['stateOrMinistryName'])
+        // this.createEventForm.get['state'].setValue(this.stateList[0]['stateOrMinistryName'])
       }
 
       this.createEventForm.controls['state'].setValidators([Validators.required])
@@ -832,7 +841,9 @@ export class EditEventComponent implements OnInit, OnDestroy {
       })
     }
 
+    // tslint:disable-next-line:no-console
     console.log('payload', payload)
+    // tslint:disable-next-line:no-console
     console.log('value', this.createEventForm.controls['state'].value)
     return payload && payload[0] ? payload[0] : null
   }

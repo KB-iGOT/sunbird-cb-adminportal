@@ -38,7 +38,7 @@ import { LoaderService } from '../../services/loader.service'
   declarations: [
     DeveloperDocCreationComponent,
     KnowledgeCenterListComponent,
-    PlainCkeditorComponent
+    PlainCkeditorComponent,
   ],
   imports: [
     CommonModule,
@@ -64,8 +64,8 @@ import { LoaderService } from '../../services/loader.service'
     MatDialogModule,
     PaginationModule,
     MatSnackBarModule,
-    DialogComponentsModule
+    DialogComponentsModule,
   ],
-  providers: [LoaderService]
+  providers: [LoaderService],
 })
 export class KnowledgeCenterModule { }

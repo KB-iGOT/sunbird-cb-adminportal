@@ -13,7 +13,7 @@ import { SearchServService } from '../../services/search-serv.service'
     styleUrls: ['./search-input.component.scss'],
     // tslint:disable-next-line
     encapsulation: ViewEncapsulation.None,
-    standalone: false
+    standalone: false,
 })
 export class SearchInputComponent implements OnInit, OnChanges {
   @Input() placeHolder = ''

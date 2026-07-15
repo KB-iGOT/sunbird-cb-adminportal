@@ -52,7 +52,6 @@ export class UsersService {
     return this.http.get<any>(`${API_END_POINTS.USER_READ}${userID}`)
   }
 
-
   sendOtp(value: any, type: string): Observable<any> {
     const reqObj = {
       request: {

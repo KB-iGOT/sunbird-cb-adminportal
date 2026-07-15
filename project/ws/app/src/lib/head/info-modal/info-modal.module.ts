@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button'
 @NgModule({
   declarations: [InfoModalComponent],
   imports: [
-    CommonModule, MatDialogModule, MatIconModule, MatButtonModule
-  ]
+    CommonModule, MatDialogModule, MatIconModule, MatButtonModule,
+  ],
 })
 export class InfoModalModule { }

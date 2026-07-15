@@ -9,7 +9,7 @@ import { environment } from '../../../../../../../../../src/environments/environ
     selector: 'ws-app-roles-access',
     templateUrl: './roles-access.component.html',
     styleUrls: ['./roles-access.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class RolesAccessComponent implements OnInit, AfterViewInit {
   tabledata: any = []

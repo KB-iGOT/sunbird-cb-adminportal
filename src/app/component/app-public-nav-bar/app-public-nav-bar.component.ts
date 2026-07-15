@@ -6,7 +6,7 @@ import { ConfigurationsService, NsPage } from '@sunbird-cb/utils-v2'
     selector: 'ws-app-public-nav-bar',
     templateUrl: './app-public-nav-bar.component.html',
     styleUrls: ['./app-public-nav-bar.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class AppPublicNavBarComponent implements OnInit {
   appIcon: SafeUrl | null = null

@@ -14,7 +14,7 @@ import { MatDialog } from '@angular/material/dialog'
     selector: 'ws-tnc',
     templateUrl: './tnc.component.html',
     styleUrls: ['./tnc.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class TncComponent implements OnInit, OnDestroy {
   tncData: NsTnc.ITnc | null = null

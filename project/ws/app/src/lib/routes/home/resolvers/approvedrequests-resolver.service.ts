@@ -41,6 +41,6 @@ export class ApprovedRequestsResolve {
         })),
         catchError(error => of({ error, data: null })),
       )
-    }, 1000)
+    },         1000)
   }
 }

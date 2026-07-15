@@ -5,7 +5,7 @@ import { ENotificationEvent } from '../../models/notifications.model'
     selector: 'ws-app-notification-event',
     templateUrl: './notification-event.component.html',
     styleUrls: ['./notification-event.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class NotificationEventComponent implements OnInit {
   @Input() notificationEvent!: ENotificationEvent

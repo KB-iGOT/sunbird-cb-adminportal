@@ -11,7 +11,7 @@ import { IAboutObject } from './about.model'
     selector: 'ws-public-about',
     templateUrl: './public-about.component.html',
     styleUrls: ['./public-about.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class PublicAboutComponent implements OnInit, OnDestroy {
   objectKeys = Object.keys

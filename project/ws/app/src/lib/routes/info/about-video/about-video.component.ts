@@ -7,7 +7,7 @@ import { ConfigurationsService, NsPage } from '@sunbird-cb/utils-v2'
     selector: 'ws-app-about-video',
     templateUrl: './about-video.component.html',
     styleUrls: ['./about-video.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class AboutVideoComponent implements OnInit {
   introVideos: any

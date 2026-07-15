@@ -3,7 +3,7 @@ import { orderBy } from 'lodash'
 
 @Pipe({
     name: 'orderBy',
-    standalone: false
+    standalone: false,
 })
 
 export class OrderByPipe implements PipeTransform {

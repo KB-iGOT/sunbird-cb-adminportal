@@ -1,16 +1,16 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core'
 // import { ActivatedRoute } from '@angular/router'
 /* tslint:disable */
-import _ from 'lodash'
+import * as _ from 'lodash'
 /* tslint:enable */
 import { UsersService } from '../../../routes/home/services/users.service'
 import { LoaderService } from '../../../routes/home/services/loader.service'
 import { MatDialog } from '@angular/material/dialog'
 @Component({
-    selector: 'ws-app-searchuser',
-    templateUrl: './search.component.html',
-    styleUrls: ['./search.component.scss'],
-    standalone: false
+  selector: 'ws-app-searchuser',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.scss'],
+  standalone: false,
 })
 export class SearchComponent implements OnInit {
   @Input() from: any = ''

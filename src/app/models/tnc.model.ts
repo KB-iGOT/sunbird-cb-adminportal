@@ -25,6 +25,7 @@ export namespace NsTnc {
   }
 }
 
+// tslint:disable-next-line:interface-name
 export interface BackBreadcrumb {
   label?: string
   route?: string

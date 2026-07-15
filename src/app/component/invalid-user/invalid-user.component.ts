@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router'
     selector: 'ws-invalid-user',
     templateUrl: './invalid-user.component.html',
     styleUrls: ['./invalid-user.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class InvalidUserComponent implements OnInit, OnDestroy {
   private subscriptionData: Subscription | null = null
