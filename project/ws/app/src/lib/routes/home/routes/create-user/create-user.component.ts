@@ -434,8 +434,10 @@ export class CreateUserComponent implements OnInit {
               this.openSnackbar('This Phone is already registered with an existing User')
             } else if (err.error.params.errmsg.toLowerCase() === 'this email is already registered with an existing user') {
               this.openSnackbar('This Email is already registered with an existing User')
-            } else if (err.error.params.errmsg.toLowerCase() === 'Invalid format for given phone.') {
+            } else if (err.error.params.errmsg.toLowerCase() === 'invalid format for given phone.') {
               this.openSnackbar('Please enter valid phone number')
+            } else if (err.error.params.errmsg.toLowerCase().includes('is inactive')) {
+              this.openSnackbar(err.error.params.errmsg)
             } else {
               this.openSnackbar('User creation error')
             }
