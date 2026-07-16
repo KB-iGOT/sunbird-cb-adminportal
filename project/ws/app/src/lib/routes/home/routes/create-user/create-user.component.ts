@@ -283,14 +283,10 @@ export class CreateUserComponent implements OnInit {
     const orgTypeList = departmentHeaderArray?.orgTypeList ?? []
     const configFields = orgTypeConfig?.fields ?? []
 
-    let deptFlags =
+    const deptFlags =
       configFields.find(
         (field: any) => field?.value === Number(value)
       )?.flagNameList ?? []
-
-    if (deptFlags.includes('isAutonomousNgo')) {
-      deptFlags = _.uniq([...deptFlags, 'isMdo', 'isCbp'])
-    }
 
     const collected = _.flatMap(orgTypeList, (org: any) => {
 
