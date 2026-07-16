@@ -14,7 +14,10 @@ export class DeviceSigningInterceptorService implements HttpInterceptor {
   constructor(private deviceKeySvc: DeviceKeyService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (!req.url.startsWith('/apis/') || req.url.includes('public') || !this.deviceKeySvc.isSupported) {
+    // many services build API URLs without the leading slash ('apis/...'), which the browser
+    // resolves to the same endpoint — normalize before matching so those are signed too
+    const url = req.url.startsWith('/') ? req.url : `/${req.url}`
+    if (!url.startsWith('/apis/') || url.includes('public') || !this.deviceKeySvc.isSupported) {
       return next.handle(req)
     }
     return from(this.buildSignatureHeaders(req)).pipe(
@@ -26,8 +29,9 @@ export class DeviceSigningInterceptorService implements HttpInterceptor {
     try {
       const ts = Date.now().toString()
       const nonce = this.deviceKeySvc.generateNonce()
+      const fullPath = req.urlWithParams.startsWith('/') ? req.urlWithParams : `/${req.urlWithParams}`
       // ui-proxy sees the path without the /apis prefix (stripped by ingress), so sign it without the prefix
-      const path = req.urlWithParams.replace(/^\/apis/, '')
+      const path = fullPath.replace(/^\/apis/, '')
       const signature = await this.deviceKeySvc.sign(`${req.method}|${path}|${ts}|${nonce}`)
       const publicKey = await this.deviceKeySvc.getPublicKeyB64()
       return {
