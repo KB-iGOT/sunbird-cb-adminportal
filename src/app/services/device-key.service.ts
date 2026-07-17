@@ -38,6 +38,49 @@ export class DeviceKeyService {
     return this.publicKeyB64
   }
 
+  /**
+   * Services build API URLs three ways: '/apis/...', 'apis/...' (no leading slash) and
+   * absolute same-origin URLs from config (e.g. telemetry's protectedEndpoint). All resolve
+   * to the same endpoint — normalize to the site-relative path, or null when not a signable API.
+   */
+  toApiPath(url: string): string | null {
+    let path = url
+    if (/^https?:\/\//i.test(url)) {
+      try {
+        const parsed = new URL(url)
+        if (parsed.origin !== location.origin) {
+          return null
+        }
+        path = `${parsed.pathname}${parsed.search}`
+      } catch {
+        return null
+      }
+    } else if (!path.startsWith('/')) {
+      path = `/${path}`
+    }
+    return path.startsWith('/apis/') && !path.includes('public') ? path : null
+  }
+
+  async buildSignatureHeaders(method: string, apiPath: string): Promise<{ [header: string]: string } | null> {
+    try {
+      const ts = Date.now().toString()
+      const nonce = this.generateNonce()
+      // ui-proxy sees the path without the /apis prefix (stripped by ingress), so sign it without the prefix
+      const path = apiPath.replace(/^\/apis/, '')
+      const signature = await this.sign(`${method.toUpperCase()}|${path}|${ts}|${nonce}`)
+      const publicKey = await this.getPublicKeyB64()
+      return {
+        'X-Device-Key': publicKey,
+        'X-Device-Nonce': nonce,
+        'X-Device-Signature': signature,
+        'X-Device-Ts': ts,
+      }
+    } catch {
+      // fail open on the client: ui-proxy decides (log vs enforce mode) how to treat unsigned requests
+      return null
+    }
+  }
+
   generateNonce(): string {
     if (typeof crypto.randomUUID === 'function') {
       return crypto.randomUUID()
