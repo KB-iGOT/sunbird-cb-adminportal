@@ -14,24 +14,44 @@ export class DeviceSigningInterceptorService implements HttpInterceptor {
   constructor(private deviceKeySvc: DeviceKeyService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // many services build API URLs without the leading slash ('apis/...'), which the browser
-    // resolves to the same endpoint — normalize before matching so those are signed too
-    const url = req.url.startsWith('/') ? req.url : `/${req.url}`
-    if (!url.startsWith('/apis/') || url.includes('public') || !this.deviceKeySvc.isSupported) {
+    const apiPath = this.toApiPath(req.urlWithParams)
+    if (!apiPath || !this.deviceKeySvc.isSupported) {
       return next.handle(req)
     }
-    return from(this.buildSignatureHeaders(req)).pipe(
+    return from(this.buildSignatureHeaders(req, apiPath)).pipe(
       switchMap(headers => next.handle(headers ? req.clone({ setHeaders: headers }) : req)),
     )
   }
 
-  private async buildSignatureHeaders(req: HttpRequest<any>): Promise<{ [header: string]: string } | null> {
+  /**
+   * Services build API URLs three ways: '/apis/...', 'apis/...' (no leading slash) and
+   * absolute same-origin URLs from config (e.g. telemetry's protectedEndpoint). All resolve
+   * to the same endpoint — normalize to the site-relative path, or null when not a signable API.
+   */
+  private toApiPath(url: string): string | null {
+    let path = url
+    if (/^https?:\/\//i.test(url)) {
+      try {
+        const parsed = new URL(url)
+        if (parsed.origin !== location.origin) {
+          return null
+        }
+        path = `${parsed.pathname}${parsed.search}`
+      } catch {
+        return null
+      }
+    } else if (!path.startsWith('/')) {
+      path = `/${path}`
+    }
+    return path.startsWith('/apis/') && !path.includes('public') ? path : null
+  }
+
+  private async buildSignatureHeaders(req: HttpRequest<any>, apiPath: string): Promise<{ [header: string]: string } | null> {
     try {
       const ts = Date.now().toString()
       const nonce = this.deviceKeySvc.generateNonce()
-      const fullPath = req.urlWithParams.startsWith('/') ? req.urlWithParams : `/${req.urlWithParams}`
       // ui-proxy sees the path without the /apis prefix (stripped by ingress), so sign it without the prefix
-      const path = fullPath.replace(/^\/apis/, '')
+      const path = apiPath.replace(/^\/apis/, '')
       const signature = await this.deviceKeySvc.sign(`${req.method}|${path}|${ts}|${nonce}`)
       const publicKey = await this.deviceKeySvc.getPublicKeyB64()
       return {
