@@ -103,7 +103,7 @@ export class UserBulkTransferComponent implements OnInit, AfterViewInit, OnDestr
 
   handleDownloadSampleFile(): void {
     if (this.parentOrgData?.orgHierarchyFrameworkStatus?.toLowerCase() === 'completed') {
-      this.fileService.downloadSampleBulkUserTransferFile('orgUserBulkTransferSample.xlsx', this.parentOrgData?.orgHierarchyFrameworkId)
+      this.fileService.downloadSampleBulkUserTransferFile('orgUserBulkTransferSample.csv', this.parentOrgData?.orgHierarchyFrameworkId)
     } else {
       this.matSnackBar.open('Please complete the framework setup of parent organisation to download the sample file')
     }
@@ -142,7 +142,7 @@ export class UserBulkTransferComponent implements OnInit, AfterViewInit, OnDestr
       const file: File = fileList[0]
       this.fileName = file.name
       this.fileSelected = file
-      if (this.fileService.validateFile(this.fileName, ['xlsx'])) {
+      if (this.fileService.validateFile(this.fileName, ['csv'])) {
         // this.sendOTP()
         this.verifyOTP(this.userProfile.primaryEmail ? 'email' : 'phone')
         // this.uploadWithOtp() // dont use this function this is for dev purposes only
