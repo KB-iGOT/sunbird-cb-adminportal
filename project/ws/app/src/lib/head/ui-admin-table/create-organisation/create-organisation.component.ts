@@ -47,7 +47,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
   selectedLogoFile: any
   uploadedLogoResponse!: IUploadedLogoresponse
   organizationNameList: string[] = []
-  ORG_NAME_PATTERN = /^[a-zA-Z0-9 ().,@\-\$\/\\:\[\]'!\s]*$/
+  ORG_NAME_PATTERN = /^[a-zA-Z0-9\s&.,'() -]+$/
 
   untilDestroyed$ = new Subject<void>();
   isMatcompleteOpened = false
