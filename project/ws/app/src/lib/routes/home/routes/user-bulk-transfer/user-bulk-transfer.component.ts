@@ -19,7 +19,7 @@ import { VerifyOtpComponent } from '../../components/verify-otp/verify-otp.compo
   selector: 'ws-app-user-bulk-transfer',
   templateUrl: './user-bulk-transfer.component.html',
   styleUrls: ['./user-bulk-transfer.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class UserBulkTransferComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -54,8 +54,12 @@ export class UserBulkTransferComponent implements OnInit, AfterViewInit, OnDestr
   ) { }
 
   ngOnInit() {
-    this.rootOrgId = (this.selectedOrgData) ? (this.selectedOrgData.roleId) : _.get(this.router.snapshot.parent, 'data.configService.unMappedUser.rootOrg.rootOrgId')
-    this.userProfile = (this.selectedOrgData) ? _.get(this.router.snapshot, 'data.configService.unMappedUser.profileDetails.personalDetails') : _.get(this.router.snapshot.parent, 'data.configService.unMappedUser.profileDetails.personalDetails')
+    this.rootOrgId = (this.selectedOrgData)
+      ? (this.selectedOrgData.roleId)
+      : _.get(this.router.snapshot.parent, 'data.configService.unMappedUser.rootOrg.rootOrgId')
+    this.userProfile = (this.selectedOrgData)
+      ? _.get(this.router.snapshot, 'data.configService.unMappedUser.profileDetails.personalDetails')
+      : _.get(this.router.snapshot.parent, 'data.configService.unMappedUser.profileDetails.personalDetails')
     if (this.selectedOrgData) {
       this.completeOrgData = _.cloneDeep(this.orgHieService.getOrgData())
       this.parentOrgData = _.cloneDeep(this.orgHieService.getParentOrgData())

@@ -4,7 +4,7 @@ import { mergeMap, tap, map } from 'rxjs/operators'
 import { Observable, of } from 'rxjs'
 import { v4 as uuidv4 } from 'uuid'
 // tslint:disable
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { environment } from '../../../../../../../../../../src/environments/environment'
 import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 /* tslint:enable */
@@ -24,7 +24,7 @@ const API_END_POINTS = {
   GET_IGOT_MASTER_DESIGNATIONS: 'apis/proxies/v8/designation/search',
   IMPORT_DESIGNATION: 'api/framework/v1/term/create?',
   ORG_READ: '/apis/proxies/v8/org/v1/read',
-  CREATE_TERM: `/apis/proxies/v8/designation/create/term`,
+  CREATE_TERM: '/apis/proxies/v8/designation/create/term',
   CREATE_FRAME_WORK: (frameworkName: string, orgId: string, termName: string) => {
     return `/apis/proxies/v8/org/framework/read?frameworkName=${frameworkName}&orgId=${orgId}&termName=${encodeURIComponent(termName)}`
   },
@@ -195,7 +195,7 @@ export class DesignationsService {
       frameworkId,
       categoryId,
       categoryTermCode
-    )}`, reguestBody)
+    )}`,                   reguestBody)
   }
 
   publishFramework(frameworkName: string) {

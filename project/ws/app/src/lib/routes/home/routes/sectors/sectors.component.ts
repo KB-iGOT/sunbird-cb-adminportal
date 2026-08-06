@@ -8,7 +8,7 @@ import { SectorsService } from './sectors.service'
     selector: 'ws-app-sectors',
     templateUrl: './sectors.component.html',
     styleUrls: ['./sectors.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class SectorsComponent implements OnInit {
 
@@ -54,7 +54,7 @@ export class SectorsComponent implements OnInit {
         })
       }
       this.isLoading = false
-    }, error => {
+    },                                            error => {
       this.isLoading = false
       // tslint:disable-next-line: no-console
       console.log(error)

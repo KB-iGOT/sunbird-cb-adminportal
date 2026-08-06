@@ -5,10 +5,10 @@ import { GlobalEventsService } from '../../../../../../../../src/app/services/gl
 import { MatSnackBar } from '@angular/material/snack-bar'
 
 @Component({
-    selector: 'ws-app-bulk-upload-org',
-    templateUrl: './bulk-upload-org.component.html',
-    styleUrls: ['./bulk-upload-org.component.scss'],
-    standalone: false
+  selector: 'ws-app-bulk-upload-org',
+  templateUrl: './bulk-upload-org.component.html',
+  styleUrls: ['./bulk-upload-org.component.scss'],
+  standalone: false,
 })
 export class BulkUploadOrgComponent implements OnInit {
 
@@ -36,14 +36,16 @@ export class BulkUploadOrgComponent implements OnInit {
     const frameworkData: any = this.bulkUploadConfig.frameworkData || {}
     if (frameworkData && frameworkData.orgHierarchyFrameworkId) {
       this.loaderService.setLoaderState(true)
-      const fileData: any = await this.orgHieService.downloadSampleTemplate(frameworkData.orgHierarchyFrameworkId).toPromise().catch(_err => {
-        this.loaderService.setLoaderState(false)
-        if (_err && _err.error && _err.error.params && _err.error.params.errMsg) {
-          this.snackbar.open(`${_err.error.params.errMsg}`)
-        }
-      })
+      const fileData: any = await this.orgHieService.downloadSampleTemplate(frameworkData.orgHierarchyFrameworkId)
+        .toPromise()
+        .catch(_err => {
+          this.loaderService.setLoaderState(false)
+          if (_err && _err.error && _err.error.params && _err.error.params.errMsg) {
+            this.snackbar.open(`${_err.error.params.errMsg}`)
+          }
+        })
       if (fileData) {
-        this.snackbar.open(`Download successfully`)
+        this.snackbar.open('Download successfully')
       }
     }
   }
@@ -74,17 +76,19 @@ export class BulkUploadOrgComponent implements OnInit {
     const formData = new FormData()
     formData.append('file', file)
     this.loaderService.setLoaderState(true)
-    const uploadFileRes = await this.orgHieService.uploadFreameworkTemplate(formData, this.bulkUploadConfig.frameworkData).toPromise().catch((_err: any) => {
-      this.loaderService.setLoaderState(false)
-      if (_err && _err.error && _err.error.params && _err.error.params.errMsg) {
-        this.snackbar.open(`${_err.error.params.errMsg}`)
-      }
-    })
+    const uploadFileRes = await this.orgHieService.uploadFreameworkTemplate(formData, this.bulkUploadConfig.frameworkData)
+      .toPromise()
+      .catch((_err: any) => {
+        this.loaderService.setLoaderState(false)
+        if (_err && _err.error && _err.error.params && _err.error.params.errMsg) {
+          this.snackbar.open(`${_err.error.params.errMsg}`)
+        }
+      })
 
     if (uploadFileRes && uploadFileRes.result && uploadFileRes.result.fileName) {
       this.loaderService.setLoaderState(false)
       this.getBulkuploadPrgressData()
-      this.snackbar.open(`File uploaded successfully. Please check after 5 minutes for the results.`)
+      this.snackbar.open('File uploaded successfully. Please check after 5 minutes for the results.')
     }
   }
 
@@ -96,13 +100,14 @@ export class BulkUploadOrgComponent implements OnInit {
 
   isValidExcelFile(file: File): boolean {
     const allowedTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
-    console.log('File type: ', allowedTypes)
+    // tslint:disable-next-line:no-console
+    // console.log('File type: ', allowedTypes)
     return allowedTypes.includes(file.type)
   }
 
   getBulkuploadPrgressData() {
     this.loaderService.setLoaderState(true)
-    const orgId = this.bulkUploadConfig.frameworkData.orgHierarchyFrameworkId.split(`_`)[0]
+    const orgId = this.bulkUploadConfig.frameworkData.orgHierarchyFrameworkId.split('_')[0]
     this.orgHieService.getBulkuploadProgress((orgId) ? orgId : '').subscribe(
       (res: any) => {
         this.loaderService.setLoaderState(false)

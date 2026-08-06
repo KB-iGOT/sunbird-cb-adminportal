@@ -8,10 +8,10 @@ import { Subscription } from 'rxjs'
     selector: 'ws-app-configure-provider-menu',
     templateUrl: './configure-provider-menu.component.html',
     styleUrls: ['./configure-provider-menu.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class ConfigureProviderMenuComponent implements OnInit, OnDestroy {
-  @Output() activeMenu = new EventEmitter<any>();
+  @Output() activeMenu = new EventEmitter<any>()
   activeItem: any
   MENU_ITEMS = MARKETPLACE_CONFIGURE_PROVIDERS_MENU
   canOnlyView = false
@@ -29,7 +29,7 @@ export class ConfigureProviderMenuComponent implements OnInit, OnDestroy {
           return items
         })
       }
-    });
+    })
 
     this.subscription.add(
       this.marketplaceService.currentMenuItem.subscribe(menuItem => {

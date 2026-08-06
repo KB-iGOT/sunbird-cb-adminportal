@@ -6,7 +6,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
     selector: 'ws-app-competency-view',
     templateUrl: './competency-view.component.html',
     styleUrls: ['./competency-view.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class CompetencyViewComponent implements OnInit {
 
@@ -53,7 +53,7 @@ export class CompetencyViewComponent implements OnInit {
         }
       }
     }
-    newText += `</ul>`
+    newText += '</ul>'
     return this.sanitized.bypassSecurityTrustHtml(newText)
   }
 

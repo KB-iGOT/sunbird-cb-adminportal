@@ -13,7 +13,7 @@ import { sectorConstants } from '../sectors-constats.model'
     selector: 'ws-app-edit-sector',
     templateUrl: './edit-sector.component.html',
     styleUrls: ['./edit-sector.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class EditSectorComponent implements OnInit {
 
@@ -81,7 +81,7 @@ export class EditSectorComponent implements OnInit {
               })
             }
           }
-        }, error => {
+        },                                                error => {
           this.snackBar.open(error, 'X', { duration: sectorConstants.duration })
         })
       }
@@ -108,10 +108,10 @@ export class EditSectorComponent implements OnInit {
     this.sectorsService.createSubSectors(requestBody).subscribe((resp: any) => {
       if (resp.responseCode === 'OK') {
         this.snackBar.open('Sub-sectors are successfuly created.')
-        this.router.navigate([`/app/home/sectors`])
+        this.router.navigate(['/app/home/sectors'])
       }
       this.loading = false
-    }, eResp => {
+    },                                                          eResp => {
       if (eResp && eResp.error && eResp.error.responseCode === 'BAD_REQUEST') {
         this.snackBar.open(eResp.error.params.errmsg)
       }

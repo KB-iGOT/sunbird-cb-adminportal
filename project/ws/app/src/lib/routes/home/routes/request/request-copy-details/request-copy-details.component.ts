@@ -7,7 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar'
 import { CompetencyViewComponent } from '../competency-view/competency-view.component'
 import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-popup.component'
 /* tslint:disable */
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { debounceTime, distinctUntilChanged, startWith } from 'rxjs/operators'
 import { preventHtmlAndJs } from '../../../validators/prevent-html-and-js.validator'
 import { ICompentencyKeys } from '../interface/interface'
@@ -16,15 +16,15 @@ import { InitService } from '../../../../../../../../../../src/app/services/init
 /* tslint:enable */
 
 @Component({
-    selector: 'ws-app-request-copy-details',
-    templateUrl: './request-copy-details.component.html',
-    styleUrls: ['./request-copy-details.component.scss'],
-    standalone: false
+  selector: 'ws-app-request-copy-details',
+  templateUrl: './request-copy-details.component.html',
+  styleUrls: ['./request-copy-details.component.scss'],
+  standalone: false,
 })
 export class RequestCopyDetailsComponent implements OnInit {
 
   requestForm!: UntypedFormGroup
-  specialCharList = `( a-z/A-Z , 0-9 . _ - $ / \ : [ ]' ' !)`
+  specialCharList = "( a-z/A-Z , 0-9 . _ - $ / \ : [ ]' ' !)"
   // tslint:disable-next-line:max-line-length
   noSpecialChar = new RegExp(/^[\u0900-\u097F\u0980-\u09FF\u0C00-\u0C7F\u0B80-\u0BFF\u0C80-\u0CFF\u0D00-\u0D7F\u0A80-\u0AFF\u0B00-\u0B7F\u0A00-\u0A7Fa-zA-Z0-9()$[\]\\.:,_/ -]*$/) // NOSONAR
   // learningList = ['Self-paced', 'Instructor-led']
@@ -78,12 +78,12 @@ export class RequestCopyDetailsComponent implements OnInit {
   compentencyKey!: ICompentencyKeys
 
   constructor(private formBuilder: UntypedFormBuilder,
-    private requestService: RequestServiceService,
-    private activatedRouter: ActivatedRoute,
-    private snackBar: MatSnackBar,
-    private router: Router,
-    public dialog: MatDialog,
-    private initService: InitService,
+              private requestService: RequestServiceService,
+              private activatedRouter: ActivatedRoute,
+              private snackBar: MatSnackBar,
+              private router: Router,
+              public dialog: MatDialog,
+              private initService: InitService,
 
   ) {
 
@@ -119,7 +119,10 @@ export class RequestCopyDetailsComponent implements OnInit {
 
   initFormFroup() {
     this.requestForm = this.formBuilder.group({
-      titleName: new UntypedFormControl('', [Validators.required, preventHtmlAndJs(), Validators.pattern(this.noSpecialChar), Validators.minLength(10)]),
+      titleName: new UntypedFormControl(
+        '',
+        [Validators.required, preventHtmlAndJs(), Validators.pattern(this.noSpecialChar), Validators.minLength(10)]
+      ),
       Objective: new UntypedFormControl('', [Validators.required, preventHtmlAndJs(), Validators.pattern(this.noSpecialChar)]),
       userType: new UntypedFormControl('', [preventHtmlAndJs(), Validators.pattern(this.noSpecialChar)]),
       learningMode: new UntypedFormControl(''),
@@ -689,9 +692,9 @@ export class RequestCopyDetailsComponent implements OnInit {
           this.router.navigateByUrl('/app/home/all-request')
           this.snackBar.open('Request submitted successfully ')
         }
-      }, 1000)
+      },         1000)
     },
-      (error: any) => {
+                                                        (error: any) => {
         this.dialogRefs.close({ error })
         this.snackBar.open('Request Failed')
 
@@ -706,13 +709,13 @@ export class RequestCopyDetailsComponent implements OnInit {
         dialogData['type'] = 'progress'
         dialogData['icon'] = 'vega'
         dialogData['title'] = 'Processing your request'
-        dialogData['subTitle'] = `Wait a second , your request is processing………`
+        dialogData['subTitle'] = 'Wait a second , your request is processing………'
         break
       case 'progress-completed':
         dialogData['type'] = 'progress-completed'
         dialogData['icon'] = 'accept_icon'
         dialogData['title'] = 'Processing your request'
-        dialogData['subTitle'] = `Wait a second , your request is processing………`
+        dialogData['subTitle'] = 'Wait a second , your request is processing………'
         dialogData['primaryAction'] = 'Successfully created....'
         break
     }

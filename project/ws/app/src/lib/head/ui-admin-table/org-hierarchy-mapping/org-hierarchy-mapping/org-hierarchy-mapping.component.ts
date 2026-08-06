@@ -6,7 +6,7 @@ import { OrgHierarchyService } from '../../services/org-hierarchy.service'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { GlobalEventsService } from '../../../../../../../../../src/app/services/global-events.service'
 import { ActivatedRoute, Router } from '@angular/router'
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { Subject, of } from 'rxjs'
 import { switchMap, finalize, debounceTime } from 'rxjs/operators'
 import { MatDialog } from '@angular/material/dialog'
@@ -16,7 +16,7 @@ import { BulkUploadOrgComponent } from '../../bulk-upload-org/bulk-upload-org.co
   selector: 'ws-app-org-hierarchy-mapping',
   templateUrl: './org-hierarchy-mapping.component.html',
   styleUrls: ['./org-hierarchy-mapping.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   @ViewChild('singleSelect') singleSelect!: MatSelect
@@ -27,12 +27,12 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     { name: 'Center', value: 'ministry' },
     { name: 'State', value: 'state' },
   ]
-  private destroy$ = new Subject<void>();
+  private destroy$ = new Subject<void>()
   bulkUploadRefresh: boolean = false
   showTreeView: boolean = false
   orgSearchData: any
   orgReadData: any
-  allOrganizations = [];
+  allOrganizations = []
 
   defaultOrgConfig = {
     config: [{
@@ -51,18 +51,18 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
       enableThreeDot: true,
       showSearch: true,
       addOrgEnabled: true,
-      enableInfoIcon: true
-    }]
+      enableInfoIcon: true,
+    }],
   }
 
   environmentVal: any = environment
 
-  filteredOrganizations: any[] = [];
-  selectedOrgType: string = 'state'; // Default selected organization type
+  filteredOrganizations: any[] = []
+  selectedOrgType: string = 'state' // Default selected organization type
 
   // Form controls
-  public organizationCtrl: FormControl = new FormControl();
-  public searchControl: FormControl = new FormControl();
+  public organizationCtrl: FormControl = new FormControl()
+  public searchControl: FormControl = new FormControl()
 
   constructor(
     private snackbar: MatSnackBar,
@@ -146,14 +146,14 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   }
 
   async getCentenrOrStateList(orgType: string, value?: string) {
-    let requestBody = {
+    const requestBody = {
       request: {
         filters: {
           status: 1,
           sbOrgType: '',
         },
         sort_by: {
-          createdDate: "desc"
+          createdDate: 'desc',
         },
         query: value || '',
         limit: 200,
@@ -166,9 +166,9 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
           'orgHierarchyFrameworkId',
           'orgHierarchyFrameworkStatus',
           'sbOrgType',
-          'sbOrgSubType'
-        ]
-      }
+          'sbOrgSubType',
+        ],
+      },
     }
     if (orgType === 'ministry') {
       requestBody.request.filters.sbOrgType = 'ministry'
@@ -234,8 +234,8 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     const selectedOrg = (this.checkIfStateAdmin()) ? this.orgReadData : this.getOrgDetails()
     if (selectedOrg) {
       const requestBody = {
-        frameworkName: `org_hierarchy`,
-        identifier: (this.checkIfStateAdmin()) ? selectedOrg.id : selectedOrg.identifier
+        frameworkName: 'org_hierarchy',
+        identifier: (this.checkIfStateAdmin()) ? selectedOrg.id : selectedOrg.identifier,
       }
       this.loaderService.setLoaderState(true)
       const createFrameworkData = await this.orgHieService.createMasterFrameWork(requestBody).toPromise().catch(_err => {
@@ -254,6 +254,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
             this.organizationCtrl.setValue(selectedOrg.identifier)
           }
           this.snackbar.open(`Framework created successfully for ${selectedOrg.orgName}`)
+          // tslint:disable-next-line:align
         }, 2000)
       } else {
         this.loaderService.setLoaderState(false)
@@ -279,22 +280,22 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
         // subOrgType: !this.isAllowed(this.allowedCreateRoles) ? 'ministry' : role.data.type ? role.data.type : 'cbp-providers'
         // subOrgType: !this.isAllowed(this.allowedCreateRoles) ? 'ministry' : role.data.type ? role.data.type : 'ministry'
         subOrgType: (this.checkIfStateAdmin()) ? 'state' : this.selectedOrgType,
-        organisationType: orgDetails?.length && orgDetails[0]?.organisationType
-      }
+        organisationType: orgDetails?.length && orgDetails[0]?.organisationType,
+      },
     })
   }
 
   async readOrganizationDetails(identifier: string) {
     const requestBody = {
-      "request": {
-        "filters": {
-          "status": 1, "identifier": identifier
+      'request': {
+        'filters': {
+          'status': 1, 'identifier': identifier,
         },
-        "limit": 10,
-        "offset": 0,
-        "fields": ["identifier", "organisationType", "organisationSubType", "channel", "orgName"
-        ]
-      }
+        'limit': 10,
+        'offset': 0,
+        'fields': ['identifier', 'organisationType', 'organisationSubType', 'channel', 'orgName',
+        ],
+      },
     }
     const listRes = await this.orgHieService.getCenterOrStateList(requestBody).toPromise()
     if (listRes && listRes.result && listRes.result.response && listRes.result.response.content) {
@@ -307,14 +308,16 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     const frameworkData: any = this.getselectedOrgData()
     if (frameworkData && frameworkData.orgHierarchyFrameworkId) {
       this.loaderService.setLoaderState(true)
-      const fileData: any = await this.orgHieService.downloadSampleTemplate(frameworkData.orgHierarchyFrameworkId).toPromise().catch(_err => {
-        this.loaderService.setLoaderState(false)
-        if (_err && _err.error && _err.error.params && _err.error.params.errMsg) {
-          this.snackbar.open(`${_err.error.params.errMsg}`)
-        }
-      })
+      const fileData: any = await this.orgHieService.downloadSampleTemplate(frameworkData.orgHierarchyFrameworkId)
+        .toPromise()
+        .catch(_err => {
+          this.loaderService.setLoaderState(false)
+          if (_err && _err.error && _err.error.params && _err.error.params.errMsg) {
+            this.snackbar.open(`${_err.error.params.errMsg}`)
+          }
+        })
       if (fileData) {
-        this.snackbar.open(`Download successfully`)
+        this.snackbar.open('Download successfully')
       }
     }
   }
@@ -338,6 +341,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
   getselectedOrgData() {
     if (this.checkIfStateAdmin()) {
       return this.orgReadData
+      // tslint:disable-next-line:no-else-after-return
     } else {
       if (this.allOrganizations.filter((v: any) => v.identifier === this.organizationCtrl.value).length) {
         return this.allOrganizations.filter((v: any) => v.identifier === this.organizationCtrl.value)[0]
@@ -368,7 +372,8 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
 
   isValidExcelFile(file: File): boolean {
     const allowedTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
-    console.log('File type: ', allowedTypes)
+    // tslint:disable-next-line:no-console
+    // console.log('File type: ', allowedTypes)
     return allowedTypes.includes(file.type)
   }
 
@@ -378,17 +383,19 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     formData.append('file', file)
     this.loaderService.setLoaderState(true)
     this.bulkUploadRefresh = true
-    const uploadFileRes = await this.orgHieService.uploadFreameworkTemplate(formData, this.getselectedOrgData()).toPromise().catch((_err: any) => {
-      this.loaderService.setLoaderState(false)
-      this.bulkUploadRefresh = false
-      if (_err && _err.error && _err.error.params && _err.error.params.errMsg) {
-        this.snackbar.open(`${_err.error.params.errMsg}`)
-      }
-    })
+    const uploadFileRes = await this.orgHieService.uploadFreameworkTemplate(formData, this.getselectedOrgData())
+      .toPromise()
+      .catch((_err: any) => {
+        this.loaderService.setLoaderState(false)
+        this.bulkUploadRefresh = false
+        if (_err && _err.error && _err.error.params && _err.error.params.errMsg) {
+          this.snackbar.open(`${_err.error.params.errMsg}`)
+        }
+      })
 
     if (uploadFileRes && uploadFileRes.result && uploadFileRes.result.fileName) {
       this.loaderService.setLoaderState(false)
-      this.snackbar.open(`File uploaded successfully. Please check after 5 minutes for the results.`)
+      this.snackbar.open('File uploaded successfully. Please check after 5 minutes for the results.')
     }
   }
 
@@ -412,7 +419,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     const requestBody = {
       request: {
         organisationId: this.orgId,
-      }
+      },
     }
     this.loaderService.setLoaderState(true)
     this.orgHieService.getOrgReadData(requestBody).pipe(
@@ -426,9 +433,9 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
                 filters: {
                   status: 1,
                   ministryOrStateType: this.orgReadData.sbOrgType,
-                  ministryOrStateId: this.orgReadData.ministryOrStateId
-                }
-              }
+                  ministryOrStateId: this.orgReadData.ministryOrStateId,
+                },
+              },
             }
             if (!secondRequestBody?.request?.filters?.ministryOrStateType) {
               delete secondRequestBody?.request?.filters?.ministryOrStateType
@@ -454,11 +461,12 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
         }
       },
       error: (err: any) => {
+        // tslint:disable-next-line:no-console
         console.error('Error in API chain:', err)
         if (err?.error?.params?.errMsg) {
           this.snackbar.open(`${err.error.params.errMsg}`)
         }
-      }
+      },
     })
   }
 
@@ -470,7 +478,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
         instructions: [
           'Keep the row of the items you wish to process',
           'Keep the row of the items you wish to process',
-          'Delete the entire row you donot intend to process'
+          'Delete the entire row you donot intend to process',
         ],
       },
       sampleFileDownloadText: 'Download Sample File',
@@ -490,14 +498,15 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
       maxHeight: '100vh',
       autoFocus: false,
     })
-    dialogRef.afterClosed().subscribe(async result => {
+    dialogRef.afterClosed().subscribe(async () => {
       if (this.checkIfStateAdmin()) {
         await this.getOrgReadAndDetails()
       } else {
         await this.getCentenrOrStateList(this.selectedOrgType)
       }
       this.bulkUploadRefresh = false
-      console.log('The dialog was closed', result)
+      // tslint:disable-next-line:no-console
+      // console.log('The dialog was closed', result)
     })
   }
 
@@ -507,6 +516,7 @@ export class OrgHierarchyMappingComponent implements OnInit, AfterViewInit {
     // Recreate the tree view component in the next change detection cycle
     setTimeout(() => {
       this.showTreeView = true
+      // tslint:disable-next-line:align
     }, 0)
   }
 

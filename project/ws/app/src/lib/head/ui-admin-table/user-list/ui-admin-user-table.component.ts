@@ -5,7 +5,7 @@ import {
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatTableDataSource } from '@angular/material/table'
 import { MatDialog } from '@angular/material/dialog'
-import { MatPaginator } from '@angular/material/paginator'
+import { MatPaginator, PageEvent } from '@angular/material/paginator'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { MatSort } from '@angular/material/sort'
 import * as _ from 'lodash'
@@ -16,13 +16,12 @@ import { UserPopupComponent } from '../user-popup/user-popup'
 import { CreateMDOService as MDO2 } from '../../../routes/home/services/create-mdo.services'
 import { EventService } from '@sunbird-cb/utils-v2'
 import { environment } from '../../../../../../../../src/environments/environment'
-import { PageEvent } from '@angular/material/paginator'
 
 @Component({
   selector: 'ws-widget-ui-user-table',
   templateUrl: './ui-admin-user-table.component.html',
   styleUrls: ['./ui-admin-user-table.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() tableData!: ITableData | undefined
@@ -222,7 +221,7 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
                 if (res) {
                   setTimeout(() => {
                     this.searchByEnterKey.emit('')
-                  }, 1000)
+                  },         1000)
                   this.snackBar.open('Admin assigned Successfully')
                   // this.router.navigate(['/app/home/directory', { department: this.departmentRole }])
                 }
@@ -274,7 +273,7 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
   }
   gotoCreateUser() {
     this.raiseTelemetry('button')
-    this.router.navigate([`/app/home/create-user`],
+    this.router.navigate(['/app/home/create-user'],
       // tslint:disable-next-line:align
       {
         queryParams: {
@@ -283,7 +282,7 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
           orgName: this.orgName,
           redirectionPath: window.location.href,
           subOrgType: this.getSubOrgType(),
-          organisationType: this.organisationType
+          organisationType: this.organisationType,
         },
       })
   }
@@ -304,7 +303,7 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
 
   gotoCreatePosition() {
     this.raiseTelemetry('button')
-    this.router.navigate([`/app/home/requests/positions/new`],
+    this.router.navigate(['/app/home/requests/positions/new'],
       // tslint:disable-next-line:align
       {}
     )
@@ -324,8 +323,7 @@ export class UIAdminUserTableComponent implements OnInit, AfterViewInit, OnChang
   onSearchEnter(event: any) {
     if (event === '' || event?.length === 0) {
       this.searchByEnterKey.emit('')
-    }
-    else if (event?.length > 2) {
+    } else if (event?.length > 2) {
       this.searchByEnterKey.emit(event)
     }
   }

@@ -40,13 +40,20 @@ import { MatCheckboxModule } from '@angular/material/checkbox'
 import { UserBulkTransferComponent } from '../home/routes/user-bulk-transfer/user-bulk-transfer.component'
 
 @NgModule({
-  declarations: [HomeComponent, UsersComponent, RolesAccessComponent, MentorManageComponent, SearchComponent, UserCardComponent, GradeSettingComponent, UserBulkTransferComponent],
+  declarations: [
+    HomeComponent, UsersComponent, RolesAccessComponent, MentorManageComponent, SearchComponent, UserCardComponent,
+    GradeSettingComponent, UserBulkTransferComponent,
+  ],
   imports: [CommonModule, CreateMDORoutingModule, BtnPageBackModuleAdmin, LeftMenuModule, SbUiResolverModule,
-    MatSidenavModule, MatIconModule, MatProgressSpinnerModule, GroupCheckboxModule, HomeModule, RouterModule, UIAdminTableModule, MatCardModule,
-    ScrollspyLeftMenuModule, FormsModule, MatSelectModule, MatChipsModule, MatDatepickerModule, MatAutocompleteModule,
-    MatExpansionModule, MatSlideToggleModule, MatOptionModule, MatFormFieldModule, MatPaginatorModule, MatListModule, MatRadioModule, MatDialogModule,
-    ReactiveFormsModule, PipeOrderByModule, AvatarPhotoModule, DesignationModule, MatSnackBarModule, MatCheckboxModule],
-  exports: [UsersComponent, RolesAccessComponent, MentorManageComponent, SearchComponent, UserCardComponent, AvatarPhotoModule, DesignationModule],
+    MatSidenavModule, MatIconModule, MatProgressSpinnerModule, GroupCheckboxModule, HomeModule, RouterModule,
+    UIAdminTableModule, MatCardModule, ScrollspyLeftMenuModule, FormsModule, MatSelectModule, MatChipsModule,
+    MatDatepickerModule, MatAutocompleteModule, MatExpansionModule, MatSlideToggleModule, MatOptionModule,
+    MatFormFieldModule, MatPaginatorModule, MatListModule, MatRadioModule, MatDialogModule, ReactiveFormsModule,
+    PipeOrderByModule, AvatarPhotoModule, DesignationModule, MatSnackBarModule, MatCheckboxModule],
+  exports: [
+    UsersComponent, RolesAccessComponent, MentorManageComponent, SearchComponent, UserCardComponent, AvatarPhotoModule,
+    DesignationModule,
+  ],
   providers: [UsersService, LoaderService, DatePipe],
 })
 export class CreateMDOModule { }

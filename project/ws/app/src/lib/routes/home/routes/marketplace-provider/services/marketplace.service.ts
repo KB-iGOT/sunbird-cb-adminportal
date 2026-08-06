@@ -4,33 +4,32 @@ import { BehaviorSubject, Observable } from 'rxjs'
 import { environment } from '../../../../../../../../../../src/environments/environment'
 
 const API_END_POINTS = {
-  CREATE_CONTENTPARTNER: `/apis/proxies/v8/contentpartner/v1/create`,
-  UPDATE_CONTENTPARTNER: `/apis/proxies/v8/contentpartner/v1/update`,
-  UPLOAD_THUMBNAIL: `apis/proxies/v8/storage/v1/uploadCiosIcon`,
-  UPLOAD_CIOS_CONTRACT: `/apis/proxies/v8/storage/v1/uploadCiosContract`,
-  GET_PROVIDERS_LIST: `/apis/proxies/v8/contentpartner/v1/search`,
-  DELETE_PROVIDER: `/apis/proxies/v8/contentpartner/v1/delete/`,
-  ACTIVATE_PROVIDER: `/apis/proxies/v8/contentpartner/v1/activate`,
+  CREATE_CONTENTPARTNER: '/apis/proxies/v8/contentpartner/v1/create',
+  UPDATE_CONTENTPARTNER: '/apis/proxies/v8/contentpartner/v1/update',
+  UPLOAD_THUMBNAIL: 'apis/proxies/v8/storage/v1/uploadCiosIcon',
+  UPLOAD_CIOS_CONTRACT: '/apis/proxies/v8/storage/v1/uploadCiosContract',
+  GET_PROVIDERS_LIST: '/apis/proxies/v8/contentpartner/v1/search',
+  DELETE_PROVIDER: '/apis/proxies/v8/contentpartner/v1/delete/',
+  ACTIVATE_PROVIDER: '/apis/proxies/v8/contentpartner/v1/activate',
   GET_PROVIDER_DETAILS: (id: string) => `/apis/proxies/v8/contentpartner/v1/read/${id}`,
-  UPLOAD_CONTENT: `/apis/proxies/v8/ciosIntegration/v1/loadContentFromExcel/`,
-  UPLOAD_PROGRES: `/apis/proxies/v8/ciosIntegration/v1/loadContentProgressFromExcel/`,
-  GET_FILES_LIST: `/apis/proxies/v8/ciosIntegration/v1/file/info/`,
+  UPLOAD_CONTENT: '/apis/proxies/v8/ciosIntegration/v1/loadContentFromExcel/',
+  UPLOAD_PROGRES: '/apis/proxies/v8/ciosIntegration/v1/loadContentProgressFromExcel/',
+  GET_FILES_LIST: '/apis/proxies/v8/ciosIntegration/v1/file/info/',
   // GET_CONTENT_LIST: `/apis/proxies/v8/ciosIntegration/v1/readAllContentFromDb`,
-  GET_CONTENT_LIST: `apis/proxies/v8/ciosIntegration/v1/search/content`,
+  GET_CONTENT_LIST: 'apis/proxies/v8/ciosIntegration/v1/search/content',
   DELETE_NOT_PULISHED_COURSES: 'apis/proxies/v8/ciosIntegration/v1/deleteContent',
   DOWNLOAD_LOG: (gcpfileName: string) => `/apis/proxies/v8/storage/v1/downloadCiosLogs/${gcpfileName}`,
-  CREATE_CONFIGURATION: `apis/proxies/v8/serviceregistry/config/create`,
-  UPDATE_CONFIGURATION: `apis/proxies/v8/serviceregistry/config/update`,
+  CREATE_CONFIGURATION: 'apis/proxies/v8/serviceregistry/config/create',
+  UPDATE_CONFIGURATION: 'apis/proxies/v8/serviceregistry/config/update',
   GET_CONFIGURATION: (configurationId: string) => `apis/proxies/v8/serviceregistry/config/read/${configurationId}`,
 
   GET_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/read/${partnerId}`,
   CREATE_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/create/${partnerId}`,
   UPDATE_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/update/${partnerId}`,
-  TEST_SSO_CONFIGURATION: `/apis/proxies/v8/sso/validateSaml`,
+  TEST_SSO_CONFIGURATION: '/apis/proxies/v8/sso/validateSaml',
 
-
-  contentRegisterSearch: `/apis/proxies/v8/contentpartner/register/v1/search`,
-  updateStatusRegisterProvider: `/apis/proxies/v8/contentpartner/register/v1/update`,
+  contentRegisterSearch: '/apis/proxies/v8/contentpartner/register/v1/search',
+  updateStatusRegisterProvider: '/apis/proxies/v8/contentpartner/register/v1/update',
   REGISTERED_PROVIDER_READ: (id: string) => `/apis/proxies/v8/contentpartner/register/v1/readbyid?id=${id}`,
 }
 
@@ -38,8 +37,8 @@ const API_END_POINTS = {
   providedIn: 'root',
 })
 export class MarketplaceService {
-  currentMenuItem: BehaviorSubject<any> = new BehaviorSubject<number>(0);
-  newProviderAdded: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  currentMenuItem: BehaviorSubject<any> = new BehaviorSubject<number>(0)
+  newProviderAdded: BehaviorSubject<any> = new BehaviorSubject<any>(null)
 
   constructor(
     private http: HttpClient,

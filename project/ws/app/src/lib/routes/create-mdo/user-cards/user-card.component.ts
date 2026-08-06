@@ -33,7 +33,7 @@ const EMAIL_PATTERN = /^[a-zA-Z0-9]+[a-zA-Z0-9._-]*[a-zA-Z0-9]+@[a-zA-Z0-9]+(\.[
   templateUrl: './user-card.component.html',
   styleUrls: ['./user-card.component.scss'],
   providers: [],
-  standalone: false
+  standalone: false,
 })
 export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() userId: any
@@ -97,10 +97,10 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
   actionList: any = []
 
   phoneNumberPattern = '^((\\+91-?)|0)?[0-9]{10}$'
-  emailRegix = `^[\\w\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$`
+  emailRegix = '^[\\w\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$'
   pincodePattern = '(^[0-9]{6}$)'
   yearPattern = '(^[0-9]{4}$)'
-  empIDPattern = `^[A-Za-z0-9]+$`
+  empIDPattern = '^[A-Za-z0-9]+$'
 
   userGroup: any
 
@@ -121,12 +121,12 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
   isSPVAdmin = false
   isStateAdmin = false
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-    private dialog: MatDialog,
-    private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
-    private events: EventService,
+              private dialog: MatDialog,
+              private route: ActivatedRoute,
+              private snackBar: MatSnackBar,
+              private events: EventService,
     // private datePipe: DatePipe,
-    private cdr: ChangeDetectorRef) {
+              private cdr: ChangeDetectorRef) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),

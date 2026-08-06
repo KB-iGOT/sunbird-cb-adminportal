@@ -9,7 +9,7 @@ import { ConfirmationPopupComponent } from '../confirmation-popup/confirmation-p
     selector: 'ws-app-request-copy-details-v2',
     templateUrl: './request-copy-details-v2.component.html',
     styleUrls: ['./request-copy-details-v2.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class RequestCopyDetailsV2Component implements OnInit {
 
@@ -52,9 +52,9 @@ export class RequestCopyDetailsV2Component implements OnInit {
           this.router.navigateByUrl('/app/home/all-request')
           this.snackBar.open('Request submitted successfully ')
         }
-      }, 1000)
+      },         1000)
     },
-      (error: any) => {
+                                                        (error: any) => {
         this.dialogRefs.close({ error })
         this.snackBar.open('Request Failed')
 
@@ -69,13 +69,13 @@ export class RequestCopyDetailsV2Component implements OnInit {
         dialogData['type'] = 'progress'
         dialogData['icon'] = 'vega'
         dialogData['title'] = 'Processing your request'
-        dialogData['subTitle'] = `Wait a second , your request is processing………`
+        dialogData['subTitle'] = 'Wait a second , your request is processing………'
         break
       case 'progress-completed':
         dialogData['type'] = 'progress-completed'
         dialogData['icon'] = 'accept_icon'
         dialogData['title'] = 'Processing your request'
-        dialogData['subTitle'] = `Wait a second , your request is processing………`
+        dialogData['subTitle'] = 'Wait a second , your request is processing………'
         dialogData['primaryAction'] = 'Successfully created....'
         break
     }
@@ -100,7 +100,6 @@ export class RequestCopyDetailsV2Component implements OnInit {
     this.dialogRefs.afterClosed().subscribe(() => {
     })
   }
-
 
   navigateBack() {
     this.router.navigateByUrl('/app/home/all-request')

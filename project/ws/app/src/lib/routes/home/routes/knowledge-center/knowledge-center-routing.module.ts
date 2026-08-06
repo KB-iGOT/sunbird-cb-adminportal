@@ -12,7 +12,7 @@ const routes: Routes = [
       module: 'KnowledgeCenter',
       pageType: 'feature',
       pageKey: 'KnowledgeCenterList',
-    }
+    },
   },
   {
     path: 'developer-doc',
@@ -22,8 +22,8 @@ const routes: Routes = [
       // module: 'KnowledgeCenter',
       // pageType: 'feature',
       // pageKey: 'DeveloperDocCreation',
-      load: ['ckeditor']
-    }
+      load: ['ckeditor'],
+    },
   },
 ]
 

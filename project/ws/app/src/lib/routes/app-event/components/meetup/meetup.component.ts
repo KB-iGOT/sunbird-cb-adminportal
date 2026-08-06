@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs'
     selector: 'ws-app-meetup',
     templateUrl: './meetup.component.html',
     styleUrls: ['./meetup.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class MeetupComponent implements OnInit {
 

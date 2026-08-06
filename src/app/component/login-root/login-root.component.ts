@@ -6,7 +6,7 @@ import { LoginRootService } from './login-root.service'
     selector: 'ws-login-root',
     templateUrl: './login-root.component.html',
     styleUrls: ['./login-root.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class LoginRootComponent implements OnInit {
 

@@ -5,7 +5,7 @@ import { ConfigurationsService, ValueService } from '@sunbird-cb/utils-v2'
     selector: 'ws-app-footer',
     templateUrl: './app-footer.component.html',
     styleUrls: ['./app-footer.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class AppFooterComponent {
 

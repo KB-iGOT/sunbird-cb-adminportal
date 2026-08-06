@@ -6,7 +6,7 @@ import { Router } from '@angular/router'
     selector: 'ws-app-back-breadcrumbs',
     templateUrl: './back-breadcrumbs.component.html',
     styleUrls: ['./back-breadcrumbs.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class BackBreadcrumbsComponent {
   @Input() data: BackBreadcrumb[] = []

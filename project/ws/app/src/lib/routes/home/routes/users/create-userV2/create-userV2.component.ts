@@ -8,7 +8,7 @@ import { TenantAdminService } from '../../../services/tenant-admin.service'
     selector: 'ws-admin-create-user',
     templateUrl: './create-userV2.component.html',
     styleUrls: ['./create-userV2.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class CreateUserV2Component implements OnInit, OnDestroy {
   createUserForm: UntypedFormGroup

@@ -20,13 +20,13 @@ const MOBILE_PATTERN = '^((\\+91-?)|0)?[0-9]{10}$'
   selector: 'ws-app-create-user',
   templateUrl: './create-user.component.html',
   styleUrls: ['./create-user.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class CreateUserComponent implements OnInit {
-  private destroyRef = inject(DestroyRef);
+  private destroyRef = inject(DestroyRef)
 
   createUserForm: UntypedFormGroup
-  namePatern = `^[a-zA-Z\\s\\']{1,32}$`
+  namePatern = "^[a-zA-Z\\s\\']{1,32}$"
   rolesList: any = []
   departmentName = ''
   toastSuccess: any
@@ -57,7 +57,7 @@ export class CreateUserComponent implements OnInit {
   orgName!: string
   isThisExistingLeader = false
   disableRequired = false
-  stateAdminRoles = ["STATE_ADMIN", "PUBLIC"]
+  stateAdminRoles = ['STATE_ADMIN', 'PUBLIC']
   rawCurrentDept = ''
   hiddenRolesForOrg = ['CBC_ADMIN', 'CBC_MEMBER']
   organisationType: number = 128
@@ -132,9 +132,14 @@ export class CreateUserComponent implements OnInit {
       this.createUserForm = new UntypedFormGroup({
         fname: new UntypedFormControl({ value: name, disabled: name ? true : false }, [Validators.required]),
         // lname: new FormControl('', [Validators.required]),
-        email: new UntypedFormControl({ value: this.profileUtilSvc.transformToEmail(email), disabled: email ? true : false }, [Validators.required,
-        Validators.pattern(EMAIL_PATTERN)]),
-        mobileNumber: new UntypedFormControl({ value: mobile, disabled: name ? true : false }, [Validators.required, Validators.pattern(MOBILE_PATTERN), Validators.maxLength(10)]),
+        email: new UntypedFormControl(
+          { value: this.profileUtilSvc.transformToEmail(email), disabled: email ? true : false },
+          [Validators.required, Validators.pattern(EMAIL_PATTERN)]
+        ),
+        mobileNumber: new UntypedFormControl(
+          { value: mobile, disabled: name ? true : false },
+          [Validators.required, Validators.pattern(MOBILE_PATTERN), Validators.maxLength(10)]
+        ),
         role: new UntypedFormControl('', [Validators.required, Validators.required]),
         dept: new UntypedFormControl(this.orgName, [Validators.required]),
         deptId: new UntypedFormControl(this.createdDepartment.depName, [Validators.required]),
@@ -147,7 +152,10 @@ export class CreateUserComponent implements OnInit {
         Validators.pattern(EMAIL_PATTERN)]),
         mobileNumber: new UntypedFormControl('', [Validators.required, Validators.pattern(MOBILE_PATTERN), Validators.maxLength(10)]),
         role: new UntypedFormControl('', [Validators.required, Validators.required]),
-        dept: new UntypedFormControl(_.get(this.route, 'snapshot.data.configService.unMappedUser.rootOrg.orgName') || '', [Validators.required]),
+        dept: new UntypedFormControl(
+          _.get(this.route, 'snapshot.data.configService.unMappedUser.rootOrg.orgName') || '',
+          [Validators.required]
+        ),
         deptId: new UntypedFormControl(_.get(this.route, 'snapshot.data.configService.unMappedUser.channel') || ''),
       })
     }
@@ -374,7 +382,10 @@ export class CreateUserComponent implements OnInit {
       userreq.personalDetails.designation = 'Volunteer'
     }
     if (userreq.personalDetails.roles.includes('MDO_LEADER') && (this.mdoLeadersCount > 0)) {
-      this.openSnackbar(`MDO Leader role has already been allocated to another user from the Ministry; kindly revise the role for that user before assigning a different user as an MDO Leader`)
+      this.openSnackbar([
+        'MDO Leader role has already been allocated to another user from the Ministry;',
+        'kindly revise the role for that user before assigning a different user as an MDO Leader',
+      ].join(' '))
       this.disableCreateButton = false
       this.displayLoader = false
     } else {
@@ -416,7 +427,7 @@ export class CreateUserComponent implements OnInit {
             //       this.router.navigate([`/app/home/users`])
             //       this.openSnackbar(`Error in assigning roles`)
             //     })
-            this.openSnackbar(`User created successfully!`)
+            this.openSnackbar('User created successfully!')
             if (this.redirectionPath && this.redirectionPath.indexOf('/app/home/') < 0) {
               location.replace(this.redirectionPath)
             } else {
@@ -442,7 +453,7 @@ export class CreateUserComponent implements OnInit {
               this.openSnackbar('User creation error')
             }
           } else {
-            this.openSnackbar(`User creation error`)
+            this.openSnackbar('User creation error')
           }
           // this.router.navigate([`/app/home/users`])
         })
@@ -481,20 +492,23 @@ export class CreateUserComponent implements OnInit {
     }
     if (this.createdDepartment) {
       this.router.navigate([`/app/roles/${this.deptId}/users`],
+        // tslint:disable-next-line:align
         {
           queryParams:
           {
+
+            // tslint:disable-next-line:max-line-length
             currentDept: this.getCurrentDept() === 'mdo' || this.getCurrentDept() === 'state' ? 'organisation' : this.getCurrentDept() === 'cbp' ? this.getSubOrgType() : this.currentDept,
             roleId: this.deptId,
             depatName: this.createdDepartment.depName,
             subOrgType: this.getSubOrgType(),
             orgName: this.orgName,
-            organisationType: this.organisationType
-          }
+            organisationType: this.organisationType,
+          },
         })
 
     } else {
-      this.router.navigate([`/app/home/users`])
+      this.router.navigate(['/app/home/users'])
     }
   }
 
@@ -535,7 +549,10 @@ export class CreateUserComponent implements OnInit {
       this.roleAssign()
     } else {
       this.displayLoader = false
-      this.openSnackbar(`MDO Leader role has already been allocated to another user from the Ministry; kindly revise the role for that user before assigning a different user as an MDO Leader`)
+      this.openSnackbar([
+        'MDO Leader role has already been allocated to another user from the Ministry;',
+        'kindly revise the role for that user before assigning a different user as an MDO Leader',
+      ].join(' '))
     }
   }
   roleAssign() {
@@ -560,8 +577,8 @@ export class CreateUserComponent implements OnInit {
         (_err: any) => {
           this.displayLoader = false
           // this.disableCreateButton = false
-          this.router.navigate([`/app/home/users`])
-          this.openSnackbar(`Error in assigning roles`)
+          this.router.navigate(['/app/home/users'])
+          this.openSnackbar('Error in assigning roles')
         })
   }
 
@@ -604,4 +621,3 @@ export class CreateUserComponent implements OnInit {
     return this.currentDept
   }
 }
-

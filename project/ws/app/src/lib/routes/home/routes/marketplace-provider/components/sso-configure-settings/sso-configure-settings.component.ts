@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, } from '@angular/core'
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { Clipboard } from '@angular/cdk/clipboard'
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms'
 import { MarketplaceService } from '../../services/marketplace.service'
@@ -13,7 +13,7 @@ import * as _ from 'lodash'
   selector: 'ws-app-sso-configure-settings',
   templateUrl: './sso-configure-settings.component.html',
   styleUrls: ['./sso-configure-settings.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class SsoConfigureSettingsComponent implements OnInit {
   @Input() providerDetails: any
@@ -24,7 +24,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
   testSSOConnectionVisible = false
 
   ssoProtocolsList = [{
-    name: 'SAML', value: 'saml'
+    name: 'SAML', value: 'saml',
   }]
   ssoSettingsForm!: FormGroup
 
@@ -42,11 +42,15 @@ export class SsoConfigureSettingsComponent implements OnInit {
     return this.ssoSettingsForm.get('mappers') as FormArray
   }
 
+  // tslint:disable-next-line:variable-name
   SSOConfigurationData: SsoConfiguration | null = null
-  constructor(private clipboard: Clipboard, private formBuilder: FormBuilder, private marketplaceService: MarketplaceService, private snackBar: MatSnackBar,
+  constructor(
+    private clipboard: Clipboard,
+    private formBuilder: FormBuilder,
+    private marketplaceService: MarketplaceService,
+    private snackBar: MatSnackBar,
     private loaderService: GlobalEventsService, private router: Router,
     private activateRoute: ActivatedRoute,
-
   ) {
     this.ssoSettingsForm = this.formBuilder.group({})
   }
@@ -67,7 +71,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
       partnerName: ['', [Validators.required]],
       ssoProtocol: ['saml', [Validators.required]],
       ssoUrl: ['', [Validators.required, this.urlValidator()]],
-      mappers: this.formBuilder.array([])
+      mappers: this.formBuilder.array([]),
     })
 
   }
@@ -105,7 +109,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
   createMapperGroup(): FormGroup {
     return this.formBuilder.group({
       key: ['', Validators.required],
-      value: ['', Validators.required]
+      value: ['', Validators.required],
     })
   }
 
@@ -189,7 +193,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
 
         }, error: () => {
           this.loaderService.setLoaderState(false)
-        }
+        },
       })
     }
   }
@@ -223,7 +227,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
       }, error: (error: any) => {
         this.showSnackBar(this.extractErrorMessage(error?.error?.message), 'error')
         this.loaderService.setLoaderState(false)
-      }
+      },
     })
   }
 
@@ -267,7 +271,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
       clientSignatureRequired: this.SSOConfigurationData?.clientSignatureRequired,
       nameIdFormat: this.SSOConfigurationData?.nameIdFormat,
       rootUrl: this.SSOConfigurationData?.rootUrl,
-      validRedirectUrls: this.SSOConfigurationData?.validRedirectUrls || []
+      validRedirectUrls: this.SSOConfigurationData?.validRedirectUrls || [],
     }
 
     if (this.SSOConfigurationData?.ssoTested !== undefined) {
@@ -297,7 +301,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
       }, error: (error: any) => {
         this.showSnackBar(this.extractErrorMessage(error?.error?.message), 'error')
         this.loaderService.setLoaderState(false)
-      }
+      },
     })
   }
 
@@ -312,7 +316,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
   showSnackBar(message: string, type: 'error' | 'success') {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: {
-        message: message, type: type,
+        message, type,
       }, duration: 5000, panelClass: type,
     })
   }
@@ -366,7 +370,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
       }
     }
   }
-
+  // tslint:disable-next-line:prefer-array-literal
   populateMappers(mappers: Array<{ key: string, value: string }> | { [key: string]: string }) {
     const mappersFormArray = this.mappersFormArray
     mappersFormArray.clear()
@@ -378,7 +382,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
             mappersFormArray.push(
               this.formBuilder.group({
                 key: [mapper.key, Validators.required],
-                value: [mapper.value, Validators.required]
+                value: [mapper.value, Validators.required],
               })
             )
           })
@@ -388,7 +392,7 @@ export class SsoConfigureSettingsComponent implements OnInit {
           mappersFormArray.push(
             this.formBuilder.group({
               key: [key, Validators.required],
-              value: [value, Validators.required]
+              value: [value, Validators.required],
             })
           )
         })

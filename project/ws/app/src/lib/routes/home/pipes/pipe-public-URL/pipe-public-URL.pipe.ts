@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment'
 
 @Pipe({
     name: 'pipePublicURL',
-    standalone: false
+    standalone: false,
 })
 export class PipePublicURL implements PipeTransform {
 

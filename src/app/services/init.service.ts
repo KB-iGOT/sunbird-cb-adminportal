@@ -60,6 +60,7 @@ export class InitService {
     private logger: LoggerService,
     public configSvc: ConfigurationsService,
     // private authSvc: AuthKeycloakService,
+    // tslint:disable-next-line:variable-name
     private SbUiResolverService: SbUiResolverService,
     private settingsSvc: BtnSettingsService,
     private userPreference: UserPreferenceService,
@@ -480,7 +481,7 @@ export class InitService {
   //         firstName: completeProdata.firstName,
   //         lastName: completeProdata.lastName,
 
-  //         // tslint:disable-next-line: max-line-length
+  // tslint:disable-next-line:max-line-length
   //         userName: `${completeProdata.firstName ? completeProdata.firstName : ' '} ${completeProdata.lastName ? completeProdata.lastName : ' '}`,
   //         profileImage: completeProdata.thumbnail || _.get(profileV2, 'photo'),
   //         dealerCode: null,
@@ -494,7 +495,7 @@ export class InitService {
   //         surName: _.get(profileV2, 'personalDetails.surname'),
   //         middleName: _.get(profileV2, 'personalDetails.middlename'),
   //         departmentName: _.get(profileV2, 'employmentDetails.departmentName'),
-  //         // tslint:disable-next-line: max-line-length
+  // tslint:disable-next-line:max-line-length
   //         userName: `${_.get(profileV2, 'personalDetails.firstname') ? _.get(profileV2, 'personalDetails.firstname') : ''} ${_.get(profileV2, 'personalDetails.surname') ? _.get(profileV2, 'personalDetails.surname') : ''}`,
   //         profileImage: _.get(profileV2, 'photo'),
   //         dealerCode: null,

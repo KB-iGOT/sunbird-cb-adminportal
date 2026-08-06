@@ -8,7 +8,7 @@ import {
 
 @Directive({
     selector: '[wsAuthDragDrop]',
-    standalone: false
+    standalone: false,
 })
 export class DragDropDirective {
   @Output() fileDropped = new EventEmitter<any>()

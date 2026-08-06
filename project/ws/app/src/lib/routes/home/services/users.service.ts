@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http'
 import { Observable, Subject } from 'rxjs'
 import { map, retry } from 'rxjs/operators'
 /* tslint:disable */
-import _ from 'lodash'
+import * as _ from 'lodash'
 /* tslint:enable */
 
 const API_END_POINTS = {
@@ -40,7 +40,13 @@ export class UsersService {
     return this.http.get<any>(`${API_END_POINTS.GET_ALL_USERS}`)
   }
 
-  getAllKongUsersPaginated(depId: string, userStatus: number, pageLimit: number = 20, offsetNum: number = 0, searchText?: string): Observable<any> {
+  getAllKongUsersPaginated(
+    depId: string,
+    userStatus: number,
+    pageLimit: number = 20,
+    offsetNum: number = 0,
+    searchText?: string
+  ): Observable<any> {
     let reqBody
     reqBody = {
       request: {
@@ -49,7 +55,7 @@ export class UsersService {
           status: userStatus,
         },
         sort_by: {
-          createdDate: "desc",
+          createdDate: 'desc',
         },
         limit: pageLimit,
         offset: offsetNum,

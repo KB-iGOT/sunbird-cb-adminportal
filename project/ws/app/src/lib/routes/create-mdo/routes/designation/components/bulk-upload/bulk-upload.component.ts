@@ -20,10 +20,10 @@ import { DesignationsService } from '../../services/designations.service'
     selector: 'ws-app-bulk-upload',
     templateUrl: './bulk-upload.component.html',
     styleUrls: ['./bulk-upload.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Output() closeComponent: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() closeComponent: EventEmitter<boolean> = new EventEmitter<boolean>()
 
   lastUploadList: IBulkUploadDesignationList[] = []
   private destroySubject$ = new Subject()
@@ -40,7 +40,7 @@ export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
   userProfile: any
   userEmailPhone = {
     email: '',
-    mobile: ''
+    mobile: '',
   }
   fileUploadDialogInstance: any
   bulkUploadConfig: any
@@ -74,19 +74,21 @@ export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
       this.pageSize = this.bulkUploadConfig.pageSize
       this.sizeOptions = this.bulkUploadConfig.pageSizeOptions
     })
-    this.bulkUploadFrameworkId = this.designationsService.frameWorkInfo ? this.designationsService.frameWorkInfo.code : this.bulkUploadFrameworkId
+    this.bulkUploadFrameworkId = this.designationsService.frameWorkInfo
+      ? this.designationsService.frameWorkInfo.code
+      : this.bulkUploadFrameworkId
   }
 
   getUserDetails() {
     this.usersService.getUserDetails(this.userProfile.userId).subscribe({
-      next: (result) => {
+      next: result => {
         if (result) {
           this.userEmailPhone = {
             email: _.get(result, 'result.response.profileDetails.personalDetails.primaryEmail', this.userProfile.email),
-            mobile: _.get(result, 'result.response.profileDetails.personalDetails.mobile', this.userProfile.mobile)
+            mobile: _.get(result, 'result.response.profileDetails.personalDetails.mobile', this.userProfile.mobile),
           }
         }
-      }
+      },
     })
   }
 
@@ -247,7 +249,7 @@ export class BulkUploadComponent implements OnInit, OnDestroy, AfterViewInit {
         clearInterval(this.interval)
         this.getBulkStatusList()
       }
-    }, 1000)
+    },                          1000)
   }
 
 }

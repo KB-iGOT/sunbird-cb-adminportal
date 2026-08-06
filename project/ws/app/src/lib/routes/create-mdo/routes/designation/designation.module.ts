@@ -76,7 +76,7 @@ const routes: Routes = [
     DesignationsComponent,
     ImportDesignationComponent,
     BulkUploadComponent,
-    VerifyOtpComponent
+    VerifyOtpComponent,
   ],
   imports: [
     CommonModule,
@@ -96,7 +96,7 @@ const routes: Routes = [
     MatDialogModule,
     PipeOrderByModule,
     MatTooltipModule,
-    MatRadioModule
+    MatRadioModule,
   ],
 
   exports: [
@@ -107,7 +107,7 @@ const routes: Routes = [
   ],
   providers: [
     FileService,
-    OtpService
-  ]
+    OtpService,
+  ],
 })
 export class DesignationModule { }

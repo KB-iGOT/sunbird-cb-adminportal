@@ -18,11 +18,11 @@ const API_END_POINTS = {
   CREATE_ASSET: 'apis/proxies/v8/action/content/v3/create',
   UPLOAD_FILE: 'apis/proxies/v8/upload/action/content/v3/upload',
   ARCHIVE_EVENT: '/apis/proxies/v8/event/v4/retire',
-  FORM_READ: `/apis/v1/form/read`,
-  DESIGNATION_APPROVAL_REQUESTS: `/apis/proxies/v8/ai/cbp/v1/designation/approval-requests/list`,
-  APPROVE_REQUEST: `apis/proxies/v8/ai/cbp/v1/designation/approval-requests/approve`,
-  REJECT_REQUEST: `apis/proxies/v8/ai/cbp/v1/designation/approval-requests/reject`,
-  ORG_READ: `/apis/proxies/v8/org/v1/read`,
+  FORM_READ: '/apis/v1/form/read',
+  DESIGNATION_APPROVAL_REQUESTS: '/apis/proxies/v8/ai/cbp/v1/designation/approval-requests/list',
+  APPROVE_REQUEST: 'apis/proxies/v8/ai/cbp/v1/designation/approval-requests/approve',
+  REJECT_REQUEST: 'apis/proxies/v8/ai/cbp/v1/designation/approval-requests/reject',
+  ORG_READ: '/apis/proxies/v8/org/v1/read',
 }
 
 @Injectable({
@@ -73,7 +73,7 @@ export class DesignationApprovalService {
 
     const params: any = {
       page_size: pageSize.toString(),
-      page: Math.ceil(pageNumber).toString()
+      page: Math.ceil(pageNumber).toString(),
     }
 
     if (status) {
@@ -82,16 +82,18 @@ export class DesignationApprovalService {
 
     return this.http.get<any>(`${API_END_POINTS.DESIGNATION_APPROVAL_REQUESTS}`, {
       headers,
-      params
+      params,
     })
   }
 
   approveRequest(req: any): Observable<any> {
+    // tslint:disable-next-line:no-console
     console.log('req', req)
     return this.http.post<any>(`${API_END_POINTS.APPROVE_REQUEST}`, req)
   }
 
   rejectRequest(req: any): Observable<any> {
+    // tslint:disable-next-line:no-console
     console.log('req', req)
     return this.http.post<any>(`${API_END_POINTS.REJECT_REQUEST}`, req)
   }
@@ -151,6 +153,7 @@ export class DesignationApprovalService {
   }
 
   getOrgRead(req: any): Observable<any> {
+    // tslint:disable-next-line:no-console
     console.log('req', req)
     return this.http.post<any>(`${API_END_POINTS.ORG_READ}`, req)
   }

@@ -1,3 +1,4 @@
+// tslint:disable-next-line:interface-name
 export interface FilterNode {
   displayName: string
   count: number
@@ -6,6 +7,7 @@ export interface FilterNode {
   isDisabled?: boolean
 }
 
+// tslint:disable-next-line:interface-name
 export interface FlatFilterNode {
   expandable: boolean
   displayName: string
@@ -14,6 +16,7 @@ export interface FlatFilterNode {
   checked: boolean
   isDisabled: boolean
 }
+// tslint:disable-next-line:interface-name
 export interface SsoConfiguration {
   ssoId: string
   acsUrl: string
@@ -31,6 +34,7 @@ export interface SsoConfiguration {
   lastNameAttribute: string
   isActive: boolean
   isAuthenticate: boolean
+  // tslint:disable-next-line:prefer-array-literal
   mappers?: Array<{ key: string, value: string }> | { [key: string]: string },
   includeAuthnStatement?: boolean,
   signDocuments?: boolean,

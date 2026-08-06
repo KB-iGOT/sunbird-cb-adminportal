@@ -10,10 +10,10 @@ import * as fileSaver from 'file-saver'
 import { EventService } from '@sunbird-cb/utils-v2'
 
 @Component({
-    selector: 'ws-app-custom-self-registration',
-    templateUrl: './custom-self-registration.component.html',
-    styleUrls: ['./custom-self-registration.component.scss'],
-    standalone: false
+  selector: 'ws-app-custom-self-registration',
+  templateUrl: './custom-self-registration.component.html',
+  styleUrls: ['./custom-self-registration.component.scss'],
+  standalone: false,
 })
 export class CustomSelfRegistrationComponent implements OnInit, OnDestroy {
 
@@ -51,7 +51,7 @@ export class CustomSelfRegistrationComponent implements OnInit, OnDestroy {
   initializeForm(): void {
     this.selfRegistrationForm = this.formBuilder.group({
       startDate: ['', [Validators.required]],
-      endDate: ['', [Validators.required]]
+      endDate: ['', [Validators.required]],
     })
     this.getlistOfRegisterationLinks()
 
@@ -67,7 +67,7 @@ export class CustomSelfRegistrationComponent implements OnInit, OnDestroy {
 
   closeNaveBar() {
     const event = {
-      action: 'close'
+      action: 'close',
     }
     this.buttonClick?.emit(event)
   }
@@ -102,9 +102,9 @@ export class CustomSelfRegistrationComponent implements OnInit, OnDestroy {
   generateQRCodeLink() {
     const dialogRef = this.dialog.open(InfoModalComponent, {
       data: { type: 'generate-link-loader' },
-      width: "",
+      width: '',
       disableClose: true,
-      panelClass: 'info-dialog'
+      panelClass: 'info-dialog',
 
     })
 
@@ -112,7 +112,7 @@ export class CustomSelfRegistrationComponent implements OnInit, OnDestroy {
     const payload = {
       registrationStartDate: (Math.floor(this.selfRegistrationForm.controls['startDate'].value.getTime())),
       registrationEndDate: (Math.floor(this.selfRegistrationForm.controls['endDate'].value.getTime())),
-      orgId: this.initialData.orgId
+      orgId: this.initialData.orgId,
     }
 
     this.createMdoService.generateSelfRegistrationQRCode(payload).subscribe({
@@ -145,7 +145,7 @@ export class CustomSelfRegistrationComponent implements OnInit, OnDestroy {
       error: () => {
         this.isLoading = false
         dialogRef.close()
-      }
+      },
     })
 
   }
@@ -154,12 +154,15 @@ export class CustomSelfRegistrationComponent implements OnInit, OnDestroy {
     if (response && response?.qrLogoPath) {
       return response.qrLogoPath.replace('portal', 'spv')
     }
+    // tslint:disable-next-line:brace-style no-else-after-return
     else if (response && response?.qrCodeLogoPath) {
       return response.qrCodeLogoPath.replace('portal', 'spv')
     }
+    // tslint:disable-next-line:brace-style
     else if (response && response?.qrCodeImagePath) {
       return response.qrCodeImagePath.replace('portal', 'spv')
     }
+    // tslint:disable-next-line:brace-style
     else if (response && response?.qrRegistrationLink) {
       return response.qrRegistrationLink.replace('portal', 'spv')
     }
@@ -173,12 +176,12 @@ export class CustomSelfRegistrationComponent implements OnInit, OnDestroy {
     document.body.classList.remove('overflow-hidden')
   }
 
-
   copyLinkToClipboard(link: string): void {
     this.clipboard.copy(link)
     this.snackbar.open('Copied!')
   }
 
+  // tslint:disable-next-line:variable-name
   downloadQRCode(QRLink: string) {
     this.raiseInteractTelementry('download-qr')
     fetch(QRLink)
@@ -200,11 +203,10 @@ export class CustomSelfRegistrationComponent implements OnInit, OnDestroy {
     window.open(mailtoLink, '_self')
   }
 
-
   sendViaWhatsApp(link: string): void {
     this.raiseInteractTelementry('share-on-whatsapp')
     if (!link) return
-    const message = `Register for ${this.initialData.orgName} by clicking the link below:\n\n${link + ' '}`
+    const message = `Register for ${this.initialData.orgName} by clicking the link below:\n\n${link} `
 
     const encodedLink = encodeURIComponent(message)
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedLink} `
@@ -215,9 +217,10 @@ export class CustomSelfRegistrationComponent implements OnInit, OnDestroy {
     this.eventsService.raiseInteractTelemetry(
       {
         type: 'click',
+        // tslint:disable-next-line:object-literal-shorthand
         subType: subType,
         id: 'share-custom-registration-link',
-        pageid: '/app/home/directory/organisation'
+        pageid: '/app/home/directory/organisation',
       },
       {},
     )

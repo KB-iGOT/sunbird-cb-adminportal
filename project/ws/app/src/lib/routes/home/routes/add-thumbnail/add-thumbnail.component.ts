@@ -4,16 +4,16 @@ import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { DomSanitizer } from '@angular/platform-browser'
 /* tslint:disable */
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { environment } from '../../../../../../../../../src/environments/environment'
 import { SectorsService } from '../sectors/sectors.service'
 import { sectorConstants } from '../sectors/sectors-constats.model'
 /* tslint:enable */
 @Component({
-    selector: 'ws-auth-add-thumbnail',
-    templateUrl: './add-thumbnail.component.html',
-    styleUrls: ['./add-thumbnail.component.scss'],
-    standalone: false
+  selector: 'ws-auth-add-thumbnail',
+  templateUrl: './add-thumbnail.component.html',
+  styleUrls: ['./add-thumbnail.component.scss'],
+  standalone: false,
 })
 export class AddThumbnailComponent implements OnInit {
   toggle: any = null
@@ -145,7 +145,7 @@ export class AddThumbnailComponent implements OnInit {
       this.totalContent = data && data.result.response ? data.result.response.totalHits : sectorConstants.zero
       this.fetchError = false
     },
-      error => {
+                                                                  error => {
         // tslint:disable-next-line: no-console
         console.log(error)
       })

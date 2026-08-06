@@ -15,7 +15,7 @@ import { environment } from '../../../../../../../../../../../src/environments/e
     selector: 'ws-app-provider-details',
     templateUrl: './provider-details.component.html',
     styleUrls: ['./provider-details.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class ProviderDetailsComponent implements OnInit, OnChanges {
   @ViewChild('thumbNailInput', { static: false }) thumbNailInput!: ElementRef<HTMLInputElement>
@@ -29,10 +29,13 @@ export class ProviderDetailsComponent implements OnInit, OnChanges {
   helpCenterGuide = {
     header: 'Provider Details: Video Guides and Tips',
     guideNotes: [
-      'Ensure all mandatory fields in the onboarding form regarding the content provider are filled. Once completed, proceed to uploading course catalog for the content provider.',
+      [
+        'Ensure all mandatory fields in the onboarding form regarding the content provider are filled.',
+        'Once completed, proceed to uploading course catalog for the content provider.',
+      ].join(' '),
       'Partner code is a unique code that helps to differentiate the content provider.',
     ],
-    helpVideoLink: `/assets/public/content/guide-videos/CIOS_Updated_demo.mp4`,
+    helpVideoLink: '/assets/public/content/guide-videos/CIOS_Updated_demo.mp4',
   }
   providerFormGroup!: FormGroup
   providerDetalsBeforUpdate: any
@@ -63,10 +66,19 @@ export class ProviderDetailsComponent implements OnInit, OnChanges {
 
   initialization() {
     this.providerFormGroup = this.formBuilder.group({
-      contentPartnerName: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\] ' !]*$/), Validators.maxLength(70)]),
+      contentPartnerName: new FormControl(
+        '',
+        [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\] ' !]*$/), Validators.maxLength(70)]
+      ),
       partnerCode: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/), Validators.maxLength(6)]),
-      websiteUrl: new FormControl('', [Validators.required, Validators.pattern(/^(https?|http):\/\/[^\s/$.?#].[^\s]*$/), Validators.maxLength(1024)]),
-      description: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,.\-_$/:\[\] ' !]*$/), Validators.maxLength(500)]),
+      websiteUrl: new FormControl(
+        '',
+        [Validators.required, Validators.pattern(/^(https?|http):\/\/[^\s/$.?#].[^\s]*$/), Validators.maxLength(1024)]
+      ),
+      description: new FormControl(
+        '',
+        [Validators.required, Validators.pattern(/^[a-zA-Z0-9,.\-_$/:\[\] ' !]*$/), Validators.maxLength(500)]
+      ),
       providerTips: this.formBuilder.array([]),
     })
   }
@@ -198,7 +210,7 @@ export class ProviderDetailsComponent implements OnInit, OnChanges {
           lastModified: Date.now(),
         })
       }
-    }, 'image/png')
+    },            'image/png')
 
     this.imageUrl = canvas.toDataURL('image/png')
   }
@@ -333,7 +345,7 @@ export class ProviderDetailsComponent implements OnInit, OnChanges {
               this.showSnackBar(successMsg)
               const providerId = _.get(responce, 'result.id')
               this.router.navigate([`/app/home/marketplace-providers/onboard-partner/${providerId}`])
-            }, 1000)
+            },         1000)
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -375,7 +387,7 @@ export class ProviderDetailsComponent implements OnInit, OnChanges {
               const successMsg = 'Provider details updated successfully.'
               this.showSnackBar(successMsg)
               this.sendDetailsUpdateEvent()
-            }, 1000)
+            },         1000)
           }
         },
         error: (error: HttpErrorResponse) => {

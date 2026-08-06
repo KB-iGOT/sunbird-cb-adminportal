@@ -14,6 +14,6 @@ import { MatTooltipModule } from '@angular/material/tooltip'
         MatButtonModule,
         MatTooltipModule,
     ],
-    exports: [BtnChannelAnalyticsComponent]
+    exports: [BtnChannelAnalyticsComponent],
 })
 export class BtnChannelAnalyticsModule { }

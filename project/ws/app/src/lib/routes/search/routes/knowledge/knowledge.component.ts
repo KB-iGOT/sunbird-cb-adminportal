@@ -13,7 +13,7 @@ export type IKhubFetchStatus = 'hasMore' | 'fetching' | 'done' | 'error' | 'none
     selector: 'ws-app-knowledge',
     templateUrl: './knowledge.component.html',
     styleUrls: ['./knowledge.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class KnowledgeComponent implements OnInit, OnDestroy {
   defaultSideNavBarOpenedSubscription: Subscription | null = null
@@ -160,7 +160,7 @@ export class KnowledgeComponent implements OnInit, OnDestroy {
     })
   }
   sortOrder(type: string) {
-    try { //NOSONAR
+    try { // NOSONAR
       this.router.navigate([], {
         queryParams: { sort: type },
         queryParamsHandling: 'merge',

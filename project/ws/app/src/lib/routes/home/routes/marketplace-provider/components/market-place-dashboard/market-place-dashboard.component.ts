@@ -13,20 +13,23 @@ import { Subject } from 'rxjs'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
 
 @Component({
-    selector: 'ws-app-market-place-dashboard',
-    templateUrl: './market-place-dashboard.component.html',
-    styleUrls: ['./market-place-dashboard.component.scss'],
-    standalone: false
+  selector: 'ws-app-market-place-dashboard',
+  templateUrl: './market-place-dashboard.component.html',
+  styleUrls: ['./market-place-dashboard.component.scss'],
+  standalone: false,
 })
 export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   isComponentActive = true
   helpCenterGuide = {
     header: 'SPV Help Center: Video Guides and Tips',
     guideNotes: [
-      'Ensure all mandatory fields in the onboarding form regarding the content provider are filled. Once completed, proceed to uploading course catalog for the content provider.',
+      [
+        'Ensure all mandatory fields in the onboarding form regarding the content provider are filled.',
+        'Once completed, proceed to uploading course catalog for the content provider.',
+      ].join(' '),
       'Reach out to support team for authenticating the content provider',
     ],
-    helpVideoLink: `/assets/public/content/guide-videos/CIOS_Updated_demo.mp4`,
+    helpVideoLink: '/assets/public/content/guide-videos/CIOS_Updated_demo.mp4',
   }
 
   providersList: any = []
@@ -41,8 +44,8 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
     action: string
   }[] = []
   providersRequestsList = []
-  searchProvider$ = new Subject<string>();
-  searchRegisteredProvider$ = new Subject<string>();
+  searchProvider$ = new Subject<string>()
+  searchRegisteredProvider$ = new Subject<string>()
   currentTab: string = 'onboardProviders'
   sortData: any = { field: 'updatedOn', direction: 'desc' }
   constructor(
@@ -97,8 +100,8 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
     this.tabledata = {
       columns: [
         { displayName: 'Content Provider Name', key: 'contentPartnerName', cellType: 'text', imageKey: 'link' },
-        { displayName: 'Onboarded On', key: 'createdOn', cellType: 'text', },
-        { displayName: 'Last Updated On', key: 'updatedOn', cellType: 'text', },
+        { displayName: 'Onboarded On', key: 'createdOn', cellType: 'text' },
+        { displayName: 'Last Updated On', key: 'updatedOn', cellType: 'text' },
         { displayName: 'Authentication', key: 'isAuthenticate', cellType: 'authentication' },
         { displayName: 'Status', key: 'isActive', cellType: 'isActive' },
       ],
@@ -116,8 +119,8 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
     this.tabledata = {
       columns: [
         { displayName: 'Content Provider Name', key: 'contentPartnerName', cellType: 'text', imageKey: 'link' },
-        { displayName: 'Request Received On', key: 'createdOn', cellType: 'text', },
-        { displayName: 'Last Updated On', key: 'updatedOn', cellType: 'text', },
+        { displayName: 'Request Received On', key: 'createdOn', cellType: 'text' },
+        { displayName: 'Last Updated On', key: 'updatedOn', cellType: 'text' },
         { displayName: 'Status', key: 'status', cellType: 'status' },
       ],
       needCheckBox: false,
@@ -136,7 +139,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
     const formBody: any = {
       filterCriteriaMap: {
         // isActive: true,
-        providerType: ["external"]
+        providerType: ['external'],
 
       },
       pageNumber: this.paginationDetails.currentPage - 1,
@@ -265,7 +268,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
     if (providerDetails) {
       this.router.navigate([`/app/home/marketplace-providers/onboard-partner/${providerDetails.id}`])
     } else {
-      this.router.navigate([`/app/home/marketplace-providers/onboard-partner`])
+      this.router.navigate(['/app/home/marketplace-providers/onboard-partner'])
     }
   }
 
@@ -281,11 +284,12 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
       queryParams.status = status
     }
     if (providerDetails) {
-      this.router.navigate([`/app/home/marketplace-providers/configure-provider`], {
+      this.router.navigate(['/app/home/marketplace-providers/configure-provider'], {
+        // tslint:disable-next-line:object-literal-shorthand trailing-comma
         queryParams: queryParams
       })
     } else {
-      this.router.navigate([`/app/home/marketplace-providers/configure-provider`])
+      this.router.navigate(['/app/home/marketplace-providers/configure-provider'])
     }
   }
 
@@ -299,7 +303,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
           messages: [
             {
               msgClass: '',
-              msg: `Do you still want to proceed?`,
+              msg: 'Do you still want to proceed?',
             },
           ],
         },
@@ -343,6 +347,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
         if (res) {
           setTimeout(() => {
             this.getProviders()
+            // tslint:disable-next-line:align
           }, 2000)
         } else {
           this.displayLoader = false
@@ -370,6 +375,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
   showSnackBar(message: string, type: 'error' | 'success') {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: {
+        // tslint:disable-next-line:object-literal-shorthand
         message: message, type: type,
       }, duration: 5000, panelClass: type,
     })
@@ -389,7 +395,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
         if (error) {
           this.showSnackBar('Something went wrong please try again', 'error')
         }
-      }
+      },
     })
   }
 
@@ -411,7 +417,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
     this.providersRequestsList = []
     const formBody: any = {
       filterCriteriaMap: {
-        "status": "PENDING"
+        'status': 'PENDING',
       },
       pageNumber: this.paginationDetails.currentPage - 1,
       pageSize: this.paginationDetails.pageSize,
@@ -454,7 +460,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
       currentPage: 1,
       pageSize: 20,
       totalCount: 20,
-      paginationSizeOptions: [20, 50, 100]
+      paginationSizeOptions: [20, 50, 100],
     }
     this.sortData = { field: 'createdOn', direction: 'desc' }
   }

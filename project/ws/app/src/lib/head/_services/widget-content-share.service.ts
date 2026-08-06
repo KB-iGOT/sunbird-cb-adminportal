@@ -7,8 +7,8 @@ import { NsShare } from './widget-share.model'
 import { ICommon } from '../_models/common.model'
 
 const API_END_POINTS = {
-  USER_SHARE: `/apis/protected/v8/user/share`,
-  USER_CONTENT_SHARE: `/apis/protected/v8/user/share/content`,
+  USER_SHARE: '/apis/protected/v8/user/share',
+  USER_CONTENT_SHARE: '/apis/protected/v8/user/share/content',
 }
 
 @Injectable({

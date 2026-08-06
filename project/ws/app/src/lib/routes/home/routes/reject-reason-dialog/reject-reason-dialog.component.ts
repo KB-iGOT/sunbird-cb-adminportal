@@ -6,7 +6,7 @@ import { MatDialogRef } from '@angular/material/dialog'
     selector: 'ws-app-reject-reason-dialog',
     templateUrl: './reject-reason-dialog.component.html',
     styleUrls: ['./reject-reason-dialog.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class RejectReasonDialogComponent implements OnInit {
   reasonForm!: UntypedFormGroup

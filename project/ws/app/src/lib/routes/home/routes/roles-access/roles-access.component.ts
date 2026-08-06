@@ -11,7 +11,7 @@ import { UsersService } from '../../services/users.service'
     selector: 'ws-app-roles-access',
     templateUrl: './roles-access.component.html',
     styleUrls: ['./roles-access.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class RolesAccessComponent implements OnInit {
   tabledata!: ITableData
@@ -31,9 +31,9 @@ export class RolesAccessComponent implements OnInit {
   filteredRoles: any = []
 
   constructor(private router: Router,
-    private activeRoute: ActivatedRoute,
-    private usersService: UsersService,
-    private roleservice: RolesService
+              private activeRoute: ActivatedRoute,
+              private usersService: UsersService,
+              private roleservice: RolesService
   ) {
     this.getAllKongUsers()
     this.userRoles = _.get(this.activeRoute, 'snapshot.parent.data.configService.unMappedUser.roles')
@@ -144,7 +144,7 @@ export class RolesAccessComponent implements OnInit {
   onRoleClick(event: any) {
     const rootOrgId = _.get(this.activeRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrg.rootOrgId')
     const rootOrgName = _.get(this.activeRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrg.orgName')
-    this.router.navigate([`/app/home/roles-users`], { queryParams: { role: event.role, orgID: rootOrgId, depatName: rootOrgName } })
+    this.router.navigate(['/app/home/roles-users'], { queryParams: { role: event.role, orgID: rootOrgId, depatName: rootOrgName } })
   }
 
   // ngOnDestroy() { }

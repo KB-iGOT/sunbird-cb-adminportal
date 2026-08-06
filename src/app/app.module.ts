@@ -221,6 +221,7 @@ const appInitializer = (initSvc: InitService, logger: LoggerService) => async ()
   }
 }
 
+// tslint:disable-next-line:function-name
 export function HttpLoaderFactory(http: HttpClient) {
   // Use assets path for translation files
   // This will work in both local and deployed environments
@@ -230,7 +231,6 @@ export function HttpLoaderFactory(http: HttpClient) {
   // @ts-ignore - Version compatibility issue between core and http-loader
   return new TranslateHttpLoader(http, prefix, suffix)
 }
-
 
 const getBaseHref = (platformLocation: PlatformLocation): string => {
   return platformLocation.getBaseHrefFromDOM()
@@ -251,7 +251,7 @@ const getBaseHref = (platformLocation: PlatformLocation): string => {
     LoginRootComponent,
     LoginRootDirective,
     PublicHomeComponent,
-    BackBreadcrumbsComponent
+    BackBreadcrumbsComponent,
   ],
   exports: [
     TncComponent,
@@ -401,7 +401,7 @@ const getBaseHref = (platformLocation: PlatformLocation): string => {
       { provide: ErrorHandler, useClass: GlobalErrorHandlingService },
       LoaderService,
       GlobalEventsService,
-      provideHttpClient(withInterceptorsFromDi(), withJsonpSupport())
-    ]
+      provideHttpClient(withInterceptorsFromDi(), withJsonpSupport()),
+    ],
 })
 export class AppModule { }

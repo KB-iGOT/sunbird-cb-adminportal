@@ -7,7 +7,7 @@ import { ActivatedRoute } from '@angular/router'
     selector: 'ws-public-contact',
     templateUrl: './public-contact.component.html',
     styleUrls: ['./public-contact.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class PublicContactComponent implements OnInit, OnDestroy {
   contactUsMail = ''

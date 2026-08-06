@@ -41,7 +41,7 @@ export function forbiddenNamesValidator(optionsArray: any): ValidatorFn {
     providers: [AuthInitService, LoaderService],
     templateUrl: './create-mdo.component.html',
     styleUrls: ['./create-mdo.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class CreateMdoComponent implements OnInit {
   @Input() isSubmitPressed = false
@@ -109,7 +109,7 @@ export class CreateMdoComponent implements OnInit {
   deptSubType!: string
   mdoDepartmentID!: number
   loggedInUserId!: string
-  specialCharList = `( a-z A-Z - , ( ) )`
+  specialCharList = '( a-z A-Z - , ( ) )'
   noSpecialChar = new RegExp(/^[a-zA-Z(), -]*$/)
   workFlow = [{ isActive: true, isCompleted: false, name: 'Basic Details', step: 0 },
   { isActive: false, isCompleted: false, name: 'Classification', step: 1 },
@@ -167,7 +167,7 @@ export class CreateMdoComponent implements OnInit {
           this.department = params['currentDept']
           this.departmentId = params['department']
           // this.departmentRole = `${params['currentDept']} ADMIN`
-          this.departmentRole = `MDO ADMIN`
+          this.departmentRole = 'MDO ADMIN'
         }
         if (data) {
           data = JSON.parse(data)
@@ -300,7 +300,7 @@ export class CreateMdoComponent implements OnInit {
 
     if (event.target.value.length) {
       if (event.target.value.startsWith(' ') || event.target.value.endsWith(' ')) {
-        this.openSnackbar(`Please check for leading or trailing whitespace`)
+        this.openSnackbar('Please check for leading or trailing whitespace')
       } else {
         this.disableCreateButton = false
         this.disableStateCreateButton = false
@@ -340,7 +340,9 @@ export class CreateMdoComponent implements OnInit {
         this.createMdoService.getStatesOrMinisteries('state').subscribe(res => {
           if (res && res.result && res.result && res.result.response && res.result.response.content) {
             this.ministeries = res.result.response.content.sort()
-            const state = this.ministeries.find(x => x.sbOrgId === _.get(this.activatedRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrgId'))
+            const state = this.ministeries.find(
+              x => x.sbOrgId === _.get(this.activatedRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrgId')
+            )
             this.onMinisteriesChange()
             this.ministrySelected(state)
             if (this.departmentForm) {
@@ -463,13 +465,19 @@ export class CreateMdoComponent implements OnInit {
                 depType: this.department,
               }
               this.createdDepartment = obj
-              this.router.navigate([`/app/roles/${res.result.organisationId}/users`], { queryParams: { currentDept: this.department, roleId: res.result.organisationId, depatName: this.contentForm.value.name } })
-              this.openSnackbar(`Success`)
+              this.router.navigate([`/app/roles/${res.result.organisationId}/users`], {
+                queryParams: {
+                  currentDept: this.department,
+                  roleId: res.result.organisationId,
+                  depatName: this.contentForm.value.name,
+                },
+              })
+              this.openSnackbar('Success')
 
               // this.router.navigate([`/app/home/directory`])
             }
-          }, (error: any) => {
-            this.openSnackbar(`Something went wrong, please try again later`)
+          },          (error: any) => {
+            this.openSnackbar('Something went wrong, please try again later')
             this.disableStateCreateButton = false
             this.displayLoader = false
             // tslint:disable-next-line: no-console
@@ -493,9 +501,9 @@ export class CreateMdoComponent implements OnInit {
             this.displayLoader = false
             this.disableCreateButton = false
             if (res.result.response === 'SUCCESS') {
-              this.openSnackbar(`Success`)
+              this.openSnackbar('Success')
               this.disableCreateButton = false
-              this.router.navigate([`/app/home/directory`])
+              this.router.navigate(['/app/home/directory'])
             }
           }
           )
@@ -636,7 +644,7 @@ export class CreateMdoComponent implements OnInit {
           if (stateFromValue.sbOrgId) {
             this.disableStateCreateButton = true
             this.displayLoader = false
-            this.openSnackbar(`Selected State is already onboarded!`)
+            this.openSnackbar('Selected State is already onboarded!')
           } else {
             const req = {
               orgName: stateFromValue.orgName ? stateFromValue.orgName : stateFromValue,
@@ -655,14 +663,14 @@ export class CreateMdoComponent implements OnInit {
                 this.displayLoader = false
                 if (res.responseCode) {
                   this.submittedForm = false
-                  this.openSnackbar(`State is successfully on-boarded. Check again after few minutes for newly on-boarded State details`)
-                  this.router.navigate([`/app/home/directory`])
+                  this.openSnackbar('State is successfully on-boarded. Check again after few minutes for newly on-boarded State details')
+                  this.router.navigate(['/app/home/directory'])
                 }
               },
               err => {
                 this.disableStateCreateButton = false
                 this.displayLoader = false
-                this.openSnackbar(`Something went wrong, please try again later`)
+                this.openSnackbar('Something went wrong, please try again later')
                 // tslint:disable-next-line: no-console
                 console.log('Error :', err)
               }
@@ -690,15 +698,15 @@ export class CreateMdoComponent implements OnInit {
                 if (res.result.response === 'SUCCESS') {
                   this.disableStateCreateButton = false
                   this.displayLoader = false
-                  this.openSnackbar(`Success`)
-                  this.router.navigate([`/app/home/directory`])
+                  this.openSnackbar('Success')
+                  this.router.navigate(['/app/home/directory'])
                 }
               }
             },
             err => {
               this.disableStateCreateButton = false
               this.displayLoader = false
-              this.openSnackbar(`Something went wrong, please try again later`)
+              this.openSnackbar('Something went wrong, please try again later')
               // tslint:disable-next-line: no-console
               console.log('Error :', err)
             }
@@ -732,39 +740,64 @@ export class CreateMdoComponent implements OnInit {
         if (hierarchyObj) {
           if (hierarchyObj.ministry && hierarchyObj.ministry.sbOrgId && hierarchyObj.department && hierarchyObj.department.sbOrgId
             && hierarchyObj.organisation && hierarchyObj.organisation.sbOrgId) {
-            this.openSnackbar(`Selected Org is already onboarded!`)
+            this.openSnackbar('Selected Org is already onboarded!')
             this.disableCreateButton = true
             this.displayLoader = false
           } else {
-            if (this.departmentForm.getRawValue().ministry && !this.departmentForm.value.department && !this.departmentForm.value.organisation) {
+            if (
+              this.departmentForm.getRawValue().ministry &&
+              !this.departmentForm.value.department &&
+              !this.departmentForm.value.organisation
+            ) {
               this.req = {
                 orgName: hierarchyObj.ministry && hierarchyObj.ministry.orgName ? hierarchyObj.ministry.orgName : hierarchyObj.ministry,
                 channel: hierarchyObj.ministry && hierarchyObj.ministry.orgName ? hierarchyObj.ministry.orgName : hierarchyObj.ministry,
-                organisationType: hierarchyObj.ministry && hierarchyObj.ministry.sbOrgType ? (hierarchyObj.ministry.sbOrgType || '').toLowerCase() : 'ministry',
-                organisationSubType: hierarchyObj.ministry && hierarchyObj.ministry.sbsuborgtype ? (hierarchyObj.ministry.sbsuborgtype || '').toLowerCase() : 'mdo',
+                organisationType: hierarchyObj.ministry && hierarchyObj.ministry.sbOrgType
+                  ? (hierarchyObj.ministry.sbOrgType || '').toLowerCase() : 'ministry',
+                organisationSubType: hierarchyObj.ministry && hierarchyObj.ministry.sbsuborgtype
+                  ? (hierarchyObj.ministry.sbsuborgtype || '').toLowerCase() : 'mdo',
                 isTenant: true,
-                ...(this.isStateAdmin && { sbRootOrgId: _.get(this.activatedRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrgId') }),
+                ...(this.isStateAdmin && {
+                  sbRootOrgId: _.get(this.activatedRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrgId'),
+                }),
                 requestedBy: this.loggedInUserId,
               }
-            } else if (this.departmentForm.getRawValue().ministry && this.departmentForm.value.department && !this.departmentForm.value.organisation) {
+            } else if (
+              this.departmentForm.getRawValue().ministry &&
+              this.departmentForm.value.department &&
+              !this.departmentForm.value.organisation
+            ) {
               this.req = {
-                orgName: hierarchyObj.department && hierarchyObj.department.orgName ? hierarchyObj.department.orgName : hierarchyObj.department,
-                channel: hierarchyObj.department && hierarchyObj.department.orgName ? hierarchyObj.department.orgName : hierarchyObj.department,
+                orgName: hierarchyObj.department && hierarchyObj.department.orgName
+                  ? hierarchyObj.department.orgName : hierarchyObj.department,
+                channel: hierarchyObj.department && hierarchyObj.department.orgName
+                  ? hierarchyObj.department.orgName : hierarchyObj.department,
                 organisationType: hierarchyObj.ministry.sbsuborgtype ? (hierarchyObj.ministry.sbsuborgtype || '').toLowerCase() : 'mdo',
                 organisationSubType: 'department',
                 isTenant: true,
-                ...(this.isStateAdmin && { sbRootOrgId: _.get(this.activatedRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrgId') }),
+                ...(this.isStateAdmin && {
+                  sbRootOrgId: _.get(this.activatedRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrgId'),
+                }),
                 requestedBy: this.loggedInUserId,
                 parentMapId: hierarchyObj.ministry.mapId,
               }
-            } else if (this.departmentForm.getRawValue().ministry && this.departmentForm.value.department && this.departmentForm.value.organisation) {
+            } else if (
+              this.departmentForm.getRawValue().ministry &&
+              this.departmentForm.value.department &&
+              this.departmentForm.value.organisation
+            ) {
               this.req = {
-                orgName: hierarchyObj.organisation && hierarchyObj.organisation.orgName ? hierarchyObj.organisation.orgName : hierarchyObj.organisation,
-                channel: hierarchyObj.organisation && hierarchyObj.organisation.orgName ? hierarchyObj.organisation.orgName : hierarchyObj.organisation,
-                organisationType: hierarchyObj.ministry.sbsuborgtype ? (hierarchyObj.ministry.sbsuborgtype || '').toLowerCase() : 'mdo',
+                orgName: hierarchyObj.organisation && hierarchyObj.organisation.orgName
+                  ? hierarchyObj.organisation.orgName : hierarchyObj.organisation,
+                channel: hierarchyObj.organisation && hierarchyObj.organisation.orgName
+                  ? hierarchyObj.organisation.orgName : hierarchyObj.organisation,
+                organisationType: hierarchyObj.ministry.sbsuborgtype
+                  ? (hierarchyObj.ministry.sbsuborgtype || '').toLowerCase() : 'mdo',
                 organisationSubType: 'board',
                 isTenant: true,
-                ...(this.isStateAdmin && { sbRootOrgId: _.get(this.activatedRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrgId') }),
+                ...(this.isStateAdmin && {
+                  sbRootOrgId: _.get(this.activatedRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrgId'),
+                }),
                 requestedBy: this.loggedInUserId,
                 parentMapId: hierarchyObj.department.mapId,
               }
@@ -776,15 +809,15 @@ export class CreateMdoComponent implements OnInit {
                 this.req = ''
                 if (res.responseCode) {
                   this.submittedForm = false
-                  this.openSnackbar(`MDO is successfully on-boarded. Check again after few minutes for newly on-boarded MDO details`)
+                  this.openSnackbar('MDO is successfully on-boarded. Check again after few minutes for newly on-boarded MDO details')
 
-                  this.router.navigate([`/app/home/directory`])
+                  this.router.navigate(['/app/home/directory'])
                 }
               },
               err => {
                 this.displayLoader = false
                 this.disableCreateButton = false
-                this.openSnackbar(`Something went wrong, please try again later`)
+                this.openSnackbar('Something went wrong, please try again later')
 
                 // tslint:disable-next-line: no-console
                 console.log('Error :', err)
@@ -812,7 +845,7 @@ export class CreateMdoComponent implements OnInit {
             && hierarchyObj.organisation && hierarchyObj.organisation.sbOrgId) {
             this.displayLoader = false
             this.disableCreateButton = false
-            this.openSnackbar(`Selected Org is already onboarded!`)
+            this.openSnackbar('Selected Org is already onboarded!')
           } else {
             // this.req = {
             //   orgName: hierarchyObj.orgname,
@@ -829,11 +862,15 @@ export class CreateMdoComponent implements OnInit {
             this.req = {
               orgName: hierarchyObj.ministry && hierarchyObj.ministry.orgName ? hierarchyObj.ministry.orgName : hierarchyObj.ministry,
               channel: hierarchyObj.ministry && hierarchyObj.ministry.orgName ? hierarchyObj.ministry.orgName : hierarchyObj.ministry,
-              organisationType: hierarchyObj.ministry && hierarchyObj.ministry.sbOrgType ? (hierarchyObj.ministry.sbOrgType || '').toLowerCase() : 'ministry',
-              organisationSubType: hierarchyObj.ministry && hierarchyObj.ministry.sbsuborgtype ? (hierarchyObj.ministry.sbsuborgtype || '').toLowerCase() : 'mdo',
+              organisationType: hierarchyObj.ministry && hierarchyObj.ministry.sbOrgType
+                ? (hierarchyObj.ministry.sbOrgType || '').toLowerCase() : 'ministry',
+              organisationSubType: hierarchyObj.ministry && hierarchyObj.ministry.sbsuborgtype
+                ? (hierarchyObj.ministry.sbsuborgtype || '').toLowerCase() : 'mdo',
               isTenant: true,
               mapId: hierarchyObj.ministry.mapId,
-              ...(this.isStateAdmin && { sbRootOrgId: _.get(this.activatedRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrgId') }),
+              ...(this.isStateAdmin && {
+                sbRootOrgId: _.get(this.activatedRoute, 'snapshot.parent.data.configService.unMappedUser.rootOrgId'),
+              }),
               requestedBy: this.loggedInUserId,
             }
             this.createMdoService.updateStateOrMinistry(this.req).subscribe(
@@ -842,14 +879,14 @@ export class CreateMdoComponent implements OnInit {
                 this.disableCreateButton = false
                 this.req = ''
                 if (res.responseCode) {
-                  this.openSnackbar(`Success`)
+                  this.openSnackbar('Success')
 
-                  this.router.navigate([`/app/home/directory`])
+                  this.router.navigate(['/app/home/directory'])
                 }
               },
               err => {
                 this.displayLoader = false
-                this.openSnackbar(`Something went wrong, please try again later`)
+                this.openSnackbar('Something went wrong, please try again later')
                 this.disableCreateButton = false
                 // tslint:disable-next-line: no-console
                 console.log('Error :', err)

@@ -11,11 +11,11 @@ const API_END_POINTS = {
   DOWNLOAD_SAMPLE_TEMPLATE: '/apis/proxies/v8/organisation/v1/getMappingFile/sample/',
   ORG_READ: '/apis/proxies/v8/org/v1/read',
   BULKUPLOAD_PROGRESS: '/apis/proxies/v8/organisation/v1/hierarchy/progress/details/bulkUpload/',
-  ACTIVATE_DEACTIVATE_VOLUNTEER:'apis/proxies/v8/org/v1/status/update'
+  ACTIVATE_DEACTIVATE_VOLUNTEER:'apis/proxies/v8/org/v1/status/update',
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrgHierarchyService {
   orgData: any

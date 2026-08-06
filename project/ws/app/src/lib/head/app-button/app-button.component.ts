@@ -4,7 +4,7 @@ import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core'
     selector: 'ws-widget-app-button',
     templateUrl: './app-button.component.html',
     styleUrls: ['./app-button.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class AppButtonComponent implements OnInit {
   @Input() id?: string

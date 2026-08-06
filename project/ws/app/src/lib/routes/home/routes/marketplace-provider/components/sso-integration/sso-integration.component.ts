@@ -11,12 +11,11 @@ import * as _ from 'lodash'
 import { forkJoin, Observable } from 'rxjs'
 import { mergeMap } from 'rxjs/operators'
 
-
 @Component({
   selector: 'ws-app-sso-integration',
   templateUrl: './sso-integration.component.html',
   styleUrls: ['./sso-integration.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class SsoIntegrationComponent implements OnInit {
   @Input() providerDetails: any
@@ -30,10 +29,10 @@ export class SsoIntegrationComponent implements OnInit {
   helpCenterGuide = {
     header: 'Note:- Content Upload Details: Video Guides and Tips.',
     guideNotes: [],
-    helpVideoLink: `/assets/public/content/guide-videos/CIOS_Updated_demo.mp4`,
+    helpVideoLink: '/assets/public/content/guide-videos/CIOS_Updated_demo.mp4',
   }
 
-  constructor(private dialog: MatDialog, private marketplaceService: MarketplaceService, private snackBar: MatSnackBar,) { }
+  constructor(private dialog: MatDialog, private marketplaceService: MarketplaceService, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
   }
@@ -81,7 +80,7 @@ export class SsoIntegrationComponent implements OnInit {
     const ssoPayload = {
       ...this.ssoConfigurations,
       ssoTested: true,
-      configuration: 'completed'
+      configuration: 'completed',
     }
 
     const providerPayload = {
@@ -98,8 +97,8 @@ export class SsoIntegrationComponent implements OnInit {
       disableClose: true,
       data: {
         title: 'Testing SSO Connection',
-        subtitle: "Wait a second, It's processing…"
-      }
+        subtitle: "Wait a second, It's processing…",
+      },
     })
 
     const testPayload = {
@@ -111,13 +110,13 @@ export class SsoIntegrationComponent implements OnInit {
       mergeMap((testResponse: any) => {
         // Check if testSSOConfiguration response has failed status
         if (testResponse?.responseCode !== 'OK') {
-          return new Observable((observer) => {
+          return new Observable(observer => {
             observer.error({
               error: {
                 params: {
-                  errMsg: testResponse?.params?.errmsg || 'SSO configuration test failed'
-                }
-              }
+                  errMsg: testResponse?.params?.errmsg || 'SSO configuration test failed',
+                },
+              },
             })
           })
         }
@@ -128,7 +127,7 @@ export class SsoIntegrationComponent implements OnInit {
             this.providerDetails?.id,
             ssoPayload
           ),
-          providerResponse: this.marketplaceService.updateProvider(providerPayload)
+          providerResponse: this.marketplaceService.updateProvider(providerPayload),
         })
       })
     ).subscribe({
@@ -142,19 +141,21 @@ export class SsoIntegrationComponent implements OnInit {
           dialogRef.close()
           this.ssoConfigurationSettings?.fetchSSOSettings()
           this.loadProviderDetails.emit(true)
+          // tslint:disable-next-line:align
         }, 1000)
       },
       error: (error: HttpErrorResponse) => {
         dialogRef.close()
-        const errmsg = _.get(error,
+        const errmsg = _.get(
+          error,
           'error.params.errmsg',
           'Something went wrong, please try again later'
         )
         this.showSnackBar(errmsg, 'error')
-      }
+      },
     })
   }
-
+  /* tslint:disable:object-literal-shorthand */
   showSnackBar(message: string, type: 'error' | 'success') {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: {
