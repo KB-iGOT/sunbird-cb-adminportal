@@ -29,7 +29,8 @@
     </div>
   </div>
 
-  <mat-tab-group (selectedIndexChange)="selectedTabIndex = $event" class="grouped-tabs-courses">
+  <mat-tab-group [mat-stretch-tabs]="false" (selectedIndexChange)="selectedTabIndex = $event"
+    class="grouped-tabs-courses">
     <mat-tab label="Configure">
       <ws-app-sso-configure-settings #ssoConfigurationSettings [providerDetails]="providerDetails"
         (loadSSODetails)="loadSSODetails($event)"></ws-app-sso-configure-settings>

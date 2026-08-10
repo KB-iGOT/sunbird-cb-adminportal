@@ -13,10 +13,10 @@ import { Subject } from 'rxjs'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
 
 @Component({
-    selector: 'ws-app-market-place-dashboard',
-    templateUrl: './market-place-dashboard.component.html',
-    styleUrls: ['./market-place-dashboard.component.scss'],
-    standalone: false
+  selector: 'ws-app-market-place-dashboard',
+  templateUrl: './market-place-dashboard.component.html',
+  styleUrls: ['./market-place-dashboard.component.scss'],
+  standalone: false
 })
 export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   isComponentActive = true
@@ -96,10 +96,17 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
   intializeTableData() {
     this.tabledata = {
       columns: [
-        { displayName: 'Content Provider Name', key: 'contentPartnerName', cellType: 'text', imageKey: 'link' },
+        { displayName: 'Content Provider Name', key: 'contentPartnerName', cellType: 'text', imageKey: 'link', hideImage: true },
+        {
+          displayName: 'Used Licences', key: 'registrations', cellType: 'showInfoIcon',
+          infoText: 'This shows the overall license limit and the number of licenses consumed by the partner.',
+        },
         { displayName: 'Onboarded On', key: 'createdOn', cellType: 'text', },
         { displayName: 'Last Updated On', key: 'updatedOn', cellType: 'text', },
-        { displayName: 'Authentication', key: 'isAuthenticate', cellType: 'authentication' },
+        {
+          displayName: 'Authentication', key: 'isAuthenticate', cellType: 'showInfoIcon',
+          infoText: 'This icon indicates the authentication status of the partner with iGOT. Please connect with the technical team for further information.',
+        },
         { displayName: 'Status', key: 'isActive', cellType: 'isActive' },
       ],
       needCheckBox: false,
@@ -194,6 +201,7 @@ export class MarketPlaceDashboardComponent implements OnInit, OnDestroy, AfterVi
       responce.forEach((element: any) => {
         element.createdOn = this.datePipe.transform(new Date(element.createdOn), 'MMM dd, yyyy')
         element.updatedOn = this.datePipe.transform(new Date(element.createdOn), 'MMM dd, yyyy')
+        element.registrations = !element.overAllLimit ? '0 / 0' : `${element.licenseConsumedCount || 0} / ${element.overAllLimit}`
         formatedList.push(element)
       })
     }

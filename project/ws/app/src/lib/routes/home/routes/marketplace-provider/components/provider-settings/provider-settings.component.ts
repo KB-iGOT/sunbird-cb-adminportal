@@ -7,10 +7,10 @@ import { MarketplaceService } from '../../services/marketplace.service'
 import { LoaderService } from '../../../../services/loader.service'
 
 @Component({
-    selector: 'ws-app-provider-settings',
-    templateUrl: './provider-settings.component.html',
-    styleUrls: ['./provider-settings.component.scss'],
-    standalone: false
+  selector: 'ws-app-provider-settings',
+  templateUrl: './provider-settings.component.html',
+  styleUrls: ['./provider-settings.component.scss'],
+  standalone: false
 })
 export class ProviderSettingsComponent implements OnChanges {
   providerSettingsForm!: FormGroup
@@ -18,6 +18,11 @@ export class ProviderSettingsComponent implements OnChanges {
   @Output() loadProviderDetails = new EventEmitter<Boolean>()
 
   providerDetailsBeforeUpdate: any
+  licenseTypeList = [
+    { displayName: 'User', value: 'User' },
+    { displayName: 'Course', value: 'Course' },
+  ]
+  overAllLimitMessage = 'Maximum total course enrolments allowed across all learners for this provider.'
 
   constructor(
     private fb: FormBuilder,
@@ -37,6 +42,7 @@ export class ProviderSettingsComponent implements OnChanges {
 
   initializeForm() {
     this.providerSettingsForm = this.fb.group({
+      licenseType: [null, [Validators.required]],
       overAllLimit: [null, [Validators.min(0), Validators.max(100000000)]],
       userWiseLimit: [null,],
       isUserWiseLimitEnabled: [false],
@@ -126,7 +132,9 @@ export class ProviderSettingsComponent implements OnChanges {
   }
 
   patchProviderSettings(providerDetails: any) {
+    const licenseType = _.get(providerDetails, 'data.licenseType', null)
     this.providerSettingsForm.patchValue({
+      licenseType,
       overAllLimit: _.get(providerDetails, 'data.overAllLimit', null),
       userWiseLimit: _.get(providerDetails, 'data.userWiseLimit', null),
       isUserWiseLimitEnabled: _.get(providerDetails, 'data.isUserWiseLimitEnabled', false),
@@ -135,10 +143,23 @@ export class ProviderSettingsComponent implements OnChanges {
       karmaPoints: _.get(providerDetails, 'data.karmaPoints', null),
       addKarmaPointEnabled: _.get(providerDetails, 'data.addKarmaPointEnabled', false),
     })
+
+    if (licenseType) {
+      this.controls['licenseType'].disable()
+      this.onLicenseTypeChange(licenseType)
+    } else {
+      this.controls['licenseType'].enable()
+    }
   }
 
   get controls() {
     return this.providerSettingsForm.controls
+  }
+
+  onLicenseTypeChange(licenseType: string) {
+    this.overAllLimitMessage = licenseType === 'User'
+      ? 'Maximum total users allowed across all learners for this provider.'
+      : 'Maximum total course enrolments allowed across all learners for this provider.'
   }
 
 
@@ -158,6 +179,7 @@ export class ProviderSettingsComponent implements OnChanges {
     this.loaderService.changeLoad.next(true)
     const formDetails = this.providerSettingsForm.getRawValue()
     const formBody: any = {
+      licenseType: formDetails.licenseType,
       overAllLimit: formDetails.overAllLimit,
       isUserWiseLimitEnabled: formDetails.isUserWiseLimitEnabled,
       isConcurrentLimitEnabled: formDetails.isConcurrentLimitEnabled,
@@ -197,6 +219,7 @@ export class ProviderSettingsComponent implements OnChanges {
     this.loaderService.changeLoad.next(true)
     const formDetails = this.providerSettingsForm.getRawValue()
 
+    this.providerDetailsBeforeUpdate['data']['licenseType'] = formDetails.licenseType
     this.providerDetailsBeforeUpdate['data']['overAllLimit'] = formDetails.overAllLimit
     this.providerDetailsBeforeUpdate['data']['isUserWiseLimitEnabled'] = formDetails.isUserWiseLimitEnabled
     this.providerDetailsBeforeUpdate['data']['isConcurrentLimitEnabled'] = formDetails.isConcurrentLimitEnabled

@@ -130,6 +130,26 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
     return !!(control && control.errors && control.errors[validator])
   }
 
+  // Priority order: required > pattern > maxlength. Only the highest-priority
+  // active error is shown for a control at any given time.
+  getPriorityError(controlName: string, errorType: 'required' | 'pattern' | 'maxlength'): boolean {
+    const control = this.providerDetailsForm.get(controlName)
+    if (!control || !control.touched) {
+      return false
+    }
+    const errors = control.errors
+    if (!errors) {
+      return false
+    }
+    if (errorType === 'required') {
+      return !!errors['required']
+    }
+    if (errorType === 'pattern') {
+      return !!errors['pattern'] && !errors['required']
+    }
+    return !!errors['maxlength'] && !errors['required'] && !errors['pattern']
+  }
+
   getTextLength(controlName: string): number {
     const control = this.providerDetailsForm.get(controlName)
     return control && control.value ? control.value.length : 0
