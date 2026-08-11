@@ -35,22 +35,12 @@
         <span class="label">Content Partner Name</span>
       </div>
       <mat-form-field class="w-full">
-        <input formControlName="contentPartnerName" matInput placeholder="Enter Content Partner Name" />
+        <input formControlName="contentPartnerName" matInput placeholder="Enter Content Partner Name" maxlength="70" />
         <mat-hint class="flex items-center justify-end w-full">
           <span class="hint-text-style">{{ getTextLength('contentPartnerName') }}/70</span></mat-hint>
-        <mat-error>
-          <div class="flex gap-4">
-            <span *ngIf="getControlValidation('contentPartnerName', 'required')">
-              Content Partner Name is required.
-            </span>
-            <span *ngIf="getControlValidation('contentPartnerName', 'pattern')">
-              Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported.
-            </span>
-            <span *ngIf="getControlValidation('contentPartnerName', 'maxlength')">
-              Maximum 70 characters allowed.
-            </span>
-          </div>
-        </mat-error>
+        <mat-error *ngIf="getPriorityError('contentPartnerName', 'required')">Content Partner Name is required.</mat-error>
+        <mat-error *ngIf="getPriorityError('contentPartnerName', 'pattern')">Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported.</mat-error>
+        <mat-error *ngIf="getPriorityError('contentPartnerName', 'maxlength')">Maximum 70 characters allowed.</mat-error>
       </mat-form-field>
     </div>
 
@@ -87,24 +77,14 @@
           <span class="label">Partner Code</span>
         </div>
         <mat-form-field class="w-full">
-          <input matInput formControlName="partnerCode" placeholder="Partner Code" />
+          <input matInput formControlName="partnerCode" placeholder="Partner Code" maxlength="6" />
           <mat-hint class="flex items-center justify-end w-full">
             <span class="hint-text-style">{{ getTextLength('partnerCode') }}/6</span>
           </mat-hint>
 
-          <mat-error>
-            <div class="flex gap-4">
-              <span *ngIf="getControlValidation('partnerCode', 'required')">
-                Partner Code is required.
-              </span>
-              <span *ngIf="getControlValidation('partnerCode', 'pattern')">
-                Only alphanumeric characters allowed
-              </span>
-              <span *ngIf="getControlValidation('partnerCode', 'maxlength')">
-                Maximum 6 characters allowed
-              </span>
-            </div>
-          </mat-error>
+          <mat-error *ngIf="getPriorityError('partnerCode', 'required')">Partner Code is required.</mat-error>
+          <mat-error *ngIf="getPriorityError('partnerCode', 'pattern')">Only alphanumeric characters allowed</mat-error>
+          <mat-error *ngIf="getPriorityError('partnerCode', 'maxlength')">Maximum 6 characters allowed</mat-error>
         </mat-form-field>
       </div>
     </ng-container>
@@ -114,24 +94,14 @@
         <span class="label">Website URL</span>
       </div>
       <mat-form-field class="w-full">
-        <input matInput formControlName="websiteUrl" placeholder="https://example.com" />
+        <input matInput formControlName="websiteUrl" placeholder="https://example.com" maxlength="1024" />
         <mat-hint class="flex items-center justify-end w-full">
           <span class="hint-text-style">{{ getTextLength('websiteUrl') }}/1024</span>
         </mat-hint>
 
-        <mat-error>
-          <div class="flex gap-4">
-            <span *ngIf="getControlValidation('websiteUrl', 'required')">
-              Website URL is required.
-            </span>
-            <span *ngIf="getControlValidation('websiteUrl', 'pattern')">
-              Please enter a valid URL (http/https)
-            </span>
-            <span *ngIf="getControlValidation('websiteUrl', 'maxlength')">
-              Maximum 1024 characters allowed
-            </span>
-          </div>
-        </mat-error>
+        <mat-error *ngIf="getPriorityError('websiteUrl', 'required')">Website URL is required.</mat-error>
+        <mat-error *ngIf="getPriorityError('websiteUrl', 'pattern')">Please enter a valid URL (http/https)</mat-error>
+        <mat-error *ngIf="getPriorityError('websiteUrl', 'maxlength')">Maximum 1024 characters allowed</mat-error>
       </mat-form-field>
     </div>
 
@@ -140,25 +110,17 @@
         <span class="label">Description</span>
       </div>
       <mat-form-field class="w-full">
-        <textarea matInput formControlName="description" placeholder="Add description" rows="4"></textarea>
-        <mat-hint class="flex items-center  w-full">
-          <span class="hint-text-style">Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported</span>
-          <span class="hint-text-style">{{ getTextLength('description') }}/500</span>
+        <textarea matInput formControlName="description" placeholder="Add description" rows="4" maxlength="500"></textarea>
+        <mat-hint class="w-full flex mt-1">
+          <div class="flex items-center justify-between w-full">
+            <span class="hint-text-style">Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported</span>
+            <span class="hint-text-style">{{ getTextLength('description') }}/500</span>
+          </div>
         </mat-hint>
 
-        <mat-error>
-          <div class="flex gap-4">
-            <span *ngIf="getControlValidation('description', 'required')">
-              Description is required.
-            </span>
-            <span *ngIf="getControlValidation('description', 'pattern')">
-              Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported
-            </span>
-            <span *ngIf="getControlValidation('description', 'maxlength')">
-              Maximum 500 characters allowed
-            </span>
-          </div>
-        </mat-error>
+        <mat-error *ngIf="getPriorityError('description', 'required')">Description is required.</mat-error>
+        <mat-error *ngIf="getPriorityError('description', 'pattern')">Only ( a-z/A-Z , 0-9 . - _ $ / : [ ]' ' !) characters are supported</mat-error>
+        <mat-error *ngIf="getPriorityError('description', 'maxlength')">Maximum 500 characters allowed</mat-error>
       </mat-form-field>
     </div>
 
