@@ -45,14 +45,13 @@
             (change)="selectAll($event)"
           ></mat-checkbox>
           <!-- Info Icon Column Header (no sorting) -->
-          <span *ngSwitchCase="'showInfoIcon'" class="sortable-header">
-            {{ col.displayName }}
-            <mat-icon
+          <span *ngSwitchCase="'showInfoIcon'" class="sortable-header info-header"
+            >{{ col.displayName }}<mat-icon
               class="header-info-icon"
               [matTooltip]="col.infoText"
               >info_outline</mat-icon
-            >
-          </span>
+            ></span
+          >
           <!-- Regular Column Header -->
           <span *ngSwitchDefault class="sortable-header" (click)="onSortChange(col.key)">
             {{ col.displayName }}
