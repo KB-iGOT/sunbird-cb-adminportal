@@ -17,11 +17,32 @@
   <form [formGroup]="providerSettingsForm" class="provider-form-controls">
     <div class="flex flex-column gap-1 mat-field-rounded">
       <div class="flex items-center gap-1 required">
+        <span class="label">Licence Type
+        </span>
+      </div>
+      <div class="field-meta">
+        Select whether the licences are assigned per user or per course.
+      </div>
+      <mat-form-field class="w-full">
+        <mat-select formControlName="licenseType" placeholder="Select Licence Type"
+          (selectionChange)="onLicenseTypeChange($event.value)">
+          <mat-option *ngFor="let type of licenseTypeList" [value]="type.value">
+            {{ type.displayName }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="providerSettingsForm?.controls['licenseType'].hasError('required')">
+          Licence Type is required.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-column gap-1 mat-field-rounded">
+      <div class="flex items-center gap-1 required">
         <span class="label">Over All Limit
         </span>
       </div>
       <div class="field-meta">
-        Maximum total course enrolments allowed across all learners for this provider.
+        {{ overAllLimitMessage }}
       </div>
       <mat-form-field class="w-full">
         <input formControlName="overAllLimit" matInput placeholder="Set Limit" type="number" min="0" max="100000000"

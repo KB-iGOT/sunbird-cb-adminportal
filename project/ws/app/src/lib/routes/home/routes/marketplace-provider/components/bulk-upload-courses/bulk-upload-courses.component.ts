@@ -11,10 +11,10 @@ import * as XLSX from 'xlsx'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
 
 @Component({
-    selector: 'ws-app-bulk-upload-courses',
-    templateUrl: './bulk-upload-courses.component.html',
-    styleUrls: ['./bulk-upload-courses.component.scss'],
-    standalone: false
+  selector: 'ws-app-bulk-upload-courses',
+  templateUrl: './bulk-upload-courses.component.html',
+  styleUrls: ['./bulk-upload-courses.component.scss'],
+  standalone: false
 })
 export class BulkUploadCoursesComponent implements OnInit, OnChanges {
 

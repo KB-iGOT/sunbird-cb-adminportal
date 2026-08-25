@@ -44,15 +44,14 @@
             [checked]="allSelected"
             (change)="selectAll($event)"
           ></mat-checkbox>
-          <!-- Authentication Column Header -->
-          <span *ngSwitchCase="'authentication'" class="sortable-header">
-            {{ col.displayName }}
-            <mat-icon
+          <!-- Info Icon Column Header (no sorting) -->
+          <span *ngSwitchCase="'showInfoIcon'" class="sortable-header info-header"
+            >{{ col.displayName }}<mat-icon
               class="header-info-icon"
-              matTooltip="This icon indicates the authentication status of the partner with iGOT. Please connect with the technical team for further information."
+              [matTooltip]="col.infoText"
               >info_outline</mat-icon
-            >
-          </span>
+            ></span
+          >
           <!-- Regular Column Header -->
           <span *ngSwitchDefault class="sortable-header" (click)="onSortChange(col.key)">
             {{ col.displayName }}
@@ -105,7 +104,7 @@
             *ngSwitchCase="'contentPartnerName'"
             class="content-name-block flex flex-start items-start gap-3 py-4 pl-6"
           >
-            <ng-container *ngIf="element['link']">
+            <ng-container *ngIf="element['link'] && !col.hideImage">
               <div
                 class="content-partner-container pt-2 pb-2 px-1 cursor-pointer rounded-sm"
                 (click)="takeAction('view', element)"
