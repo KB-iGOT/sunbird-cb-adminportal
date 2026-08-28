@@ -41,16 +41,18 @@
         <span class="label">Over All Limit
         </span>
       </div>
-      <div class="field-meta">
+      <div class="field-meta" *ngIf="overAllLimitMessage">
         {{ overAllLimitMessage }}
       </div>
       <mat-form-field class="w-full">
-        <input formControlName="overAllLimit" matInput placeholder="Set Limit" type="number" min="0" max="100000000"
-          appMaxLengthNumber="10" />
+        <input formControlName="overAllLimit" matInput placeholder="Set Limit" type="number"
+          [attr.min]="licenseConsumedCount" max="100000000" appMaxLengthNumber="10" />
         <mat-error *ngIf="providerSettingsForm?.controls['overAllLimit'].hasError('max')">Maximum value allowed upto
           1,00,000,000.</mat-error>
-        <mat-error *ngIf="providerSettingsForm?.controls['overAllLimit'].hasError('min')">Negetive value not
-          allowed.</mat-error>
+        <mat-error *ngIf="providerSettingsForm?.controls['overAllLimit'].hasError('min')">
+          {{ licenseConsumedCount > 0 ? 'Over all limit cannot be less than the already consumed licence count (' +
+          licenseConsumedCount + ').' : 'Negetive value not allowed.' }}
+        </mat-error>
       </mat-form-field>
     </div>
 
