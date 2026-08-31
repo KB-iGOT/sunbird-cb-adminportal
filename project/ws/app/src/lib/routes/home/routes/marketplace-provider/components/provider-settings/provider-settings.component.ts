@@ -22,7 +22,8 @@ export class ProviderSettingsComponent implements OnChanges {
     { displayName: 'User', value: 'User' },
     { displayName: 'Course', value: 'Course' },
   ]
-  overAllLimitMessage = 'Maximum total course enrolments allowed across all learners for this provider.'
+  overAllLimitMessage = ''
+  licenseConsumedCount = 0
 
   constructor(
     private fb: FormBuilder,
@@ -43,7 +44,7 @@ export class ProviderSettingsComponent implements OnChanges {
   initializeForm() {
     this.providerSettingsForm = this.fb.group({
       licenseType: [null, [Validators.required]],
-      overAllLimit: [null, [Validators.min(0), Validators.max(100000000)]],
+      overAllLimit: [{ value: null, disabled: true }, [Validators.min(0), Validators.max(100000000)]],
       userWiseLimit: [null,],
       isUserWiseLimitEnabled: [false],
       concurrentLimit: [null,],
@@ -133,6 +134,8 @@ export class ProviderSettingsComponent implements OnChanges {
 
   patchProviderSettings(providerDetails: any) {
     const licenseType = _.get(providerDetails, 'data.licenseType', null)
+    this.licenseConsumedCount = _.get(providerDetails, 'data.licenseConsumedCount', 0)
+
     this.providerSettingsForm.patchValue({
       licenseType,
       overAllLimit: _.get(providerDetails, 'data.overAllLimit', null),
@@ -146,10 +149,10 @@ export class ProviderSettingsComponent implements OnChanges {
 
     if (licenseType) {
       this.controls['licenseType'].disable()
-      this.onLicenseTypeChange(licenseType)
     } else {
       this.controls['licenseType'].enable()
     }
+    this.onLicenseTypeChange(licenseType)
   }
 
   get controls() {
@@ -157,9 +160,19 @@ export class ProviderSettingsComponent implements OnChanges {
   }
 
   onLicenseTypeChange(licenseType: string) {
-    this.overAllLimitMessage = licenseType === 'User'
-      ? 'Maximum total users allowed across all learners for this provider.'
-      : 'Maximum total course enrolments allowed across all learners for this provider.'
+    if (licenseType) {
+      this.overAllLimitMessage = licenseType === 'User'
+        ? 'Maximum total users allowed across all learners for this provider.'
+        : 'Maximum total course enrolments allowed across all learners for this provider.'
+      this.controls['overAllLimit'].enable()
+    } else {
+      this.overAllLimitMessage = ''
+      this.controls['overAllLimit'].disable()
+    }
+
+    const minLimit = this.licenseConsumedCount > 0 ? this.licenseConsumedCount : 0
+    this.controls['overAllLimit'].setValidators([Validators.min(minLimit), Validators.max(100000000)])
+    this.controls['overAllLimit'].updateValueAndValidity()
   }
 
 
