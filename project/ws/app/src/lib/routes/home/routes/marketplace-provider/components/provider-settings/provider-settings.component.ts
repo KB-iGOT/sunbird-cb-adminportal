@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core'
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { HttpErrorResponse } from '@angular/common/http'
@@ -12,7 +12,7 @@ import { LoaderService } from '../../../../services/loader.service'
   styleUrls: ['./provider-settings.component.scss'],
   standalone: false
 })
-export class ProviderSettingsComponent implements OnChanges {
+export class ProviderSettingsComponent implements OnChanges, OnInit {
   providerSettingsForm!: FormGroup
   @Input() providerDetails?: any
   @Output() loadProviderDetails = new EventEmitter<Boolean>()
@@ -24,6 +24,7 @@ export class ProviderSettingsComponent implements OnChanges {
   ]
   overAllLimitMessage = ''
   licenseConsumedCount = 0
+  groupsList: string[] = []
 
   constructor(
     private fb: FormBuilder,
@@ -32,6 +33,10 @@ export class ProviderSettingsComponent implements OnChanges {
     private loaderService: LoaderService
   ) {
     this.initializeForm()
+  }
+
+  ngOnInit(): void {
+    this.getGroupsList()
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -43,14 +48,16 @@ export class ProviderSettingsComponent implements OnChanges {
 
   initializeForm() {
     this.providerSettingsForm = this.fb.group({
-      licenseType: [null, [Validators.required]],
-      overAllLimit: [{ value: null, disabled: true }, [Validators.min(0), Validators.max(100000000)]],
+      licenseType: ['User', [Validators.required]],
+      overAllLimit: [{ value: null, disabled: true }, [Validators.min(1), Validators.max(100000000), Validators.required]],
       userWiseLimit: [null,],
       isUserWiseLimitEnabled: [false],
       concurrentLimit: [null,],
       isConcurrentLimitEnabled: [false],
       karmaPoints: [null,],
       addKarmaPointEnabled: [false],
+      group: [{ value: null, disabled: true }],
+      karmaPointsExemptionEnabled: [false],
     })
 
     this.controls['isConcurrentLimitEnabled'].valueChanges.subscribe((value) => {
@@ -130,21 +137,50 @@ export class ProviderSettingsComponent implements OnChanges {
       }
       this.controls['karmaPoints'].updateValueAndValidity()
     })
+
+    this.controls['karmaPointsExemptionEnabled'].valueChanges.subscribe((value) => {
+      if (value) {
+        this.controls['group'].setValidators([Validators.required])
+        this.controls['group'].enable()
+
+      } else {
+        this.controls['group'].clearValidators()
+        this.controls['group'].reset(null)
+        this.controls['group'].disable()
+
+      }
+      this.controls['group'].updateValueAndValidity()
+    })
+
+    this.onLicenseTypeChange(this.controls['licenseType'].value)
+  }
+
+  getGroupsList() {
+    this.marketPlaceSvc.getGroupsList().subscribe({
+      next: (response: any) => {
+        this.groupsList = _.get(response, 'result.response', [])
+      },
+      error: () => {
+        this.groupsList = []
+      },
+    })
   }
 
   patchProviderSettings(providerDetails: any) {
-    const licenseType = _.get(providerDetails, 'data.licenseType', null)
+    const licenseType = _.get(providerDetails, 'data.licenseType', 'User')
     this.licenseConsumedCount = _.get(providerDetails, 'data.licenseConsumedCount', 0)
 
     this.providerSettingsForm.patchValue({
       licenseType,
-      overAllLimit: _.get(providerDetails, 'data.overAllLimit', null),
+      overAllLimit: _.get(providerDetails, 'data.overAllLimit', null) || null,
       userWiseLimit: _.get(providerDetails, 'data.userWiseLimit', null),
       isUserWiseLimitEnabled: _.get(providerDetails, 'data.isUserWiseLimitEnabled', false),
       concurrentLimit: _.get(providerDetails, 'data.concurrentLimit', null),
       isConcurrentLimitEnabled: _.get(providerDetails, 'data.isConcurrentLimitEnabled', false),
       karmaPoints: _.get(providerDetails, 'data.karmaPoints', null),
       addKarmaPointEnabled: _.get(providerDetails, 'data.addKarmaPointEnabled', false),
+      group: _.get(providerDetails, 'data.karmaPointsExemption.group', null),
+      karmaPointsExemptionEnabled: _.get(providerDetails, 'data.karmaPointsExemptionEnabled', false),
     })
 
     if (licenseType) {
@@ -170,7 +206,7 @@ export class ProviderSettingsComponent implements OnChanges {
       this.controls['overAllLimit'].disable()
     }
 
-    const minLimit = this.licenseConsumedCount > 0 ? this.licenseConsumedCount : 0
+    const minLimit = this.licenseConsumedCount > 0 ? this.licenseConsumedCount : 1
     this.controls['overAllLimit'].setValidators([Validators.min(minLimit), Validators.max(100000000)])
     this.controls['overAllLimit'].updateValueAndValidity()
   }
@@ -197,6 +233,7 @@ export class ProviderSettingsComponent implements OnChanges {
       isUserWiseLimitEnabled: formDetails.isUserWiseLimitEnabled,
       isConcurrentLimitEnabled: formDetails.isConcurrentLimitEnabled,
       addKarmaPointEnabled: formDetails.addKarmaPointEnabled,
+      karmaPointsExemptionEnabled: formDetails.karmaPointsExemptionEnabled,
     }
 
     if (formDetails.isUserWiseLimitEnabled && (formDetails.userWiseLimit || formDetails.userWiseLimit === 0)) {
@@ -209,6 +246,10 @@ export class ProviderSettingsComponent implements OnChanges {
 
     if (formDetails.addKarmaPointEnabled && (formDetails.karmaPoints || formDetails.userWiseLimit === 0)) {
       formBody.karmaPoints = formDetails.karmaPoints
+    }
+
+    if (formDetails.karmaPointsExemptionEnabled && formDetails.group && formDetails.group.length) {
+      formBody.karmaPointsExemption = { group: formDetails.group }
     }
 
     this.marketPlaceSvc.createProvider(formBody).subscribe({
@@ -237,6 +278,11 @@ export class ProviderSettingsComponent implements OnChanges {
     this.providerDetailsBeforeUpdate['data']['isUserWiseLimitEnabled'] = formDetails.isUserWiseLimitEnabled
     this.providerDetailsBeforeUpdate['data']['isConcurrentLimitEnabled'] = formDetails.isConcurrentLimitEnabled
     this.providerDetailsBeforeUpdate['data']['addKarmaPointEnabled'] = formDetails.addKarmaPointEnabled
+    this.providerDetailsBeforeUpdate['data']['karmaPointsExemptionEnabled'] = formDetails.karmaPointsExemptionEnabled
+
+    if (formDetails.karmaPointsExemptionEnabled && formDetails.group && formDetails.group.length) {
+      this.providerDetailsBeforeUpdate['data']['karmaPointsExemption'] = { group: formDetails.group }
+    }
 
     if (formDetails.userWiseLimit || formDetails.userWiseLimit === 0) {
       this.providerDetailsBeforeUpdate['data']['userWiseLimit'] = formDetails.userWiseLimit
