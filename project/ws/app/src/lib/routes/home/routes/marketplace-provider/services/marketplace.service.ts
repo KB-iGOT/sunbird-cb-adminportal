@@ -23,6 +23,8 @@ const API_END_POINTS = {
   UPDATE_CONFIGURATION: `apis/proxies/v8/serviceregistry/config/update`,
   GET_CONFIGURATION: (configurationId: string) => `apis/proxies/v8/serviceregistry/config/read/${configurationId}`,
 
+  GET_GROUPS_LIST: `/apis/proxies/v8/user/v1/groups`,
+
   GET_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/read/${partnerId}`,
   CREATE_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/create/${partnerId}`,
   UPDATE_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/update/${partnerId}`,
@@ -95,6 +97,10 @@ export class MarketplaceService {
 
   getProviderDetails(id: string) {
     return this.http.get(API_END_POINTS.GET_PROVIDER_DETAILS(id))
+  }
+
+  getGroupsList() {
+    return this.http.get(`${API_END_POINTS.GET_GROUPS_LIST}`)
   }
 
   getContentList(providerId: any) {

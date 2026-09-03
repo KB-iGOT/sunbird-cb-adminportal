@@ -46,12 +46,12 @@
       </div>
       <mat-form-field class="w-full">
         <input formControlName="overAllLimit" matInput placeholder="Set Limit" type="number"
-          [attr.min]="licenseConsumedCount" max="100000000" appMaxLengthNumber="10" />
+          [attr.min]="licenseConsumedCount > 0 ? licenseConsumedCount : 1" max="100000000" appMaxLengthNumber="10" />
         <mat-error *ngIf="providerSettingsForm?.controls['overAllLimit'].hasError('max')">Maximum value allowed upto
           1,00,000,000.</mat-error>
         <mat-error *ngIf="providerSettingsForm?.controls['overAllLimit'].hasError('min')">
           {{ licenseConsumedCount > 0 ? 'Over all limit cannot be less than the already consumed licence count (' +
-          licenseConsumedCount + ').' : 'Negetive value not allowed.' }}
+          licenseConsumedCount + ').' : 'Over all limit should be at least 1.' }}
         </mat-error>
       </mat-form-field>
     </div>
@@ -109,8 +109,7 @@
       </div>
       <div class="flex items-center justify-between">
         <div class="field-meta">
-          Minimum Karma Points required for a learner to enrol in a course from this provider (Group A and B users
-          exempt).
+          Minimum Karma Points required for a learner to enrol in a course from this provider.
         </div>
         <mat-slide-toggle formControlName="addKarmaPointEnabled"> </mat-slide-toggle>
       </div>
@@ -122,6 +121,30 @@
         <mat-error *ngIf="providerSettingsForm?.controls['karmaPoints'].hasError('min')">Minimum value allowed is
           2.</mat-error>
         <img src="assets/icons/karma-points.svg" alt="karma-points" class="karma-points">
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-column gap-1 mat-field-rounded">
+      <div class="flex items-center gap-1 required">
+        <span class="label">Karma Points Exemption
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <div class="field-meta">
+          Groups that are exempted from the minimum Karma Points requirement for enrolment.
+        </div>
+        <mat-slide-toggle formControlName="karmaPointsExemptionEnabled"> </mat-slide-toggle>
+      </div>
+      <mat-form-field class="w-full">
+        <mat-select formControlName="group" placeholder="Select Group" multiple
+          panelClass="group-select-panel">
+          <mat-option *ngFor="let group of groupsList" [value]="group">
+            {{ group }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="providerSettingsForm?.controls['group'].hasError('required')">
+          Please select at least one group.
+        </mat-error>
       </mat-form-field>
     </div>
   </form>

@@ -48,3 +48,10 @@
     padding-left: 50px !important;
   }
 }
+
+::ng-deep .group-select-panel {
+  .mat-pseudo-checkbox-full.mat-pseudo-checkbox-checked::after,
+  .mat-pseudo-checkbox-full.mat-pseudo-checkbox-indeterminate::after {
+    color: #1b4ca1;
+  }
+}
