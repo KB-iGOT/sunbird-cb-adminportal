@@ -980,7 +980,7 @@ mat-header-row {
   justify-content: center !important;
 }
 ::ng-deep .cdk-header-row .mat-column-status {
-  flex: 0 0 150px !important;
+  flex: 0 0 140px !important;
   padding-left: 0px !important;
   justify-content: left !important;
 }
@@ -991,11 +991,6 @@ mat-header-row {
 }
 ::ng-deep .mat-column-email {
   flex: 1 1 160px !important;
-}
-
-::ng-deep .mat-column-status {
-  flex: 0 0 150px !important;
-
 }
 
 }
@@ -1125,4 +1120,19 @@ mat-header-row {
   ::ng-deep .mdc-data-table__row .mat-column-status {
     justify-content: center !important;
   }
+}
+
+:host ::ng-deep .designation-approval-created-on {
+  flex: 0 0 130px !important;
+  min-width: 130px !important;
+}
+
+:host ::ng-deep .designation-approval-division {
+  flex: 0 0 160px !important;
+  min-width: 160px !important;
+}
+
+:host ::ng-deep .designation-approval-status {
+  flex: 0 0 140px !important;
+  min-width: 140px !important;
 }
