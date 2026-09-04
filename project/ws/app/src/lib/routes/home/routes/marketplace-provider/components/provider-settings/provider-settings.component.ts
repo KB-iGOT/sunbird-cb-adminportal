@@ -167,11 +167,11 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
   }
 
   patchProviderSettings(providerDetails: any) {
-    const licenseType = _.get(providerDetails, 'data.licenseType', 'User')
+    const licenseType = _.get(providerDetails, 'data.licenseType', null)
     this.licenseConsumedCount = _.get(providerDetails, 'data.licenseConsumedCount', 0)
 
     this.providerSettingsForm.patchValue({
-      licenseType,
+      licenseType: licenseType || 'User',
       overAllLimit: _.get(providerDetails, 'data.overAllLimit', null) || null,
       userWiseLimit: _.get(providerDetails, 'data.userWiseLimit', null),
       isUserWiseLimitEnabled: _.get(providerDetails, 'data.isUserWiseLimitEnabled', false),
@@ -188,7 +188,7 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
     } else {
       this.controls['licenseType'].enable()
     }
-    this.onLicenseTypeChange(licenseType)
+    this.onLicenseTypeChange(this.controls['licenseType'].value)
   }
 
   get controls() {
@@ -207,7 +207,9 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
     }
 
     const minLimit = this.licenseConsumedCount > 0 ? this.licenseConsumedCount : 1
-    this.controls['overAllLimit'].setValidators([Validators.min(minLimit), Validators.max(100000000)])
+    this.controls['overAllLimit'].setValidators(
+      [Validators.required, Validators.min(minLimit), Validators.max(100000000)]
+    )
     this.controls['overAllLimit'].updateValueAndValidity()
   }
 

@@ -136,8 +136,7 @@
         <mat-slide-toggle formControlName="karmaPointsExemptionEnabled"> </mat-slide-toggle>
       </div>
       <mat-form-field class="w-full">
-        <mat-select formControlName="group" placeholder="Select Group" multiple
-          panelClass="group-select-panel">
+        <mat-select formControlName="group" placeholder="Select Group" multiple panelClass="group-select-panel">
           <mat-option *ngFor="let group of groupsList" [value]="group">
             {{ group }}
           </mat-option>
