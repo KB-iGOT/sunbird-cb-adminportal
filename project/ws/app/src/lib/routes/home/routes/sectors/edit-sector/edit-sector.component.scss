@@ -305,10 +305,48 @@ input.mat-input-element {
 
 ::ng-deep.mat-form-field-hint-wrapper {
   display: block !important;
+  overflow: visible !important;
 }
 .title-hint {
   justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+
+  span:first-child {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    flex: 1 1 auto;
+  }
+
+  span:last-child {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    margin-left: 16px !important;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    span:first-child,
+    span:last-child {
+      flex: 1 1 100%;
+      margin-left: 0 !important;
+    }
+
+    span:last-child {
+      margin-top: 4px;
+    }
+  }
+}
+
+.sector-actions {
   align-items: center;
+
+  button + button {
+    margin-left: 16px !important;
+  }
 }
 
 .profile-container {
@@ -375,12 +413,34 @@ input.mat-input-element {
     margin: 0;
   }
 
+  ::ng-deep .mat-form-field-subscript-wrapper,
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  .sector-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 60%;
+  }
+
+  ::ng-deep .sector-title .mat-mdc-text-field-wrapper {
+    height: 48px;
+  }
+
+  ::ng-deep .sector-title .mat-mdc-form-field-infix {
+    min-height: 48px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
   .remove-btn {
     background-color: red!important;
     border-radius: 4px;
     box-shadow: none;
     color: white;
     width: 125px;
+    align-self: center !important;
   }
 
   .remove-btn:disabled,
@@ -392,6 +452,10 @@ input.mat-input-element {
   }
   .flex-parent-element {
     width: 51.4%;
+  }
+
+  .flex-child-element.flex {
+    align-items: center !important;
   }
 }
 

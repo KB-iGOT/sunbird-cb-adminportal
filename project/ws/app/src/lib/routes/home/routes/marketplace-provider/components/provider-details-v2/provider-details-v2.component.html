@@ -34,7 +34,7 @@
       <div class="flex items-center gap-1 required">
         <span class="label">Content Partner Name</span>
       </div>
-      <mat-form-field class="w-full">
+      <mat-form-field class="w-full" subscriptSizing="dynamic">
         <input formControlName="contentPartnerName" matInput placeholder="Enter Content Partner Name" maxlength="70" />
         <mat-hint class="flex items-center justify-end w-full">
           <span class="hint-text-style">{{ getTextLength('contentPartnerName') }}/70</span></mat-hint>
@@ -49,7 +49,7 @@
         <div class="flex items-center gap-1 required">
           <span class="label">Contact Name</span>
         </div>
-        <mat-form-field class="w-full">
+        <mat-form-field class="w-full" subscriptSizing="dynamic">
           <input formControlName="contactName" matInput placeholder="Enter Contact Name" />
         </mat-form-field>
       </div>
@@ -57,7 +57,7 @@
         <div class="flex items-center gap-1 required">
           <span class="label">Email</span>
         </div>
-        <mat-form-field class="w-full">
+        <mat-form-field class="w-full" subscriptSizing="dynamic">
           <input formControlName="email" matInput placeholder="Enter email" />
         </mat-form-field>
       </div>
@@ -65,7 +65,7 @@
         <div class="flex items-center gap-1 required">
           <span class="label">Mobile Number</span>
         </div>
-        <mat-form-field class="w-full">
+        <mat-form-field class="w-full" subscriptSizing="dynamic">
           <input formControlName="phone" matInput placeholder="Enter Mobile Number" />
         </mat-form-field>
       </div>
@@ -76,7 +76,7 @@
         <div class="flex items-center gap-1 required">
           <span class="label">Partner Code</span>
         </div>
-        <mat-form-field class="w-full">
+        <mat-form-field class="w-full" subscriptSizing="dynamic">
           <input matInput formControlName="partnerCode" placeholder="Partner Code" maxlength="6" />
           <mat-hint class="flex items-center justify-end w-full">
             <span class="hint-text-style">{{ getTextLength('partnerCode') }}/6</span>
@@ -93,7 +93,7 @@
       <div class="flex items-center gap-1 required">
         <span class="label">Website URL</span>
       </div>
-      <mat-form-field class="w-full">
+      <mat-form-field class="w-full" subscriptSizing="dynamic">
         <input matInput formControlName="websiteUrl" placeholder="https://example.com" maxlength="1024" />
         <mat-hint class="flex items-center justify-end w-full">
           <span class="hint-text-style">{{ getTextLength('websiteUrl') }}/1024</span>
@@ -109,7 +109,7 @@
       <div class="flex items-center gap-1" [ngClass]="{'required': !isPendingProvider}">
         <span class="label">Description</span>
       </div>
-      <mat-form-field class="w-full">
+      <mat-form-field class="w-full" subscriptSizing="dynamic">
         <textarea matInput formControlName="description" placeholder="Add description" rows="4" maxlength="500"></textarea>
         <mat-hint class="w-full flex mt-1">
           <div class="flex items-center justify-between w-full">
@@ -149,7 +149,7 @@
         <ng-container *ngFor="let tip of getTipsList?.controls; let i = index">
           <div class="flex gap-0 mat-field-rounded">
             <div class="w-full flex items-center">
-              <mat-form-field class="w-full">
+              <mat-form-field class="w-full" subscriptSizing="dynamic">
                 <input [id]="'item-' + i" [formControlName]="i" matInput placeholder="Type here" maxlength="250" />
                 <mat-hint align="end">
                   {{tip?.value?.length || 0}}/250

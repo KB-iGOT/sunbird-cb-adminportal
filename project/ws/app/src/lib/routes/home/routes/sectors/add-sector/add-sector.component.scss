@@ -300,10 +300,48 @@ input.mat-input-element {
 
 ::ng-deep.mat-form-field-hint-wrapper {
   display: block !important;
+  overflow: visible !important;
 }
 .title-hint {
   justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+
+  span:first-child {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    flex: 1 1 auto;
+  }
+
+  span:last-child {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    margin-left: 16px !important;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    span:first-child,
+    span:last-child {
+      flex: 1 1 100%;
+      margin-left: 0 !important;
+    }
+
+    span:last-child {
+      margin-top: 4px;
+    }
+  }
+}
+
+.sector-actions {
   align-items: center;
+
+  button + button {
+    margin-left: 16px !important;
+  }
 }
 
 .profile-container {
