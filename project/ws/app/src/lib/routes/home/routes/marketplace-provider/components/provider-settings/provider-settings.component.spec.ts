@@ -264,6 +264,22 @@ describe('ProviderSettingsComponent', () => {
       expect(component.overAllLimitMessage).toBe('Maximum total course enrolments allowed across all learners for this provider.')
     })
 
+    it('should reset Karma settings for User license type', () => {
+      component.controls['addKarmaPointEnabled'].setValue(true)
+      component.controls['karmaPoints'].setValue(20)
+      component.controls['karmaPointsExemptionEnabled'].setValue(true)
+      component.controls['group'].setValue(['group1'])
+
+      component.onLicenseTypeChange('User')
+
+      expect(component.controls['addKarmaPointEnabled'].value).toBe(false)
+      expect(component.controls['karmaPoints'].value).toBeNull()
+      expect(component.controls['karmaPoints'].disabled).toBe(true)
+      expect(component.controls['karmaPointsExemptionEnabled'].value).toBe(false)
+      expect(component.controls['group'].value).toBeNull()
+      expect(component.controls['group'].disabled).toBe(true)
+    })
+
     it('should clear the message and disable overAllLimit when licenseType is falsy', () => {
       component.onLicenseTypeChange('')
       expect(component.overAllLimitMessage).toBe('')
