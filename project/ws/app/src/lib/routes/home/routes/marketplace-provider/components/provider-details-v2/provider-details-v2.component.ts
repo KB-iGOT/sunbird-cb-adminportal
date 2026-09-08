@@ -342,7 +342,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
       this.loaderService.setLoaderState(true)
       this.createContentsToUpload()
     } else {
-      this.providerDetailsForm.get('providerLogo')?.markAsTouched()
+      this.providerDetailsForm.markAllAsTouched()
       this.showSnackBar('Please fill all the mandatory fields with proper data', 'error')
     }
   }

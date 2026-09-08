@@ -21,7 +21,7 @@
                     aria-label="Event Date label">
                     Sector Name
                   </label>
-                  <mat-form-field appearance="outline" class="margin-top-xs margin-bottom-m sector-title">
+                  <mat-form-field appearance="outline" class="margin-top-xs margin-bottom-m sector-title w-full">
                     <input id="sectorTitle" matInput #sectorTitle formControlName="sectorTitle"
                       placeholder="Add sector name here" aria-label="Sector Title input" class="form-input"
                       maxlength="70" [disabled]="isDisabled" />
@@ -72,7 +72,7 @@
                         <input matInput [formControl]="control" placeholder="Enter text" class="sub-sector-name"
                           (input)="validateInput($event.target.value)">
                       </mat-form-field>
-                      <button mat-button [disabled]="control.disabled" class="remove-btn" type="button"
+                      <button mat-button [disabled]="control.disabled" class="remove-btn margin-left-m" type="button"
                         (click)="removeTextbox(i)">
                         <mat-icon>close</mat-icon> &nbsp;Remove
                       </button>
@@ -89,19 +89,15 @@
               </div>
             </div>
           </div>
-          <div class="flex margin-top-l">
-            <div class="margin-right-l">
-              <button mat-stroked-button color="accent" type="button" class="mat-accent-border flex-auto-display"
-                (click)="goToList()">
-                <span>Cancel</span>
-              </button>
-            </div>
-            <div class="">
-              <button mat-button class="create-btn btn-success" type="button" [disabled]="!myForm.valid"
-                (click)="onSubSectorSubmit()">
-                <span>Save</span>
-              </button>
-            </div>
+          <div class="flex sector-actions margin-top-l">
+            <button mat-stroked-button color="accent" type="button" class="mat-accent-border flex-auto-display"
+              (click)="goToList()">
+              <span>Cancel</span>
+            </button>
+            <button mat-button class="create-btn btn-success" type="button" [disabled]="!myForm.valid"
+              (click)="onSubSectorSubmit()">
+              <span>Save</span>
+            </button>
           </div>
         </div>
       </div>
