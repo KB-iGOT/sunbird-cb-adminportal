@@ -102,49 +102,51 @@
       </mat-form-field>
     </div>
 
-    <div class="flex flex-column gap-1 mat-field-rounded">
-      <div class="flex items-center gap-1 required">
-        <span class="label">Add Karma Point
-        </span>
-      </div>
-      <div class="flex items-center justify-between">
-        <div class="field-meta">
-          Minimum Karma Points required for a learner to enrol in a course from this provider.
+    <ng-container *ngIf="providerSettingsForm?.controls['licenseType']?.value === 'Course'">
+      <div class="flex flex-column gap-1 mat-field-rounded">
+        <div class="flex items-center gap-1 required">
+          <span class="label">Add Karma Point
+          </span>
         </div>
-        <mat-slide-toggle formControlName="addKarmaPointEnabled"> </mat-slide-toggle>
+        <div class="flex items-center justify-between">
+          <div class="field-meta">
+            Minimum Karma Points required for a learner to enrol in a course from this provider.
+          </div>
+          <mat-slide-toggle formControlName="addKarmaPointEnabled"> </mat-slide-toggle>
+        </div>
+        <mat-form-field class="w-full relative karma-point-control">
+          <input class="karma-point-input" formControlName="karmaPoints" matInput placeholder="Set Limit" type="number"
+            min="2" max="10000" appMaxLengthNumber="10" />
+          <mat-error *ngIf="providerSettingsForm?.controls['karmaPoints'].hasError('max')">Maximum value allowed upto
+            10,000.</mat-error>
+          <mat-error *ngIf="providerSettingsForm?.controls['karmaPoints'].hasError('min')">Minimum value allowed is
+            2.</mat-error>
+          <img src="assets/icons/karma-points.svg" alt="karma-points" class="karma-points">
+        </mat-form-field>
       </div>
-      <mat-form-field class="w-full relative karma-point-control">
-        <input class="karma-point-input" formControlName="karmaPoints" matInput placeholder="Set Limit" type="number"
-          min="2" max="10000" appMaxLengthNumber="10" />
-        <mat-error *ngIf="providerSettingsForm?.controls['karmaPoints'].hasError('max')">Maximum value allowed upto
-          10,000.</mat-error>
-        <mat-error *ngIf="providerSettingsForm?.controls['karmaPoints'].hasError('min')">Minimum value allowed is
-          2.</mat-error>
-        <img src="assets/icons/karma-points.svg" alt="karma-points" class="karma-points">
-      </mat-form-field>
-    </div>
 
-    <div class="flex flex-column gap-1 mat-field-rounded">
-      <div class="flex items-center gap-1 required">
-        <span class="label">Karma Points Exemption
-        </span>
-      </div>
-      <div class="flex items-center justify-between">
-        <div class="field-meta">
-          Groups that are exempted from the minimum Karma Points requirement for enrolment.
+      <div class="flex flex-column gap-1 mat-field-rounded">
+        <div class="flex items-center gap-1 required">
+          <span class="label">Karma Points Exemption
+          </span>
         </div>
-        <mat-slide-toggle formControlName="karmaPointsExemptionEnabled"> </mat-slide-toggle>
+        <div class="flex items-center justify-between">
+          <div class="field-meta">
+            Groups that are exempted from the minimum Karma Points requirement for enrolment.
+          </div>
+          <mat-slide-toggle formControlName="karmaPointsExemptionEnabled"> </mat-slide-toggle>
+        </div>
+        <mat-form-field class="w-full">
+          <mat-select formControlName="group" placeholder="Select Group" multiple panelClass="group-select-panel">
+            <mat-option *ngFor="let group of groupsList" [value]="group">
+              {{ group }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="providerSettingsForm?.controls['group'].hasError('required')">
+            Please select at least one group.
+          </mat-error>
+        </mat-form-field>
       </div>
-      <mat-form-field class="w-full">
-        <mat-select formControlName="group" placeholder="Select Group" multiple panelClass="group-select-panel">
-          <mat-option *ngFor="let group of groupsList" [value]="group">
-            {{ group }}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="providerSettingsForm?.controls['group'].hasError('required')">
-          Please select at least one group.
-        </mat-error>
-      </mat-form-field>
-    </div>
+    </ng-container>
   </form>
 </div>

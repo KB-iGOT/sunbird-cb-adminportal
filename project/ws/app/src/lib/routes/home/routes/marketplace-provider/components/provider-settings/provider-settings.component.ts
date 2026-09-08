@@ -196,6 +196,13 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
   }
 
   onLicenseTypeChange(licenseType: string) {
+    if (licenseType === 'User') {
+      this.controls['addKarmaPointEnabled'].setValue(false)
+      this.controls['karmaPointsExemptionEnabled'].setValue(false)
+      this.controls['karmaPoints'].reset(null)
+      this.controls['group'].reset(null)
+    }
+
     if (licenseType) {
       this.overAllLimitMessage = licenseType === 'User'
         ? 'Maximum total users allowed across all learners for this provider.'
