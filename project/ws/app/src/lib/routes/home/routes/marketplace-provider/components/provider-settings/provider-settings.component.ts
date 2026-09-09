@@ -6,6 +6,8 @@ import * as _ from 'lodash'
 import { MarketplaceService } from '../../services/marketplace.service'
 import { LoaderService } from '../../../../services/loader.service'
 
+const KARMA_COIN_MODIFIER_DEFAULT = '1.00'
+
 @Component({
   selector: 'ws-app-provider-settings',
   templateUrl: './provider-settings.component.html',
@@ -56,6 +58,7 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
       isConcurrentLimitEnabled: [false],
       karmaPoints: [null,],
       addKarmaPointEnabled: [false],
+      karmaCoinModifier: [{ value: KARMA_COIN_MODIFIER_DEFAULT, disabled: true }],
       group: [{ value: null, disabled: true }],
       karmaPointsExemptionEnabled: [false],
     })
@@ -130,12 +133,25 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
         )
         this.controls['karmaPoints'].enable()
 
+        this.controls['karmaCoinModifier'].setValidators(
+          [Validators.required, Validators.min(1), Validators.pattern(/^\d+(\.\d{1,2})?$/)]
+        )
+        if (!this.controls['karmaCoinModifier'].value) {
+          this.controls['karmaCoinModifier'].setValue(KARMA_COIN_MODIFIER_DEFAULT)
+        }
+        this.controls['karmaCoinModifier'].enable()
+
       } else {
         this.controls['karmaPoints'].clearValidators()
         this.controls['karmaPoints'].disable()
 
+        this.controls['karmaCoinModifier'].clearValidators()
+        this.controls['karmaCoinModifier'].reset(KARMA_COIN_MODIFIER_DEFAULT)
+        this.controls['karmaCoinModifier'].disable()
+
       }
       this.controls['karmaPoints'].updateValueAndValidity()
+      this.controls['karmaCoinModifier'].updateValueAndValidity()
     })
 
     this.controls['karmaPointsExemptionEnabled'].valueChanges.subscribe((value) => {
@@ -179,6 +195,7 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
       isConcurrentLimitEnabled: _.get(providerDetails, 'data.isConcurrentLimitEnabled', false),
       karmaPoints: _.get(providerDetails, 'data.karmaPoints', null),
       addKarmaPointEnabled: _.get(providerDetails, 'data.addKarmaPointEnabled', false),
+      karmaCoinModifier: _.get(providerDetails, 'data.karmaCoinModifier', null) || KARMA_COIN_MODIFIER_DEFAULT,
       group: _.get(providerDetails, 'data.karmaPointsExemption.group', null),
       karmaPointsExemptionEnabled: _.get(providerDetails, 'data.karmaPointsExemptionEnabled', false),
     })
@@ -195,11 +212,40 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
     return this.providerSettingsForm.controls
   }
 
+  decimalOnly(event: any): boolean {
+    const input = event.target
+    const value: string = input.value || ''
+    const key = event.key
+
+    if (!/^[0-9.]$/.test(key)) {
+      return false
+    }
+
+    const dotIndex = value.indexOf('.')
+    if (key === '.') {
+      return dotIndex === -1
+    }
+
+    if (dotIndex > -1 && input.selectionStart > dotIndex && value.slice(dotIndex + 1).length >= 2) {
+      return false
+    }
+
+    return true
+  }
+
+  onPasteDecimal(event: ClipboardEvent) {
+    const pastedValue = event.clipboardData?.getData('text') ?? ''
+    if (!/^\d*(\.\d{0,2})?$/.test(pastedValue)) {
+      event.preventDefault()
+    }
+  }
+
   onLicenseTypeChange(licenseType: string) {
     if (licenseType === 'User') {
       this.controls['addKarmaPointEnabled'].setValue(false)
       this.controls['karmaPointsExemptionEnabled'].setValue(false)
       this.controls['karmaPoints'].reset(null)
+      this.controls['karmaCoinModifier'].reset(KARMA_COIN_MODIFIER_DEFAULT)
       this.controls['group'].reset(null)
     }
 
@@ -257,6 +303,10 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
       formBody.karmaPoints = formDetails.karmaPoints
     }
 
+    if (formDetails.addKarmaPointEnabled && (formDetails.karmaCoinModifier || formDetails.karmaCoinModifier === 0)) {
+      formBody.karmaCoinModifier = formDetails.karmaCoinModifier
+    }
+
     if (formDetails.karmaPointsExemptionEnabled && formDetails.group && formDetails.group.length) {
       formBody.karmaPointsExemption = { group: formDetails.group }
     }
@@ -303,6 +353,10 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
 
     if (formDetails.karmaPoints || formDetails.karmaPoints === 0) {
       this.providerDetailsBeforeUpdate['data']['karmaPoints'] = formDetails.karmaPoints
+    }
+
+    if (formDetails.karmaCoinModifier || formDetails.karmaCoinModifier === 0) {
+      this.providerDetailsBeforeUpdate['data']['karmaCoinModifier'] = formDetails.karmaCoinModifier
     }
 
     this.marketPlaceSvc.updateProvider(this.providerDetailsBeforeUpdate).subscribe({

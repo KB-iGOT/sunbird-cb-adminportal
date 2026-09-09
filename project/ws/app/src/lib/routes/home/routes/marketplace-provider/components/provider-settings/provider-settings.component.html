@@ -147,6 +147,30 @@
           </mat-error>
         </mat-form-field>
       </div>
+
+      <div class="flex flex-column gap-1 mat-field-rounded"
+        *ngIf="providerSettingsForm?.controls['addKarmaPointEnabled']?.value">
+        <div class="flex items-center gap-1 required">
+          <span class="label">Karma Coin Multiplier
+          </span>
+        </div>
+        <div class="field-meta">
+          Multiplier applied to convert Karma Points into Coins.
+        </div>
+        <mat-form-field class="w-full">
+          <input formControlName="karmaCoinModifier" matInput placeholder="Set Multiplier" type="text"
+            inputmode="decimal" (keypress)="decimalOnly($event)" (paste)="onPasteDecimal($event)" />
+          <mat-error *ngIf="providerSettingsForm?.controls['karmaCoinModifier'].hasError('required')">
+            Karma Coin Multiplier is required.
+          </mat-error>
+          <mat-error *ngIf="providerSettingsForm?.controls['karmaCoinModifier'].hasError('min')">
+            Minimum value allowed is 1.00.
+          </mat-error>
+          <mat-error *ngIf="providerSettingsForm?.controls['karmaCoinModifier'].hasError('pattern')">
+            Only up to 2 digits are allowed after the decimal point.
+          </mat-error>
+        </mat-form-field>
+      </div>
     </ng-container>
   </form>
 </div>
