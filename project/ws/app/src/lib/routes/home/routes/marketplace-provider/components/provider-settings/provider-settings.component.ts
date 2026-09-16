@@ -195,7 +195,7 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
       isConcurrentLimitEnabled: _.get(providerDetails, 'data.isConcurrentLimitEnabled', false),
       karmaPoints: _.get(providerDetails, 'data.karmaPoints', null),
       addKarmaPointEnabled: _.get(providerDetails, 'data.addKarmaPointEnabled', false),
-      karmaCoinModifier: _.get(providerDetails, 'data.karmaCoinModifier', null) || KARMA_COIN_MODIFIER_DEFAULT,
+      karmaCoinModifier: _.get(providerDetails, 'data.karmaCoinMultiplier', null) || KARMA_COIN_MODIFIER_DEFAULT,
       group: _.get(providerDetails, 'data.karmaPointsExemption.group', null),
       karmaPointsExemptionEnabled: _.get(providerDetails, 'data.karmaPointsExemptionEnabled', false),
     })
@@ -304,7 +304,7 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
     }
 
     if (formDetails.addKarmaPointEnabled && (formDetails.karmaCoinModifier || formDetails.karmaCoinModifier === 0)) {
-      formBody.karmaCoinModifier = formDetails.karmaCoinModifier
+      this.providerDetailsBeforeUpdate['data']['karmaCoinMultiplier'] = Number(formDetails.karmaCoinModifier)
     }
 
     if (formDetails.karmaPointsExemptionEnabled && formDetails.group && formDetails.group.length) {
@@ -356,7 +356,7 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
     }
 
     if (formDetails.karmaCoinModifier || formDetails.karmaCoinModifier === 0) {
-      this.providerDetailsBeforeUpdate['data']['karmaCoinModifier'] = formDetails.karmaCoinModifier
+      this.providerDetailsBeforeUpdate['data']['karmaCoinMultiplier'] = Number(formDetails.karmaCoinModifier)
     }
 
     this.marketPlaceSvc.updateProvider(this.providerDetailsBeforeUpdate).subscribe({
