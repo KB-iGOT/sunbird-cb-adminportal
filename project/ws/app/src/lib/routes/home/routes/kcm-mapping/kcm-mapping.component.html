@@ -38,7 +38,8 @@
       </div>
     </mat-card>
   </div>
-  <div *ngIf="this.environmentVal.frameworkName " style="height: calc(100vh - 10vh);">
+  <div #kcmTaxonomyView class="kcm-taxonomy-view"
+    *ngIf="environmentVal && environmentVal.frameworkName" [style.height.px]="taxonomyViewHeight ?? 500">
     <lib-taxonomy-view [environment]="environmentVal" [taxonomyConfig]="taxonomyConfig"></lib-taxonomy-view>
   </div>
 </div>
