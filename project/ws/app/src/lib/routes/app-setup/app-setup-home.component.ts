@@ -17,7 +17,7 @@ import { ConfigurationsService } from '@sunbird-cb/utils-v2'
             useValue: { displayDefaultIndicatorType: false },
         },
     ],
-    standalone: false
+    standalone: false,
 })
 export class AppSetupHomeComponent implements OnInit, AfterViewInit {
   currentIndex = 0

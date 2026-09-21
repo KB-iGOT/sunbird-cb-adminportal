@@ -5,7 +5,7 @@ import { IWsSocialSearchResultData } from '../../models/search.model'
     selector: 'ws-app-qanda-card',
     templateUrl: './qanda-card.component.html',
     styleUrls: ['./qanda-card.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class QandaCardComponent implements OnInit {
   @Input() userId = ''

@@ -11,7 +11,7 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor'
     selector: 'ws-app-via-api',
     templateUrl: './via-api.component.html',
     styleUrls: ['./via-api.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class ViaApiComponent implements OnInit, OnChanges {
   //#region (global varialbles)
@@ -81,7 +81,7 @@ export class ViaApiComponent implements OnInit, OnChanges {
       serviceDescription: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,.\-_$/:\[\] ' !]*$/)]),
       isAuthenticated: new FormControl(false),
       strictCache: new FormControl(false),
-      strictCacheTimeInMinutes: new FormControl()
+      strictCacheTimeInMinutes: new FormControl(),
     })
 
     this.viaApiFormGroup = this.formBuilder.group({
@@ -176,17 +176,17 @@ export class ViaApiComponent implements OnInit, OnChanges {
     ]
     const urlAndParams = this.displayUrl ? this.displayUrl.split('?') : []
     const paramsUrlArray = urlAndParams[1] ? urlAndParams[1].split('&') : []
-    paramsUrlArray.forEach((e) => {
+    paramsUrlArray.forEach(e => {
       const keyValue = e.split('=')
       const param = {
         key: keyValue[0],
-        value: keyValue[1]
+        value: keyValue[1],
       }
       paramsArray.push(param)
     })
     paramsArray.push({
       key: '',
-      value: ''
+      value: '',
     })
 
     return paramsArray
@@ -255,7 +255,7 @@ export class ViaApiComponent implements OnInit, OnChanges {
       serviceDescription: _.get(configurationDetails, 'serviceDescription'),
       strictCache: _.get(configurationDetails, 'requestPayload.strictCache', false),
       strictCacheTimeInMinutes: _.get(configurationDetails, 'requestPayload.strictCacheTimeInMinutes', 0),
-      isAuthenticated: false
+      isAuthenticated: false,
     })
     this.onToggleChange()
     this.servicesFormGroup.controls.serviceCode.disable()
@@ -287,7 +287,11 @@ export class ViaApiComponent implements OnInit, OnChanges {
       this.authenticationFormGroup.controls.rawData.patchValue(authPayload)
     }
 
-    const transformContent = _.get(this.providerDetails, this.transformationType, _.get(this.providerConfiguration, this.transformationType))
+    const transformContent = _.get(
+      this.providerDetails,
+      this.transformationType,
+      _.get(this.providerConfiguration, this.transformationType)
+    )
     this.transformationSpecForm.patchValue(transformContent)
 
   }
@@ -460,13 +464,15 @@ export class ViaApiComponent implements OnInit, OnChanges {
       hostAddress: null,
       partnerCode: _.get(this.providerDetails, 'data.partnerCode'),
       requestPayload: {
-        requestMap: isFormData ? this.generateObjectFromForm(this.bodyFormGroup.value.tableListFormArray) : this.bodyFormGroup.value.rawData,
+        requestMap: isFormData
+          ? this.generateObjectFromForm(this.bodyFormGroup.value.tableListFormArray)
+          : this.bodyFormGroup.value.rawData,
         headerMap: this.generateObjectFromForm(this.headersFormGroup.value.tableListFormArray),
-        urlMap: this.generateObjectFromForm(this.paramsFormGroup.value.tableListFormArray, true)
+        urlMap: this.generateObjectFromForm(this.paramsFormGroup.value.tableListFormArray, true),
       },
       authPayload: authPayload ? authPayload : {},
       strictCache: serviceDetails.strictCache,
-      strictCacheTimeInMinutes: serviceDetails.strictCacheTimeInMinutes
+      strictCacheTimeInMinutes: serviceDetails.strictCacheTimeInMinutes,
     }
     return formBody
   }
@@ -522,7 +528,7 @@ export class ViaApiComponent implements OnInit, OnChanges {
                 this.showSnackBar(successMsg)
                 this.transformationsUpdated = true
                 this.loadProviderDetails.emit(true)
-              }, 1000)
+              },         1000)
             }
           },
           error: (error: HttpErrorResponse) => {
@@ -549,7 +555,7 @@ export class ViaApiComponent implements OnInit, OnChanges {
             const successMsg = 'Courses get api configured successfully'
             this.showSnackBar(successMsg)
             this.loadProviderDetails.emit(true)
-          }, 1000)
+          },         1000)
         }
       },
       error: (error: HttpErrorResponse) => {

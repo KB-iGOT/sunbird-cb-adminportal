@@ -164,7 +164,7 @@ import { RejectRequestFormComponent } from './routes/reject-request-form/reject-
         RequestCopyDetailsV2Component,
         DesignationApprovalListComponent,
         DesignationApprovalListViewComponent,
-        RejectRequestFormComponent
+        RejectRequestFormComponent,
     ],
     imports: [
         CommonModule,
@@ -223,7 +223,7 @@ import { RejectRequestFormComponent } from './routes/reject-request-form/reject-
         NgMultiSelectDropDownModule.forRoot(),
         TaxonomyEditorModule,
         TreeHierarchyModule,
-        LibCreateRequestModule
+        LibCreateRequestModule,
     ],
     providers: [
         // CKEditorService,

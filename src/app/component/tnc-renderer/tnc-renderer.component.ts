@@ -6,7 +6,7 @@ import { ConfigurationsService } from '@sunbird-cb/utils-v2'
     selector: 'ws-tnc-renderer',
     templateUrl: './tnc-renderer.component.html',
     styleUrls: ['./tnc-renderer.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class TncRendererComponent implements OnInit, OnChanges {
 

@@ -10,12 +10,14 @@ import { DeveloperDocService } from '../../services/developer-doc.service'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { MatDialog } from '@angular/material/dialog'
 
+// tslint:disable-next-line:interface-name
 interface MenuItem {
   label: string
   action: string
   icon?: string
 }
 
+// tslint:disable-next-line:interface-name
 interface Article {
   id?: string
   title?: string
@@ -103,7 +105,7 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
         key: 'visibility',
         cellType: 'text',
       },
-    ]
+    ],
   }
 
   constructor(
@@ -195,8 +197,8 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
         'updatedBy',
         'updatedOn',
         'subCategoryId',
-        'categoryId'
-      ]
+        'categoryId',
+      ],
     }
 
     if (searchString) {
@@ -230,6 +232,7 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
                 ...(category && { categoryName: _.get(category, 'title', '') }),
               }
             }),
+            // tslint:disable-next-line:object-shorthand-properties-first
             totalCount,
           }
         })
@@ -250,6 +253,7 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
           this.showLoader = false
         },
         (error: any) => {
+          // tslint:disable:no-console
           console.error('Error loading articles:', error)
           this.showLoader = false
           this.articlesList = []
@@ -318,13 +322,14 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
       case 'view':
       case 'edit':
         this.router.navigate(['/app/home/knowledge-center/developer-doc'], {
-          queryParams: { id: article.subCategoryId, mode: action }
+          queryParams: { id: article.subCategoryId, mode: action },
         })
         break
       case 'delete':
         this.deleteArticle(article)
         break
       default:
+        // tslint:disable:no-console
         console.warn(`Unknown action: ${action}`)
     }
   }
@@ -362,6 +367,7 @@ export class KnowledgeCenterListComponent implements OnInit, OnDestroy {
             },
             (error: any) => {
               if (error) {
+                // tslint:disable-next-line: max-line-length
                 const errorMessage = _.get(error, 'error.error.message', 'Something went wrong while inactivating the article, please try again')
                 this.snackBar.open(errorMessage)
               }

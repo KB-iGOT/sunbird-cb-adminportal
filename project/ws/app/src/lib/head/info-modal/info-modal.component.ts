@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
     selector: 'ws-app-info-modal',
     templateUrl: './info-modal.component.html',
     styleUrls: ['./info-modal.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class InfoModalComponent {
   constructor(public dialogRef: MatDialogRef<InfoModalComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
@@ -13,37 +13,30 @@ export class InfoModalComponent {
   ngOnInit(): void {
   }
 
-
   confirmed() {
-    let sendToParent: any = {}
+    const sendToParent: any = {}
     if (this.data.type === 'import-igot-master-create') {
       sendToParent.startImporting = true
-    }
-    else if (this.data.type === 'import-igot-master-review') {
+    } else if (this.data.type === 'import-igot-master-review') {
       sendToParent.reviewImporting = false
-    }
-    else if (this.data.type === 'delete') {
+    } else if (this.data.type === 'delete') {
       sendToParent.isDelete = true
-    }
-    else if (this.data.type === 'confirm') {
+    } else if (this.data.type === 'confirm') {
       sendToParent.confirmed = true
     }
     this.dialogRef.close(sendToParent)
   }
 
   rejected() {
-    let sendToParent: any = {}
+    const sendToParent: any = {}
     if (this.data.type === 'import-igot-master-create') {
       sendToParent.close = true
-    }
-    else if (this.data.type === 'import-igot-master-review') {
+    } else if (this.data.type === 'import-igot-master-review') {
       sendToParent.reviewImporting = true
 
-    }
-    else if (this.data.type === 'delete') {
+    } else if (this.data.type === 'delete') {
       sendToParent.isDelete = false
-    }
-    else if (this.data.type === 'confirm') {
+    } else if (this.data.type === 'confirm') {
       sendToParent.confirmed = false
     }
     this.dialogRef.close(sendToParent)

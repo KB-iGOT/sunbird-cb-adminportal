@@ -4,7 +4,7 @@ import { environment } from '../../../../../../../../src/environments/environmen
 
 @Pipe({
     name: 'publicGcpUrl',
-    standalone: false
+    standalone: false,
 })
 export class PublicGcpUrlPipe implements PipeTransform {
   transform(url: string): any {

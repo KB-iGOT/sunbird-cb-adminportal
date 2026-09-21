@@ -9,7 +9,7 @@ import * as _ from 'lodash'
     selector: 'ws-app-courses-list-table',
     templateUrl: './courses-list-table.component.html',
     styleUrls: ['./courses-list-table.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class CoursesListTableComponent implements OnInit, OnChanges {
   @Input() coursesList: any[] = []

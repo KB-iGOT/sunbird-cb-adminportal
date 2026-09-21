@@ -5,7 +5,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { environment } from '../../../../../../../../../src/environments/environment'
 /* tslint:disable */
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { CommsService } from './comms.service'
 import { MatPaginator } from '@angular/material/paginator'
 import { MatTableDataSource } from '@angular/material/table'
@@ -25,14 +25,14 @@ export const MY_FORMATS = {
   },
 }
 @Component({
-    selector: 'ws-app-comms',
-    templateUrl: './comms.component.html',
-    styleUrls: ['./comms.component.scss'],
-    providers: [DatePipe,
-        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-    ],
-    standalone: false
+  selector: 'ws-app-comms',
+  templateUrl: './comms.component.html',
+  styleUrls: ['./comms.component.scss'],
+  providers: [DatePipe,
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ],
+  standalone: false
 })
 export class CommsComponent implements OnInit {
 

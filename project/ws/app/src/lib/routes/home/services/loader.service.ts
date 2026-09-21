@@ -2,7 +2,7 @@ import { BehaviorSubject } from 'rxjs'
 import { Injectable } from '@angular/core'
 
 @Injectable({
-  providedIn: 'root'  // This ensures a singleton instance across the app
+  providedIn: 'root',  // This ensures a singleton instance across the app
 })
 export class LoaderService {
   changeLoad = new BehaviorSubject<boolean>(false)

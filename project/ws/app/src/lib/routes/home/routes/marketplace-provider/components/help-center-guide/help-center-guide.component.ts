@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog'
     selector: 'ws-app-help-center-guide',
     templateUrl: './help-center-guide.component.html',
     styleUrls: ['./help-center-guide.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class HelpCenterGuideComponent implements OnInit {
 

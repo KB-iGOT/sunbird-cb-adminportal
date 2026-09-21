@@ -3,14 +3,14 @@ import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { ITableData } from '@sunbird-cb/collection'
 // tslint:disable-next-line
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { PositionsService } from '../../services/position.service'
 
 @Component({
   selector: 'ws-app-positions-list',
   templateUrl: './positions-list.component.html',
   styleUrls: ['./positions-list.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class PositionsListComponent implements OnInit {
 

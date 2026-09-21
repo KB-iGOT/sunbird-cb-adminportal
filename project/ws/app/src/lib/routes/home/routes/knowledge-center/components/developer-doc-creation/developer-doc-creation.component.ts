@@ -12,7 +12,7 @@ import { SnackbarComponent } from '@sunbird-cb/consumption'
   selector: 'ws-app-developer-doc-creation',
   templateUrl: './developer-doc-creation.component.html',
   styleUrls: [
-    './developer-doc-creation.component.scss'
+    './developer-doc-creation.component.scss',
   ],
   standalone: false,
 })
@@ -69,7 +69,7 @@ export class DeveloperDocCreationComponent implements OnInit {
       category: ['', Validators.required],
       visibility: [true, Validators.required],
       articles: this.fb.array([this.createArticleForm()], Validators.minLength(1)),
-      tags: this.fb.array([this.createTagForm()])
+      tags: this.fb.array([this.createTagForm()]),
     })
   }
 
@@ -121,7 +121,7 @@ export class DeveloperDocCreationComponent implements OnInit {
         this.plainTextRequired,
         this.plainTextMinLength(50),
         this.plainTextMaxLength(1000),
-      ]]
+      ]],
     })
   }
 
@@ -130,7 +130,7 @@ export class DeveloperDocCreationComponent implements OnInit {
    */
   createTagForm(value: string = ''): FormGroup {
     return this.fb.group({
-      value: [value, [Validators.minLength(3)]]
+      value: [value, [Validators.minLength(3)]],
     })
   }
 
@@ -162,16 +162,16 @@ export class DeveloperDocCreationComponent implements OnInit {
   getCategories(): void {
     const formBody = {
       filterCriteriaMap: {
-        type: 'category'
+        type: 'category',
       },
       requestedFields: [
         'title',
-        'categoryId'
+        'categoryId',
       ],
       pageNumber: 0,
       pageSize: 50,
       orderBy: 'createdOn',
-      orderDirection: 'asc'
+      orderDirection: 'asc',
     }
 
     this.developerDocService.getArticles(formBody).subscribe(
@@ -181,15 +181,15 @@ export class DeveloperDocCreationComponent implements OnInit {
         const currentCategory = this.subCategoryForm.get('category')?.value
         if (!currentCategory && this.categoryOptions.length > 0) {
           this.subCategoryForm.patchValue({
-            category: this.categoryOptions[0].categoryId
+            category: this.categoryOptions[0].categoryId,
           })
         }
       },
       (error: any) => {
+        // tslint:disable-next-line:no-console
         console.error('Error fetching categories:', error)
       })
   }
-
 
   /**
    * Load article data from service
@@ -200,12 +200,12 @@ export class DeveloperDocCreationComponent implements OnInit {
     const formBody = {
       filterCriteriaMap: {
         subCategoryId: id,
-        type: 'subcategory'
+        type: 'subcategory',
       },
       pageNumber: 0,
       pageSize: 50,
       orderBy: 'createdOn',
-      orderDirection: 'desc'
+      orderDirection: 'desc',
     }
 
     this.developerDocService.getArticles(formBody).subscribe(
@@ -218,6 +218,7 @@ export class DeveloperDocCreationComponent implements OnInit {
         }
       },
       (error: any) => {
+        // tslint:disable-next-line:no-console
         console.error('Error loading article:', error)
         this.loaderService.setLoaderState(false)
         this.router.navigate(['/app/home/knowledge-center'])
@@ -230,12 +231,12 @@ export class DeveloperDocCreationComponent implements OnInit {
       filterCriteriaMap: {
         subCategoryId: id,
         status: ['DRAFT', 'PUBLISHED'],
-        type: 'article'
+        type: 'article',
       },
       pageNumber: 0,
       pageSize: 50,
       orderBy: 'createdOn',
-      orderDirection: 'asc'
+      orderDirection: 'asc',
     }
 
     this.developerDocService.getArticles(formBody).subscribe(
@@ -315,6 +316,7 @@ export class DeveloperDocCreationComponent implements OnInit {
     if (articlesArray.length > 1) {
       articlesArray.removeAt(index)
     } else {
+      // tslint:disable-next-line:no-console
       console.warn('At least one article is required')
     }
   }
@@ -423,7 +425,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   }
 
   // Save subcategory (Article)
-  performSave(status: string = 'DRAFT',): void {
+  performSave(status: string = 'DRAFT'): void {
     const titleControl = this.subCategoryForm.get('title')
     if (!titleControl || titleControl.invalid) {
       titleControl?.markAsTouched()
@@ -442,7 +444,7 @@ export class DeveloperDocCreationComponent implements OnInit {
       content: this.subCategoryForm.get('excerpt')?.value,
       categoryId: this.subCategoryForm.get('category')?.value,
       isPublic: this.subCategoryForm.get('visibility')?.value,
-      tags: tagsArray
+      tags: tagsArray,
     }
 
     // Determine if create or update
@@ -533,6 +535,7 @@ export class DeveloperDocCreationComponent implements OnInit {
           this.cancel()
           setTimeout(() => {
             this.router.navigate(['/app/home/knowledge-center'])
+            // tslint:disable-next-line:align
           }, 2000)
         }
       },
@@ -554,8 +557,10 @@ export class DeveloperDocCreationComponent implements OnInit {
     const createPayload = {
       ...payload,
       type: 'subcategory',
+      // tslint:disable-next-line:object-literal-shorthand
       status: status,
       showUnderDeveloperDocs: true,
+      // tslint:disable-next-line:trailing-comma
       tags: tagsArray
     }
     return this.developerDocService.createSubCategory(createPayload)
@@ -579,8 +584,10 @@ export class DeveloperDocCreationComponent implements OnInit {
     const updatePayload = {
       ...existingData,
       ...payload,
+      // tslint:disable-next-line:object-shorthand-properties-first
+      // tslint:disable-next-line:object-literal-shorthand
       status: status,
-      tags: tagsArray
+      tags: tagsArray,
     }
 
     return this.developerDocService.updateSubCategory(updatePayload)
@@ -599,7 +606,6 @@ export class DeveloperDocCreationComponent implements OnInit {
           (art: any) => art.articleId === article.articleId
         )
 
-
         if (originalArticle) {
           // Keep all fields except updatedBy and updatedOn
           const existingData = { ...originalArticle }
@@ -612,6 +618,7 @@ export class DeveloperDocCreationComponent implements OnInit {
             title: this.normalizeSpaces(article.title),
             content: article.content,
             summary: article.content,
+            // tslint:disable-next-line:object-literal-shorthand trailing-comma
             status: status
           }
 
@@ -625,12 +632,13 @@ export class DeveloperDocCreationComponent implements OnInit {
           title: this.normalizeSpaces(article.title),
           content: article.content,
           summary: article.content,
+          // tslint:disable-next-line:object-literal-shorthand
           subCategoryId: subCategoryId,
           categoryId: this.subCategoryForm.get('category')?.value,
           isPublic: this.subCategoryForm.get('visibility')?.value,
           type: 'article',
           status: 'DRAFT',
-          showUnderDeveloperDocs: true
+          showUnderDeveloperDocs: true,
         }
 
         newArticleMap.push({ promiseIndex: articlePromises.length, formIndex: index })
@@ -670,9 +678,6 @@ export class DeveloperDocCreationComponent implements OnInit {
       )
     }
   }
-
-
-
 
   /**
    * Cancel and go back
@@ -774,6 +779,7 @@ export class DeveloperDocCreationComponent implements OnInit {
   showSnackBar(message: string, type: 'error' | 'success') {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: {
+        // tslint:disable-next-line:object-literal-shorthand
         message: message, type: type,
       }, duration: 5000, panelClass: type,
     })

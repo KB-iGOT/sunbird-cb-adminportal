@@ -10,7 +10,7 @@ import { IFAQ, IContent } from '../faq.model'
     selector: 'ws-app-faq-home',
     templateUrl: './faq-home.component.html',
     styleUrls: ['./faq-home.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class FaqHomeComponent implements OnInit, OnDestroy {
   errorMessageCode: 'API_FAILURE' | 'NO_DATA' | 'INVALID_DATA' | 'NONE' = 'NONE'

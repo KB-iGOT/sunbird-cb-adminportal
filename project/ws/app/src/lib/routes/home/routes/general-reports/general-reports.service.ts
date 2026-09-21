@@ -10,6 +10,7 @@ export class GeneralReportsService {
   GENERAL_REPORTS = '/apis/proxies/v8/storage/v1/spvReportInfo'
 
   constructor(private configSvc: ConfigurationsService,
+    // tslint:disable-next-line:align
     private http: HttpClient) { }
 
   getContent() {

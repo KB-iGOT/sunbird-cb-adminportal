@@ -8,7 +8,7 @@ import { EventService } from '../../services/event.service'
     selector: 'ws-app-event-sessions',
     templateUrl: './event-sessions.component.html',
     styleUrls: ['./event-sessions.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class EventSessionsComponent implements OnInit, OnDestroy {
   data: ISpeakerDetails[] = []

@@ -17,7 +17,7 @@ import { of } from 'rxjs'
   selector: 'ws-app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
-  standalone: false
+  standalone: false,
 })
 
 export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -59,12 +59,12 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   orgData: any
   organisationType: number = 0
   constructor(private usersSvc: UsersService, private router: Router,
-    private route: ActivatedRoute,
-    private profile: ProfileV2Service,
-    private profileUtilSvc: ProfileV2UtillService,
-    private usersService: UsersService,
-    private orgHieService: OrgHierarchyService,
-    private loaderService: LoaderService,
+              private route: ActivatedRoute,
+              private profile: ProfileV2Service,
+              private profileUtilSvc: ProfileV2UtillService,
+              private usersService: UsersService,
+              private orgHieService: OrgHierarchyService,
+              private loaderService: LoaderService,
   ) {
   }
   ngOnInit() {
@@ -114,7 +114,6 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
       this.orgData = queryParam
     }
     this.checkAndGetOrgData()
-
 
     const url = this.router.url.split('/')
     this.role = url[url.length - 2]
@@ -172,9 +171,10 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
       this.tabsData = this.tabsData.filter(tab => tab?.key !== 'mentormanage' && tab?.key !== 'designation_master')
     }
     if (this.currentDept === 'volunteer') {
-      this.tabsData = this.tabsData.filter(tab => tab?.key !== 'rolesandaccess' && tab?.key !== 'designation_master' && tab?.key !== 'user_transfer')
+      this.tabsData = this.tabsData.filter(
+        tab => tab?.key !== 'rolesandaccess' && tab?.key !== 'designation_master' && tab?.key !== 'user_transfer'
+      )
     }
-
 
   }
   ngAfterViewInit() {
@@ -340,7 +340,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
         orgName: this.deptName,
         redirectionPath: window.location.href,
         subOrgType: this.getSubOrgType(),
-        organisationType: this.organisationType
+        organisationType: this.organisationType,
       }, state: { userData: event.row, updateButton: true },
     })
   }
@@ -376,11 +376,11 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getOrgData() {
-    return new Promise<boolean>((resolve) => {
+    return new Promise<boolean>(resolve => {
       const requestBody = {
         request: {
           organisationId: this.orgData.roleId,
-        }
+        },
       }
       this.loaderService.changeLoaderState(true)
       this.orgHieService.getOrgReadData(requestBody).pipe(
@@ -389,20 +389,20 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
             const parentReqBody = {
               request: {
                 organisationId: data?.result?.response?.ministryOrStateId,
-              }
+              },
             }
             return this.orgHieService.getOrgReadData(parentReqBody).pipe(
               map((ministryData: any) => {
                 return {
                   orgData: data.result.response,
-                  parentOrgData: ministryData.result.response
+                  parentOrgData: ministryData.result.response,
                 }
               })
             )
           }
           return of(null)
         })
-      ).subscribe((_res) => {
+      ).subscribe(_res => {
         this.orgHieService.setOrgData(_res?.orgData)
         this.orgHieService.setParentOrgData(_res?.parentOrgData)
         this.orgDataLoaded = true

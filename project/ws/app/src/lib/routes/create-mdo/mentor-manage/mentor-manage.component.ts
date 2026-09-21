@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { ActivatedRoute, Router } from '@angular/router'
 /* tslint:disable */
-import _ from 'lodash'
+import * as _ from 'lodash'
 /* tslint:enable */
 // import { environment } from 'src/environments/environment'
 import { PageEvent } from '@angular/material/paginator'
@@ -112,7 +112,7 @@ export class MentorManageComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         this.getAllVerifiedUsers('')
         this.getMentorUsers('')
-      }, 1000)
+      },         1000)
 
     })
     // this.getNMUsers('')
@@ -122,11 +122,11 @@ export class MentorManageComponent implements OnInit, OnDestroy {
 
     this.reportsNoteList = [
       // tslint:disable-next-line: max-line-length
-      `There are two tabs—<strong>All Verified Users</strong> (lists all verified users) and <strong>Assigned Mentors</strong> (lists users who have been assigned as mentors).`,
+      'There are two tabs—<strong>All Verified Users</strong> (lists all verified users) and <strong>Assigned Mentors</strong> (lists users who have been assigned as mentors).',
       // tslint:disable-next-line: max-line-length
-      `Assign a mentor from the <strong>All Verified Users</strong> tab, and they will automatically appear in the <strong>Assigned Mentors</strong> tab.`,
+      'Assign a mentor from the <strong>All Verified Users</strong> tab, and they will automatically appear in the <strong>Assigned Mentors</strong> tab.',
       // tslint:disable-next-line: max-line-length
-      `Mentors can be assigned or managed from either tab, with changes reflected across both.`,
+      'Mentors can be assigned or managed from either tab, with changes reflected across both.',
     ]
   }
 
@@ -140,8 +140,8 @@ export class MentorManageComponent implements OnInit, OnDestroy {
         videoLink: '',
       },
       disableClose: true,
-      width: "675px",
-      height: "400px"
+      width: '675px',
+      height: '400px',
     })
   }
 
@@ -370,7 +370,7 @@ export class MentorManageComponent implements OnInit, OnDestroy {
   }
 
   onCreateClick() {
-    this.router.navigate([`/app/users/create-user`])
+    this.router.navigate(['/app/users/create-user'])
     this.events.raiseInteractTelemetry(
       {
         type: TelemetryEvents.EnumInteractTypes.CLICK,

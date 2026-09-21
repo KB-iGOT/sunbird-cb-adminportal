@@ -11,7 +11,7 @@ export interface IParticipantElement {
     selector: 'ws-app-success',
     templateUrl: './success.component.html',
     styleUrls: ['./success.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class SuccessComponent implements OnInit {
 

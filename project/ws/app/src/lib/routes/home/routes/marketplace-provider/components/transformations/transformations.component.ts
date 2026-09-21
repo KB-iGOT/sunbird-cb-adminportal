@@ -15,7 +15,7 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor'
     selector: 'ws-app-transformations',
     templateUrl: './transformations.component.html',
     styleUrls: ['./transformations.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class TransformationsComponent implements OnInit, OnChanges {
 
@@ -271,15 +271,21 @@ export class TransformationsComponent implements OnInit, OnChanges {
             setTimeout(() => {
               let successMsg = 'Saved Successfully'
               if (this.transformationType === 'trasformContentJson') {
-                successMsg = hasTransformationAlready ? 'Transform Content updated successfully.' : 'Transform Content saved successfully.'
+                successMsg = hasTransformationAlready
+                  ? 'Transform Content updated successfully.'
+                  : 'Transform Content saved successfully.'
               } else if (this.transformationType === 'transformProgressJson') {
-                successMsg = hasTransformationAlready ? 'Transform Progress updated successfully.' : 'Transform Progress saved successfully.'
+                successMsg = hasTransformationAlready
+                  ? 'Transform Progress updated successfully.'
+                  : 'Transform Progress saved successfully.'
               } else if (this.transformationType === 'certificateTemplateUrl') {
-                successMsg = hasTransformationAlready ? 'Transform Certificate updated successfully.' : 'Transform Certificate saved successfully.'
+                successMsg = hasTransformationAlready
+                  ? 'Transform Certificate updated successfully.'
+                  : 'Transform Certificate saved successfully.'
               }
               this.showSnackBar(successMsg)
               this.sendProviderDetailsUpdateEvent()
-            }, 1000)
+            },         1000)
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -361,7 +367,7 @@ export class TransformationsComponent implements OnInit, OnChanges {
     if (this.contentFile && (this.transformationsUpdated ||
       this.transformationType === 'certificateTemplateUrl')) {
       const popupMessage = this.transformationType === 'certificateTemplateUrl' ?
-        `Certificate uploading` : `File processing`
+        'Certificate uploading' : 'File processing'
       let dialogType = 'csvLoader'
       if (this.contentFile.name.toLowerCase().endsWith('.csv')) {
         dialogType = 'csvLoader'
@@ -422,7 +428,7 @@ export class TransformationsComponent implements OnInit, OnChanges {
               this.removeFile()
               this.dialogRef.close()
               this.loadTablesData.emit(true)
-            }, 1000)
+            },         1000)
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -451,7 +457,7 @@ export class TransformationsComponent implements OnInit, OnChanges {
               this.contentFileUploaded = false
               this.dialogRef.close()
               this.loadTablesData.emit(true)
-            }, 1000)
+            },         1000)
           }
         },
         error: (error: HttpErrorResponse) => {

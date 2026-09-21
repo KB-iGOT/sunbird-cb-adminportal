@@ -13,7 +13,7 @@ import { preventHtmlAndJs } from '../../validators/prevent-html-and-js.validator
     selector: 'ws-app-requests-approval',
     templateUrl: './requests-approval.component.html',
     styleUrls: ['./requests-approval.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class RequestsApprovalComponent implements OnInit {
   positionForm!: UntypedFormGroup
@@ -21,9 +21,9 @@ export class RequestsApprovalComponent implements OnInit {
   requestType: any
   // breadcrumbs: any
   requestObj: any
-  customCharsPattern = `^[a-zA-Z0-9 \\w\-\&\(\)]*$`
+  customCharsPattern = '^[a-zA-Z0-9 \\w\-\&\(\)]*$'
   // domainPattern = `^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,6}$`
-  domainPattern = `([a-zA-z0-9\-]+\.){1,2}[a-z]{2,4}`
+  domainPattern = '([a-zA-z0-9\-]+\.){1,2}[a-z]{2,4}'
   newPosition = false
 
   constructor(
@@ -56,8 +56,11 @@ export class RequestsApprovalComponent implements OnInit {
     //     fullname: new FormControl({ value: this.posData.firstName, disabled: true }, []),
     //     email: new FormControl({ value: this.posData.email, disabled: true }, []),
     //     mobile: new FormControl({ value: this.posData.mobile, disabled: true }, []),
+    // tslint:disable-next-line:max-line-length
     //     position: new FormControl(this.requestType === 'position' ? this.posData.position : '', this.requestType === 'position' ? [Validators.required, Validators.maxLength(500), Validators.pattern(this.customCharsPattern)] : []),
+    // tslint:disable-next-line:max-line-length
     //     organisation: new FormControl(this.requestType === 'organisation' ? this.posData.organisation : '', this.requestType === 'organisation' ? [Validators.required, Validators.pattern(this.customCharsPattern)] : []),
+    // tslint:disable-next-line:max-line-length
     //     domain: new FormControl(this.requestType === 'domain' ? this.posData.domain : '', this.requestType === 'domain' ? [Validators.required, Validators.pattern(this.domainPattern)] : []),
     //     description: new FormControl(this.posData.description, []),
     //     wfId: new FormControl(this.posData.wfId),
@@ -68,9 +71,19 @@ export class RequestsApprovalComponent implements OnInit {
       fullname: new UntypedFormControl({ value: this.posData.firstName, disabled: true }, []),
       email: new UntypedFormControl({ value: this.posData.email, disabled: true }, []),
       mobile: new UntypedFormControl({ value: this.posData.mobile, disabled: true }, []),
-      position: new UntypedFormControl(this.requestType === 'position' ? this.posData.position : '', this.requestType === 'position' ? [Validators.required, Validators.maxLength(500), Validators.pattern(this.customCharsPattern)] : []),
-      organisation: new UntypedFormControl(this.requestType === 'organisation' ? this.posData.organisation : '', this.requestType === 'organisation' ? [Validators.required, Validators.pattern(this.customCharsPattern)] : []),
-      domain: new UntypedFormControl(this.requestType === 'domain' ? this.posData.domain : '', this.requestType === 'domain' ? [Validators.required, Validators.pattern(this.domainPattern)] : []),
+      position: new UntypedFormControl(
+        this.requestType === 'position' ? this.posData.position : '',
+        this.requestType === 'position'
+          ? [Validators.required, Validators.maxLength(500), Validators.pattern(this.customCharsPattern)] : []
+      ),
+      organisation: new UntypedFormControl(
+        this.requestType === 'organisation' ? this.posData.organisation : '',
+        this.requestType === 'organisation' ? [Validators.required, Validators.pattern(this.customCharsPattern)] : []
+      ),
+      domain: new UntypedFormControl(
+        this.requestType === 'domain' ? this.posData.domain : '',
+        this.requestType === 'domain' ? [Validators.required, Validators.pattern(this.domainPattern)] : []
+      ),
       description: new UntypedFormControl(this.posData.description, [preventHtmlAndJs()]),
       wfId: new UntypedFormControl(this.posData.wfId),
     })
@@ -91,7 +104,7 @@ export class RequestsApprovalComponent implements OnInit {
     const dialogRef = this.dialogue.open(DialogConfirmComponent, {
       data: {
         title: 'Are you sure?',
-        bodyHTML: `Please click <strong>Yes</strong> to approve.`,
+        bodyHTML: 'Please click <strong>Yes</strong> to approve.',
       },
     })
 
@@ -268,7 +281,7 @@ export class RequestsApprovalComponent implements OnInit {
     const dialogRef = this.dialogue.open(DialogConfirmComponent, {
       data: {
         title: 'Are you sure?',
-        bodyHTML: `Please click <strong>Yes</strong> to save.`,
+        bodyHTML: 'Please click <strong>Yes</strong> to save.',
       },
     })
     dialogRef.afterClosed().subscribe((response: any) => {

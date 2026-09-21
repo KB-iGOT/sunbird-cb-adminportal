@@ -7,7 +7,7 @@ import { ConfigurationsService } from '@sunbird-cb/utils-v2'
     selector: 'ws-app-quick-tour',
     templateUrl: './quick-tour.component.html',
     styleUrls: ['./quick-tour.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class QuickTourComponent implements OnInit {
   appLanguage = 'en'

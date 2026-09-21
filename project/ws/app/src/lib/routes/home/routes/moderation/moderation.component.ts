@@ -5,16 +5,16 @@ import { MatDialog } from '@angular/material/dialog'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 /* tslint:disable */
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { ModerationService } from '../../services/moderation.service'
 
 @Component({
-    selector: 'ws-app-directory',
-    templateUrl: './moderation.component.html',
-    styleUrls: ['./moderation.component.scss'],
-    /* tslint:disable */
-    host: { class: 'flex flex-1 margin-top-l' },
-    standalone: false
+  selector: 'ws-app-directory',
+  templateUrl: './moderation.component.html',
+  styleUrls: ['./moderation.component.scss'],
+  /* tslint:disable */
+  host: { class: 'flex flex-1 margin-top-l' },
+  standalone: false
 })
 export class ModerationViewComponent implements OnInit {
   currentFilter = 'MDO'

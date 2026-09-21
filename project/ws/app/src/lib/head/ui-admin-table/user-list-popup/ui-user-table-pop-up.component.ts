@@ -19,7 +19,7 @@ interface IUser { fullname: string; email: string, userId: string }
     selector: 'ws-widget-ui-user-table-pop-up',
     templateUrl: './ui-user-table-pop-up.component.html',
     styleUrls: ['./ui-user-table-pop-up.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class UIUserTablePopUpComponent implements OnInit, AfterViewInit, OnChanges {
   tableData!: ITableData | undefined

@@ -11,7 +11,7 @@ import { MatSortModule } from '@angular/material/sort'
 import { MatButtonModule } from '@angular/material/button'
 import { MatCardModule } from '@angular/material/card'
 import { MatCheckboxModule } from '@angular/material/checkbox'
-import { MatOptionModule } from '@angular/material/core'
+import { MAT_DATE_LOCALE, MatOptionModule } from '@angular/material/core'
 import { MatDialogModule } from '@angular/material/dialog'
 import { MatInputModule } from '@angular/material/input'
 import { MatSelectModule } from '@angular/material/select'
@@ -40,7 +40,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar'
 import { ClipboardModule } from '@angular/cdk/clipboard'
 import { LoaderService } from '../../routes/home/services/loader.service'
 import { MatAutocompleteModule } from '@angular/material/autocomplete'
-import { MAT_DATE_LOCALE } from '@angular/material/core'
 import { OrgHierarchyMappingComponent } from './org-hierarchy-mapping/org-hierarchy-mapping/org-hierarchy-mapping.component'
 import { TreeHierarchyModule } from '@sunbird-cb/tree-hierarchy'
 import { OrgHierarchyService } from './services/org-hierarchy.service'
@@ -91,7 +90,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar'
     MatAutocompleteModule,
     // MatRadioButton, MatRadioGroup
     TreeHierarchyModule,
-    PipeOrderByModule
+    PipeOrderByModule,
   ],
   exports: [
     UIAdminUserTableComponent,
@@ -99,11 +98,11 @@ import { MatProgressBarModule } from '@angular/material/progress-bar'
     UIUserTablePopUpComponent,
     UIDiscussionPostComponent,
     ReverseDateFormatPipe,
-    OrgHierarchyMappingComponent
+    OrgHierarchyMappingComponent,
   ],
   providers: [
     LoaderService,
     OrgHierarchyService,
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }]
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }],
 })
 export class UIAdminTableModule { }

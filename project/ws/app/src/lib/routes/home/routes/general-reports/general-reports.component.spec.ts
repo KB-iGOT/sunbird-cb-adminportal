@@ -6,7 +6,7 @@ import { GeneralReportsService } from './general-reports.service'
 import { DatePipe } from '@angular/common'
 import { of, throwError } from 'rxjs'
 import { sectorConstants } from '../sectors/sectors-constats.model'
-import _ from 'lodash'
+import * as _ from 'lodash'
 
 describe('GeneralReportsComponent', () => {
     let component: GeneralReportsComponent

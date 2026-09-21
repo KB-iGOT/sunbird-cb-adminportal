@@ -8,7 +8,7 @@ import { ValueService, ConfigurationsService, EFeatures, NsPage } from '@sunbird
     selector: 'ws-public-faq',
     templateUrl: './public-faq.component.html',
     styleUrls: ['./public-faq.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class PublicFaqComponent implements OnInit, OnDestroy {
   errorMessageCode: 'API_FAILURE' | 'NO_DATA' | 'INVALID_DATA' | 'NONE' = 'NONE'

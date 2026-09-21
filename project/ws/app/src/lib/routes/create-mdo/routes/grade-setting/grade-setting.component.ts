@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup } from '@angular/forms'
     selector: 'ws-app-grade-setting',
     templateUrl: './grade-setting.component.html',
     styleUrls: ['./grade-setting.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class GradeSettingComponent implements OnInit {
   settingsForm!: FormGroup
@@ -14,20 +14,20 @@ export class GradeSettingComponent implements OnInit {
   gradeList = [
     {
       value: 'grade_1',
-      label: 'Grade I'
+      label: 'Grade I',
     },
     {
       value: 'grade_2',
-      label: 'Grade II'
+      label: 'Grade II',
     },
     {
       value: 'grade_3',
-      label: 'Grade III'
+      label: 'Grade III',
     },
     {
       value: 'grade_4',
-      label: 'Grade IV'
-    }
+      label: 'Grade IV',
+    },
   ]
   constructor(private formBuilder: FormBuilder) { }
 

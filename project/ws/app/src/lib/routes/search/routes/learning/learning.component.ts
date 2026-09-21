@@ -14,7 +14,7 @@ interface IThing {
     selector: 'ws-app-learning',
     templateUrl: './learning.component.html',
     styleUrls: ['./learning.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class LearningComponent implements OnInit, OnDestroy {
   @ViewChild(FilterDisplayComponent)
@@ -451,7 +451,7 @@ export class LearningComponent implements OnInit, OnDestroy {
     return item.identifier
   }
   sortOrder(type: string) {
-    try { //NOSONAR
+    try { // NOSONAR
       this.router.navigate([], {
         queryParams: { sort: type },
         queryParamsHandling: 'merge',
@@ -480,7 +480,7 @@ export class LearningComponent implements OnInit, OnDestroy {
   }
 
   searchLanguage(type: string) {
-    try { //NOSONAR
+    try { // NOSONAR
       this.router.navigate([], {
         queryParams: { lang: type },
         queryParamsHandling: 'merge',

@@ -8,7 +8,7 @@ import { PageEvent } from '@angular/material/paginator'
   selector: 'ws-app-email-domains',
   templateUrl: './email-domains.component.html',
   styleUrls: ['./email-domains.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class EmailDomainsComponent implements OnInit {
   tabledata: any = []
@@ -90,7 +90,7 @@ export class EmailDomainsComponent implements OnInit {
           const mm = ('0' + (new Date(val.createdOn).getMonth() + 1)).slice(-2)
           const year = new Date(val.createdOn).getFullYear()
           // tslint:disable-next-line:prefer-template
-          const createdDate = date + `-` + mm + `-` + year
+          const createdDate = date + '-' + mm + '-' + year
           val.createdDate = createdDate
 
           // tslint:disable-next-line:prefer-template
@@ -99,7 +99,7 @@ export class EmailDomainsComponent implements OnInit {
           const umm = ('0' + (new Date(val.lastUpdatedOn).getMonth() + 1)).slice(-2)
           const uyear = new Date(val.lastUpdatedOn).getFullYear()
           // tslint:disable-next-line:prefer-template
-          const updatedDate = udate + `-` + umm + `-` + uyear
+          const updatedDate = udate + '-' + umm + '-' + uyear
           val.lastupdateDate = updatedDate
 
           val.description = obj.description

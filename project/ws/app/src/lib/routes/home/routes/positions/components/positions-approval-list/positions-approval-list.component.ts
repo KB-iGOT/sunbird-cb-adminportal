@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { PositionsService } from '../../services/position.service'
 // tslint:disable-next-line
-import _ from 'lodash'
+import * as _ from 'lodash'
 @Component({
-    selector: 'ws-app-positions-approval-list',
-    templateUrl: './positions-approval-list.component.html',
-    styleUrls: ['./positions-approval-list.component.scss'],
-    standalone: false
+  selector: 'ws-app-positions-approval-list',
+  templateUrl: './positions-approval-list.component.html',
+  styleUrls: ['./positions-approval-list.component.scss'],
+  standalone: false,
 })
 
 export class PositionsApprovalListComponent implements OnInit {
@@ -50,7 +50,7 @@ export class PositionsApprovalListComponent implements OnInit {
             const mm = new Date(val.createdOn).getMonth()
             const year = new Date(val.createdOn).getFullYear()
             // tslint:disable-next-line:prefer-template
-            const createdDate = date + `-` + mm + `-` + year
+            const createdDate = date + '-' + mm + '-' + year
             val.createdDate = createdDate
 
             val.description = obj.description

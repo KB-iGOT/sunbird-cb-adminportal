@@ -15,7 +15,7 @@ interface IGroupWithFeatureWidgets extends NsAppsConfig.IGroup {
     selector: 'ws-app-root-features',
     templateUrl: './features.component.html',
     styleUrls: ['./features.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class FeaturesComponent implements OnInit, OnDestroy {
   queryControl = new UntypedFormControl(this.activateRoute.snapshot.queryParamMap.get('q'))

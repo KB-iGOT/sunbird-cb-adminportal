@@ -5,20 +5,20 @@ import { PvDashboardComponent, PvCreateComponent } from '@sunbird-cb/consumption
 const routes: Routes = [
   {
     path: '',
-    component: PvDashboardComponent
+    component: PvDashboardComponent,
   },
   {
     path: 'new',
-    component: PvCreateComponent
+    component: PvCreateComponent,
   },
   {
     path: 'edit/:id',
-    component: PvCreateComponent
-  }
+    component: PvCreateComponent,
+  },
 ]
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class PeerValidationRoutingModule { }

@@ -8,7 +8,7 @@ import { IFrac } from '../../interfaces/frac.model'
     selector: 'ws-app-frac',
     templateUrl: './frac.component.html',
     styleUrls: ['./frac.component.scss'],
-    standalone: false
+    standalone: false,
 })
 
 export class FracComponent implements

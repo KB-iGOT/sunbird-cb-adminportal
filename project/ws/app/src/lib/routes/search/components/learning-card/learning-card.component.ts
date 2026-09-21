@@ -6,7 +6,7 @@ import { SafeHtml, DomSanitizer } from '@angular/platform-browser'
     selector: 'ws-app-learning-card',
     templateUrl: './learning-card.component.html',
     styleUrls: ['./learning-card.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class LearningCardComponent implements OnInit, OnChanges {
   @Input()

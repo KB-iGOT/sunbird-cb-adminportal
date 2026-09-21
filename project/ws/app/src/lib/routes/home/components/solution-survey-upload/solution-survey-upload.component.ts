@@ -6,7 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser'
     selector: 'ws-app-solution-survey-upload',
     templateUrl: './solution-survey-upload.component.html',
     styleUrls: ['./solution-survey-upload.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class SolutionSurveyUploadComponent implements OnInit {
   surveyFileUploadUrl = ''

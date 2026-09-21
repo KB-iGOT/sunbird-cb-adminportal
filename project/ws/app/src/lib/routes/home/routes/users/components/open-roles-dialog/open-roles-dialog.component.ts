@@ -7,7 +7,7 @@ import { IManageUser } from './system-roles-management.model'
     selector: 'ws-admin-open-roles-dialog',
     templateUrl: './open-roles-dialog.component.html',
     styleUrls: ['./open-roles-dialog.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class OpenRolesDialogComponent implements OnInit {
   userId!: string

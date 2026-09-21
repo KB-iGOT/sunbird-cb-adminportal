@@ -18,7 +18,7 @@ const API_END_POINTS = {
   CREATE_ASSET: 'apis/proxies/v8/action/content/v3/create',
   UPLOAD_FILE: 'apis/proxies/v8/upload/action/content/v3/upload',
   ARCHIVE_EVENT: '/apis/proxies/v8/event/v4/retire',
-  FORM_READ: `/apis/v1/form/read`,
+  FORM_READ: '/apis/v1/form/read',
 }
 
 @Injectable({

@@ -9,10 +9,10 @@ import { MarketplaceService } from '../../services/marketplace.service'
 import { HttpErrorResponse } from '@angular/common/http'
 
 @Component({
-    selector: 'ws-app-providers-api-integrations',
-    templateUrl: './providers-api-integrations.component.html',
-    styleUrls: ['./providers-api-integrations.component.scss'],
-    standalone: false
+  selector: 'ws-app-providers-api-integrations',
+  templateUrl: './providers-api-integrations.component.html',
+  styleUrls: ['./providers-api-integrations.component.scss'],
+  standalone: false,
 })
 export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
   @ViewChild('jsonEditor') jsonEditor: JsonEditorComponent | undefined
@@ -32,7 +32,7 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
   apiMetadata = [
     { name: 'Params', value: 'Params' },
     { name: 'Headers', value: 'Headers' },
-    { name: 'Body', value: 'Body' }
+    { name: 'Body', value: 'Body' },
   ]
 
   // UI Properties
@@ -93,38 +93,38 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
       serviceDescription: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,.\-_$/:\[\]'!\s\n]*$/)]),
       isAuthenticated: new FormControl(false),
       strictCache: new FormControl(false),
-      strictCacheTimeInMinutes: new FormControl('', [Validators.pattern(/^([0-9])$/)])
+      strictCacheTimeInMinutes: new FormControl('', [Validators.pattern(/^([0-9])$/)]),
     })
 
     this.viaApiFormGroup = this.formBuilder.group({
       apiType: new FormControl('', Validators.required),
-      apiUrl: new FormControl('', Validators.required)
+      apiUrl: new FormControl('', Validators.required),
     })
 
     this.paramsFormGroup = this.formBuilder.group({
-      tableListFormArray: this.formBuilder.array([])
+      tableListFormArray: this.formBuilder.array([]),
     })
 
     this.headersFormGroup = this.formBuilder.group({
-      tableListFormArray: this.formBuilder.array([])
+      tableListFormArray: this.formBuilder.array([]),
     })
 
     this.bodyFormGroup = this.formBuilder.group({
       tableListFormArray: this.formBuilder.array([]),
       bodyType: new FormControl('urlencoded'),
-      rawData: new FormControl('')
+      rawData: new FormControl(''),
     })
 
     this.authenticationFormGroup = this.formBuilder.group({
       bodyType: new FormControl('urlencoded'),
-      rawData: new FormControl('', Validators.required)
+      rawData: new FormControl('', Validators.required),
     })
 
     // this.transforamtionForm = this.formBuilder.group({})
 
     this.apiTypesList = [
       { type: 'Get', value: 'GET' },
-      { type: 'Post', value: 'POST' }
+      { type: 'Post', value: 'POST' },
     ]
 
     // Configure JSON Editor Options
@@ -189,7 +189,7 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
       serviceDescription: _.get(configurationDetails, 'serviceDescription'),
       strictCache: _.get(configurationDetails, 'strictCache', false),
       strictCacheTimeInMinutes: _.get(configurationDetails, 'strictCacheTimeInMinutes', '') as string,
-      isAuthenticated: _.get(configurationDetails, 'isSecureHeader', false)
+      isAuthenticated: _.get(configurationDetails, 'isSecureHeader', false),
     })
 
     this.onToggleChange()
@@ -197,7 +197,7 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
 
     this.viaApiFormGroup.setValue({
       apiType: _.get(configurationDetails, 'requestMethod'),
-      apiUrl: urlSplit
+      apiUrl: urlSplit,
     })
 
     if (headerMap) {
@@ -221,7 +221,11 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
       this.authenticationToggleChange(false)
     }
 
-    const transformContent = _.get(this.providerDetails, this.transformationType, _.get(this.providerConfiguration, this.transformationType))
+    const transformContent = _.get(
+      this.providerDetails,
+      this.transformationType,
+      _.get(this.providerConfiguration, this.transformationType)
+    )
     this.transformationSpecForm.patchValue(transformContent)
   }
 
@@ -231,7 +235,7 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
         if (object.hasOwnProperty(key)) {
           const formGroup = this.formBuilder.group({
             key: new FormControl(key),
-            value: new FormControl(object[key])
+            value: new FormControl(object[key]),
           })
           formArray.insert(formArray.length - 1, formGroup)
         }
@@ -271,11 +275,11 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
     const paramsArray: any = []
     const urlAndParams = this.displayUrl ? this.displayUrl.split('?') : []
     const paramsUrlArray = urlAndParams[1] ? urlAndParams[1].split('&') : []
-    paramsUrlArray.forEach((e) => {
+    paramsUrlArray.forEach(e => {
       const keyValue = e.split('=')
       const param = {
         key: keyValue[0],
-        value: keyValue[1]
+        value: keyValue[1],
       }
       paramsArray.push(param)
     })
@@ -297,7 +301,7 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
         this.apiUrlEdited = true
         const formGroup = this.formBuilder.group({
           key: new FormControl(object.key),
-          value: new FormControl(object.value)
+          value: new FormControl(object.value),
         })
         this.paramsFormArray.insert(this.paramsFormArray.length - 1, formGroup)
       }
@@ -405,6 +409,7 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
                   successMsg = hasTransformationAlready ? 'Transformation updated successfully.' : 'Transformation saved successfully.'
                   this.showSnackBar(successMsg, 'success')
                   this.transformationsUpdated = true
+                  // tslint:disable-next-line:align
                 }, 1000)
               }
             },
@@ -504,13 +509,15 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
       hostAddress: null,
       partnerCode: _.get(this.providerDetails, 'data.partnerCode'),
       requestPayload: {
-        requestMap: isFormData ? this.generateObjectFromForm(this.bodyFormGroup.value.tableListFormArray) : this.bodyFormGroup.value.rawData,
+        requestMap: isFormData
+          ? this.generateObjectFromForm(this.bodyFormGroup.value.tableListFormArray)
+          : this.bodyFormGroup.value.rawData,
         headerMap: this.generateObjectFromForm(this.headersFormGroup.value.tableListFormArray),
-        urlMap: this.generateObjectFromForm(this.paramsFormGroup.value.tableListFormArray, true)
+        urlMap: this.generateObjectFromForm(this.paramsFormGroup.value.tableListFormArray, true),
       },
       authPayload: authPayload ? authPayload : {},
       strictCache: serviceDetails.strictCache,
-      strictCacheTimeInMinutes: serviceDetails.strictCacheTimeInMinutes ? Number(serviceDetails.strictCacheTimeInMinutes) : null
+      strictCacheTimeInMinutes: serviceDetails.strictCacheTimeInMinutes ? Number(serviceDetails.strictCacheTimeInMinutes) : null,
     }
     return formBody
   }
@@ -556,6 +563,7 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
           setTimeout(() => {
             const successMsg = 'API Configuration saved successfully'
             this.showSnackBar(successMsg, 'success')
+            // tslint:disable-next-line:align
           }, 1000)
         }
       },
@@ -569,6 +577,7 @@ export class ProvidersApiIntegrationsComponent implements OnInit, OnChanges {
   showSnackBar(message: string, type: 'error' | 'success') {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: {
+        // tslint:disable-next-line:object-literal-shorthand
         message: message, type: type,
       }, duration: 5000, panelClass: type,
     })

@@ -4,8 +4,6 @@ import { PeerValidationRoutingModule } from './peer-validation-routing.module'
 import { LOADER_SERVICE, PeerValidationLibModule } from '@sunbird-cb/consumption'
 import { LoaderService } from '../../services/loader.service'
 
-
-
 @NgModule({
   declarations: [
   ],
@@ -15,7 +13,7 @@ import { LoaderService } from '../../services/loader.service'
     PeerValidationRoutingModule,
   ],
   providers: [
-    { provide: LOADER_SERVICE, useExisting: LoaderService }
-  ]
+    { provide: LOADER_SERVICE, useExisting: LoaderService },
+  ],
 })
 export class PeerValidationModule { }

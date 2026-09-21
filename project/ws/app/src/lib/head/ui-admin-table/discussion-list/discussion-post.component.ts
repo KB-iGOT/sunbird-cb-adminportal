@@ -33,7 +33,7 @@ export interface IDialogData {
     selector: 'ws-widget-discussion-post',
     templateUrl: './discussion-post.component.html',
     styleUrls: ['./discussion-post.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class UIDiscussionPostComponent implements OnInit, OnChanges {
   @Input() tableData!: any
@@ -122,7 +122,10 @@ export class UIDiscussionPostComponent implements OnInit, OnChanges {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
     const d = new Date(Number(timestamp))
-    const returnDate = `${d.getDate()} ${(months[d.getMonth()])}, ${d.getFullYear()} - ${d.getHours()}:${d.getMinutes()} ${this.timeframe(d.getHours())}`
+    const returnDate = [
+      `${d.getDate()} ${(months[d.getMonth()])}, ${d.getFullYear()} -`,
+      `${d.getHours()}:${d.getMinutes()} ${this.timeframe(d.getHours())}`,
+    ].join(' ')
     return returnDate
   }
   publish(id: any) {
@@ -198,6 +201,7 @@ export class UIDiscussionPostComponent implements OnInit, OnChanges {
     //   // height: '90%',
     //   width: '50%',
     //   panelClass: 'reject-post',
+    // tslint:disable-next-line:max-line-length
     //   data: { name: "hello", animal: this.animal, profaneCategories: ['NSFW Image', 'Gore Image', 'Violent Image', 'Correct India Map', 'Incorrect India Map', 'Other'], id: id, text: text, profaneString: profaneString },
 
     // })

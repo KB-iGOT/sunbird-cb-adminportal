@@ -6,7 +6,7 @@ import { NsAutoComplete } from '@sunbird-cb/collection'
     selector: 'ws-app-people',
     templateUrl: './people.component.html',
     styleUrls: ['./people.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class PeopleComponent implements OnInit {
 

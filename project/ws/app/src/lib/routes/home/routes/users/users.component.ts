@@ -14,7 +14,7 @@ import { TenantAdminService } from '../../services/tenant-admin.service'
     providers: [TenantAdminService],
     templateUrl: './users.component.html',
     styleUrls: ['./users.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class UsersComponent implements OnInit {
   @Output() selectedUser: EventEmitter<any> = new EventEmitter<any>()

@@ -8,8 +8,8 @@ import { map } from 'rxjs/operators'
 const PROTECTED_SLAG_V8 = '/apis/protected/v8'
 const API_END_POINTS = {
   SOCIAL_VIEW_SEARCH_RESULT: `${PROTECTED_SLAG_V8}/social/post/search`,
-  SEARCH_AUTO_COMPLETE: `/apis/proxies/v8/sunbirdigot/read`,
-  SEARCH_V6: `/apis/proxies/v8/sunbirdigot/search`,
+  SEARCH_AUTO_COMPLETE: '/apis/proxies/v8/sunbirdigot/read',
+  SEARCH_V6: '/apis/proxies/v8/sunbirdigot/search',
 }
 @Injectable({
   providedIn: 'root',

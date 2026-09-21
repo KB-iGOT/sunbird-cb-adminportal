@@ -10,10 +10,10 @@ import { NavigationExternalService } from '../../../../../../../../../../../src/
 import { SnackbarComponent } from '@sunbird-cb/consumption'
 
 @Component({
-    selector: 'ws-app-configure-provider',
-    templateUrl: './configure-provider.component.html',
-    styleUrls: ['./configure-provider.component.scss'],
-    standalone: false
+  selector: 'ws-app-configure-provider',
+  templateUrl: './configure-provider.component.html',
+  styleUrls: ['./configure-provider.component.scss'],
+  standalone: false,
 })
 export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewInit {
   opened: boolean = true
@@ -29,13 +29,13 @@ export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewI
   helpCenterGuide = {
     header: 'Content Upload Details: Video Guides and Tips',
     guideNotes: [
-      `Upload the certificate using a SVG file.`,
+      'Upload the certificate using a SVG file.',
     ],
-    helpVideoLink: `/assets/public/content/guide-videos/CIOS_Updated_demo.mp4`,
+    helpVideoLink: '/assets/public/content/guide-videos/CIOS_Updated_demo.mp4',
   }
 
   instructionsList = [
-    'Please ensure the Certificate file is named correctly'
+    'Please ensure the Certificate file is named correctly',
   ]
 
   routeSubscription: Subscription = new Subscription()
@@ -101,12 +101,12 @@ export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewI
             {
               label: 'Content Marketplace',
               route: '/app/home/marketplace-providers',
-              active: false
+              active: false,
             },
             {
               label: this.providerDetails?.data?.contentPartnerName || 'New Provider',
-              active: true
-            }
+              active: true,
+            },
           ]
         )
       })
@@ -130,10 +130,10 @@ export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewI
     }
   }
 
-
   showSnackBar(message: string, type: 'error' | 'success') {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: {
+        // tslint:disable-next-line:object-literal-shorthand
         message: message, type: type,
       }, duration: 5000, panelClass: type,
     })

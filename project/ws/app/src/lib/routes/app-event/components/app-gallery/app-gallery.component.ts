@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs'
     selector: 'ws-app-app-gallery',
     templateUrl: './app-gallery.component.html',
     styleUrls: ['./app-gallery.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class AppGalleryComponent implements OnInit, OnDestroy {
   data: any

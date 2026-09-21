@@ -25,7 +25,7 @@ export class DirectoryService {
   getAllDepartments(): Observable<any> {
     return this.http.get<any>(`${API_END_POINTS.GET_ALL_DEPARTMENTS}`)
   }
-  getAllDepartmentsKong(queryText: any, pagination: { limit: number, offset: number }, state?: string,): Observable<any> {
+  getAllDepartmentsKong(queryText: any, pagination: { limit: number, offset: number }, state?: string): Observable<any> {
     let filters
     let orFilters
     if (state !== undefined && state === 'state') {
@@ -51,7 +51,7 @@ export class DirectoryService {
     }
 
     if (queryText) {
-      let searchFilters: any = {
+      const searchFilters: any = {
         isTenant: true,
         status: 1,
       }
@@ -83,7 +83,7 @@ export class DirectoryService {
         filters,
         ...(orFilters ? { orFilters } : {}),
         sort_by: {
-          createdDate: "desc",
+          createdDate: 'desc',
         },
         limit: pagination.limit,
         offset: pagination.offset,

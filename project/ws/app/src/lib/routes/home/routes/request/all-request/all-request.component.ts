@@ -19,7 +19,7 @@ export enum statusValue {
     selector: 'ws-app-all-request',
     templateUrl: './all-request.component.html',
     styleUrls: ['./all-request.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class AllRequestComponent implements OnInit {
 
@@ -229,7 +229,7 @@ export class AllRequestComponent implements OnInit {
       if (_res && _res.data === 'confirmed') {
         setTimeout(() => {
           this.getRequestList()
-        }, 1000)
+        },         1000)
 
         this.snackBar.open('Re-assign submitted Successfully')
       } else {
@@ -289,7 +289,7 @@ export class AllRequestComponent implements OnInit {
         this.invalidRes = res
         setTimeout(() => {
           this.getRequestList()
-        }, 1000)
+        },         1000)
         this.snackBar.open('Marked as Invalid')
       }
 
@@ -311,7 +311,7 @@ export class AllRequestComponent implements OnInit {
       if (_res && _res.data === 'confirmed') {
         setTimeout(() => {
           this.getRequestList()
-        }, 1000)
+        },         1000)
         this.snackBar.open('Assigned submitted Successfully')
       } else {
         // this.snackBar.open('error')

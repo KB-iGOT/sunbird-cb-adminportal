@@ -7,7 +7,7 @@ import { ConfigurationsService, NsPage } from '@sunbird-cb/utils-v2'
     selector: 'ws-app-app-event',
     templateUrl: './app-event.component.html',
     styleUrls: ['./app-event.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class AppEventComponent implements OnInit {
   data: any

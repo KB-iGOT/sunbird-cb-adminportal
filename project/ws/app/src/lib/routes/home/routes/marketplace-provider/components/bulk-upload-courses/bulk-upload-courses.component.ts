@@ -11,10 +11,10 @@ import * as XLSX from 'xlsx'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
 
 @Component({
-    selector: 'ws-app-bulk-upload-courses',
-    templateUrl: './bulk-upload-courses.component.html',
-    styleUrls: ['./bulk-upload-courses.component.scss'],
-    standalone: false
+  selector: 'ws-app-bulk-upload-courses',
+  templateUrl: './bulk-upload-courses.component.html',
+  styleUrls: ['./bulk-upload-courses.component.scss'],
+  standalone: false,
 })
 export class BulkUploadCoursesComponent implements OnInit, OnChanges {
 
@@ -63,7 +63,6 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
     this.transforamtionForm = this.formBuilder.group({})
   }
 
-
   ngOnInit(): void {
     this.configurationData = this.activateRoute?.snapshot?.data?.pageData?.data
   }
@@ -107,7 +106,7 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
           lable: key,
           controlName: key.replace(' ', ''),
           path: path as string,
-          isRequired: requiredList.includes(key)
+          isRequired: requiredList.includes(key),
         }
         if (transFormContentKeysAndControl.isRequired) {
           this.transforamtionForm.addControl(key.replace(' ', ''), new FormControl('', Validators.required))
@@ -235,6 +234,7 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
               }
               this.showSnackBar(successMsg, 'success')
               this.sendProviderDetailsUpdateEvent()
+              // tslint:disable-next-line:align
             }, 1000)
           }
         },
@@ -298,7 +298,7 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
   uploadFile() {
     this.executed = true
     if (this.contentFile && (this.transformationsUpdated)) {
-      const popupMessage = `File processing`
+      const popupMessage = 'File processing'
       let dialogType = 'csvLoader'
       if (this.contentFile.name.toLowerCase().endsWith('.csv')) {
         dialogType = 'csvLoader'
@@ -340,6 +340,7 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
               this.showSnackBar('File imported successfully', 'success')
               this.removeFile()
               this.dialogRef.close()
+              // tslint:disable-next-line:align
             }, 1000)
           }
         },
@@ -382,6 +383,7 @@ export class BulkUploadCoursesComponent implements OnInit, OnChanges {
   showSnackBar(message: string, type: 'error' | 'success' = 'success') {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: {
+        // tslint:disable-next-line:object-literal-shorthand
         message: message, type: type,
       }, duration: 5000, panelClass: type,
     })

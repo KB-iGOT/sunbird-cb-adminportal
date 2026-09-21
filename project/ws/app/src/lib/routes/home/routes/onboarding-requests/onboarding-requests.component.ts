@@ -8,7 +8,7 @@ import * as _ from 'lodash'
   selector: 'ws-app-onboarding-requests',
   templateUrl: './onboarding-requests.component.html',
   styleUrls: ['./onboarding-requests.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
   tabledata: any = []
@@ -27,9 +27,9 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
   totalRecords?: number | 0
   isLoading = true
   constructor(private route: Router,
-    private activatedRoute: ActivatedRoute,
-    private requestService: RequestsService,
-    private cdr: ChangeDetectorRef) {
+              private activatedRoute: ActivatedRoute,
+              private requestService: RequestsService,
+              private cdr: ChangeDetectorRef) {
     // this.requestType = this.activatedRoute.snapshot.params.type
   }
 
@@ -143,7 +143,7 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
           const mm = ('0' + (new Date(val.createdOn).getMonth() + 1)).slice(-2)
           const year = new Date(val.createdOn).getFullYear()
           // tslint:disable-next-line:prefer-template
-          const createdDate = date + `-` + mm + `-` + year
+          const createdDate = date + '-' + mm + '-' + year
           val.createdDate = createdDate
 
           // tslint:disable-next-line:prefer-template
@@ -152,7 +152,7 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
           const umm = ('0' + (new Date(val.lastUpdatedOn).getMonth() + 1)).slice(-2)
           const uyear = new Date(val.lastUpdatedOn).getFullYear()
           // tslint:disable-next-line:prefer-template
-          const updatedDate = udate + `-` + umm + `-` + uyear
+          const updatedDate = udate + '-' + umm + '-' + uyear
           val.lastupdateDate = updatedDate
 
           val.description = obj.description
@@ -259,7 +259,7 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
         const resData = res.result.data
         this.pendingListRecord = res.result.count
         this.formatData(resData, 'pending')
-      }, () => {
+      },                                                      () => {
         this.isLoading = false
       })
     } else if (this.requestType === 'organisation') {
@@ -269,7 +269,7 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
         const resData = res.result.data
         this.pendingListRecord = res.result.count
         this.formatData(resData, 'pending')
-      }, () => {
+      },                                                 () => {
         this.isLoading = false
       })
     }
@@ -291,7 +291,7 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
         const resData = res.result.data
         this.totalRecords = res.result.count
         this.formatData(resData, 'approved')
-      }, () => {
+      },                                                      () => {
         this.isLoading = false
       })
     } else if (this.requestType === 'organisation') {
@@ -301,7 +301,7 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
         const resData = res.result.data
         this.totalRecords = res.result.count
         this.formatData(resData, 'approved')
-      }, () => {
+      },                                                 () => {
         this.isLoading = false
       })
     }
@@ -323,7 +323,7 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
         const resData = res.result.data
         this.totalRecords = res.result.count
         this.formatData(resData, 'rejected')
-      }, () => {
+      },                                                      () => {
         this.isLoading = false
       })
     } else if (this.requestType === 'organisation') {
@@ -333,7 +333,7 @@ export class OnboardingRequestsComponent implements OnInit, AfterViewChecked {
         const resData = res.result.data
         this.totalRecords = res.result.count
         this.formatData(resData, 'rejected')
-      }, () => {
+      },                                                 () => {
         this.isLoading = false
       })
     }

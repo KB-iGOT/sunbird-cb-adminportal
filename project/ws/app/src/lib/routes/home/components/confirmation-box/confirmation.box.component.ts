@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
     selector: 'ws-app-confirmation-box',
     templateUrl: './confirmation-box.component.html',
     styleUrls: ['./confirmation-box.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class ConfirmationBoxComponent implements OnInit {
 

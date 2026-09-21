@@ -25,7 +25,7 @@ import { BehaviorSubject } from 'rxjs'
   selector: 'ws-widget-directory-table',
   templateUrl: './directory-table.component.html',
   styleUrls: ['./directory-table.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('searchInput') searchInput!: ElementRef
@@ -70,7 +70,7 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
   selfRegistrationData: any = {}
   dialogRef: any
   defaultEntityType: 'organisation' | 'volunteer' = 'organisation'
-  private filterSubject: BehaviorSubject<any> = new BehaviorSubject<any>('');
+  private filterSubject: BehaviorSubject<any> = new BehaviorSubject<any>('')
   pageIndex = 0
   constructor(
     private router: Router, private events: EventService, public dialog: MatDialog,
@@ -88,7 +88,7 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
         debounceTime(500),
         distinctUntilChanged()
       )
-      .subscribe((filterValue) => {
+      .subscribe(filterValue => {
         this.pageIndex = 0
         this.searchByEnterKey.emit(filterValue)
       })
@@ -119,8 +119,7 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
     // this.paginator.firstPage()
     if (this.dataSource && this.dataSource.data && this.dataSource.data.length > 0) {
       this.tableData.loader = false
-    }
-    else if (this.dataSource && this.dataSource.data && this.dataSource.data.length === 0 && this.getFilterValue) {
+    } else if (this.dataSource && this.dataSource.data && this.dataSource.data.length === 0 && this.getFilterValue) {
       this.tableData.loader = false
     }
     if (data && data['selectedDepartment']) {
@@ -167,7 +166,6 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
   get getFilterValue(): any {
     return this.filterSubject.getValue()
   }
-
 
   buttonClick(action: string, row: any) {
     if (this.tableData) {
@@ -293,12 +291,12 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
               ) {
                 this.dialogRef = this.dialog.open(InfoModalComponent, {
                   panelClass: 'info-dialog',
-                  data: { type: 'import-igot-master-review' }
+                  data: { type: 'import-igot-master-review' },
                 })
               } else {
                 this.dialogRef = this.dialog.open(InfoModalComponent, {
                   panelClass: 'info-dialog',
-                  data: { type: 'import-igot-master-create' }
+                  data: { type: 'import-igot-master-create' },
                 })
               }
               this.subscribeToAfterClosedModal(row)
@@ -313,7 +311,7 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
       } else {
         this.dialogRef = this.dialog.open(InfoModalComponent, {
           panelClass: 'info-dialog',
-          data: { type: 'import-igot-master-create' }
+          data: { type: 'import-igot-master-create' },
         })
         this.subscribeToAfterClosedModal(row)
       }
@@ -337,8 +335,7 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
         this.selfRegistrationData.orgName = row.organisation
 
         this.toggleOverlay(true)
-      }
-      else if (result && result.reviewImporting || result.startImporting) {
+      } else if (result && result.reviewImporting || result.startImporting) {
         this.goToRoute('designation_master/import-designation', row)
       }
       else return
@@ -350,11 +347,13 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
     setTimeout(() => {
       this.pageIndex = 0
       this.searchByEnterKey.emit('')
+      // tslint:disable-next-line:align
     }, 1000)
 
   }
 
   goToRoute(type: string, data: any) {
+    // tslint:disable-next-line:object-literal-shorthand
     this.eOnRowClick.emit({ data: data, type: type })
     this.raiseTelemetryForRow('row', data)
   }
@@ -410,6 +409,7 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
     const request = {
       request: {
         organisationId: row.id,
+        // tslint:disable-next-line:object-shorthand-properties-first
         status,
       },
     }
@@ -420,6 +420,7 @@ export class UIDirectoryTableComponent implements OnInit, AfterViewInit, OnChang
         setTimeout(() => {
           this.pageIndex = 0
           this.searchByEnterKey.emit(this.searchValue?.length > 2 ? this.searchValue : '')
+          // tslint:disable-next-line:align
         }, 1000)
       },
       error: (error: any) => {

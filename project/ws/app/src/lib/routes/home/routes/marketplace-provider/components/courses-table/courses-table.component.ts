@@ -9,7 +9,7 @@ import { debounceTime } from 'rxjs/operators'
     selector: 'ws-app-courses-table',
     templateUrl: './courses-table.component.html',
     styleUrls: ['./courses-table.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class CoursesTableComponent implements OnInit, OnChanges {
   @Input() tableData!: any

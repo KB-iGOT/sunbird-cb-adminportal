@@ -47,8 +47,6 @@ import { PasswordResetDialogComponent } from './list-user/dialogs/password-reset
 import { UserMigrationDialogComponent } from './list-user/dialogs/user-migration-dialog/user-migration-dialog.component'
 import { UserStatusUpdateDialogComponent } from './list-user/dialogs/user-status-update-dialog/user-status-update-dialog.component'
 
-
-
 @NgModule({
   declarations: [
     // Shared
@@ -69,7 +67,6 @@ import { UserStatusUpdateDialogComponent } from './list-user/dialogs/user-status
     PasswordResetDialogComponent,
     UserMigrationDialogComponent,
     UserStatusUpdateDialogComponent,
-
 
   ],
   imports: [

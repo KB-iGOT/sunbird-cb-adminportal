@@ -12,7 +12,7 @@ import { FeedbackSnackbarComponent } from '../feedback-snackbar/feedback-snackba
     selector: 'ws-widget-btn-content-feedback-dialog-v2',
     templateUrl: './btn-content-feedback-dialog-v2.component.html',
     styleUrls: ['./btn-content-feedback-dialog-v2.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class BtnContentFeedbackDialogV2Component implements OnInit {
   positiveFeedbackSendStatus: TSendStatus

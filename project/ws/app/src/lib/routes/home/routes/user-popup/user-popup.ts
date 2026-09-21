@@ -11,7 +11,7 @@ export interface IDialogData {
     selector: 'ws-auth-content-quality-popup',
     templateUrl: './user-popup.html',
     styleUrls: ['./user-popup.scss'],
-    standalone: false
+    standalone: false,
 })
 export class UserPopupComponent implements OnInit {
 

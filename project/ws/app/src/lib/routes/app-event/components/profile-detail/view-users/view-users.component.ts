@@ -5,7 +5,7 @@ import { UntypedFormControl } from '@angular/forms'
     selector: 'ws-app-view-users',
     templateUrl: './view-users.component.html',
     styleUrls: ['./view-users.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class ViewUsersComponent implements OnInit {
   userData: {

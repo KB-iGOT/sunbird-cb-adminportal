@@ -8,11 +8,11 @@ import { MatSnackBar } from '@angular/material/snack-bar'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
 
 @Component({
-    selector: 'ws-app-onboarding-courses',
-    templateUrl: './onboarding-courses.component.html',
-    styleUrls: ['./onboarding-courses.component.scss'],
-    providers: [DatePipe],
-    standalone: false
+  selector: 'ws-app-onboarding-courses',
+  templateUrl: './onboarding-courses.component.html',
+  styleUrls: ['./onboarding-courses.component.scss'],
+  providers: [DatePipe],
+  standalone: false,
 })
 export class OnboardingCoursesComponent implements OnInit, OnChanges {
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef<HTMLInputElement>
@@ -48,7 +48,7 @@ export class OnboardingCoursesComponent implements OnInit, OnChanges {
     pageSize: 20,
     totalCount: 20,
     paginationSize: 10,
-    paginationSizeOptions: [10, 20, 50, 100]
+    paginationSizeOptions: [10, 20, 50, 100],
   }
 
   delayTabLoad = true
@@ -331,6 +331,7 @@ export class OnboardingCoursesComponent implements OnInit, OnChanges {
   showSnackBar(message: string, type: 'error' | 'success') {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: {
+        // tslint:disable-next-line:object-literal-shorthand
         message: message, type: type,
       }, duration: 5000, panelClass: type,
     })
@@ -361,6 +362,7 @@ export class OnboardingCoursesComponent implements OnInit, OnChanges {
             this.showSnackBar(msg, 'success')
             setTimeout(() => {
               this.getUnPublishedCoursesList()
+              // tslint:disable-next-line:align
             }, 2000)
           }
         },

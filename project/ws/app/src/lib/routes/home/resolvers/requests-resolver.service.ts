@@ -42,7 +42,7 @@ export class RequestsResolve {
         })),
         catchError(error => of({ error, data: null })),
       )
-    }, 1000)
+    },         1000)
 
   }
 }

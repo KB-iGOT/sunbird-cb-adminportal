@@ -5,7 +5,7 @@ import { map, catchError } from 'rxjs/operators'
 import { IResolveResponse } from '@sunbird-cb/utils-v2'
 
 /* tslint:disable */
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { RolesService } from '../services/roles.service'
 /* tslint:enable */
 

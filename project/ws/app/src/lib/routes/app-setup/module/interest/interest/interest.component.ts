@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs'
     selector: 'ws-app-interests',
     templateUrl: './interest.component.html',
     styleUrls: ['./interest.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class InterestComponent implements OnInit {
   interestsData: any
@@ -28,12 +28,12 @@ export class InterestComponent implements OnInit {
   pageNavbar: Partial<NsPage.INavBackground> = this.configSvc.pageNavBar
   alreadyAddedInterest = new Set<string>()
   constructor(private activateRoute: ActivatedRoute,
-    private contentSvc: WidgetContentService,
-    private playlistSvc: BtnPlaylistService,
-    private configSvc: ConfigurationsService,
-    private router: Router,
+              private contentSvc: WidgetContentService,
+              private playlistSvc: BtnPlaylistService,
+              private configSvc: ConfigurationsService,
+              private router: Router,
     // private interestSvc: InterestService,
-    private snackbar: MatSnackBar) { }
+              private snackbar: MatSnackBar) { }
   @ViewChild('createPlaylistSuccess', { static: true }) createPlaylistSuccessMessage!: ElementRef<any>
   @ViewChild('createPlaylistError', { static: true }) createPlaylistErrorMessage!: ElementRef<any>
   playlistsSubscription: Subscription | null = null

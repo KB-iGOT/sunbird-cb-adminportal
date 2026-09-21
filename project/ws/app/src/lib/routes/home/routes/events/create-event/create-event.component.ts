@@ -41,7 +41,7 @@ export const MY_FORMATS = {
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
-  standalone: false
+  standalone: false,
 })
 
 export class CreateEventComponent implements OnInit, OnDestroy {
@@ -63,13 +63,14 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   @Output() eOnCreateClick = new EventEmitter<any>()
 
   createEventForm: UntypedFormGroup
-  namePatern = `^[a-zA-Z\\s\\']{1,32}$`
+  namePatern = "^[a-zA-Z\\s\\']{1,32}$"
   department: any = {}
   departmentName = ''
   toastSuccess: any
   pictureObj: any
   myreg = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/|v\/|live\/)|youtu\.be\/)[A-Za-z0-9_\-]+/
   eventTitleRegex = new RegExp(
+    // tslint:disable-next-line:max-line-length
     /^[\u0900-\u097F\u0980-\u09FF\u0C00-\u0C7F\u0B80-\u0BFF\u0C80-\u0CFF\u0D00-\u0D7F\u0A80-\u0AFF\u0B00-\u0B7F\u0A00-\u0A7Fa-zA-Z0-9\(\)\$\[\]\.\-,:!'\" _\/]*$/ // NOSONAR
   )
   eventTypeCertification: any = {}
@@ -79,7 +80,10 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   // eventTypes = [
   //   { title: 'Webinar', desc: 'General discussion involving', border: 'rgb(0, 116, 182)', disabled: false },
   // ]
-  evntTypesList = ['Webinar', 'Karmayogi Talks', 'Karmayogi Saptah', 'Rajya Karmayogi Saptah', 'Sadhana Saptah', 'Samuhik Charcha - NLW 2026']
+  evntTypesList = [
+    'Webinar', 'Karmayogi Talks', 'Karmayogi Saptah', 'Rajya Karmayogi Saptah', 'Sadhana Saptah',
+    'Samuhik Charcha - NLW 2026',
+  ]
   stateList = []
   timeArr = [
     { value: '00:00' }, { value: '00:15' }, { value: '00:30' }, { value: '00:45' },
@@ -147,7 +151,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
     private router: Router, private configSvc: ConfigurationsService, private changeDetectorRefs: ChangeDetectorRef,
     // tslint:disable-next-line:align
     private activeRoute: ActivatedRoute, private events: EventService, private profileUtilSvc: ProfileV2UtillService,
-    private pipePublic: PipePublicURL, private loaderService: GlobalEventsService,
+              private pipePublic: PipePublicURL, private loaderService: GlobalEventsService,
   ) {
 
     if (this.configSvc.userProfile) {
@@ -173,7 +177,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
       eventPicture: new UntypedFormControl('', [Validators.required]),
       eventTitle: new UntypedFormControl('', [
         Validators.required,
-        Validators.pattern(this.eventTitleRegex) // Add your pattern here
+        Validators.pattern(this.eventTitleRegex), // Add your pattern here
       ]),
       // summary: new FormControl('', [Validators.required]),
       description: new UntypedFormControl('', [Validators.required, preventHtmlAndJs()]),
@@ -392,7 +396,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
 
   convertToMinutes(timeStr: string): number {
     const [time] = timeStr?.split(' ')
-    let [hours, minutes] = time?.split(':').map(Number)
+    const [hours, minutes] = time?.split(':').map(Number)
 
     return hours * 60 + minutes
   }
@@ -518,7 +522,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
             createdFor: createdforarray,
             startDateTime: this.combineDateAndTime(
               moment(this.createEventForm.controls['eventDate']?.value, 'YYYY-MM-DD').format('YYYY-MM-DD'),
-              this.createEventForm.controls['eventTime'].value + ':00+05:30'),
+              `${this.createEventForm.controls['eventTime'].value}:00+05:30`),
             endDateTime: this.combineDateAndTime(
               newendDate ? newendDate : moment(this.createEventForm.controls['eventDate']?.value, 'YYYY-MM-DD').format('YYYY-MM-DD'),
               finalTime
@@ -564,7 +568,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
             createdFor: createdforarray,
             startDateTime: this.combineDateAndTime(
               moment(this.createEventForm.controls['eventDate']?.value, 'YYYY-MM-DD').format('YYYY-MM-DD'),
-              this.createEventForm.controls['eventTime'].value + ':00+05:30'),
+              `${this.createEventForm.controls['eventTime'].value}:00+05:30`),
             endDateTime: this.combineDateAndTime(
               newendDate ? newendDate : moment(this.createEventForm.controls['eventDate']?.value, 'YYYY-MM-DD').format('YYYY-MM-DD'),
               finalTime
@@ -587,7 +591,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
     if (this.createEventForm.controls['state'] && this.createEventForm.controls['state'].value && this.showRajyaField) {
       this.reqPayload['request']['event']['resourceTypeDetails'] = this.getStateDetail()
     } else {
-      let certificateTemplate = this.getEventTemplate()
+      const certificateTemplate = this.getEventTemplate()
       if (certificateTemplate && Object.keys(certificateTemplate).length) {
         this.reqPayload['request']['event']['resourceTypeDetails'] = certificateTemplate
       }
@@ -599,7 +603,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
       this.disableCreateButton = false
       this.openSnackbar('Duration cannot be zero')
     } else {
-      //console.log('this.reqPayload', this.reqPayload)
+      // console.log('this.reqPayload', this.reqPayload)
       this.eventsSvc.createEvent(this.reqPayload).subscribe(
         res => {
           this.displayLoader = false
@@ -624,7 +628,6 @@ export class CreateEventComponent implements OnInit, OnDestroy {
     const isoString = dateObj.toISOString()
     return isoString.replace('Z', '+0000')
   }
-
 
   encodeToBase64(body: any) {
     const sString = JSON.stringify(body)
@@ -668,7 +671,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   }
 
   goToList() {
-    this.router.navigate([`/app/home/events`])
+    this.router.navigate(['/app/home/events'])
     this.events.raiseInteractTelemetry(
       {
         type: TelemetryEvents.EnumInteractTypes.CLICK,
@@ -682,24 +685,23 @@ export class CreateEventComponent implements OnInit, OnDestroy {
       width: '612px',
       data: res,
       panelClass: 'remove-overflow',
-      autoFocus: false
+      autoFocus: false,
     })
     this.dialogRef.afterClosed().subscribe(() => {
       this.loaderService.setLoaderState(true)
       setTimeout(() => {
         this.loaderService.setLoaderState(false)
-        this.router.navigate([`/app/home/events`])
-      }, 2000)
+        this.router.navigate(['/app/home/events'])
+      },         2000)
     })
   }
-
 
   resetDateField() {
     const control = this.createEventForm.get('eventDate')
     if (control) {
       control.setValue(this.currentDate)
     }
-    let eventTypeControl = this.createEventForm.get('eventType')
+    const eventTypeControl = this.createEventForm.get('eventType')
     if (eventTypeControl && eventTypeControl.value === 'Rajya Karmayogi Saptah') {
       if (this.stateList && this.stateList.length) {
         this.showRajyaField = true
@@ -708,7 +710,7 @@ export class CreateEventComponent implements OnInit, OnDestroy {
           if (control) {
             control.setValue(this.stateList[0]['stateOrMinistryName'])
           }
-        }, 0)
+        },         0)
 
       }
     } else {
@@ -718,22 +720,21 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   }
 
   getSlwResourceTypeDetail() {
-    let payload = {
-      "request": {
-        "type": "page",
-        "subType": "slwResourceTypeDetails",
-        "action": "page-configuration",
-        "component": "spv", "rootOrgId": "*"
-      }
+    const payload = {
+      'request': {
+        'type': 'page',
+        'subType': 'slwResourceTypeDetails',
+        'action': 'page-configuration',
+        'component': 'spv', 'rootOrgId': '*',
+      },
     }
-    this.eventsSvc.getSlwResourceTypeDetail(payload).subscribe((data) => {
+    this.eventsSvc.getSlwResourceTypeDetail(payload).subscribe(data => {
       if (data && data.slwResourceTypeDetails && data.slwResourceTypeDetails.length) {
         this.stateList = data.slwResourceTypeDetails
         this.eventTypeCertification = data.eventTypeCert || {}
         this.defaultCertification = data.defaultCertTemplate || {}
 
-
-        //this.createEventForm.get['state'].setValue(this.stateList[0]['stateOrMinistryName'])
+        // this.createEventForm.get['state'].setValue(this.stateList[0]['stateOrMinistryName'])
       }
 
       this.createEventForm.controls['state'].setValidators([Validators.required])

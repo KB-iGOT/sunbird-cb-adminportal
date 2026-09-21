@@ -12,7 +12,7 @@ import {
     styleUrls: ['./my-dashboard-home.component.scss', 'bootstrap-rain.scss'],
     /* tslint:disable-next-line */
     encapsulation: ViewEncapsulation.None,
-    standalone: false
+    standalone: false,
 })
 export class MyDashboardHomeComponent implements OnInit {
 

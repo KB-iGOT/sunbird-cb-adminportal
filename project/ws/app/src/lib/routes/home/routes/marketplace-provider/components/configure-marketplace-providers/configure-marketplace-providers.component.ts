@@ -9,7 +9,7 @@ import { HttpErrorResponse } from '@angular/common/http'
     selector: 'ws-app-configure-marketplace-providers',
     templateUrl: './configure-marketplace-providers.component.html',
     styleUrls: ['./configure-marketplace-providers.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class ConfigureMarketplaceProvidersComponent implements OnInit {
 
@@ -28,13 +28,13 @@ export class ConfigureMarketplaceProvidersComponent implements OnInit {
   helpCenterGuide = {
     header: 'Content Upload Details: Video Guides and Tips',
     guideNotes: [
-      `Upload the certificate using a SVG file.`,
+      'Upload the certificate using a SVG file.',
     ],
-    helpVideoLink: `/assets/public/content/guide-videos/CIOS_Updated_demo.mp4`,
+    helpVideoLink: '/assets/public/content/guide-videos/CIOS_Updated_demo.mp4',
   }
 
   instructionsList = [
-    'Please ensure the Certificate file is named correctly'
+    'Please ensure the Certificate file is named correctly',
   ]
 
   constructor(

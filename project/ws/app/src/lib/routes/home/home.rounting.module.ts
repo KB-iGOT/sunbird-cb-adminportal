@@ -326,7 +326,7 @@ const routes: Routes = [
           module: 'KnowledgeCenter',
           pageType: 'feature',
           pageKey: 'KnowledgeCenter',
-        }
+        },
       },
       {
         path: 'sectors',

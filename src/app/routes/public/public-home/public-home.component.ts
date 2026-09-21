@@ -4,7 +4,7 @@ import { Router } from '@angular/router'
     selector: 'ws-public-home',
     templateUrl: './public-home.component.html',
     styleUrls: ['./public-home.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class PublicHomeComponent implements OnInit {
 

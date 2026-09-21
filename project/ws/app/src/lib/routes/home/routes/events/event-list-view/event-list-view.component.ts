@@ -25,7 +25,7 @@ export interface IContentShareData {
   selector: 'ws-event-list-view',
   templateUrl: './event-list-view.component.html',
   styleUrls: ['./event-list-view.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class EventListViewComponent implements OnInit, AfterViewInit, OnChanges, AfterViewChecked {
 
@@ -217,7 +217,7 @@ export class EventListViewComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   onCreateClick() {
-    this.router.navigate([`/app/home/events/create-event`])
+    this.router.navigate(['/app/home/events/create-event'])
     // this.telemetrySvc.impression()
     this.events.raiseInteractTelemetry(
       {

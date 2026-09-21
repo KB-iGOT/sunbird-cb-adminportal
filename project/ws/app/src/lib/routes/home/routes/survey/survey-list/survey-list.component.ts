@@ -24,7 +24,7 @@ export interface IContentShareData {
   selector: 'ws-app-survey-list',
   templateUrl: './survey-list.component.html',
   styleUrls: ['./survey-list.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class SurveyListComponent implements OnInit, AfterViewInit, OnChanges, AfterViewChecked {
 

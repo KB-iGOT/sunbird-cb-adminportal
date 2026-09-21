@@ -10,7 +10,7 @@ import { RequestServiceService } from '../request-service.service'
     selector: 'ws-app-single-assign-popup',
     templateUrl: './single-assign-popup.component.html',
     styleUrls: ['./single-assign-popup.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class SingleAssignPopupComponent implements OnInit {
 
@@ -39,10 +39,10 @@ export class SingleAssignPopupComponent implements OnInit {
   }
 
   constructor(private fb: UntypedFormBuilder,
-    private requestService: RequestServiceService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private configService: ConfigResolveService,
-    public dialogRef: MatDialogRef<SingleAssignPopupComponent>,
+              private requestService: RequestServiceService,
+              @Inject(MAT_DIALOG_DATA) public data: any,
+              private configService: ConfigResolveService,
+              public dialogRef: MatDialogRef<SingleAssignPopupComponent>,
   ) {
     this.requestForm = this.fb.group({
       assignee: new UntypedFormControl('', Validators.required),
@@ -159,7 +159,7 @@ export class SingleAssignPopupComponent implements OnInit {
           this.dialogRef.close({ data: 'confirmed' })
         }
 
-      }, (error: any) => {
+      },                                                  (error: any) => {
         this.dialogRef.close({ error })
 
       }

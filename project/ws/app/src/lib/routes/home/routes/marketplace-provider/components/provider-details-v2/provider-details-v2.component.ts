@@ -16,7 +16,7 @@ import { ConformationPopupComponent } from '../../dialogs/conformation-popup/con
   selector: 'ws-app-provider-details-v2',
   templateUrl: './provider-details-v2.component.html',
   styleUrls: ['./provider-details-v2.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit {
   @Input() providerDetails: any
@@ -77,12 +77,12 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
           {
             label: 'Content Marketplace',
             route: '/app/home/marketplace-providers',
-            active: false
+            active: false,
           },
           {
             label: this.providerDetailsBeforeUpdate?.data?.contentPartnerName || 'New Provider',
-            active: true
-          }
+            active: true,
+          },
         ]
       )
     }
@@ -95,7 +95,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
   initializeForm(): void {
     this.providerDetailsForm = this.fb.group({
       contentPartnerName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_$/:\[\] ' !]*$/), Validators.maxLength(70)]],
-      partnerCode: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/), Validators.maxLength(6)],],
+      partnerCode: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^[a-zA-Z0-9]*$/), Validators.maxLength(6)]],
       websiteUrl: ['', [Validators.required, Validators.pattern(/^(https?|http):\/\/[^\s/$.?#].[^\s]*$/), Validators.maxLength(1024)]],
       description: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9,\.\-_$/:\[\] ' !]*$/), Validators.maxLength(500)]],
       providerTips: this.fb.array([]),
@@ -157,7 +157,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
       contactName: _.get(providerDetails, 'data.contactName', ''),
       email: _.get(providerDetails, 'data.email', ''),
       phone: _.get(providerDetails, 'data.phone', ''),
-      providerTips: []
+      providerTips: [],
     })
     if (this.logoPreviewUrl) {
       this.logoName = this.logoPreviewUrl.split('_')[1] || ''
@@ -241,7 +241,10 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
     const containerWidth = 800
     const containerHeight = containerWidth / aspectRatio
 
-    let drawWidth, drawHeight, offsetX, offsetY
+    let drawWidth
+    let drawHeight
+    let offsetX
+    let offsetY
 
     const imageAspect = image.width / image.height
 
@@ -272,6 +275,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
           lastModified: Date.now(),
         })
       }
+      // tslint:disable-next-line:align
     }, 'image/png')
 
     this.logoPreviewUrl = canvas.toDataURL('image/png')
@@ -393,7 +397,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
         },
         complete: () => {
           this.loaderService.setLoaderState(false)
-        }
+        },
       })
     } else {
       if (this.providerId) {
@@ -427,8 +431,8 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
           if (response?.params?.status === 'success') {
             this.providerDetailsBeforeUpdate = response?.result
             this.providerId = response?.result?.id
-            this.router.navigate([`/app/home/marketplace-providers/configure-provider`], {
-              queryParams: { id: this.providerId }
+            this.router.navigate(['/app/home/marketplace-providers/configure-provider'], {
+              queryParams: { id: this.providerId },
             })
             this.marketplaceSvc.newProviderAdded.next(this.providerId)
             setTimeout(() => {
@@ -436,6 +440,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
               this.showSnackBar(successMsg, 'success')
               this.loaderService.setLoaderState(false)
 
+              // tslint:disable-next-line:align
             }, 1000)
           } else {
             this.showSnackBar(response?.params?.errMsg || 'Failed to create provider', 'error')
@@ -463,7 +468,11 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
       updatePayload['data']['contentPartnerName'] = formDetails.contentPartnerName
       updatePayload['data']['providerTips'] = formDetails.providerTips
       updatePayload['data']['link'] = this.logoPreviewUrl
-      updatePayload['data']['partnerCode'] = _.get(formDetails, 'partnerCode', _.get(this.providerDetailsForm, 'controls.partnerCode.value', '')).toUpperCase()
+      updatePayload['data']['partnerCode'] = _.get(
+        formDetails,
+        'partnerCode',
+        _.get(this.providerDetailsForm, 'controls.partnerCode.value', '')
+      ).toUpperCase()
 
       if (this.uploadedPdfUrl) {
         updatePayload['data']['documentUrl'] = this.uploadedPdfUrl
@@ -483,6 +492,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
               this.showSnackBar(successMsg, 'success')
               this.loaderService.setLoaderState(false)
 
+              // tslint:disable-next-line:align
             }, 1000)
           }
         },
@@ -501,6 +511,7 @@ export class ProviderDetailsV2Component implements OnChanges, OnDestroy, OnInit 
   showSnackBar(message: string, type: 'error' | 'success') {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: {
+        // tslint:disable-next-line:object-literal-shorthand
         message: message, type: type,
       }, duration: 5000, panelClass: type,
     })

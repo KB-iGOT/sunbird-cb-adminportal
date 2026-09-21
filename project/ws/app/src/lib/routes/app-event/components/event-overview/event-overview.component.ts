@@ -7,7 +7,7 @@ import { EventService } from '../../services/event.service'
     selector: 'ws-app-event-overview',
     templateUrl: './event-overview.component.html',
     styleUrls: ['./event-overview.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class EventOverviewComponent implements OnInit {
 

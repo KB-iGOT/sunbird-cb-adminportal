@@ -6,7 +6,7 @@ import { FormControl } from '@angular/forms'
 import { catchError, delay, map } from 'rxjs/operators'
 import { forkJoin, of, Subscription } from 'rxjs'
 import * as _ from 'lodash'
-import { ActivatedRoute, Router, } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { DatePipe } from '@angular/common'
 import { ConfirmationBoxComponent } from '../../../../../home/components/confirmation-box/confirmation.box.component'
 import { LoaderService } from '../../../../../home/services/loader.service'
@@ -18,12 +18,12 @@ import { ConformationPopupDesignationComponent } from '../../../../../home/compo
   selector: 'ws-app-import-designation',
   templateUrl: './import-designation.component.html',
   styleUrls: ['./import-designation.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class ImportDesignationComponent implements OnInit, OnDestroy {
-  @Output() closeComponent: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Input() loader: boolean = false;
-  @Input() importMasterflag: boolean = false;
+  @Output() closeComponent: EventEmitter<boolean> = new EventEmitter<boolean>()
+  @Input() loader: boolean = false
+  @Input() importMasterflag: boolean = false
   environmentVal: any
   designationConfig: any
   frameworkConfig: any
@@ -309,7 +309,7 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
             (this.designationsImportSuccessResponses.length / 2) * 1000 : 10000
           setTimeout(() => {
             this.dialogRef.close(true)
-          }, refreshTime)
+          },         refreshTime)
 
         }
       },
@@ -382,8 +382,7 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
       dialogRef.afterClosed().subscribe(() => {
         if (this.importMasterflag) {
           this.router.navigate(['/app/home/directory/organisation'])
-        }
-        else {
+        } else {
           this.navigateToMyDesignations()
         }
       })
@@ -397,7 +396,7 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
         } else {
           this.navigateToMyDesignations()
         }
-      }, 4000)
+      },         4000)
 
     }
   }
@@ -410,7 +409,7 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
   private openSnackbar(primaryMsg: any, duration: number = 5000, type?: string) {
     this.snackBar.open(primaryMsg, 'X', {
       duration,
-      panelClass: [type ? type : '']
+      panelClass: [type ? type : ''],
     })
   }
 

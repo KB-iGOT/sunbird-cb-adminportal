@@ -10,7 +10,7 @@ interface IButtonChannelAnalytics {
     selector: 'ws-widget-btn-channel-analytics',
     templateUrl: './btn-channel-analytics.component.html',
     styleUrls: ['./btn-channel-analytics.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class BtnChannelAnalyticsComponent extends WidgetBaseComponent
   implements NsWidgetResolver.IWidgetData<IButtonChannelAnalytics> {

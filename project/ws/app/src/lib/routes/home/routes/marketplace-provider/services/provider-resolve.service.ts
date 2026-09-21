@@ -27,6 +27,7 @@ export class ProviderResolveService implements Resolve<IResolveResponse<any>> {
         const response: any = await this.marketPlaceSvc.readRegisteredProviderDetails(partnerId).toPromise()
         if (response?.params?.status === 'success') {
           return { data: response, error: null }
+          // tslint:disable-next-line:no-else-after-return
         } else {
           return { data: null, error: response?.params?.errMsg }
         }
@@ -35,11 +36,13 @@ export class ProviderResolveService implements Resolve<IResolveResponse<any>> {
         return { data: null, error: errmsg }
       }
 
+      // tslint:disable-next-line:no-else-after-return
     } else if (partnerId) {
       try {
         const response: any = await this.marketPlaceSvc.getProviderDetails(partnerId).toPromise()
         if (response?.params?.status === 'success') {
           return { data: response, error: null }
+          // tslint:disable-next-line:no-else-after-return
         } else {
           return { data: null, error: response?.params?.errMsg }
         }

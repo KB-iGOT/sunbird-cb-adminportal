@@ -37,6 +37,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
         BtnContentFeedbackV2Component,
         BtnContentFeedbackDialogV2Component,
         FeedbackSnackbarComponent,
-    ]
+    ],
 })
 export class BtnContentFeedbackV2Module { }

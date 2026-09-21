@@ -5,7 +5,7 @@ import { ConfigurationsService, NsPage } from '@sunbird-cb/utils-v2'
     selector: 'ws-app-contact-home',
     templateUrl: './contact-home.component.html',
     styleUrls: ['./contact-home.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class ContactHomeComponent implements OnInit {
   contactUsMail = ''

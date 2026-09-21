@@ -12,7 +12,7 @@ import { IManageUser } from '../../../services/system-roles-management.model'
     selector: 'ws-admin-create-user',
     templateUrl: './create-user.component.html',
     styleUrls: ['./create-user.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class CreateUserComponent implements OnInit {
   roleList!: string[]

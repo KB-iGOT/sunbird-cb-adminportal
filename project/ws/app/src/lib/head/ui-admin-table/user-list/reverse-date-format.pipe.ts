@@ -3,7 +3,7 @@ import * as _ from 'lodash'
 
 @Pipe({
     name: 'ddMMYYYYFormat',
-    standalone: false
+    standalone: false,
 })
 export class ReverseDateFormatPipe implements PipeTransform {
 

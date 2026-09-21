@@ -24,6 +24,6 @@ import { ImageCropComponent } from './image-crop.component'
         MatTooltipModule,
         MatSliderModule,
     ],
-    exports: [ImageCropComponent]
+    exports: [ImageCropComponent],
 })
 export class ImageCropModule { }

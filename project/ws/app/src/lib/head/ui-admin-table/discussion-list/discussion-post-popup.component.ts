@@ -22,15 +22,15 @@ export interface IDialogData {
     selector: 'discussion-popup.component',
     templateUrl: 'discussion-popup.component.html',
     styleUrls: ['./discussion-post.component.scss'],
-    standalone: false
+    standalone: false,
 })
 
 export class DialogTextProfanityComponent implements OnInit {
   profaneGroup: UntypedFormGroup
 
   constructor(fb: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<DialogTextProfanityComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: IDialogData,
+              public dialogRef: MatDialogRef<DialogTextProfanityComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: IDialogData,
   ) {
 
     const temp: any = {}

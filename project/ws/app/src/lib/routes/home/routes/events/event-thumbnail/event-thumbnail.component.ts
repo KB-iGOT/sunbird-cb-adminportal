@@ -5,7 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
     selector: 'ws-event-thumbnail',
     templateUrl: './event-thumbnail.component.html',
     styleUrls: ['./event-thumbnail.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class EventThumbnailComponent implements OnInit {
 

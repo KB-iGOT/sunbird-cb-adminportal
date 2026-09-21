@@ -11,7 +11,7 @@ import { NavigationExternalService } from '../../services/navigation-external.se
     selector: 'ws-app-nav-bar',
     templateUrl: './app-nav-bar.component.html',
     styleUrls: ['./app-nav-bar.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class AppNavBarComponent implements OnInit, OnChanges {
   @Input() mode: 'top' | 'bottom' = 'top'

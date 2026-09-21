@@ -27,8 +27,8 @@ export class ConfigurationsService {
   appSetup = true
   // The url the user tried to access while landing in the app before accepting tnc
   userUrl = ''
-  baseUrl = `assets/configurations`
-  sitePath = `assets/configurations`
+  baseUrl = 'assets/configurations'
+  sitePath = 'assets/configurations'
   hostPath = (window.location.host).replace(':', '_')
 
   userRoles: Set<string> | null = null

@@ -39,7 +39,7 @@ export class PlainCkeditorComponent implements OnInit {
       this.html = val
     }
   }
-
+  // tslint:disable-next-line:variable-name
   Editor = ClassicEditor
 
   config = {

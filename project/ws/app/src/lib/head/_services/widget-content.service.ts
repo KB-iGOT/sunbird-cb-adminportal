@@ -12,7 +12,7 @@ const PROTECTED_SLAG_V8 = '/apis/protected/v8'
 
 const API_END_POINTS = {
   CONTENT: `${PROTECTED_SLAG_V8}/content`,
-  AUTHORING_CONTENT: `/apis/authApi/hierarchy`,
+  AUTHORING_CONTENT: '/apis/authApi/hierarchy',
   CONTENT_LIKES: `${PROTECTED_SLAG_V8}/content/likeCount`,
   SET_S3_COOKIE: `${PROTECTED_SLAG_V8}/content/setCookie`,
   SET_S3_IMAGE_COOKIE: `${PROTECTED_SLAG_V8}/content/setImageCookie`,
@@ -20,18 +20,18 @@ const API_END_POINTS = {
   FETCH_WEB_MODULE_FILES: `${PROTECTED_SLAG_V8}/content/getWebModuleFiles`,
   MULTIPLE_CONTENT: `${PROTECTED_SLAG_V8}/content/multiple`,
   CONTENT_SEARCH_V5: `${PROTECTED_SLAG_V8}/content/searchV5`,
-  CONTENT_SEARCH_V6: `/apis/proxies/v8/sunbirdigot/read`,
+  CONTENT_SEARCH_V6: '/apis/proxies/v8/sunbirdigot/read',
   CONTENT_SEARCH_REGION_RECOMMENDATION: `${PROTECTED_SLAG_V8}/content/searchRegionRecommendation`,
   CONTENT_HISTORY: `${PROTECTED_SLAG_V8}/user/history`,
-  CONTENT_HISTORYV2: `/apis/proxies/v8/read/content-progres`,
-  COURSE_BATCH_LIST: `/apis/proxies/v8/learner/course/v1/batch/list`,
+  CONTENT_HISTORYV2: '/apis/proxies/v8/read/content-progres',
+  COURSE_BATCH_LIST: '/apis/proxies/v8/learner/course/v1/batch/list',
   USER_CONTINUE_LEARNING: `${PROTECTED_SLAG_V8}/user/history/continue`,
   CONTENT_RATING: `${PROTECTED_SLAG_V8}/user/rating`,
   COLLECTION_HIERARCHY: (type: string, id: string) =>
     `${PROTECTED_SLAG_V8}/content/collection/${type}/${id}`,
   REGISTRATION_STATUS: `${PROTECTED_SLAG_V8}/admin/userRegistration/checkUserRegistrationContent`,
   MARK_AS_COMPLETE_META: (contentId: string) => `${PROTECTED_SLAG_V8}/user/progress/${contentId}`,
-  ENROLL_BATCH: `/apis/proxies/v8/learner/course/v1/enrol`,
+  ENROLL_BATCH: '/apis/proxies/v8/learner/course/v1/enrol',
 }
 
 @Injectable({

@@ -5,15 +5,15 @@ import { Observable } from 'rxjs'
 import { HttpClient } from '@angular/common/http'
 
 const API_END_POINTS = {
-  SEARCH_ARTICLES: `/apis/proxies/v8/knowledge/centre/spv/search`,
-  CREATE_SUB_CATEGORY: `/apis/proxies/v8/knowledge/centre/create/subcategory`,
+  SEARCH_ARTICLES: '/apis/proxies/v8/knowledge/centre/spv/search',
+  CREATE_SUB_CATEGORY: '/apis/proxies/v8/knowledge/centre/create/subcategory',
   UPDATE_SUB_CATEGORY: (id: string) => `/apis/proxies/v8/knowledge/centre/update/subcategory/${id}`,
-  CREATE_ARTICLE: `/apis/proxies/v8/knowledge/centre/create/article`,
+  CREATE_ARTICLE: '/apis/proxies/v8/knowledge/centre/create/article',
   UPDATE_ARTICLE: (id: string) => `/apis/proxies/v8/knowledge/centre/update/article/${id}`,
   DELETE_ARTICLE: (id: string) => `/apis/proxies/v8/knowledge/centre/delete/article/${id}`,
   DELETE_SUB_CATEGORY: (id: string) => `/apis/proxies/v8/knowledge/centre/delete/subcategory/${id}`,
-  PUBLISH_ARTICLE: `/apis/proxies/v8/knowledge/centre/publish/article`,
-  PUBLISH_SUB_CATEGORY: `/apis/proxies/v8/knowledge/centre/publish/subcategory`,
+  PUBLISH_ARTICLE: '/apis/proxies/v8/knowledge/centre/publish/article',
+  PUBLISH_SUB_CATEGORY: '/apis/proxies/v8/knowledge/centre/publish/subcategory',
 }
 
 @Injectable({

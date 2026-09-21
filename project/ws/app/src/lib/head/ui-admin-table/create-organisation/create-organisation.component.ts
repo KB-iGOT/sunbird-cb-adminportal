@@ -12,7 +12,7 @@ import { Subject } from 'rxjs'
   selector: 'ws-app-create-organisation',
   templateUrl: './create-organisation.component.html',
   styleUrls: ['./create-organisation.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class CreateOrganisationComponent implements OnInit, OnDestroy {
 
@@ -37,7 +37,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
   selectedLogoName = ''
   validFileTypes = ['image/png', 'image/jpeg', 'image/jpg']
   maxFileSize = 5  // In MB
-  loggedInUserId = ""
+  loggedInUserId = ''
   isLoading = false
   filteredStates: any[] = []
   filteredMinistry: any[] = []
@@ -49,7 +49,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
   organizationNameList: string[] = []
   ORG_NAME_PATTERN = /^[a-zA-Z0-9\s&.,'() -]+$/
 
-  untilDestroyed$ = new Subject<void>();
+  untilDestroyed$ = new Subject<void>()
   isMatcompleteOpened = false
   isStateLogin = false
   disableStateBlock = false
@@ -104,7 +104,6 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
     }
   }
 
-
   ngOnDestroy(): void {
     this.removeOverflowHidden()
 
@@ -138,16 +137,16 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
 
     this.organisationForm = this.formBuilder.group({
       organisationName: new FormControl(_.get(this.rowData, 'organisation', ''),
-        [
+                                        [
           Validators.required,
           Validators.maxLength(100),
-          Validators.pattern(this.ORG_NAME_PATTERN)
+          Validators.pattern(this.ORG_NAME_PATTERN),
         ]),
       category: new FormControl(_.get(this.rowData, 'type', '') || 'State', [Validators.required]),
       state: new FormControl(_.get(this.rowData, 'state', '')),
       ministry: new FormControl(_.get(this.rowData, 'ministry', '')),
       autonomous: new FormControl(''),
-      description: new FormControl(_.get(this.rowData, 'description', ''), [Validators.required, Validators.maxLength(1000)])
+      description: new FormControl(_.get(this.rowData, 'description', ''), [Validators.required, Validators.maxLength(1000)]),
     })
 
     this.selectedLogo = this.rowData?.logo || ''
@@ -240,7 +239,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
 
     this.organisationForm.controls.organisationName.valueChanges
       .pipe(takeUntil(this.untilDestroyed$), debounceTime(500), distinctUntilChanged())
-      .subscribe((_value) => {
+      .subscribe(_value => {
         const control = this.organisationForm.controls.organisationName
         const existingErrors = control.errors || {}
         const duplicateError = this.createDuplicateOrgNameValidator(this.organizationNameList)(control)
@@ -265,7 +264,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       state: '',
       ministry: '',
       autonomous: '',
-      description: ''
+      description: '',
     })
     this.selectedLogo = null
     this.selectedLogoName = ''
@@ -277,46 +276,46 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
 
   closeNaveBar() {
     const event = {
-      action: 'close'
+      action: 'close',
     }
     this.buttonClick?.emit(event)
   }
 
   onSubmitCreateOrganization() {
-    let payload: any = {
-      orgName: this.controls['organisationName']?.value || "",
-      channel: this.controls['organisationName']?.value || "",
+    const payload: any = {
+      orgName: this.controls['organisationName']?.value || '',
+      channel: this.controls['organisationName']?.value || '',
       organisationType: this.entityType === 'volunteer' ? 'ngo' : 'mdo',
-      organisationSubType: "board",
+      organisationSubType: 'board',
       isTenant: true,
       requestedBy: this.loggedInUserId,
-      logo: this.uploadedLogoResponse?.qrcodepath || "",
-      description: this.controls['description']?.value || "",
-      parentMapId: "",
-      sbRootOrgId: "",
-      ministryOrStateId: ""
+      logo: this.uploadedLogoResponse?.qrcodepath || '',
+      description: this.controls['description']?.value || '',
+      parentMapId: '',
+      sbRootOrgId: '',
+      ministryOrStateId: '',
     }
     if (this.controls['category']?.value === 'state') {
       const orgDetails = _.find(this.statesList, { orgName: this.stateName })
       if (orgDetails) {
-        payload.parentMapId = orgDetails?.mapId || "" // Assign mapId from orgDetails
-        payload['sbRootOrgId'] = orgDetails?.sbOrgId || ""
-        payload['ministryOrStateId'] = orgDetails?.sbOrgId || ""
+        payload.parentMapId = orgDetails?.mapId || '' // Assign mapId from orgDetails
+        payload['sbRootOrgId'] = orgDetails?.sbOrgId || ''
+        payload['ministryOrStateId'] = orgDetails?.sbOrgId || ''
       } else if (this.controls['state']?.value?.mapId) {
-        payload.parentMapId = this.controls['state'].value?.mapId || ""// Fallback to state control mapId
-        payload['sbRootOrgId'] = this.controls['state']?.value?.sbOrgId || ""
-        payload['ministryOrStateId'] = this.controls['state']?.value?.sbOrgId || ""
+        payload.parentMapId = this.controls['state'].value?.mapId || ''// Fallback to state control mapId
+        payload['sbRootOrgId'] = this.controls['state']?.value?.sbOrgId || ''
+        payload['ministryOrStateId'] = this.controls['state']?.value?.sbOrgId || ''
       } else {
         return // Exit function in case of error
       }
     } else if (this.controls['category']?.value === 'autonomous') {
       const autonomousOrg = this.controls['autonomous']?.value
-      payload.parentMapId = autonomousOrg?.mapId || ""
-      payload['sbRootOrgId'] = autonomousOrg?.sbOrgId ||""
+      payload.parentMapId = autonomousOrg?.mapId || ''
+      payload['sbRootOrgId'] = autonomousOrg?.sbOrgId || ''
     } else if (this.controls['ministry']?.value?.mapId) {
-      payload.parentMapId = this.controls['ministry'].value?.mapId || ""// Assign ministry mapId
-      payload['sbRootOrgId'] = this.controls['ministry']?.value?.sbOrgId || ""
-      payload['ministryOrStateId'] = this.controls['ministry']?.value?.sbOrgId || ""
+      payload.parentMapId = this.controls['ministry'].value?.mapId || ''// Assign ministry mapId
+      payload['sbRootOrgId'] = this.controls['ministry']?.value?.sbOrgId || ''
+      payload['ministryOrStateId'] = this.controls['ministry']?.value?.sbOrgId || ''
     }
     if (this.openMode === 'editMode') {
       this.updateOrganization(payload)
@@ -335,7 +334,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
 
         // Check if responseCode indicates an error
         if (response.responseCode && response.responseCode.includes('ERROR')) {
-          const errorMessage = response.params?.errmsg || `Something went wrong, please try again later`
+          const errorMessage = response.params?.errmsg || 'Something went wrong, please try again later'
           this.snackBar.open(errorMessage, 'X', { panelClass: ['error'] })
         } else if (response.result && Object.keys(response.result).length > 0) {
           this.organizationCreated.emit(payload)
@@ -346,9 +345,9 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       error: (error: any) => {
         this.loaderService.changeLoad.next(false)
         this.isLoading = false
-        const errorMessage = error.error?.params?.errmsg || `Something went wrong, please try again later`
+        const errorMessage = error.error?.params?.errmsg || 'Something went wrong, please try again later'
         this.snackBar.open(errorMessage, 'X', { panelClass: ['error'] })
-      }
+      },
     })
   }
   private updateOrganization(request: any): void {
@@ -361,7 +360,7 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       // organisationSubType: "board",
       orgId: this.rowData.id,
       logo: this.uploadedLogoResponse?.qrcodepath || this.rowData.logo,
-      description: request.description
+      description: request.description,
     }
 
     this.createMDOService.updateOrganizationV2(payload).subscribe({
@@ -375,10 +374,11 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
         }
       },
       error: (error: any) => {
+        // tslint:disable-next-line:no-console
         console.error(error)
         this.loaderService.changeLoad.next(false)
         this.isLoading = false
-      }
+      },
     })
   }
 
@@ -401,7 +401,6 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
       }
       this.uploadOrganizationLogo()
     } else {
-
 
       this.isLoading = false
     }
@@ -440,7 +439,6 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
     // })
   }
 
-
   onSelectStateMinistry(org: any) {
     this.getOrganization(org.orgName, this.controls['category'].value)
   }
@@ -456,18 +454,18 @@ export class CreateOrganisationComponent implements OnInit, OnDestroy {
           this.uploadedLogoResponse = response.result
           this.selectedLogo = this.uploadedLogoResponse.qrcodepath
         } else {
-          this.snackBar.open(`Couldn't upload the logo, Please try again`, 'X', { panelClass: ['error'] })
+          this.snackBar.open("Couldn't upload the logo, Please try again", 'X', { panelClass: ['error'] })
           this.selectedLogoFile = null
           this.selectedLogoName = ''
         }
       },
       error: () => {
-        this.snackBar.open(`Couldn't upload the logo, Please try again`, 'X', { panelClass: ['error'] })
+        this.snackBar.open("Couldn't upload the logo, Please try again", 'X', { panelClass: ['error'] })
         this.selectedLogoFile = null
         this.selectedLogoName = ''
 
         this.isLoading = false
-      }
+      },
     })
   }
 

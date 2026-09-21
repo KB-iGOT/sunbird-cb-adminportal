@@ -9,7 +9,7 @@ import { ILoginDescriptiveFooterConfig, IWSPublicLoginConfig } from './login.mod
     selector: 'ws-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class LoginComponent implements OnInit, OnDestroy {
   objectKeys = Object.keys
