@@ -123,6 +123,9 @@ import { PublicFaqModule } from './routes/public/public-faq/public-faq.module'
 import { TncComponent } from './routes/tnc/tnc.component'
 import { AppInterceptorService } from './services/app-interceptor.service'
 import { AppRetryInterceptorService } from './services/app-retry-interceptor.service'
+import { DeviceKeyService } from './services/device-key.service'
+import { DeviceSigningInterceptorService } from './services/device-signing-interceptor.service'
+import { installDeviceXhrSigning } from './services/device-xhr-signing'
 import { TncAppResolverService } from './services/tnc-app-resolver.service'
 import { TncPublicResolverService } from './services/tnc-public-resolver.service'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
@@ -386,6 +389,8 @@ const getBaseHref = (platformLocation: PlatformLocation): string => {
       },
       { provide: HTTP_INTERCEPTORS, useClass: AppInterceptorService, multi: true },
       { provide: HTTP_INTERCEPTORS, useClass: AppRetryInterceptorService, multi: true },
+      // must stay after the retry interceptor so retried requests are re-signed with a fresh nonce
+      { provide: HTTP_INTERCEPTORS, useClass: DeviceSigningInterceptorService, multi: true },
       TncAppResolverService,
       TncPublicResolverService,
       PipeContentRoutePipe,
@@ -404,4 +409,9 @@ const getBaseHref = (platformLocation: PlatformLocation): string => {
       provideHttpClient(withInterceptorsFromDi(), withJsonpSupport())
     ]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(deviceKeySvc: DeviceKeyService) {
+    // covers API calls made outside Angular's HttpClient (e.g. telemetry SDK via jQuery.ajax)
+    installDeviceXhrSigning(deviceKeySvc)
+  }
+}
