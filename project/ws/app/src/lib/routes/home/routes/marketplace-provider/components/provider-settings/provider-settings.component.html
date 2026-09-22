@@ -166,6 +166,9 @@
           <mat-error *ngIf="providerSettingsForm?.controls['karmaCoinModifier'].hasError('min')">
             Minimum value allowed is 1.00.
           </mat-error>
+          <mat-error *ngIf="providerSettingsForm?.controls['karmaCoinModifier'].hasError('max')">
+            Maximum value allowed is 100.
+          </mat-error>
           <mat-error *ngIf="providerSettingsForm?.controls['karmaCoinModifier'].hasError('pattern')">
             Only up to 2 digits are allowed after the decimal point.
           </mat-error>
