@@ -160,16 +160,16 @@
         <mat-form-field class="w-full">
           <input formControlName="karmaCoinModifier" matInput placeholder="Set Multiplier" type="text"
             inputmode="decimal" (keypress)="decimalOnly($event)" (paste)="onPasteDecimal($event)" />
-          <mat-error *ngIf="providerSettingsForm?.controls['karmaCoinModifier'].hasError('required')">
+          <mat-error *ngIf="providerSettingsForm?.controls['karmaCoinModifier']?.hasError('required')">
             Karma Coin Multiplier is required.
           </mat-error>
-          <mat-error *ngIf="providerSettingsForm?.controls['karmaCoinModifier'].hasError('min')">
+          <mat-error *ngIf="providerSettingsForm?.controls['karmaCoinModifier']?.hasError('min')">
             Minimum value allowed is 1.00.
           </mat-error>
-          <mat-error *ngIf="providerSettingsForm?.controls['karmaCoinModifier'].hasError('max')">
+          <mat-error *ngIf="providerSettingsForm?.controls['karmaCoinModifier']?.hasError('max')">
             Maximum value allowed is 100.
           </mat-error>
-          <mat-error *ngIf="providerSettingsForm?.controls['karmaCoinModifier'].hasError('pattern')">
+          <mat-error *ngIf="providerSettingsForm?.controls['karmaCoinModifier']?.hasError('pattern')">
             Only up to 2 digits are allowed after the decimal point.
           </mat-error>
         </mat-form-field>
