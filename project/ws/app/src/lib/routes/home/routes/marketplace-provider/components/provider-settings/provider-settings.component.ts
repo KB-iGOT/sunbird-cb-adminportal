@@ -134,7 +134,7 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
         this.controls['karmaPoints'].enable()
 
         this.controls['karmaCoinModifier'].setValidators(
-          [Validators.required, Validators.min(1), Validators.pattern(/^\d+(\.\d{1,2})?$/)]
+          [Validators.required, Validators.min(1), Validators.max(100), Validators.pattern(/^\d+(\.\d{1,2})?$/)]
         )
         if (!this.controls['karmaCoinModifier'].value) {
           this.controls['karmaCoinModifier'].setValue(KARMA_COIN_MODIFIER_DEFAULT)
@@ -230,12 +230,20 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
       return false
     }
 
+    const selectionStart = input.selectionStart ?? value.length
+    const selectionEnd = input.selectionEnd ?? value.length
+    const newValue = value.slice(0, selectionStart) + key + value.slice(selectionEnd)
+
+    if (parseFloat(newValue) > 100) {
+      return false
+    }
+
     return true
   }
 
   onPasteDecimal(event: ClipboardEvent) {
     const pastedValue = event.clipboardData?.getData('text') ?? ''
-    if (!/^\d*(\.\d{0,2})?$/.test(pastedValue)) {
+    if (!/^\d*(\.\d{0,2})?$/.test(pastedValue) || parseFloat(pastedValue) > 100) {
       event.preventDefault()
     }
   }
