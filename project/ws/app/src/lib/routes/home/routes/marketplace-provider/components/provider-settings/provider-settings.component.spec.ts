@@ -179,6 +179,27 @@ describe('ProviderSettingsComponent', () => {
       expect(component.controls['karmaPoints'].disabled).toBe(true)
     })
 
+    it('should reset karmaCoinModifier to the default value when its value is falsy while addKarmaPointEnabled is toggled on', () => {
+      component.controls['karmaCoinModifier'].setValue('')
+      component.controls['addKarmaPointEnabled'].setValue(true)
+      expect(component.controls['karmaCoinModifier'].value).toBe('1.00')
+      expect(component.controls['karmaCoinModifier'].enabled).toBe(true)
+    })
+
+    it('should not override an existing karmaCoinModifier value while addKarmaPointEnabled is toggled on', () => {
+      component.controls['karmaCoinModifier'].setValue('25.50')
+      component.controls['addKarmaPointEnabled'].setValue(true)
+      expect(component.controls['karmaCoinModifier'].value).toBe('25.50')
+    })
+
+    it('should mark karmaCoinModifier invalid when it exceeds the max value of 100', () => {
+      component.controls['addKarmaPointEnabled'].setValue(true)
+      component.controls['karmaCoinModifier'].setValue('101')
+      expect(component.controls['karmaCoinModifier'].hasError('max')).toBe(true)
+      component.controls['karmaCoinModifier'].setValue('100')
+      expect(component.controls['karmaCoinModifier'].hasError('max')).toBe(false)
+    })
+
     it('should enable group with validators when karmaPointsExemptionEnabled is toggled on', () => {
       component.controls['karmaPointsExemptionEnabled'].setValue(true)
       expect(component.controls['group'].enabled).toBe(true)
@@ -303,6 +324,7 @@ describe('ProviderSettingsComponent', () => {
 
     it('should call updateProviderSettings when the form is valid and providerDetails has an id', () => {
       const updateSpy = jest.spyOn(component, 'updateProviderSettings').mockImplementation()
+      component.controls['overAllLimit'].setValue(10)
       component.providerDetails = { id: '1' }
       component.submit()
       expect(updateSpy).toHaveBeenCalled()
@@ -310,6 +332,7 @@ describe('ProviderSettingsComponent', () => {
 
     it('should call createProviderSettings when the form is valid and providerDetails has no id', () => {
       const createSpy = jest.spyOn(component, 'createProviderSettings').mockImplementation()
+      component.controls['overAllLimit'].setValue(10)
       component.providerDetails = undefined
       component.submit()
       expect(createSpy).toHaveBeenCalled()
@@ -318,6 +341,7 @@ describe('ProviderSettingsComponent', () => {
 
   describe('createProviderSettings', () => {
     it('should build the payload with optional fields and show a success message', () => {
+      component.providerDetailsBeforeUpdate = { data: {} }
       const emitSpy = jest.spyOn(component.loadProviderDetails, 'emit')
       component.controls['isUserWiseLimitEnabled'].setValue(true)
       component.controls['userWiseLimit'].setValue(10)
@@ -425,6 +449,76 @@ describe('ProviderSettingsComponent', () => {
     it('should open the snackbar with the given message', () => {
       component.showSnackBar('hello')
       expect(snackBar.open).toHaveBeenCalledWith('hello')
+    })
+  })
+
+  describe('decimalOnly', () => {
+    const makeEvent = (key: string, value: string, selectionStart?: any, selectionEnd?: any): any => ({
+      key,
+      target: { value, selectionStart, selectionEnd },
+    })
+
+    it('should reject non-numeric, non-dot keys', () => {
+      expect(component.decimalOnly(makeEvent('a', '', 0, 0))).toBe(false)
+    })
+
+    it('should allow a dot when the value has no dot yet', () => {
+      expect(component.decimalOnly(makeEvent('.', '12', 2, 2))).toBe(true)
+    })
+
+    it('should reject a second dot', () => {
+      expect(component.decimalOnly(makeEvent('.', '12.5', 4, 4))).toBe(false)
+    })
+
+    it('should reject a digit when 2 decimal digits are already present after the dot', () => {
+      expect(component.decimalOnly(makeEvent('5', '12.34', 5, 5))).toBe(false)
+    })
+
+    it('should allow a digit when fewer than 2 decimal digits are present after the dot', () => {
+      expect(component.decimalOnly(makeEvent('4', '12.3', 4, 4))).toBe(true)
+    })
+
+    it('should reject a digit when the resulting value would exceed 100', () => {
+      expect(component.decimalOnly(makeEvent('9', '99', 2, 2))).toBe(false)
+    })
+
+    it('should allow a digit when the resulting value is exactly 100', () => {
+      expect(component.decimalOnly(makeEvent('0', '10', 2, 2))).toBe(true)
+    })
+
+    it('should fall back to the value length when selectionStart/selectionEnd are undefined', () => {
+      expect(component.decimalOnly(makeEvent('5', '', undefined, undefined))).toBe(true)
+    })
+  })
+
+  describe('onPasteDecimal', () => {
+    const makePasteEvent = (text?: string): any => ({
+      clipboardData: text === undefined ? undefined : { getData: jest.fn(() => text) },
+      preventDefault: jest.fn(),
+    })
+
+    it('should prevent paste when the pasted value does not match the decimal pattern', () => {
+      const event = makePasteEvent('abc')
+      component.onPasteDecimal(event)
+      expect(event.preventDefault).toHaveBeenCalled()
+    })
+
+    it('should prevent paste when the pasted value exceeds 100', () => {
+      const event = makePasteEvent('150')
+      component.onPasteDecimal(event)
+      expect(event.preventDefault).toHaveBeenCalled()
+    })
+
+    it('should allow paste when the pasted value is a valid decimal within range', () => {
+      const event = makePasteEvent('99.99')
+      component.onPasteDecimal(event)
+      expect(event.preventDefault).not.toHaveBeenCalled()
+    })
+
+    it('should allow paste when clipboardData is unavailable', () => {
+      const event = makePasteEvent(undefined)
+      component.onPasteDecimal(event)
+      expect(event.preventDefault).not.toHaveBeenCalled()
     })
   })
 })
