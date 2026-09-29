@@ -18,6 +18,76 @@
   }
 }
 
-::ng-deep .addCardButtonNew .mdc-button__label {
-  padding: 0 18px !important
+.kcm-taxonomy-view {
+  min-height: 0;
+  overflow: hidden;
+
+  lib-taxonomy-view {
+    display: block;
+    height: 100%;
+    overflow: hidden;
+  }
+}
+
+// LeaderLine appends its SVGs directly to body. Keeping them fixed prevents
+// off-screen taxonomy cards from increasing the document's scroll height.
+::ng-deep body:has(ws-app-kcm-mapping) > .leader-line {
+  position: fixed !important;
+}
+
+// Keep the footer above the body-level connector SVGs without changing the
+// connector stacking order inside the taxonomy area.
+::ng-deep body:has(ws-app-kcm-mapping) ws-app-footer.app-footer {
+  position: relative;
+  z-index: 100;
+}
+
+// The taxonomy action menu is rendered in the global CDK overlay. Remove only
+// its default vertical padding so a single "Add" action stays compact.
+::ng-deep body:has(ws-app-kcm-mapping) .mat-mdc-menu-panel.menu-sec .mat-mdc-menu-content {
+  padding: 0 !important;
+}
+
+::ng-deep body:has(ws-app-kcm-mapping) .mat-mdc-menu-panel.menu-sec .mat-mdc-menu-item {
+  display: flex !important;
+  align-items: center !important;
+
+  .mat-icon {
+    flex-shrink: 0;
+    margin-right: 12px;
+  }
+
+  .mat-mdc-menu-item-text {
+    display: flex;
+    align-items: center;
+    height: auto;
+  }
+}
+
+::ng-deep body:has(ws-app-kcm-mapping) button.addCardButtonNew {
+  --mdc-outlined-button-label-text-color: #ffffff;
+  --mdc-outlined-button-hover-label-text-color: #ffffff;
+  --mdc-outlined-button-focus-label-text-color: #ffffff;
+  --mdc-outlined-button-pressed-label-text-color: #ffffff;
+
+  color: #ffffff !important;
+
+  .mdc-button__label {
+    position: relative;
+    z-index: 1 !important;
+    padding: 0 18px !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+
+    span {
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff;
+    }
+  }
+
+  .mat-icon-custom {
+    z-index: 1 !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff;
+  }
 }
