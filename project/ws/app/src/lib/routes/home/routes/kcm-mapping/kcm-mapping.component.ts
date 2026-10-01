@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core'
 import { environment } from '../../../../../../../../../src/environments/environment'
 import { ActivatedRoute } from '@angular/router'
 import { MatDialog } from '@angular/material/dialog'
@@ -9,11 +9,13 @@ import * as _ from 'lodash'
     selector: 'ws-app-kcm-mapping',
     templateUrl: './kcm-mapping.component.html',
     styleUrls: ['./kcm-mapping.component.scss'],
-    standalone: false
+    standalone: false,
 })
-export class KCMMappingComponent implements OnInit {
+export class KCMMappingComponent implements OnInit, AfterViewInit {
+  @ViewChild('kcmTaxonomyView') kcmTaxonomyView?: ElementRef<HTMLElement>
   environmentVal: any
   taxonomyConfig: any
+  taxonomyViewHeight = 500
   showTopSection = false
   kcmConfig: any
   videoLink = ''
@@ -34,10 +36,26 @@ export class KCMMappingComponent implements OnInit {
     })
   }
 
+  ngAfterViewInit() {
+    this.onWindowResize()
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    requestAnimationFrame(() => {
+      const taxonomyRect = this.kcmTaxonomyView?.nativeElement.getBoundingClientRect()
+
+      if (!taxonomyRect) {
+        return
+      }
+
+      const footerHeight = document.querySelector<HTMLElement>('ws-app-footer')?.getBoundingClientRect().height ?? 0
+      this.taxonomyViewHeight = Math.max(0, Math.floor(window.innerHeight - taxonomyRect.top - footerHeight))
+    })
+  }
+
   callResizeEvent(_event: any) {
-    setTimeout(() => {
-      window.dispatchEvent(new Event('resize'))
-    }, 100)
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 100)
   }
 
   openVideoPopup() {
