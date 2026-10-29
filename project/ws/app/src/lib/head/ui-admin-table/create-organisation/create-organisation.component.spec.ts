@@ -5,6 +5,8 @@ import { CreateMDOService } from '../../../routes/home/services/create-mdo.servi
 import { ActivatedRoute } from '@angular/router'
 import { LoaderService } from '../../../routes/home/services/loader.service'
 import { of, throwError } from 'rxjs'
+import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { TestBed } from '@angular/core/testing'
 
 describe('CreateOrganisationComponent', () => {
   let component: CreateOrganisationComponent
@@ -197,6 +199,66 @@ describe('CreateOrganisationComponent', () => {
 
       expect(component.filteredMinistry).toHaveLength(1)
       expect(component.filteredMinistry[0].orgName).toBe('Defense')
+    })
+  })
+
+  describe('Template accessibility', () => {
+    let editLogo: HTMLElement
+    let fileInput: HTMLInputElement
+
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        declarations: [CreateOrganisationComponent],
+        providers: [
+          { provide: FormBuilder, useValue: formBuilder },
+          { provide: MatSnackBar, useValue: mockSnackBar },
+          { provide: CreateMDOService, useValue: mockCreateMDOService },
+          { provide: ActivatedRoute, useValue: mockActivatedRoute },
+          { provide: LoaderService, useValue: mockLoaderService },
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+      })
+      const fixture = TestBed.createComponent(CreateOrganisationComponent)
+      fixture.componentInstance.openMode = 'viewMode'
+      fixture.componentInstance.rowData = { organisation: 'Test Org', type: 'Ministry' }
+      fixture.detectChanges()
+      editLogo = fixture.nativeElement.querySelector('.edit-logo')
+      fileInput = fixture.nativeElement.querySelector('#edit-orgLogo')
+    })
+
+    it('should expose the edit logo control as a focusable button', () => {
+      expect(editLogo).toBeTruthy()
+      expect(editLogo.getAttribute('role')).toBe('button')
+      expect(editLogo.getAttribute('tabindex')).toBe('0')
+    })
+
+    it('should trigger the edit logo click and open the file picker on Enter', () => {
+      const clickSpy = jest.spyOn(editLogo, 'click')
+      const fileClickSpy = jest.spyOn(fileInput, 'click').mockImplementation(() => { })
+      const event = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true })
+
+      editLogo.dispatchEvent(event)
+
+      expect(clickSpy).toHaveBeenCalled()
+      expect(fileClickSpy).toHaveBeenCalled()
+      expect(event.defaultPrevented).toBe(true)
+    })
+
+    it('should trigger the edit logo click on Space', () => {
+      const clickSpy = jest.spyOn(editLogo, 'click')
+      jest.spyOn(fileInput, 'click').mockImplementation(() => { })
+
+      editLogo.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', cancelable: true }))
+
+      expect(clickSpy).toHaveBeenCalled()
+    })
+
+    it('should not trigger the edit logo click on other keys', () => {
+      const clickSpy = jest.spyOn(editLogo, 'click')
+
+      editLogo.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', cancelable: true }))
+
+      expect(clickSpy).not.toHaveBeenCalled()
     })
   })
 })

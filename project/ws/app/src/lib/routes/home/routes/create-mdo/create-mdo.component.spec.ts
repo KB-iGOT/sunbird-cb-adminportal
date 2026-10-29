@@ -1,6 +1,15 @@
 import { CreateMdoComponent } from './create-mdo.component'
 import { of, Subject } from 'rxjs'
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms'
+import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
+import { ActivatedRoute, Router } from '@angular/router'
+import { EventService, ValueService } from '@sunbird-cb/utils-v2'
+import { CreateMDOService } from '../../services/create-mdo.services'
+import { DirectoryService } from '../../services/directory.services'
+import { AcsendingOrderPipe } from '../../pipes/acsending-order.pipe'
 
 describe('CreateMdoComponent', () => {
     let component: CreateMdoComponent
@@ -274,6 +283,46 @@ describe('CreateMdoComponent', () => {
             component.onCancel()
 
             expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/home/directory', { department: 'TestDept' }])
+        })
+    })
+
+    describe('template', () => {
+        let fixture: ComponentFixture<CreateMdoComponent>
+
+        beforeEach(async () => {
+            await TestBed.configureTestingModule({
+                declarations: [CreateMdoComponent, AcsendingOrderPipe],
+                providers: [
+                    { provide: MatDialog, useValue: mockDialog },
+                    { provide: MatSnackBar, useValue: mockSnackBar },
+                    { provide: CreateMDOService, useValue: mockCreateMdoService },
+                    { provide: Router, useValue: mockRouter },
+                    { provide: DirectoryService, useValue: mockDirectoryService },
+                    { provide: ValueService, useValue: mockValueService },
+                    { provide: ActivatedRoute, useValue: mockActivatedRoute },
+                    { provide: EventService, useValue: mockEventService }
+                ],
+                schemas: [NO_ERRORS_SCHEMA]
+            }).compileComponents()
+
+            fixture = TestBed.createComponent(CreateMdoComponent)
+            fixture.detectChanges()
+        })
+
+        it('should render the default form with the "Department type" caption in a span', () => {
+            expect(fixture.componentInstance.formType).toBe('default')
+            const caption: HTMLElement | undefined = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('span'))
+                .find(span => (span.textContent || '').replace(/\s+/g, ' ').trim() === 'Department type')
+            expect(caption).toBeTruthy()
+            expect(caption!.classList.contains('required')).toBe(true)
+        })
+
+        it('should not wrap the "Department type" caption in a label without an associated control', () => {
+            const caption: HTMLElement | undefined = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('span'))
+                .find(span => (span.textContent || '').replace(/\s+/g, ' ').trim() === 'Department type')
+            expect(caption!.closest('label')).toBeNull()
+            const labels: HTMLLabelElement[] = Array.from(fixture.nativeElement.querySelectorAll('label'))
+            labels.forEach(label => expect(label.getAttribute('for')).toBeTruthy())
         })
     })
 })

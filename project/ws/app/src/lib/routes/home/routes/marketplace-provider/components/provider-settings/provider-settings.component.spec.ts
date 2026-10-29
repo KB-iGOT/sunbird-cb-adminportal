@@ -435,6 +435,35 @@ describe('ProviderSettingsComponent', () => {
       expect(snackBar.open).toHaveBeenCalledWith('update failed')
       expect(loaderService.changeLoad.next).toHaveBeenCalledWith(false)
     })
+
+    it('should copy the toggles and store the karma coin modifier as a number', () => {
+      component.controls['addKarmaPointEnabled'].setValue(true)
+      component.controls['karmaCoinModifier'].setValue('1.5')
+
+      component.updateProviderSettings()
+
+      const data = component.providerDetailsBeforeUpdate.data
+      expect(data.licenseType).toBe('User')
+      expect(data.addKarmaPointEnabled).toBe(true)
+      expect(data.isUserWiseLimitEnabled).toBe(false)
+      expect(data.karmaCoinMultiplier).toBe(1.5)
+      expect(loaderService.changeLoad.next).toHaveBeenNthCalledWith(1, true)
+    })
+
+    it('should show a default error message when the API does not return one', () => {
+      marketPlaceSvc.updateProvider.mockReturnValue(throwError({}))
+      component.updateProviderSettings()
+      expect(snackBar.open).toHaveBeenCalledWith('Something went wrong, please try again later')
+    })
+
+    it('should not report success when the API returns an empty response', () => {
+      const emitSpy = jest.spyOn(component.loadProviderDetails, 'emit')
+      marketPlaceSvc.updateProvider.mockReturnValue(of(null))
+      component.updateProviderSettings()
+      expect(loaderService.changeLoad.next).toHaveBeenLastCalledWith(false)
+      expect(snackBar.open).not.toHaveBeenCalled()
+      expect(emitSpy).not.toHaveBeenCalled()
+    })
   })
 
   describe('sendDetailsUpdateEvent', () => {

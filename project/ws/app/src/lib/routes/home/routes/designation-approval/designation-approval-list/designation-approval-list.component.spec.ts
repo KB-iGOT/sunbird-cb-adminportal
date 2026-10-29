@@ -137,6 +137,54 @@ describe('DesignationApprovalListComponent', () => {
     expect(component.currentFilter).toBe('rejected')
   })
 
+  it('should truncate long designation names and default missing reviewer comments', () => {
+    component.ngOnInit()
+    const longName = 'D'.repeat(150)
+    mockDesignationSvc.getApprovalList.mockReturnValue(of({
+      items: [
+        { id: '9', designation_name: longName, created_at: '2024-01-01T10:00:00Z', status: 'pending' },
+        { id: '10', designation_name: 'Officer', created_at: '2024-01-01T10:00:00Z', status: 'pending', reviewer_comments: 'Looks fine' },
+      ],
+      pagination: { total_items: 2 },
+    }))
+    component.fetchApprovalRequests('pending')
+    expect(component.data[0].designationName).toBe('D'.repeat(100))
+    expect(component.data[0].reviewer_comments).toBe('No Reason Found')
+    expect(component.data[1].reviewer_comments).toBe('Looks fine')
+  })
+
+  it('should do nothing when the approve or reject dialogs are dismissed', () => {
+    component.ngOnInit()
+    const calls = mockDesignationSvc.getApprovalList.mock.calls.length
+    mockDialog.open.mockReturnValue({ afterClosed: () => of(false) })
+    component.menuActions({ action: 'approve', row: { identifier: '1' } })
+    component.menuActions({ action: 'reject', row: { identifier: '1' } })
+    expect(mockDesignationSvc.approveRequest).not.toHaveBeenCalled()
+    expect(mockDesignationSvc.getApprovalList.mock.calls.length).toBe(calls)
+    expect(component.currentFilter).toBe('pending')
+  })
+
+  it('should fetch every page when loading data for local filtering', () => {
+    component.ngOnInit()
+    const pageOne = Array.from({ length: 100 }, (_item, i) => (
+      { id: `p${i}`, designation_name: `Role ${i}`, created_at: '2024-01-01T10:00:00Z', status: 'pending', organisation: 'OrgA' }
+    ))
+    const pageTwo = [{ id: 'last', designation_name: 'Analyst', created_at: '2024-01-01T10:00:00Z', status: 'pending', organisation: 'OrgZ' }]
+    mockDesignationSvc.getApprovalList.mockImplementation((_limit: number, offset: number) => of({
+      items: offset === 0 ? pageOne : pageTwo,
+      pagination: { total_items: 101 },
+    }))
+
+    component.selectedOrganisation = 'OrgZ'
+    component.applyFilters()
+
+    expect(mockDesignationSvc.getApprovalList).toHaveBeenCalledWith(100, 0, 'pending')
+    expect(mockDesignationSvc.getApprovalList).toHaveBeenCalledWith(100, 100, 'pending')
+    expect(component.organisationList).toEqual(['OrgA', 'OrgZ'])
+    expect(component.data.map((item: any) => item.identifier)).toEqual(['last'])
+    expect(mockLoader.changeLoaderState).toHaveBeenLastCalledWith(false)
+  })
+
   it('should format dates and times', () => {
     expect(component.customDateFormat('2024-02-05', '10:00:00+05:30')).toBe('05-02-2024')
     expect(component.allEventDateFormat('2024-02-05T10:00:00')).toBe('05-02-2024')

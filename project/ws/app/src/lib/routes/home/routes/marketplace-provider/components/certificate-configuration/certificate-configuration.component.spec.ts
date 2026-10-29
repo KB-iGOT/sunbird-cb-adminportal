@@ -39,6 +39,45 @@ describe('CertificateConfigurationComponent', () => {
     expect(component).toBeTruthy()
   })
 
+  describe('file picker triggers', () => {
+    const getTrigger = (inputId: string): HTMLElement => {
+      const input: HTMLInputElement = fixture.nativeElement.querySelector(`#${inputId}`)
+      return input.parentElement!.querySelector('.meta-text-1') as HTMLElement
+    }
+
+    it.each(['logoFileInput', 'certificateFileInput'])('should expose the %s trigger as a focusable button', inputId => {
+      const trigger = getTrigger(inputId)
+      expect(trigger.getAttribute('role')).toBe('button')
+      expect(trigger.getAttribute('tabindex')).toBe('0')
+    })
+
+    it.each(['logoFileInput', 'certificateFileInput'])('should click the trigger and open %s on Enter', inputId => {
+      const trigger = getTrigger(inputId)
+      const input: HTMLInputElement = fixture.nativeElement.querySelector(`#${inputId}`)
+      const clickSpy = jest.spyOn(trigger, 'click')
+      const inputClickSpy = jest.spyOn(input, 'click').mockImplementation(() => { })
+      const event = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true })
+
+      trigger.dispatchEvent(event)
+
+      expect(clickSpy).toHaveBeenCalled()
+      expect(inputClickSpy).toHaveBeenCalled()
+      expect(event.defaultPrevented).toBe(true)
+    })
+
+    it('should click the trigger on Space and ignore other keys', () => {
+      const trigger = getTrigger('logoFileInput')
+      jest.spyOn(fixture.nativeElement.querySelector('#logoFileInput'), 'click').mockImplementation(() => { })
+      const clickSpy = jest.spyOn(trigger, 'click')
+
+      trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', cancelable: true }))
+      expect(clickSpy).not.toHaveBeenCalled()
+
+      trigger.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', cancelable: true }))
+      expect(clickSpy).toHaveBeenCalledTimes(1)
+    })
+  })
+
   describe('onDropCertificate', () => {
     const originalCreateObjectURL = URL.createObjectURL
 

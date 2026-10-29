@@ -32,4 +32,20 @@ describe('LoadingPopupComponent', () => {
     component.closePopup(true)
     expect(dialogRef.close).toHaveBeenCalledWith(true)
   })
+
+  it('should render the title and subtitle from the dialog data', () => {
+    component.data = { title: 'Uploading courses', subtitle: 'Please wait' }
+    fixture.detectChanges()
+
+    const element: HTMLElement = fixture.nativeElement
+    expect(element.querySelector('.dialog-title')!.textContent!.trim()).toBe('Uploading courses')
+    expect(element.querySelector('.dialog-sub-title')!.textContent!.trim()).toBe('Please wait')
+    expect(element.querySelector('img')!.getAttribute('alt')).toBe('loader')
+  })
+
+  it('should render empty title and subtitle when the dialog data has none', () => {
+    const element: HTMLElement = fixture.nativeElement
+    expect(element.querySelector('.dialog-title')!.textContent!.trim()).toBe('')
+    expect(element.querySelector('.dialog-sub-title')!.textContent!.trim()).toBe('')
+  })
 })

@@ -29,7 +29,7 @@
                     <div class="input-column px-2 ws-mat-accent-border mb-6 padding-top-m padding-bottom-m padding-right-xl padding-left-xl"
                         id="eventInfo">
                         <div class="margin-bottom-s">
-                            <label class="heading">Event details</label>
+                            <span class="heading">Event details</span>
                             <label for="eventTitle" class=" margin-remove-bottom form-label required"
                                 aria-label="Event title label">
                                 Upload cover photo
@@ -129,9 +129,9 @@
                                 aria-label="description label">
                                 Description
                             </label>
-                            <label class="sub_title">Detailed description about the event. It
+                            <span class="sub_title">Detailed description about the event. It
                                 will
-                                appear in the event details page</label>
+                                appear in the event details page</span>
                             <mat-form-field appearance="outline" class="margin-top-xs w-full">
                                 <textarea id="description" matInput #description formControlName="description"
                                     placeholder="Type here" aria-label="description input" class="form-input" rows="8"
@@ -169,7 +169,7 @@
                             </mat-form-field>
                         </div>
                         <div class="margin-bottom-s">
-                            <label>Event type</label>
+                            <span>Event type</span>
                             <mat-form-field appearance="outline" class="custom-width margin-top-xs">
                                 <mat-select formControlName="eventType" (selectionChange)="resetDateField()">
                                     <mat-option [value]="type" *ngFor="let type of evntTypesList">{{type}}
@@ -207,7 +207,7 @@
                             </mat-checkbox> -->
                         </div>
                         <div class="margin-bottom-s" *ngIf="showRajyaField">
-                            <label class="required">State</label>
+                            <span class="required">State</span>
                             <mat-form-field appearance="outline" class="custom-width margin-top-xs">
                                 <mat-select formControlName="state">
                                     <mat-option [value]="type?.stateOrMinistryName"
@@ -247,14 +247,14 @@
                     </div>
                     <div class="input-column px-2 ws-mat-accent-border mb-6 padding-top-m padding-bottom-m padding-right-xl padding-left-l"
                         id="videoinfo">
-                        <label class="heading">Add link</label>
+                        <span class="heading">Add link</span>
                         <div class="input-wrapper margin-top-s">
                             <label for="conferenceLink" class=" margin-remove-bottom form-label required"
                                 aria-label="conferenceLink label">
                                 Event link
                             </label>
-                            <label class="sub_title">Add a link so people know where to go when your
-                                events starts.</label>
+                            <span class="sub_title">Add a link so people know where to go when your
+                                events starts.</span>
                             <mat-form-field appearance="outline" class="margin-top-xs">
                                 <input id="conferenceLink" matInput #conferenceLink formControlName="conferenceLink"
                                     placeholder="Type here" aria-label="conferenceLink input" class="form-input"
@@ -274,7 +274,7 @@
                     </div>
                     <div class="input-column px-2 ws-mat-accent-border mb-6 padding-top-m padding-bottom-m padding-right-xl padding-left-l"
                         id="datetime">
-                        <label class="heading">Date time</label>
+                        <span class="heading">Date time</span>
                         <div class="input-wrapper margin-top-s">
                             <div class="flex-parent-element">
                                 <div class="flex-child-element">
@@ -401,11 +401,11 @@
                     </div>
                     <div class="input-column px-2 ws-mat-accent-border mb-3 padding-top-m padding-bottom-m padding-right-xl padding-left-l"
                         id="presenter">
-                        <label class="heading">Presenters</label>
+                        <span class="heading">Presenters</span>
                         <div class="input-wrapper margin-top-s">
-                            <label class="form-label" aria-label="conferenceLink label mb-10 ws-mat-black60-text">
+                            <span class="form-label" aria-label="conferenceLink label mb-10 ws-mat-black60-text">
                                 Presenters added are displayed in the event details page
-                            </label>
+                            </span>
                             <div class="flex flex-1 custom button-row-add-user" *ngIf="fullEdit">
                                 <button mat-stroked-button color="accent" type="button" [disabled]="filter === 'past'"
                                     class="mat-accent-border flex-auto-display" (click)="openDialog()">

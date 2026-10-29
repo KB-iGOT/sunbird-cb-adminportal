@@ -120,7 +120,7 @@
 
 .dev-doc-label {
   // stylelint-disable-next-line font-shorthand-values
-  font: 700 14px/21px Lato;
+  font: 700 14px/21px Lato, sans-serif;
   letter-spacing: normal;
 }
 
@@ -267,7 +267,7 @@
   resize: vertical;
   min-height: 256px;
 
-  &:readonly {
+  &:read-only {
     background-color: #f9fafb;
     cursor: not-allowed;
   }

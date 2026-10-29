@@ -1,5 +1,13 @@
+import { Directive, NO_ERRORS_SCHEMA } from '@angular/core'
+import { TestBed } from '@angular/core/testing'
+import { ActivatedRoute, Router } from '@angular/router'
+import { ValueService } from '@sunbird-cb/utils-v2'
 import { KnowledgeComponent } from './knowledge.component'
+import { SearchServService } from '../../services/search-serv.service'
 import { of, Subject } from 'rxjs'
+
+@Directive({ selector: 'mat-menu', exportAs: 'matMenu', standalone: false })
+class MatMenuStubDirective { }
 
 describe('KnowledgeComponent', () => {
     let component: KnowledgeComponent
@@ -186,5 +194,39 @@ describe('KnowledgeComponent', () => {
         // Verify unsubscribe was called
         expect(searchResultsUnsubscribeSpy).toHaveBeenCalled()
         expect(defaultSideNavBarOpenedUnsubscribeSpy).toHaveBeenCalled()
+    })
+
+    describe('View More button template', () => {
+        beforeEach(() => {
+            TestBed.configureTestingModule({
+                declarations: [KnowledgeComponent, MatMenuStubDirective],
+                providers: [
+                    { provide: ActivatedRoute, useValue: mockActivatedRoute },
+                    { provide: Router, useValue: mockRouter },
+                    { provide: ValueService, useValue: { isLtMedium$: of(false) } },
+                    { provide: SearchServService, useValue: mockSearchService },
+                ],
+                schemas: [NO_ERRORS_SCHEMA],
+            })
+        })
+
+        it('should render the View More button without an accesskey and load more results on click', () => {
+            const fixture = TestBed.createComponent(KnowledgeComponent)
+            const instance = fixture.componentInstance
+            const getResultsSpy = jest.spyOn(instance, 'getResults').mockImplementation(() => { })
+            instance.knowledgeData = [{ id: '1', title: 'Doc 1' } as any]
+            instance.searchRequestStatus = 'hasMore'
+            fixture.detectChanges()
+
+            const button: HTMLButtonElement = Array.from<HTMLButtonElement>(fixture.nativeElement.querySelectorAll('button'))
+                .find(btn => (btn.textContent || '').includes('View More')) as HTMLButtonElement
+
+            expect(button).toBeTruthy()
+            expect(button.hasAttribute('accesskey')).toBe(false)
+            expect(fixture.nativeElement.querySelector('[accesskey]')).toBeNull()
+
+            button.click()
+            expect(getResultsSpy).toHaveBeenCalled()
+        })
     })
 })

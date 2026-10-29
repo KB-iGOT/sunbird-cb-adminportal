@@ -1,4 +1,8 @@
-import { ChangeDetectorRef } from '@angular/core'
+import { ChangeDetectorRef, NO_ERRORS_SCHEMA } from '@angular/core'
+import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { MatAutocompleteModule } from '@angular/material/autocomplete'
+import { readFileSync } from 'fs'
+import { join } from 'path'
 import { UsersService } from '../../../routes/home/services/users.service'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
@@ -357,4 +361,77 @@ describe('UserCardComponent', () => {
         })
     })
 
+    describe('template', () => {
+        let fixture: ComponentFixture<UserCardComponent>
+
+        const textOf = (el: Element) => (el.textContent || '').replace(/\s+/g, ' ').trim()
+        const buildUser = (enableEdit: boolean) => ({
+            userId: '123',
+            enableEdit,
+            firstName: 'Test',
+            roles: [],
+            organisations: [{ roles: ['PUBLIC'] }],
+            profileDetails: {
+                personalDetails: { firstname: 'Test', primaryEmail: 'test@example.com', mobile: '9999999999' },
+                professionalDetails: [{ designation: 'Developer', group: 'Group A' }],
+                employmentDetails: { employeeCode: 'EMP001', pinCode: '123456' },
+            },
+        })
+
+        beforeEach(async () => {
+            await TestBed.configureTestingModule({
+                declarations: [UserCardComponent],
+                imports: [MatAutocompleteModule],
+                providers: [
+                    { provide: UsersService, useValue: usersSvc },
+                    { provide: RolesService, useValue: roleservice },
+                    { provide: MatDialog, useValue: dialog },
+                    { provide: ActivatedRoute, useValue: route },
+                    { provide: MatSnackBar, useValue: snackBar },
+                    { provide: EventService, useValue: events },
+                ],
+                schemas: [NO_ERRORS_SCHEMA],
+            })
+            // the real template contains a stray `="Mother Tongue"` attribute with an empty name, which jsdom
+            // cannot create, so only that fragment is stripped before rendering the actual markup
+            const template = readFileSync(join(__dirname, 'user-card.component.html'), 'utf8').replace('"="Mother Tongue"', '"')
+            TestBed.overrideTemplate(UserCardComponent, template)
+            await TestBed.compileComponents()
+
+            fixture = TestBed.createComponent(UserCardComponent)
+        })
+
+        it('should render the read-only field captions as view-text-label spans', () => {
+            fixture.componentInstance.usersData = [buildUser(false)]
+            fixture.detectChanges()
+
+            const captions: Element[] = Array.from(fixture.nativeElement.querySelectorAll('span.view-text-label'))
+            expect(captions.map(textOf)).toEqual(expect.arrayContaining([
+                'Group', 'Designation', 'Employee ID', 'Email', 'Mobile Number', 'Gender',
+                'Date Of Birth', 'Mother Tongue', 'Category', 'Office Pin Code', 'eHRMS ID', 'Tags', 'Roles',
+            ]))
+            expect(fixture.nativeElement.querySelector('label.view-text-label')).toBeNull()
+            expect(fixture.nativeElement.querySelector('span.form-label')).toBeNull()
+        })
+
+        it('should render the edit form field captions as form-label spans', () => {
+            fixture.componentInstance.usersData = [buildUser(true)]
+            fixture.detectChanges()
+
+            const captions: Element[] = Array.from(fixture.nativeElement.querySelectorAll('span.form-label'))
+            expect(captions.map(textOf)).toEqual([
+                'Group', 'Designation', 'Employee ID', 'Email', 'Mobile number', 'Date of Birth',
+                'Mother Tongue', 'Gender', 'Office Pin Code', 'eHRMS ID', 'Category', 'Tags',
+            ])
+            expect(fixture.nativeElement.querySelector('label.form-label')).toBeNull()
+        })
+
+        it('should keep the required marker on mandatory edit form captions', () => {
+            fixture.componentInstance.usersData = [buildUser(true)]
+            fixture.detectChanges()
+
+            const required: Element[] = Array.from(fixture.nativeElement.querySelectorAll('span.form-label.required'))
+            expect(required.map(textOf)).toEqual(['Group', 'Email', 'Mobile number'])
+        })
+    })
 })

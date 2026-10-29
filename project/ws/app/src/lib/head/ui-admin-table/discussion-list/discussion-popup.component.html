@@ -38,10 +38,10 @@
   </mat-form-field>
 </div>
 <div>
-  <label id="profane-category" class='font-bold text-sm mat-subheading-2'>Please choose a
+  <span id="profane-category" class='font-bold text-sm mat-subheading-2'>Please choose a
     reason for
     rejecting
-    this content.</label>
+    this content.</span>
   <section aria-labelledby="profane-category" class="profane-radio-group" [formGroup]="profaneGroup">
     <mat-checkbox color="primary" class="profane-radio-button mat-body-2"
       *ngFor="let category of data.profaneCategories" [formControlName]="category">

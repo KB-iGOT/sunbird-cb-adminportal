@@ -7,6 +7,10 @@ import { ActivatedRoute } from '@angular/router'
 import { of, throwError } from 'rxjs'
 import { AddThumbnailComponent } from '../../add-thumbnail/add-thumbnail.component'
 import { environment } from '../../../../../../../../../../src/environments/environment'
+import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { ReactiveFormsModule } from '@angular/forms'
+import { DomSanitizer } from '@angular/platform-browser'
 
 describe('AddSectorComponent', () => {
     let component: AddSectorComponent
@@ -164,5 +168,42 @@ describe('AddSectorComponent', () => {
         const file = { name: 'big.png', size: 1024 * 1024 * 1024 } as any
         component.uploadAppIcon(file)
         expect(mockSnackBar.open).toHaveBeenCalledWith('Size is greater than allowed.')
+    })
+
+    describe('template', () => {
+        let fixture: ComponentFixture<AddSectorComponent>
+
+        beforeEach(async () => {
+            await TestBed.configureTestingModule({
+                declarations: [AddSectorComponent],
+                imports: [ReactiveFormsModule],
+                providers: [
+                    { provide: MatDialog, useValue: mockDialog },
+                    { provide: Router, useValue: mockRouter },
+                    { provide: MatSnackBar, useValue: mockSnackBar },
+                    { provide: SectorsService, useValue: mockSectorsService },
+                    { provide: ActivatedRoute, useValue: mockActivatedRoute },
+                    { provide: DomSanitizer, useValue: mockSanitizer },
+                ],
+                schemas: [NO_ERRORS_SCHEMA],
+            }).compileComponents()
+
+            fixture = TestBed.createComponent(AddSectorComponent)
+            fixture.detectChanges()
+        })
+
+        it('should render the "Sectors" heading as a span, not a label', () => {
+            const heading: HTMLElement = fixture.nativeElement.querySelector('span.heading')
+            expect(heading).toBeTruthy()
+            expect(heading.textContent!.trim()).toBe('Sectors')
+            expect(fixture.nativeElement.querySelector('label.heading')).toBeNull()
+        })
+
+        it('should keep the real form labels associated via the for attribute', () => {
+            const labels: HTMLLabelElement[] = Array.from(fixture.nativeElement.querySelectorAll('label'))
+            expect(labels.length).toBe(2)
+            labels.forEach(label => expect(label.getAttribute('for')).toBeTruthy())
+            expect(labels.map(label => label.textContent!.trim())).toEqual(['Sector Name', 'Select Icon'])
+        })
     })
 })

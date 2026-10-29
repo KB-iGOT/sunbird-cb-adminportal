@@ -8,7 +8,7 @@
 
 .sub-heading p{
     color: #000;
-    font-family: Montserrat;
+    font-family: Montserrat, sans-serif;
     font-size: 16px;
     font-style: normal;
     font-weight: 600;
@@ -23,7 +23,7 @@
     color: #000;
 
 /* Body 1 */
-font-family: Lato;
+font-family: Lato, sans-serif;
 font-size: 16px;
 font-style: normal;
 font-weight: 400;
@@ -40,7 +40,7 @@ line-height: normal;
 
 .label {
     color: var(--Body-Text-Body-Color, #212529);
-font-family: Lato;
+font-family: Lato, sans-serif;
 font-size: 14px;
 font-style: normal;
 font-weight: 700;
@@ -78,7 +78,7 @@ line-height: 150%; /* 21px */
 
   ::ng-deep mat-select .mat-select-placeholder {
     color: rgba(0, 0, 0, 0.40);
-    font-family: Lato;
+    font-family: Lato, sans-serif;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
@@ -88,11 +88,10 @@ line-height: 150%; /* 21px */
   ::ng-deep mat-select .mat-select-value-text {
     color: rgba(0, 0, 0, 1);
 
-    font-family: Lato;
+    font-family: Lato, sans-serif;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
-    line-height: normal;
     line-height: normal !important; /* Prevent overflow push */
   padding-top: 0 !important;
   padding-bottom: 0 !important;
@@ -113,7 +112,7 @@ flex: 1 0 0;
 align-self: stretch;
 width:96%;
 color: #000;
-    font-family: Lato;
+    font-family: Lato, sans-serif;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
@@ -137,7 +136,7 @@ resize: none;
 text-align: center;
 
 /* Button */
-font-family: Lato;
+font-family: Lato, sans-serif;
 font-size: 14px;
 font-style: normal;
 font-weight: 700;
@@ -197,7 +196,7 @@ border: none;
 
 .selected-mapping-route p {
     color: #1B4CA1;
-font-family: Lato;
+font-family: Lato, sans-serif;
 font-size: 20px;
 font-style: normal;
 font-weight: 400;
@@ -219,7 +218,7 @@ gap: 8px;
 border-radius: 4px;
 background: rgba(27, 76, 161, 0.16);
 color: #1B4CA1;
-font-family: Lato;
+font-family: Lato, sans-serif;
 font-size: 14px;
 font-style: normal;
 font-weight: 400;
@@ -286,7 +285,7 @@ background: rgba(239, 149, 30, 0.16);
 
 .course-title {
     color: var(--Primary-KB-Primary-Light, #1B4CA1);
-font-family: Montserrat;
+font-family: Montserrat, sans-serif;
 font-size: 20px;
 font-style: normal;
 font-weight: 600;
@@ -295,7 +294,7 @@ line-height: 30px; /* 150% */
 
 .course-desc {
     color: rgba(0, 0, 0, 0.60);
-font-family: Lato;
+font-family: Lato, sans-serif;
 font-size: 14px;
 font-style: normal;
 font-weight: 400;
@@ -306,7 +305,7 @@ line-height: normal;
 color: var(--accessbility-shades-with-opacity-kb-greys-black-60, rgba(0, 0, 0, 0.60));
 
 /* Body 2 */
-font-family: Lato;
+font-family: Lato, sans-serif;
 font-size: 14px;
 font-style: normal;
 font-weight: 400;
@@ -316,7 +315,7 @@ align-items: center;
 
 .percentage {
     color: #1D8923;
-font-family: Lato;
+font-family: Lato, sans-serif;
 font-size: 14px;
 font-style: normal;
 font-weight: 800;
@@ -372,7 +371,7 @@ line-height: normal;
 
 .ai-recommened-pill-text {
     color: #1B4CA1;
-font-family: Lato;
+font-family: Lato, sans-serif;
 font-size: 12px;
 font-style: normal;
 font-weight: 700;
@@ -381,7 +380,7 @@ line-height: normal;
 
 .igot-platform-pill-text {
     color: #1B4CA1;
-font-family: Lato;
+font-family: Lato, sans-serif;
 font-size: 12px;
 font-style: normal;
 font-weight: 700;
@@ -393,7 +392,7 @@ line-height: normal;
 text-align: center;
 
 /* Label_12px */
-font-family: Poppins;
+font-family: Poppins, sans-serif;
 font-size: 12px;
 font-style: normal;
 font-weight: 400;
@@ -471,7 +470,7 @@ margin:0 10px;
 
 .inside-layer {
     color: #1B4CA1;
-font-family: Lato;
+font-family: Lato, sans-serif;
 font-size: 12px;
 font-style: normal;
 font-weight: 400;
@@ -480,7 +479,7 @@ line-height: normal;
 
 .count  {
     color: #1B4CA1;
-font-family: Montserrat;
+font-family: Montserrat, sans-serif;
 font-size: 16px;
 font-style: normal;
 font-weight: 600;
@@ -508,7 +507,7 @@ background-color: white;
 }
 
 .highlight-ai {
-    font-family: Montserrat;
+    font-family: Montserrat, sans-serif;
 font-size: 24px;
 font-style: normal;
 font-weight: 600;
@@ -531,7 +530,7 @@ display: inline-block; /* Required in some cases */
 .heading {
 color: #000;
 /* Heading 2 */
-font-family: Montserrat;
+font-family: Montserrat, sans-serif;
 font-size: 20px;
 font-style: normal;
 font-weight: 600;
@@ -553,7 +552,7 @@ margin: 10px 0;
 .progress-popup .desc{
     color: rgba(0, 0, 0, 0.87);
 text-align: center;
-font-family: Lato;
+font-family: Lato, sans-serif;
 font-size: 14px;
 font-style: normal;
 font-weight: 400;
@@ -671,7 +670,7 @@ margin: 5px 0;
 
   .competency-text {
     color: #000;
-font-family: Lato;
+font-family: Lato, sans-serif;
 font-size: 10px;
 font-style: normal;
 font-weight: normal;
@@ -681,7 +680,7 @@ padding: 5px;
 
   .competency-sub-heading {
     color: #1B4CA1;
-font-family: Montserrat;
+font-family: Montserrat, sans-serif;
 font-size: 12px;
 font-style: normal;
 font-weight: 600;
@@ -700,7 +699,7 @@ color: var(--white-kb-white-100, #FFF);
 text-align: center;
 
 /* Button */
-font-family: Lato;
+font-family: Lato, sans-serif;
 font-size: 14px;
 font-style: normal;
 font-weight: 700;
@@ -716,7 +715,7 @@ border: none;
 
 .custom-textarea {
     color: #000;
-    font-family: Lato;
+    font-family: Lato, sans-serif;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
@@ -756,7 +755,6 @@ border: none;
     padding: 10px 16px;
     background-color: #1B4CA1;
     color: white;
-    border-radius: 4px;
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -785,9 +783,8 @@ border: none;
 
   .file-upload-hint {
     display: block;
-    font-size: 1rem;
     color: #000;
-    font-family: 'Lato';
+    font-family: 'Lato', sans-serif;
     font-size: 14px;
     margin-top: 4px;
     margin-bottom: 8px;

@@ -1,5 +1,5 @@
 import { FormBuilder } from '@angular/forms'
-import { of, throwError } from 'rxjs'
+import { of, Subject, throwError } from 'rxjs'
 import { RejectRequestFormComponent } from './reject-request-form.component'
 
 describe('RejectRequestFormComponent', () => {
@@ -79,5 +79,30 @@ describe('RejectRequestFormComponent', () => {
     component.rejectRequestForm.patchValue({ rejection_comment: 'reason' })
     component.rejectRequest()
     expect(mockSnackBar.open).toHaveBeenCalledWith('Failed to reject request', 'X', expect.any(Object))
+  })
+
+  it('should fall back to the API message when no detail is provided', () => {
+    mockDesignationSvc.rejectRequest.mockReturnValue(throwError({ error: { message: 'Server unavailable' } }))
+    component.rejectRequestForm.patchValue({ rejection_comment: 'reason' })
+    component.rejectRequest()
+    expect(mockSnackBar.open).toHaveBeenCalledWith('Server unavailable', 'X', {
+      duration: 5000,
+      panelClass: ['snackbar-error'],
+    })
+  })
+
+  it('should keep loading while the reject request is in flight', () => {
+    const response$ = new Subject<any>()
+    mockDesignationSvc.rejectRequest.mockReturnValue(response$)
+    component.rejectRequestForm.patchValue({ rejection_comment: 'reason' })
+
+    component.rejectRequest()
+    expect(component.loading).toBe(true)
+    expect(mockDialogRef.close).not.toHaveBeenCalled()
+
+    response$.next({ status: 'rejected' })
+    response$.complete()
+    expect(component.loading).toBe(false)
+    expect(mockDialogRef.close).toHaveBeenCalledWith('success')
   })
 })

@@ -1,4 +1,9 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { ActivatedRoute, Router } from '@angular/router'
+import { ConfigurationsService, UtilityService, ValueService } from '@sunbird-cb/utils-v2'
 import { LearningComponent } from './learning.component'
+import { SearchServService } from '../../services/search-serv.service'
 import { of, Subject } from 'rxjs'
 
 describe('LearningComponent', () => {
@@ -309,6 +314,38 @@ describe('LearningComponent', () => {
 
             expect(removeDefaultFiltersSpy).toHaveBeenCalled()
         })
+
+        it('should set noContent for a single-word query with no hits without retrying the instance catalog', () => {
+            component.searchRequestObject = {
+                query: 'test',
+                filters: {},
+                pageNo: 0,
+                pageSize: 10,
+                locale: [],
+                sort: [],
+                instanceCatalog: true,
+            }
+
+            mockSearchService.getLearning.mockReturnValue(of({
+                totalHits: 0,
+                result: [],
+                filters: [],
+                filtersUsed: [],
+                notVisibleFilters: [],
+                doYouMean: [],
+                queryUsed: 'test'
+            }))
+            const getResultsSpy = jest.spyOn(component, 'getResults')
+
+            component.getResults()
+
+            expect(component.noContent).toBe(true)
+            expect(getResultsSpy).toHaveBeenCalledTimes(1)
+            expect(mockSearchService.getLearning).toHaveBeenCalledTimes(1)
+            expect(component.searchRequestObject.instanceCatalog).toBe(true)
+            expect(component.searchRequestObject.pageNo).toBe(0)
+            expect(component.searchRequestStatus).toBe('done')
+        })
     })
 
     describe('contentTrackBy', () => {
@@ -453,6 +490,42 @@ describe('LearningComponent', () => {
 
             // Should not throw errors
             expect(() => component.ngOnDestroy()).not.toThrow()
+        })
+    })
+
+    describe('template', () => {
+        let fixture: ComponentFixture<LearningComponent>
+
+        beforeEach(() => {
+            TestBed.configureTestingModule({
+                declarations: [LearningComponent],
+                providers: [
+                    { provide: ActivatedRoute, useValue: mockActivatedRoute },
+                    { provide: Router, useValue: mockRouter },
+                    { provide: ValueService, useValue: mockValueService },
+                    { provide: SearchServService, useValue: mockSearchService },
+                    { provide: ConfigurationsService, useValue: mockConfigService },
+                    { provide: UtilityService, useValue: mockUtilityService },
+                ],
+                schemas: [NO_ERRORS_SCHEMA],
+            })
+            fixture = TestBed.createComponent(LearningComponent)
+            fixture.detectChanges()
+        })
+
+        it('should render the View More button without an accesskey attribute', () => {
+            expect(fixture.componentInstance.searchRequestStatus).toBe('hasMore')
+            const buttons: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('button[mat-raised-button]'))
+            const viewMore = buttons.find(btn => (btn.textContent || '').includes('View More'))
+            expect(viewMore).toBeTruthy()
+            expect(viewMore?.hasAttribute('accesskey')).toBe(false)
+        })
+
+        it('should not set role="none" on the filter chip list', () => {
+            const chipList: HTMLElement = fixture.nativeElement.querySelector('mat-chip-list')
+            expect(chipList).toBeTruthy()
+            expect(chipList.getAttribute('aria-label')).toBe('Filter selection')
+            expect(chipList.hasAttribute('role')).toBe(false)
         })
     })
 })

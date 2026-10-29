@@ -144,6 +144,16 @@ describe('CreateEventComponent', () => {
 	})
 
 	describe('Date and Time Handling', () => {
+		it('should convert a time string to minutes', () => {
+			expect(component.convertToMinutes('10:30')).toBe(630)
+			expect(component.convertToMinutes('09:05 AM')).toBe(545)
+		})
+
+		it('should not throw when the time string is missing', () => {
+			expect(() => component.convertToMinutes(undefined as any)).not.toThrow()
+			expect(component.convertToMinutes('')).toBeNaN()
+		})
+
 		it('should update time array when date changes', () => {
 			const mockEvent = {
 				value: new Date(),

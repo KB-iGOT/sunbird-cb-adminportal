@@ -1,5 +1,13 @@
+import { Directive, NO_ERRORS_SCHEMA } from '@angular/core'
+import { TestBed } from '@angular/core/testing'
+import { ActivatedRoute, Router } from '@angular/router'
+import { ValueService } from '@sunbird-cb/utils-v2'
 import { SocialComponent } from './social.component'
+import { SearchServService } from '../../services/search-serv.service'
 import { of, Subject, throwError } from 'rxjs'
+
+@Directive({ selector: 'mat-menu', exportAs: 'matMenu', standalone: false })
+class MatMenuStubDirective { }
 import { ISocialSearchResult } from '../../models/search.model'
 
 
@@ -297,5 +305,39 @@ describe('SocialComponent', () => {
         // Check if unsubscribe was called
         expect(spy1).toHaveBeenCalled()
         expect(spy2).toHaveBeenCalled()
+    })
+
+    describe('View More button template', () => {
+        beforeEach(() => {
+            TestBed.configureTestingModule({
+                declarations: [SocialComponent, MatMenuStubDirective],
+                providers: [
+                    { provide: ActivatedRoute, useValue: mockActivatedRoute },
+                    { provide: Router, useValue: mockRouter },
+                    { provide: ValueService, useValue: { isLtMedium$: of(false) } },
+                    { provide: SearchServService, useValue: mockSearchService },
+                ],
+                schemas: [NO_ERRORS_SCHEMA],
+            })
+        })
+
+        test('should render the View More button without an accesskey and load more results on click', () => {
+            const fixture = TestBed.createComponent(SocialComponent)
+            const instance = fixture.componentInstance
+            const getResultsSpy = jest.spyOn(instance, 'getResults').mockImplementation(() => { })
+            instance.searchResults = { total: 2, result: [{ id: 'q1' }], filters: [] } as any
+            instance.searchRequestStatus = 'hasMore'
+            fixture.detectChanges()
+
+            const button: HTMLButtonElement = Array.from<HTMLButtonElement>(fixture.nativeElement.querySelectorAll('button'))
+                .find(btn => (btn.textContent || '').includes('View More')) as HTMLButtonElement
+
+            expect(button).toBeTruthy()
+            expect(button.hasAttribute('accesskey')).toBe(false)
+            expect(fixture.nativeElement.querySelector('[accesskey]')).toBeNull()
+
+            button.click()
+            expect(getResultsSpy).toHaveBeenCalled()
+        })
     })
 })

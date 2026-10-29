@@ -1,6 +1,6 @@
 <div class="verify-otp-dialog py-4">
   <form [formGroup]="otpSelectionForm" class="mobile-wrapper" *ngIf="!otpTypeSelected">
-    <label class="mat-title-1 font-bold" aria-label="Send OTP to">Send OTP to </label>
+    <span class="mat-title-1 font-bold" aria-label="Send OTP to">Send OTP to </span>
     <div class="margin-bottom-l margin-top-m">
       <mat-radio-group aria-label="Select an option" formControlName='otpType' #otpType>
         <mat-radio-button [value]="'email'" color="accent" class="radio-btn margin-right-xl">Email</mat-radio-button>

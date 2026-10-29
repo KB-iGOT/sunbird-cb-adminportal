@@ -47,4 +47,8 @@ describe('BulkUploadCoursesComponent', () => {
     expect(component.providerConfiguration).toEqual(pageData.data)
     expect(component.configurationData).toEqual(pageData.data)
   })
+
+  it('should strip surrounding quotes and whitespace from csv headers', () => {
+    expect(component.getHeaderArray(['"name","code",plain ,"in"side"'])).toEqual(['name', 'code', 'plain', 'in"side'])
+  })
 })

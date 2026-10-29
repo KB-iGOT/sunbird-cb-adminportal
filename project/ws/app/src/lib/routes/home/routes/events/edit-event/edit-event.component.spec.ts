@@ -1,5 +1,13 @@
 import { EditEventComponent } from './edit-event.component'
-import { of, throwError } from 'rxjs'
+import { of, Subject, throwError } from 'rxjs'
+import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
+import { ActivatedRoute, Router } from '@angular/router'
+import { ConfigurationsService, EventService } from '@sunbird-cb/utils-v2'
+import { EventsService } from '../services/events.service'
+import { ProfileV2UtillService } from '../services/home-utill.service'
 
 // Mock classes for dependencies
 class MockMatSnackBar {
@@ -350,5 +358,74 @@ describe('EditEventComponent', () => {
 		component.showSuccess(mockRes)
 
 		expect(mockMatDialog.open).toHaveBeenCalled()
+	})
+
+	describe('template', () => {
+		let fixture: ComponentFixture<EditEventComponent>
+
+		const textOf = (el: Element) => (el.textContent || '').replace(/\s+/g, ' ').trim()
+
+		beforeEach(async () => {
+			// keep the event details request pending so the static form markup is rendered
+			mockEventsService.getEventDetailsInEditMode.mockReturnValue(new Subject())
+
+			await TestBed.configureTestingModule({
+				declarations: [EditEventComponent],
+				providers: [
+					{ provide: MatSnackBar, useValue: mockSnackBar },
+					{ provide: EventsService, useValue: mockEventsService },
+					{ provide: MatDialog, useValue: mockMatDialog },
+					{ provide: Router, useValue: mockRouter },
+					{ provide: ConfigurationsService, useValue: mockConfigSvc },
+					{ provide: ActivatedRoute, useValue: mockActiveRoute },
+					{ provide: EventService, useValue: mockEvents },
+					{ provide: ProfileV2UtillService, useValue: mockProfileUtilSvc },
+				],
+				schemas: [NO_ERRORS_SCHEMA],
+			}).compileComponents()
+
+			fixture = TestBed.createComponent(EditEventComponent)
+			fixture.detectChanges()
+		})
+
+		test('should render the section headings as spans, not labels', () => {
+			const headings: Element[] = Array.from(fixture.nativeElement.querySelectorAll('span.heading'))
+			expect(headings.map(textOf)).toEqual(['Event details', 'Add link', 'Date time', 'Presenters'])
+			expect(fixture.nativeElement.querySelector('label.heading')).toBeNull()
+		})
+
+		test('should render the helper sub titles as spans', () => {
+			const subTitles: Element[] = Array.from(fixture.nativeElement.querySelectorAll('span.sub_title'))
+			expect(subTitles.map(textOf)).toEqual([
+				'Detailed description about the event. It will appear in the event details page',
+				'Add a link so people know where to go when your events starts.',
+			])
+			expect(fixture.nativeElement.querySelector('label.sub_title')).toBeNull()
+		})
+
+		test('should render the "Event type" caption and presenters hint as spans', () => {
+			const spans: Element[] = Array.from(fixture.nativeElement.querySelectorAll('span'))
+			expect(spans.some(span => textOf(span) === 'Event type')).toBe(true)
+			const hint: Element = fixture.nativeElement.querySelector('#presenter span.form-label')
+			expect(textOf(hint)).toBe('Presenters added are displayed in the event details page')
+		})
+
+		test('should render the required "State" caption as a span only when the state field is shown', () => {
+			const findState = () => Array.from<Element>(fixture.nativeElement.querySelectorAll('span.required'))
+				.find(span => textOf(span) === 'State')
+			expect(findState()).toBeUndefined()
+
+			fixture.componentInstance.showRajyaField = true
+			fixture.detectChanges()
+
+			expect(findState()).toBeTruthy()
+		})
+
+		test('should keep the real form field labels associated with their inputs', () => {
+			const labelFor = (id: string) => fixture.nativeElement.querySelector(`label[for="${id}"]`)
+			const ids = ['eventTitle', 'description', 'agenda', 'conferenceLink', 'eventDate', 'eventTime']
+			ids.forEach(id => expect(labelFor(id)).toBeTruthy())
+			expect(fixture.nativeElement.querySelector('#eventTitle')).toBeTruthy()
+		})
 	})
 })

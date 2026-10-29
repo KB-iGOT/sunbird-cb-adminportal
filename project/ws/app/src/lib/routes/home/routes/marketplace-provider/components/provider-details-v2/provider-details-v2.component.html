@@ -180,7 +180,9 @@
             <div class="icon">
               <mat-icon svgIcon="upload_upward_arrow"></mat-icon>
             </div>
-            <div class="meta-text-1" onclick="document.getElementById('fileInput')?.click()">
+            <div class="meta-text-1" role="button" tabindex="0"
+              onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.click() }"
+              onclick="document.getElementById('fileInput')?.click()">
               Select File to upload
             </div>
             <div class="meta-text-2 text-center">or drag and drop here Max Size - 1GB</div>

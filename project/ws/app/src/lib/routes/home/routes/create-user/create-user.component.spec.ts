@@ -1,6 +1,14 @@
-import { TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { MatSnackBar } from '@angular/material/snack-bar'
+import { ActivatedRoute, Router } from '@angular/router'
+import { EventService } from '@sunbird-cb/utils-v2'
 import { of, throwError } from 'rxjs'
 import { CreateUserComponent } from './create-user.component'
+import { CreateMDOService } from '../../services/create-mdo.services'
+import { DirectoryService } from '../../services/directory.services'
+import { ProfileV2UtillService } from '../../services/home-utill.service'
+import { UsersService } from '../../services/users.service'
 
 describe('CreateUserComponent', () => {
     let component: CreateUserComponent
@@ -180,5 +188,46 @@ describe('CreateUserComponent', () => {
 
         component.modifyUserRoles('MDO_LEADER')
         expect(component.userRoles.has('MDO_LEADER')).toBe(false)
+    })
+
+    describe('template', () => {
+        let fixture: ComponentFixture<CreateUserComponent>
+
+        beforeEach(async () => {
+            // the outer beforeEach already instantiated the test module via runInInjectionContext
+            TestBed.resetTestingModule()
+            await TestBed.configureTestingModule({
+                declarations: [CreateUserComponent],
+                providers: [
+                    { provide: ActivatedRoute, useValue: mockActivatedRoute },
+                    { provide: Router, useValue: mockRouter },
+                    { provide: MatSnackBar, useValue: mockMatSnackBar },
+                    { provide: DirectoryService, useValue: mockDirectoryService },
+                    { provide: CreateMDOService, useValue: mockCreateMDOService },
+                    { provide: ProfileV2UtillService, useValue: mockProfileUtilSvc },
+                    { provide: UsersService, useValue: mockUsersService },
+                    { provide: EventService, useValue: mockEvents },
+                ],
+                schemas: [NO_ERRORS_SCHEMA],
+            }).compileComponents()
+
+            fixture = TestBed.createComponent(CreateUserComponent)
+            fixture.detectChanges()
+        })
+
+        it('should render the "User details" heading as a span, not a label', () => {
+            const heading: HTMLElement = fixture.nativeElement.querySelector('span.heading')
+            expect(heading).toBeTruthy()
+            expect(heading.textContent!.trim()).toBe('User details')
+            expect(fixture.nativeElement.querySelector('label.heading')).toBeNull()
+        })
+
+        it('should keep the field labels as labels associated with their inputs', () => {
+            const fullNameLabel: HTMLLabelElement = fixture.nativeElement.querySelector('label[for="fname"]')
+            expect(fullNameLabel).toBeTruthy()
+            expect(fullNameLabel.textContent!.trim()).toBe('Full name')
+            expect(fixture.nativeElement.querySelector('#fname')).toBeTruthy()
+            expect(fixture.nativeElement.querySelector('label[for="mobileNumber"]')).toBeTruthy()
+        })
     })
 })

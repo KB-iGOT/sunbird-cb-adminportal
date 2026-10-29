@@ -20,7 +20,9 @@
                 <ng-container *ngIf="!selectedLogo">
                   <div class="">Logo</div>
                 </ng-container>
-                <div class="edit-logo" onclick="document.getElementById('edit-orgLogo').click()">
+                <div class="edit-logo" role="button" tabindex="0"
+                  onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.click() }"
+                  onclick="document.getElementById('edit-orgLogo').click()">
                   <mat-icon>edit</mat-icon>
                 </div>
               </div>

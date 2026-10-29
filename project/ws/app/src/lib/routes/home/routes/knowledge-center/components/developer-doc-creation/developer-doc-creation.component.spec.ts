@@ -75,4 +75,45 @@ describe('DeveloperDocCreationComponent', () => {
       expect(Date.now() - start).toBeLessThan(1000)
     })
   })
+
+  describe('article content', () => {
+    it('should validate CKEditor content by its plain-text length', () => {
+      component.onCKEditorChange(0, '<p>Short <strong>text</strong></p>')
+
+      const content = component.articlesArray.at(0).get('content')!
+      expect(content.touched).toBe(true)
+      expect(content.dirty).toBe(true)
+      expect(component.articleHasError(0, 'content', 'minlength')).toBe(true)
+      expect(component.getArticleContentPlainTextLength(0)).toBe(10)
+      expect(component.getArticleRemainingCharacters(0, 'content', 50)).toBe(40)
+    })
+
+    it('should treat markup-only content as missing', () => {
+      component.onCKEditorChange(0, '<p>&nbsp;</p>')
+      expect(component.articleHasError(0, 'content', 'required')).toBe(true)
+
+      component.onCKEditorChange(0, `<p>${'a'.repeat(60)}</p>`)
+      expect(component.articlesArray.at(0).get('content')!.valid).toBe(true)
+      expect(component.getArticleRemainingCharacters(0, 'content', 50)).toBe(0)
+    })
+  })
+
+  describe('tags', () => {
+    it('should append an empty tag once every tag has a value', () => {
+      component.tagsArray.at(0).patchValue({ value: 'angular' })
+      component.onTagChange()
+      expect(component.tagsArray.length).toBe(2)
+      expect(component.tagsArray.at(1).value).toEqual({ value: '' })
+
+      component.onTagChange()
+      expect(component.tagsArray.length).toBe(2)
+    })
+
+    it('should clear the last remaining tag instead of removing it', () => {
+      component.tagsArray.at(0).patchValue({ value: 'angular' })
+      component.removeTag(0)
+      expect(component.tagsArray.length).toBe(1)
+      expect(component.tagsArray.at(0).value).toEqual({ value: '' })
+    })
+  })
 })

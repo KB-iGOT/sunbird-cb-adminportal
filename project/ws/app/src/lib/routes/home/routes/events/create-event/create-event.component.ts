@@ -391,8 +391,8 @@ export class CreateEventComponent implements OnInit, OnDestroy {
   }
 
   convertToMinutes(timeStr: string): number {
-    const [time] = timeStr?.split(' ')
-    let [hours, minutes] = time?.split(':').map(Number)
+    const [time] = (timeStr || '').split(' ')
+    const [hours, minutes] = (time || '').split(':').map(Number)
 
     return hours * 60 + minutes
   }

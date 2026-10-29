@@ -1,4 +1,6 @@
 
+import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { TestBed } from '@angular/core/testing'
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router'
 import { RolesService } from '../../services/roles.service'
 import { UsersService } from '../../services/users.service'
@@ -58,5 +60,38 @@ describe('RolesAccessComponent', () => {
 
     it('should create a instance of component', () => {
         expect(component).toBeTruthy()
+    })
+
+    describe('template', () => {
+        beforeEach(() => {
+            TestBed.configureTestingModule({
+                declarations: [RolesAccessComponent],
+                providers: [
+                    { provide: Router, useValue: { navigate: jest.fn() } },
+                    { provide: ActivatedRoute, useValue: activeRoute },
+                    {
+                        provide: UsersService,
+                        useValue: { getAllKongUsers: jest.fn(() => of({ result: { response: { content: [] } } })) },
+                    },
+                    {
+                        provide: RolesService,
+                        useValue: {
+                            getAllRoles: jest.fn(() => of({ result: { response: { value: JSON.stringify({ orgTypeList: [] }) } } })),
+                        },
+                    },
+                ],
+                schemas: [NO_ERRORS_SCHEMA],
+            })
+        })
+
+        it('should keep the header link in the natural tab order (tabindex 0)', () => {
+            const fixture = TestBed.createComponent(RolesAccessComponent)
+            fixture.detectChanges()
+            const header: HTMLElement = fixture.nativeElement.querySelector('#rolescs > div[role="link"]')
+
+            expect(header).toBeTruthy()
+            expect(header.getAttribute('tabindex')).toBe('0')
+            expect(fixture.nativeElement.querySelector('[tabindex]:not([tabindex="0"]):not([tabindex="-1"])')).toBeNull()
+        })
     })
 })

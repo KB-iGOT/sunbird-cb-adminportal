@@ -52,6 +52,13 @@ describe('ConformationPopupComponent', () => {
     expect(dialogRef.close).toHaveBeenCalledWith({ result: true, value: 'abc' })
   })
 
+  it('should close with result and value for a non-boolean event in input dialogs', () => {
+    dialogData = { dialogType: 'input', inputDetails: { required: true, value: 'abc' } }
+    createComponent()
+    component.closePopup('confirm')
+    expect(dialogRef.close).toHaveBeenCalledWith({ result: 'confirm', value: 'abc' })
+  })
+
   it('should not close when required input is empty', () => {
     dialogData = { dialogType: 'input', inputDetails: { required: true } }
     createComponent()

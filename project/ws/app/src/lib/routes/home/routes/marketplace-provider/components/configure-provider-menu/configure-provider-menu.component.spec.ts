@@ -43,4 +43,33 @@ describe('ConfigureProviderMenuComponent', () => {
     component.setActiveItem({ slug: 'y' })
     expect(spy).toHaveBeenCalledWith({ activeMenuItem: { slug: 'y' } })
   })
+
+  it('should render a step per menu item and emit the clicked item', () => {
+    const spy = jest.spyOn(component.activeMenu, 'emit')
+    const steps: HTMLElement[] = Array.from(fixture.nativeElement.querySelectorAll('li.step-item'))
+    expect(steps.map(step => step.textContent!.trim())).toEqual(component.MENU_ITEMS.map(item => item.label))
+
+    steps[0].click()
+    fixture.detectChanges()
+
+    expect(spy).toHaveBeenCalledWith({ activeMenuItem: component.MENU_ITEMS[0] })
+    expect(steps[0].classList.contains('active')).toBe(true)
+  })
+
+  it('should only expose provider details when the provider is pending', () => {
+    const pendingMenu = new ConfigureProviderMenuComponent(
+      marketplaceService,
+      { queryParams: of({ status: 'PENDING' }) } as any,
+    )
+    expect(pendingMenu.canOnlyView).toBe(true)
+    expect(pendingMenu.MENU_ITEMS.map(item => item.slug)).toEqual(['provider_details'])
+  })
+
+  it('should stop tracking the menu item and return the item id for trackBy after destroy', () => {
+    expect(component.trackByFn(0, { id: 3 })).toBe(3)
+    component.ngOnDestroy()
+    marketplaceService.currentMenuItem.next({ slug: 'z' })
+    expect(component.subscription.closed).toBe(true)
+    expect(component.activeItem).not.toEqual({ slug: 'z' })
+  })
 })

@@ -39,6 +39,9 @@
                 </div>
                 <div
                   class="meta-text-1"
+                  role="button"
+                  tabindex="0"
+                  onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.click() }"
                   onclick="document.getElementById('logoFileInput')?.click()"
                 >
                   Select File to upload
@@ -88,6 +91,9 @@
                 </div>
                 <div
                   class="meta-text-1"
+                  role="button"
+                  tabindex="0"
+                  onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.click() }"
                   onclick="document.getElementById('certificateFileInput')?.click()"
                 >
                   Select SVG File to upload

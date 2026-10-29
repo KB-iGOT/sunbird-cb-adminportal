@@ -1,7 +1,15 @@
 import { EditSectorComponent } from './edit-sector.component'
 import { of, throwError } from 'rxjs'
-import { UntypedFormBuilder } from '@angular/forms'
+import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms'
+import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
+import { ActivatedRoute, Router } from '@angular/router'
+import { DomSanitizer } from '@angular/platform-browser'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 import { sectorConstants } from '../sectors-constats.model'
+import { SectorsService } from '../sectors.service'
 
 describe('EditSectorComponent', () => {
     let component: EditSectorComponent
@@ -147,5 +155,48 @@ describe('EditSectorComponent', () => {
     it('should return default logo when URL cannot be changed', () => {
         sectorsService.getChangedArtifactUrl.mockReturnValue('')
         expect(component.getUrl('')).toBe('/assets/instances/eagle/app_logos/default.png')
+    })
+
+    describe('template', () => {
+        let fixture: ComponentFixture<EditSectorComponent>
+
+        beforeEach(async () => {
+            sectorsService.readSector.mockReturnValue(of({
+                responseCode: 'OK',
+                result: { sector: { name: 'Test Sector', imgUrl: 'test-url', children: [] } },
+            }))
+
+            await TestBed.configureTestingModule({
+                declarations: [EditSectorComponent],
+                imports: [ReactiveFormsModule],
+                providers: [
+                    UntypedFormBuilder,
+                    { provide: MatDialog, useValue: dialog },
+                    { provide: ConfigurationsService, useValue: configSvc },
+                    { provide: Router, useValue: router },
+                    { provide: SectorsService, useValue: sectorsService },
+                    { provide: DomSanitizer, useValue: sanitizer },
+                    { provide: ActivatedRoute, useValue: activatedRoute },
+                    { provide: MatSnackBar, useValue: snackBar },
+                ],
+                schemas: [NO_ERRORS_SCHEMA],
+            }).compileComponents()
+
+            fixture = TestBed.createComponent(EditSectorComponent)
+            fixture.detectChanges()
+        })
+
+        it('should render the "Sectors" and "Sub-sectors" headings as spans, not labels', () => {
+            const headings: HTMLElement[] = Array.from(fixture.nativeElement.querySelectorAll('span.heading'))
+            expect(headings.map(heading => heading.textContent!.trim())).toEqual(['Sectors', 'Sub-sectors'])
+            expect(fixture.nativeElement.querySelector('label.heading')).toBeNull()
+        })
+
+        it('should keep the real form labels associated via the for attribute', () => {
+            const labels: HTMLLabelElement[] = Array.from(fixture.nativeElement.querySelectorAll('label'))
+            expect(labels.length).toBe(2)
+            labels.forEach(label => expect(label.getAttribute('for')).toBeTruthy())
+            expect(labels.map(label => label.textContent!.trim())).toEqual(['Sector Name', 'Select Icon'])
+        })
     })
 })
