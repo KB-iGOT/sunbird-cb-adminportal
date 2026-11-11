@@ -10,10 +10,16 @@
     </div>
     <ng-container *ngIf="showDeleteAll && needCheckBox">
       <button (click)="deleteAllSelected()" [disabled]="selectedRowData.length === 0" mat-flat-button
-        class="delete-all flex items-center rounded-full px-4 py-2 font-bold text-sm mat-btn-flat gap-3">
-        <mat-icon class="mr-1">delete</mat-icon>
-        <span class="mr-1">Delete All</span>
-        <span *ngIf="selectedRowData.length"> ({{ selectedRowData.length }})</span>
+        class="delete-all rounded-full px-4 py-2 font-bold text-sm mat-btn-flat">
+        <span class="delete-all-content">
+          <mat-icon>delete</mat-icon>
+          <span>
+            Delete All
+            <ng-container *ngIf="selectedRowData.length">
+              ({{ selectedRowData.length }})
+            </ng-container>
+          </span>
+        </span>
       </button>
     </ng-container>
   </div>
