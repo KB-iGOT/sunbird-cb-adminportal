@@ -259,9 +259,7 @@ export class SsoIntegrationComponent implements OnInit {
           })
           providerPayload.data.ltiConfiguration['ssoTestStatus'] = status
           providerPayload.data.ltiConfiguration['message'] = errorMessage
-          if (status.toLocaleLowerCase() === 'success') {
-            providerPayload.data.isAuthenticate = true
-          }
+          providerPayload.data.isAuthenticate = status.toLowerCase() === 'success'
         }
         return this.marketplaceService.updateProvider(providerPayload)
       })

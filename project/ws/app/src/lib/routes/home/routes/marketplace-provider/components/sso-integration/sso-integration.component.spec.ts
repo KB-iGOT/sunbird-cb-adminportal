@@ -370,18 +370,18 @@ describe('SsoIntegrationComponent', () => {
       expect(marketplaceService.updateProvider.mock.calls[0][0].data.isAuthenticate).toBe(true)
     })
 
-    it('should not mark the provider as authenticated when the test status is not success', () => {
+    it('should set isAuthenticate to false when the test status is not success', () => {
       component.providerDetails = { id: 'p1', data: { partnerCode: 'pc', ltiConfiguration: ltiConfiguration() } }
       marketplaceService.ltiSSOTest.mockReturnValue(of({ responseCode: 'OK', params: { status: 'Failed' } }))
       component.testLtiConfiguration(dialogRef)
-      expect(marketplaceService.updateProvider.mock.calls[0][0].data.isAuthenticate).toBeUndefined()
+      expect(marketplaceService.updateProvider.mock.calls[0][0].data.isAuthenticate).toBe(false)
     })
 
-    it('should not mark the provider as authenticated when the test response is not OK', () => {
+    it('should set isAuthenticate to false when the test response is not OK', () => {
       component.providerDetails = { id: 'p1', data: { partnerCode: 'pc', ltiConfiguration: ltiConfiguration() } }
       marketplaceService.ltiSSOTest.mockReturnValue(of({ responseCode: 'FAIL' }))
       component.testLtiConfiguration(dialogRef)
-      expect(marketplaceService.updateProvider.mock.calls[0][0].data.isAuthenticate).toBeUndefined()
+      expect(marketplaceService.updateProvider.mock.calls[0][0].data.isAuthenticate).toBe(false)
     })
 
     it('should default the test status to Failed when the OK response has no status', () => {
@@ -390,7 +390,7 @@ describe('SsoIntegrationComponent', () => {
       component.testLtiConfiguration(dialogRef)
       const payload = marketplaceService.updateProvider.mock.calls[0][0]
       expect(payload.data.ltiConfiguration.ssoTestStatus).toBe('Failed')
-      expect(payload.data.isAuthenticate).toBeUndefined()
+      expect(payload.data.isAuthenticate).toBe(false)
       expect(dialogRef.close).toHaveBeenCalled()
     })
 
@@ -422,7 +422,9 @@ describe('SsoIntegrationComponent', () => {
     it('should skip patching when there is no LTI configuration', () => {
       component.providerDetails = { id: 'p1', data: { partnerCode: 'pc' } }
       component.testLtiConfiguration(dialogRef)
-      expect(marketplaceService.updateProvider.mock.calls[0][0].data.ltiConfiguration).toBeUndefined()
+      const payload = marketplaceService.updateProvider.mock.calls[0][0]
+      expect(payload.data.ltiConfiguration).toBeUndefined()
+      expect(payload.data.isAuthenticate).toBeUndefined()
     })
 
     it('should handle a missing provider', () => {
