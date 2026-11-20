@@ -1,0 +1,987 @@
+// the arrow over every text of the page, read-only Edit in Provider Settings included; the buttons, selects and
+// links keep their own pointer, and a field to type in its text cursor
+:host {
+  cursor: default;
+}
+
+input:not([type='radio']):not([type='checkbox']),
+textarea {
+  cursor: text;
+}
+
+.page-title {
+  font-family: Montserrat;
+  font-weight: 600;
+  font-size: 20px;
+  color: #000000;
+}
+
+// Reset and Save; .mat-btn-flat stays solid blue when disabled, so a disabled button is faded here
+.header-actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+// The Clear values icon is an svg with its colour set in the file, so it doesn't turn grey with a disabled button as the
+// delete font icon does; it is faded here to the grey of the delete icon (the svg is 60% black, the delete icon 33%)
+button:disabled .restart-icon {
+  opacity: 0.55;
+}
+
+.label {
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 14px;
+  color: #212529;
+}
+
+.field-meta {
+  font-family: Lato;
+  font-weight: 400;
+  font-size: 14px;
+  color: #00000099;
+}
+
+.access-settings-card {
+  border: 1px solid #1b4ca1;
+  padding: 16px 24px;
+  border-radius: 12px;
+  background: #fff;
+}
+
+// The read-only Licence Type and Over All Limit, each with a smaller line saying where it comes from
+.licence-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+
+  .field-meta {
+    font-size: 12px;
+  }
+}
+
+.readonly-box {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  margin-top: 6px;
+  padding: 0 16px;
+  border: 1px solid #dfe2e7;
+  border-radius: 4px;
+  background: #f7f8fa;
+  font-family: Lato;
+  font-size: 14px;
+}
+
+.readonly-text {
+  color: #00000099;
+}
+
+.readonly-value {
+  font-weight: 700;
+  color: #212529;
+}
+
+.edit-link {
+  color: #1b4ca1;
+  text-decoration: underline;
+}
+
+// Enrolment check preference, and what No leaves to the Content Portal
+.preference-card {
+  padding: 16px 20px;
+  border: 1px solid #00000014;
+  border-radius: 8px;
+}
+
+.preference-title {
+  display: block;
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 16px;
+  color: #212529;
+}
+
+.required-mark {
+  color: #d13212;
+}
+
+// The warnings and the notes of the page
+.choose-carefully,
+.idle-warning,
+.no-users-warning,
+.pool-empty-warning,
+.licence-error,
+.info-note {
+  padding: 10px 14px;
+  border-radius: 4px;
+  font-family: Lato;
+  font-size: 13px;
+}
+
+.choose-carefully,
+.idle-warning,
+.no-users-warning,
+.pool-empty-warning {
+  background: #fff4e5;
+  color: #b26b00;
+}
+
+.licence-error {
+  background: #fdecea;
+  color: #d13212;
+}
+
+.info-note {
+  background: #e8eefb;
+  color: #1b4ca1;
+}
+
+.distribution-card {
+  padding: 16px 20px;
+  border: 1px solid #00000014;
+  border-radius: 12px;
+}
+
+.distribution-title {
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 16px;
+  color: #212529;
+}
+
+.distribution-tiles {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+// with the Over-allocated by tile there are six
+.distribution-tiles.has-over-allocation {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.distribution-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #f4f5f9;
+
+  .tile-label {
+    font-family: Lato;
+    font-size: 12px;
+    color: #00000099;
+  }
+
+  .tile-value {
+    font-family: Lato;
+    font-weight: 700;
+    font-size: 24px;
+    color: #212529;
+
+    &.has-unallocated {
+      color: #1d8923;
+    }
+
+    &.over-allocated {
+      color: #d13212;
+    }
+  }
+
+  // a line under the value, saying what the tile is for
+  .tile-note {
+    font-family: Lato;
+    font-size: 11px;
+    color: #00000099;
+  }
+}
+
+// The Unaudited licences tile is like the others, with the info icon beside its label
+.unaudited-tile {
+  .tile-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+// The i beside the tile's label, its text opens on hover and on focus
+.info-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #1b4ca1;
+  border-radius: 50%;
+  font-family: Lato;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  color: #1b4ca1;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background: #1b4ca1;
+    color: #fff;
+    outline: none;
+  }
+
+  &:hover .info-popover,
+  &:focus .info-popover {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+.info-popover {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 10;
+  width: 260px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: #212529;
+  font-family: Lato;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: left;
+  color: #fff;
+  transform: translateX(-50%);
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border: 5px solid transparent;
+    border-top-color: #212529;
+  }
+}
+
+.allocation-bar {
+  display: flex;
+  height: 14px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #eef0f4;
+}
+
+.allocation-segment {
+  flex: 0 0 auto;
+  height: 100%;
+}
+
+// whatever the groups leave, drawn as the rest of the bar
+.unallocated-segment {
+  flex: 1 1 0;
+  background: repeating-linear-gradient(135deg, #d5d8df 0 4px, #eceef2 4px 8px);
+}
+
+// Licences used while the enrolment check preference was No: slate, hatched, so the segment and its legend swatch can't
+// be taken for a user group's colour or for the shared pool
+.unaudited-segment {
+  background: repeating-linear-gradient(135deg, #4b5563 0 3px, #9ca3af 3px 6px);
+}
+
+.allocation-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  font-family: Lato;
+  font-size: 12px;
+  color: #212529;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+
+  &.unallocated-swatch {
+    background: #d5d8df;
+  }
+
+  &.unaudited-swatch {
+    background: repeating-linear-gradient(135deg, #4b5563 0 2px, #9ca3af 2px 4px);
+  }
+}
+
+// Radio options drawn as cards, for the enrolment check preference
+.radio-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.radio-card {
+  --mat-radio-selected-icon-color: #1b4ca1;
+  --mat-radio-selected-hover-icon-color: #1b4ca1;
+  --mat-radio-selected-focus-icon-color: #1b4ca1;
+  --mat-radio-selected-pressed-icon-color: #1b4ca1;
+  --mat-radio-checked-ripple-color: #1b4ca1;
+
+  padding: 6px 12px 6px 4px;
+  border: 1px solid #00000014;
+  border-radius: 6px;
+
+  &.mat-mdc-radio-checked {
+    border-color: #1b4ca1;
+    background: #e8eefb;
+  }
+
+  ::ng-deep .mdc-form-field {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  ::ng-deep .mdc-label {
+    flex: 1;
+    padding-top: 10px;
+    cursor: pointer;
+  }
+
+  .option-title {
+    display: block;
+    font-family: Lato;
+    font-weight: 700;
+    font-size: 14px;
+    color: #212529;
+  }
+
+  .option-description {
+    display: block;
+    margin-top: 2px;
+    font-family: Lato;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #00000099;
+  }
+}
+
+// Header of a user group: its colour in the distribution bar, the users it matches and the licences it holds
+.group-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.group-dot {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.group-name {
+  font-family: Lato;
+  font-size: 14px;
+  color: #212529;
+  white-space: nowrap;
+}
+
+// The group's priority, the order it was created in; sits close to the name
+.priority-pill {
+  flex: 0 0 auto;
+  margin-left: -6px;
+  padding: 0 6px;
+  border: 1.5px solid #1b4ca1;
+  border-radius: 9999px;
+  color: #1b4ca1;
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 16px;
+}
+
+.group-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-family: Lato;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.count-chip {
+  gap: 4px;
+  min-width: 118px;
+  border: 1px solid #00000014;
+  background: #fff;
+  color: #212529;
+}
+
+.count-loader {
+  --mat-progress-spinner-active-indicator-color: #1b4ca1;
+}
+
+// a group learners have enrolled through, shown with its enrolments
+.in-use-chip {
+  gap: 4px;
+  border: 1px dashed #0000004d;
+  background: #fff;
+  color: #212529;
+  font-weight: 700;
+}
+
+// a group in use with every licence used
+.exhausted-chip {
+  gap: 4px;
+  border: 1px dashed #d13212;
+  background: #fff;
+  color: #d13212;
+  font-weight: 700;
+}
+
+.licences-chip {
+  gap: 6px;
+  border: 1px solid #f59a38;
+  background: #fff8ef;
+  color: #b45f06;
+  font-weight: 700;
+
+  mat-icon {
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
+    color: inherit;
+  }
+}
+
+// What a user group is allowed to take of the pool
+.licence-box {
+  position: relative;
+  margin-top: 24px;
+  padding: 20px 16px 14px;
+  border: 1px solid #f5c88a;
+  border-radius: 6px;
+  background: #fff8ef;
+}
+
+.licence-tag {
+  position: absolute;
+  top: -10px;
+  left: 14px;
+  padding: 2px 10px;
+  border-radius: 10px;
+  background: #f59a38;
+  color: #fff;
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.licence-label {
+  display: block;
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 12px;
+  color: #212529;
+}
+
+// The licences of a group beside what it has allocated, consumed and has left
+.licence-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 2.2fr) 1fr 1.8fr 1fr;
+  gap: 12px 24px;
+  align-items: center;
+}
+
+.licence-input-row {
+  display: flex;
+  max-width: 580px;
+  margin-top: 6px;
+}
+
+.licence-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #00000029;
+  border-right: 0;
+  border-radius: 4px 0 0 4px;
+  background: #fff;
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 14px;
+  color: #212529;
+
+  &:focus {
+    outline: 0;
+    border-color: #1b4ca1;
+  }
+
+  &.invalid {
+    border-color: #d13212;
+  }
+}
+
+.licence-suffix {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid #00000029;
+  border-radius: 0 4px 4px 0;
+  background: #f5f6f8;
+  font-family: Lato;
+  font-size: 13px;
+  color: #00000099;
+}
+
+.licence-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: Lato;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #00000099;
+}
+
+.stat-value {
+  font-weight: 700;
+  font-size: 16px;
+  color: #212529;
+
+  &.available-value {
+    color: #1d8923;
+  }
+
+  // nothing left of a group's licences once they are used
+  &.used-up {
+    color: #d13212;
+  }
+}
+
+.consumed-bar {
+  display: block;
+  height: 6px;
+  margin-top: 4px;
+  border-radius: 3px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.consumed-fill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: #1d8923;
+}
+
+.licence-hint {
+  margin-top: 4px;
+  font-family: Lato;
+  font-size: 11px;
+  color: #00000099;
+}
+
+// User groups, sized the way the creation portal access control sizes them
+.user-group-panel {
+  border: 1px solid #00000014;
+  border-radius: 4px;
+  box-shadow: none !important;
+
+  // 50px high, taller only when the chips need a second line (a group in use that is also exhausted)
+  ::ng-deep .mat-expansion-panel-header {
+    height: auto !important;
+    min-height: 50px;
+    padding: 0 16px 0 0;
+    background: #e8edf6;
+    font-family: Lato;
+    font-size: 14px;
+  }
+
+  ::ng-deep .mat-expansion-panel-header-title {
+    padding: 6px 0 6px 16px;
+  }
+
+  // the title and its chips take the width the two buttons leave, not Material's third of the header
+  ::ng-deep .mat-expansion-panel-header-description {
+    flex: 0 0 auto;
+  }
+
+  ::ng-deep .mat-expansion-panel-body {
+    padding: 0 24px 16px;
+    background: #fff;
+  }
+}
+
+.condition-block {
+  margin-top: 8px;
+}
+
+.condition-title {
+  margin: 16px 0 12px;
+  font-family: Lato;
+  font-weight: 400;
+  font-size: 12px;
+  color: #666666;
+}
+
+// the field (a fifth of the row, as when the five columns were equal), a narrow "is", then three equal columns,
+// the last one holds the delete and reset buttons
+.condition-row {
+  display: grid;
+  grid-template-columns: calc((100% - 64px) / 5) 96px repeat(3, minmax(0, 1fr));
+  column-gap: 16px;
+  align-items: start;
+  min-height: 58px;
+}
+
+.pill-select {
+  width: 100%;
+  --mat-form-field-container-height: 42px;
+  --mat-form-field-container-vertical-padding: 9px;
+  --mat-form-field-outlined-outline-color: #00000029;
+  --mat-form-field-outlined-hover-outline-color: #00000052;
+  --mat-form-field-outlined-disabled-outline-color: #00000029;
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  ::ng-deep .mdc-notched-outline__leading {
+    border-radius: 28px 0 0 28px !important;
+    min-width: 28px;
+  }
+
+  ::ng-deep .mdc-notched-outline__trailing {
+    border-radius: 0 28px 28px 0 !important;
+  }
+
+  // the "is" select is always disabled, but reads as a normal value
+  ::ng-deep .mat-mdc-select-disabled .mat-mdc-select-value {
+    color: #000000de;
+  }
+
+  &.needs-selection {
+    ::ng-deep .mdc-notched-outline__leading,
+    ::ng-deep .mdc-notched-outline__notch,
+    ::ng-deep .mdc-notched-outline__trailing {
+      border-color: #d13212 !important;
+    }
+  }
+}
+
+.manage-selection-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 4px 16px;
+  border: 0;
+  border-radius: 9999px;
+  background: #1b4ca1;
+  color: #fff;
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+
+  mat-icon {
+    width: 16px;
+    height: 16px;
+    color: inherit;
+  }
+
+  &:disabled {
+    background: #ebebeb;
+    color: #666666;
+    cursor: default;
+  }
+}
+
+.items-selected {
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #1b4ca1;
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.selection-max {
+  margin-left: 4px;
+  font-family: Lato;
+  font-size: 12px;
+  color: #00000099;
+}
+
+// a condition with a field picked saves only with a value, so one without is flagged
+.selection-error,
+.condition-error {
+  margin-top: -8px;
+  font-family: Lato;
+  font-size: 12px;
+  color: #d13212;
+}
+
+// in place of Add New Condition, for a group that picks its users one by one
+.user-condition-note {
+  margin-top: 12px;
+  font-family: Lato;
+  font-size: 12px;
+  color: #00000099;
+}
+
+// under Add New Condition, lined up with its text
+.condition-error {
+  margin: 2px 0 0 40px;
+}
+
+.condition-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.connector {
+  .connector-select {
+    width: 100px;
+    --mat-form-field-outlined-outline-color: #0000001f;
+
+    ::ng-deep .mat-mdc-text-field-wrapper {
+      background: #fff;
+      border-radius: 28px;
+    }
+  }
+}
+
+// the row above already leaves room for the AND between conditions, the OR between groups needs its own
+.group-connector {
+  margin: 16px 0;
+}
+
+.add-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px 0 8px;
+  border: 0;
+  border-radius: 35px;
+  background: transparent;
+  color: #1b4ca1;
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+
+  mat-icon {
+    color: #1b4ca1;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.add-group-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 16px 0 8px;
+}
+
+.group-count,
+.add-group-note {
+  font-family: Lato;
+  font-size: 12px;
+  color: #00000099;
+  text-align: center;
+}
+
+// The delete popup of a user group or a condition, as in the content portal
+.delete-confirm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  text-align: center;
+}
+
+.delete-confirm-icon {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 24px;
+  font-size: 56px;
+  color: #1b4ca1;
+}
+
+.delete-confirm-title {
+  font-family: Montserrat;
+  font-weight: 600;
+  font-size: 14px;
+  color: #1b2133;
+}
+
+.delete-confirm-text {
+  font-family: Lato;
+  font-size: 14px;
+  line-height: 21px;
+  color: #00000099;
+}
+
+.delete-confirm-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+
+  button {
+    height: 36px;
+    padding: 0 32px;
+    border: 1px solid #1b4ca1;
+    border-radius: 4px;
+    font-family: Lato;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .confirm-no {
+    background: #e8e8e8;
+    color: #1b4ca1;
+  }
+
+  .confirm-yes {
+    background: #1b4ca1;
+    color: #fff;
+  }
+}
+
+// The confirmations of the enrolment check preference: on the first save, and when a saved one is changed
+.save-confirm {
+  font-family: Lato;
+  font-size: 14px;
+  color: #000000cc;
+}
+
+.save-confirm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 10px 20px;
+  border-bottom: 1px solid #00000014;
+}
+
+.save-confirm-title {
+  font-weight: 700;
+  font-size: 18px;
+  color: #000000de;
+}
+
+.save-confirm-body {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px;
+  line-height: 22px;
+
+  strong {
+    color: #000000de;
+  }
+
+}
+
+// every user group the first save sends, under the preference
+.save-changes {
+  margin-top: 12px;
+  font-size: 13px;
+
+  ul {
+    max-height: 200px;
+    margin: 4px 0 0;
+    padding-left: 18px;
+    overflow-y: auto;
+    list-style: disc;
+  }
+
+  li + li {
+    margin-top: 4px;
+  }
+}
+
+.save-changes-title {
+  font-weight: 700;
+  color: #000000de;
+}
+
+.save-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid #00000014;
+
+  button {
+    height: 40px;
+    padding: 0 20px;
+    border: 1px solid #1b4ca1;
+    border-radius: 9999px;
+    font-family: Lato;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .confirm-back {
+    background: #fff;
+    color: #1b4ca1;
+  }
+
+  .confirm-save {
+    background: #1b4ca1;
+    color: #fff;
+  }
+}
+
+// only the panels of the popups above, by their panel class
+::ng-deep .access-settings-dialog .mat-mdc-dialog-surface {
+  border-radius: 12px;
+}
+
+// The shared toast sets its × right against the message and on the text baseline, a little high; lined up for this
+// page's toasts only, global styles untouched
+::ng-deep .over-all-limit-toast .close,
+::ng-deep .access-settings-toast .close {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+}

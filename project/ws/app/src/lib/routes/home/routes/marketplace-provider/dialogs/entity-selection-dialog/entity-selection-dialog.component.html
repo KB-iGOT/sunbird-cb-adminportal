@@ -1,0 +1,199 @@
+<div class="flex justify-between items-center dialog-heading">
+  <h2 mat-dialog-title>{{ dialogTitle }}</h2>
+  <button mat-icon-button (click)="cancel()" aria-label="close">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<div mat-dialog-content class="dialog-body" [class.column-body]="layout === 'columns'">
+  <div class="search-row flex items-center gap-4">
+    <mat-form-field appearance="outline" class="flex-grow pill-field">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput [placeholder]="searchPlaceholder" [formControl]="searchControl" (keyup.enter)="search()" />
+    </mat-form-field>
+    <button mat-flat-button class="search-button rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat"
+      [disabled]="!isUser && !searchControl.value" (click)="search()">
+      Search
+    </button>
+  </div>
+  <p class="selection-hint" *ngIf="selectionHint">{{ selectionHint }}</p>
+
+  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="selection-tabs" [selectedIndex]="activeTab"
+    (selectedIndexChange)="onTabChange($event)">
+    <mat-tab [label]="allTabLabel"></mat-tab>
+    <mat-tab [label]="selectedTabLabel"></mat-tab>
+  </mat-tab-group>
+
+  <div class="selection-list">
+    <div class="flex justify-center py-4" *ngIf="isLoading && !items.length">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+
+    <div class="empty-state" *ngIf="loadError">
+      Could not load the list.
+      <a class="retry-link cursor-pointer" (click)="loadItems()">Try again</a>
+    </div>
+
+    <ng-container *ngIf="!loadError && (!isLoading || items.length)" [ngSwitch]="layout">
+      <!-- Users, picked from a table a page at a time -->
+      <ng-container *ngSwitchCase="'users'">
+        <div class="empty-state" *ngIf="!visibleItems.length">
+          {{ activeTab === 1 ? 'Nothing selected yet.' : 'No users found.' }}
+        </div>
+        <!-- the content portal users table: a selected count over bordered cells, and its own pagination -->
+        <div class="users-table-wrapper" *ngIf="visibleItems.length">
+          <div class="table-selection-count">
+            <span class="count-badge">{{ selectedItems.size }}</span>
+            <span>Items Selected</span>
+          </div>
+          <table mat-table [dataSource]="visibleItems" class="users-table">
+            <ng-container matColumnDef="select">
+              <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox [checked]="areAllVisibleSelected" [indeterminate]="isPartlySelected"
+                  [disabled]="data.readOnly" (change)="onAllChange($event)"
+                  aria-label="Select every user listed">
+                </mat-checkbox>
+              </th>
+              <td mat-cell *matCellDef="let user">
+                <mat-checkbox [checked]="isSelected(user)" [disabled]="data.readOnly" (click)="$event.stopPropagation()"
+                  (change)="onItemChange(user, $event)" [attr.aria-label]="'Select ' + user.label">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Full Name</th>
+              <td mat-cell *matCellDef="let user">{{ user.label }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef>Email</th>
+              <td mat-cell *matCellDef="let user" class="email-cell">{{ user.email }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="ministry">
+              <th mat-header-cell *matHeaderCellDef>Ministry</th>
+              <td mat-cell *matCellDef="let user" [title]="user.ministry">
+                <span class="ministry-text">{{ user.ministry }}</span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="mobile">
+              <th mat-header-cell *matHeaderCellDef>Mobile No</th>
+              <td mat-cell *matCellDef="let user">{{ user.mobile }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let user; columns: displayedColumns" class="user-row"
+              (click)="toggleItem(user, !isSelected(user))"></tr>
+          </table>
+          <ws-widget-pagination *ngIf="activeTab === 0" [defaultPaginationSize]="userPageSize"
+            [defaultPaginationSizeOptions]="pageSizeOptions" [totalItemsCount]="total" [currentPage]="page + 1"
+            (pageChange)="onPageChange($event)">
+          </ws-widget-pagination>
+        </div>
+      </ng-container>
+
+      <!-- Organisation, Designation, Service, Cadre and Batch, laid out the way the creation portal lays them out -->
+      <ng-container *ngSwitchCase="'columns'">
+        <mat-checkbox class="select-all" *ngIf="canSelectAll && !data.readOnly && activeTab === 0 && visibleItems.length"
+          [checked]="areAllVisibleSelected" [indeterminate]="isPartlySelected"
+          (change)="onAllChange($event)">
+          Select All
+        </mat-checkbox>
+
+        <div class="service-filters" *ngIf="isService && activeTab === 0 && serviceTypes.length > 1">
+          <mat-radio-group class="service-types" aria-label="Service type" [value]="serviceType"
+            (change)="onServiceTypeChange($event.value)">
+            <mat-radio-button *ngFor="let type of serviceTypes" [value]="type">{{ type }}</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <div class="bar" *ngIf="barLabels.length" [class.range-bar]="isBatch">
+          <ng-container *ngFor="let label of barLabels; let last = last">
+            <button type="button" class="bar-button" [class.active]="label === activeBarLabel"
+              (click)="onBarClick(label)">
+              {{ label }}
+            </button>
+            <span class="bar-divider" *ngIf="!last"></span>
+          </ng-container>
+        </div>
+
+        <div class="empty-state" *ngIf="!sections.length">No information to display yet</div>
+
+        <div class="columns" (scroll)="onColumnsScroll($event)">
+          <div class="column-section" *ngFor="let section of sections; trackBy: trackByLabel"
+            [attr.id]="'selection-section-' + section.label">
+            <div class="option-column" *ngFor="let column of section.columns; trackBy: trackByIndex">
+              <mat-checkbox *ngFor="let item of column; trackBy: trackByValue" [checked]="isSelected(item)"
+                [disabled]="data.readOnly" [title]="item.label" (change)="onItemChange(item, $event)">
+                {{ item.label }}
+              </mat-checkbox>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Group and Verification Status, short enough for a plain list -->
+      <ng-container *ngSwitchDefault>
+        <div class="empty-state" *ngIf="!visibleItems.length">
+          {{ activeTab === 1 ? 'Nothing selected yet.' : 'No results found.' }}
+        </div>
+
+        <mat-checkbox class="select-all" *ngIf="!data.readOnly && visibleItems.length" [checked]="areAllVisibleSelected"
+          [indeterminate]="isPartlySelected" (change)="toggleAll($event.checked)">
+          Select All
+        </mat-checkbox>
+
+        <div class="options-grid">
+          <mat-checkbox *ngFor="let item of visibleItems; trackBy: trackByValue" [checked]="isSelected(item)"
+            [disabled]="data.readOnly" (change)="toggleItem(item, $event.checked)">
+            {{ item.label }}
+          </mat-checkbox>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+
+<div mat-dialog-actions class="dialog-footer flex items-center" [class.column-footer]="layout === 'columns'">
+  <!-- the count on the left, with the limit for the conditions that have one -->
+  <div class="flex items-center gap-2">
+    <span class="selected-count"><strong>{{ selectedItems.size | number }}</strong> selected</span>
+    <span class="limit-pill" *ngIf="selectionLimit" [class.at-limit]="isAtLimit">
+      {{ selectedItems.size | number }} / {{ selectionLimit | number }} max
+    </span>
+  </div>
+
+  <!-- only shown: closed, with nothing to apply -->
+  <button *ngIf="data.readOnly; else editFooter" mat-flat-button
+    class="rounded-full px-4 py-2 mat-btn-outline font-bold text-sm read-only-close" (click)="cancel()">
+    Close
+  </button>
+
+  <ng-template #editFooter>
+    <ng-container *ngIf="layout !== 'columns'; else columnFooter">
+      <div class="flex items-center gap-3">
+        <button mat-flat-button class="rounded-full px-4 py-2 mat-btn-outline font-bold text-sm" (click)="cancel()">
+          Cancel
+        </button>
+        <button mat-flat-button class="rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat"
+          (click)="apply()">
+          Apply
+        </button>
+      </div>
+    </ng-container>
+
+    <!-- the creation portal picks on the All tab, then applies from the Selected tab -->
+    <ng-template #columnFooter>
+      <button *ngIf="activeTab === 0" mat-flat-button class="footer-button rounded-full font-bold text-sm"
+        [disabled]="!selectedItems.size" (click)="onTabChange(1)">
+        {{ dialogTitle }}
+      </button>
+      <button *ngIf="activeTab === 1" mat-flat-button class="footer-button rounded-full font-bold text-sm"
+        [disabled]="!selectedItems.size" (click)="apply()">
+        Apply
+      </button>
+    </ng-template>
+  </ng-template>
+</div>

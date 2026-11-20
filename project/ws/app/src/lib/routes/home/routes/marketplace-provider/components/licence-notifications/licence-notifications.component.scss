@@ -1,0 +1,372 @@
+.page-title {
+  font-family: Montserrat;
+  font-weight: 600;
+  font-size: 20px;
+  color: #000000;
+}
+
+// .mat-btn-flat stays solid blue when disabled, so a disabled Save is faded here
+.header-actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.notifications-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px;
+  border: 1px solid #1b4ca1;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.notification-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px;
+  border: 1px solid #00000014;
+  border-radius: 8px;
+  font-family: Lato;
+}
+
+.section-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: #212529;
+}
+
+.section-meta {
+  margin-top: -8px;
+  font-size: 12px;
+  color: #00000099;
+}
+
+.cell-value {
+  font-weight: 700;
+  font-size: 14px;
+  color: #212529;
+}
+
+.cell-meta {
+  font-size: 12px;
+  color: #00000099;
+}
+
+// Over All Limit, consumption, the thresholds and the alerts switch, in one row under their headings
+.threshold-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.threshold-head,
+.threshold-row {
+  display: grid;
+  grid-template-columns: 170px 170px 1fr 90px;
+  gap: 0 16px;
+  padding: 8px 10px;
+}
+
+.threshold-head {
+  border-bottom: 1px solid #00000014;
+  font-weight: 700;
+  font-size: 12px;
+  color: #00000099;
+}
+
+.threshold-row {
+  align-items: center;
+  padding: 12px 10px;
+  border-bottom: 1px solid #00000014;
+}
+
+.limit-cell,
+.consumed-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.consumption-bar {
+  display: block;
+  width: 140px;
+  height: 5px;
+  border-radius: 3px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.consumption-fill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: #1b4ca1;
+}
+
+.threshold-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  // alerts are off
+  &:disabled .threshold-chip {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.threshold-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px 3px 10px;
+  border: 1px solid #1b4ca1;
+  border-radius: 9999px;
+  background: #fff;
+  color: #1b4ca1;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: default;
+  user-select: none;
+
+  // crossed: it has sent its alert, or was already crossed when saved
+  &.crossed {
+    border-color: #1d8923;
+    background: #e7f5e9;
+    color: #1d8923;
+  }
+}
+
+.max-note {
+  font-size: 12px;
+  color: #00000099;
+}
+
+.chip-remove {
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+.threshold-input {
+  width: 72px;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid #00000029;
+  border-radius: 4px;
+  font-family: Lato;
+  font-size: 13px;
+
+  &:focus {
+    outline: 0;
+    border-color: #1b4ca1;
+  }
+}
+
+.pill-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding: 0 16px;
+  border: 1px solid #1b4ca1;
+  border-radius: 9999px;
+  background: #fff;
+  color: #1b4ca1;
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+// The alerts switch, green while alerts are on
+.alert-toggle {
+  input[type='checkbox'] {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+
+  label {
+    position: relative;
+    display: block;
+    width: 44px;
+    height: 24px;
+    border-radius: 100px;
+    background: #9e9e9e;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  label::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    transition: left 0.2s;
+  }
+
+  input:checked + label {
+    background: #1d8923;
+  }
+
+  input:checked + label::after {
+    left: 23px;
+  }
+
+  input:focus-visible + label {
+    outline: 2px solid #1b4ca1;
+    outline-offset: 2px;
+  }
+}
+
+.info-note {
+  padding: 10px 14px;
+  border-radius: 4px;
+  background: #e8eefb;
+  color: #1b4ca1;
+  font-size: 13px;
+}
+
+// Recipients: name and e-mail id added one at a time, listed with the day they were added
+.recipient-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.text-input {
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #00000029;
+  border-radius: 4px;
+  font-family: Lato;
+  font-size: 14px;
+
+  &:focus {
+    outline: 0;
+    border-color: #1b4ca1;
+  }
+}
+
+.name-input {
+  width: 200px;
+}
+
+.email-input {
+  width: 260px;
+}
+
+.max-recipients {
+  font-size: 13px;
+  color: #d13212;
+}
+
+.recipient-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: #00000099;
+}
+
+// fixed columns, so a long name or e-mail id is cut short with an ellipsis instead of widening the table
+.recipients-table {
+  width: 100%;
+  table-layout: fixed;
+  border: 1px solid #00000014;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #212529;
+  // the arrow over the text, a pointer over a name or e-mail id cut short, which shows in full on hover
+  cursor: default;
+
+  th {
+    padding: 10px 12px;
+    background: #f5f6f8;
+    font-weight: 700;
+    font-size: 12px;
+    text-align: left;
+  }
+
+  td {
+    padding: 4px 12px;
+    border-top: 1px solid #00000014;
+  }
+
+  .name-cell {
+    width: 30%;
+  }
+
+  .date-cell {
+    width: 130px;
+    white-space: nowrap;
+  }
+
+  .remove-cell {
+    width: 56px;
+    text-align: right;
+  }
+
+  .ellipsis-cell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &.truncated {
+      cursor: pointer;
+    }
+  }
+
+  .empty-recipients {
+    padding: 12px;
+    font-size: 13px;
+    color: #00000099;
+  }
+}
+
+// the same amber as the warnings of Access Settings
+.no-recipients-warning {
+  padding: 10px 14px;
+  border-radius: 4px;
+  background: #fff4e5;
+  color: #b26b00;
+  font-size: 13px;
+}
+
+// The shared toast sets its × right against the message and on the text baseline, a little high; lined up for this
+// page's toasts only, global styles untouched
+::ng-deep .licence-notifications-toast .close {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+}

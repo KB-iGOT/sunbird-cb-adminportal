@@ -18,6 +18,15 @@
           (loadProviderDetails)="getProviderDetails($event)"
         ></ws-app-provider-settings>
       </ng-container>
+      <ng-container *ngIf="activeMenuItem === 'access_settings'">
+        <ws-app-access-settings
+          [providerDetails]="providerDetails"
+          (loadProviderDetails)="getProviderDetails($event)"
+        ></ws-app-access-settings>
+      </ng-container>
+      <ng-container *ngIf="activeMenuItem === 'licence_notifications'">
+        <ws-app-licence-notifications [providerDetails]="providerDetails"></ws-app-licence-notifications>
+      </ng-container>
       <ng-container *ngIf="activeMenuItem === 'provider_details'">
         <ws-app-provider-details-v2
           [providerDetails]="providerDetails"

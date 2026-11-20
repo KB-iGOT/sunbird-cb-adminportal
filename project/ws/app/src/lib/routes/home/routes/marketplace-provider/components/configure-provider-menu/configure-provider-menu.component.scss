@@ -30,6 +30,17 @@
   font-weight: 700;
 
   transition: background-color 0.1s ease;
+  justify-content: space-between;
+}
+
+.new-badge {
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #f89d1c;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 12px;
 }
 
 .step-item.active::before {
@@ -57,4 +68,8 @@
 .step-item.disabled {
   color: #ccc;
   pointer-events: none;
+
+  .new-badge {
+    opacity: 0.5;
+  }
 }

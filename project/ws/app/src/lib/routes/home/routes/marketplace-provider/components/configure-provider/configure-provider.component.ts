@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs'
 import { MarketplaceService } from '../../services/marketplace.service'
 import { HttpErrorResponse } from '@angular/common/http'
 import * as _ from 'lodash'
-import { MARKETPLACE_CONFIGURE_PROVIDERS_MENU } from '../../models/menu.model'
+import { MARKETPLACE_CONFIGURE_PROVIDERS_MENU, ProviderMenuItems } from '../../models/menu.model'
 import { NavigationExternalService } from '../../../../../../../../../../../src/app/services/navigation-external.service'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
 
@@ -79,6 +79,22 @@ export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewI
       this.routeSubscription.unsubscribe()
       this.externalsvc.breadcrumnItems.next([])
     }
+    this.marketPlaceSvc.providerSettingsSaved.next(false)
+    // the provider onboarded here mustn't enable the tabs of the next onboarding
+    this.marketPlaceSvc.newProviderAdded.next(null)
+  }
+
+  openProviderSettings(): void {
+    const providerSettingsMenu = MARKETPLACE_CONFIGURE_PROVIDERS_MENU.find(item => item.slug === ProviderMenuItems.ProviderSettings)
+    if (providerSettingsMenu) {
+      this.activeMenuItem = providerSettingsMenu.slug
+      this.marketPlaceSvc.currentMenuItem.next(providerSettingsMenu)
+    }
+  }
+
+  private updateProviderSettingsSavedState(): void {
+    const isSaved = !!(_.get(this.providerDetails, 'data.licenseType') && _.get(this.providerDetails, 'data.overAllLimit'))
+    this.marketPlaceSvc.providerSettingsSaved.next(isSaved)
   }
 
   getRoutesData() {
@@ -91,6 +107,7 @@ export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewI
           this.disableCourseCatalog = false
           this.providerDetails = data.providerDetails.data.result
         }
+        this.updateProviderSettingsSavedState()
         if (_.get(data, 'pageData.data.configureCertificateGuide')) {
           this.helpCenterGuide = _.get(data, 'pageData.data.configureCertificateGuide.helpCenterGuide', this.helpCenterGuide)
           this.instructionsList = _.get(data, 'pageData.data.configureCertificateGuide.instructions', this.instructionsList)
@@ -121,6 +138,7 @@ export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewI
         next: (responce: any) => {
           this.disableCourseCatalog = false
           this.providerDetails = responce.result
+          this.updateProviderSettingsSavedState()
         },
         error: (error: HttpErrorResponse) => {
           const errmsg = _.get(error, 'error.params.errMsg', 'Something went worng, please try again later')

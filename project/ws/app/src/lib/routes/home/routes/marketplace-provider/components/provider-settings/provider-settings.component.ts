@@ -2,11 +2,14 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { HttpErrorResponse } from '@angular/common/http'
+import { Observable, of } from 'rxjs'
+import { map } from 'rxjs/operators'
 import * as _ from 'lodash'
-import { MarketplaceService } from '../../services/marketplace.service'
+import { apiErrorMessage, MarketplaceService } from '../../services/marketplace.service'
 import { LoaderService } from '../../../../services/loader.service'
 
 const KARMA_COIN_MODIFIER_DEFAULT = '1.00'
+const REDUCE_ALLOCATIONS_MESSAGE = 'Reduce group allocations in Access Settings first'
 
 @Component({
   selector: 'ws-app-provider-settings',
@@ -278,13 +281,37 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
   submit() {
     if (this.providerFormGroup.valid) {
       if (this.providerDetails && this.providerDetails.id) {
-        this.updateProviderSettings()
+        this.isLimitBelowAllocations().subscribe({
+          next: isBelow => {
+            if (isBelow) {
+              this.showSnackBar(REDUCE_ALLOCATIONS_MESSAGE)
+            } else {
+              this.updateProviderSettings()
+            }
+          },
+          // the totals couldn't be read: nothing is saved, and what the api says is shown
+          error: (error: HttpErrorResponse) => this.showSnackBar(apiErrorMessage(error)),
+        })
       } else {
         this.createProviderSettings()
       }
     } else {
       this.showSnackBar('Please fill all the mandatory fields with proper data')
     }
+  }
+
+  // An Over All Limit lowered below what the user groups hold plus the unaudited licences isn't saved. They are read from
+  // the licence totals of the provider access settings, only when the limit is lowered; a read that fails errors.
+  private isLimitBelowAllocations(): Observable<boolean> {
+    const overAllLimit = Number(this.providerSettingsForm.getRawValue().overAllLimit)
+    const savedLimit = Number(_.get(this.providerDetails, 'data.overAllLimit')) || 0
+    if (!(overAllLimit < savedLimit)) {
+      return of(false)
+    }
+    return this.marketPlaceSvc.readProviderAccessSettings(this.providerDetails.id).pipe(
+      map(response => overAllLimit < (Number(_.get(response, 'result.licence.allocatedToGroups')) || 0)
+        + (Number(_.get(response, 'result.licence.unaudited')) || 0)),
+    )
   }
 
   createProviderSettings() {
@@ -330,8 +357,7 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.loaderService.changeLoad.next(false)
-        const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong, please try again later')
-        this.showSnackBar(errmsg)
+        this.showSnackBar(apiErrorMessage(error))
       },
     })
   }
@@ -378,8 +404,7 @@ export class ProviderSettingsComponent implements OnChanges, OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.loaderService.changeLoad.next(false)
-        const errmsg = _.get(error, 'error.params.errMsg', 'Something went wrong, please try again later')
-        this.showSnackBar(errmsg)
+        this.showSnackBar(apiErrorMessage(error))
       },
     })
   }

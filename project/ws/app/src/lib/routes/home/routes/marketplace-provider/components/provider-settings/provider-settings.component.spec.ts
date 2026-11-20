@@ -16,6 +16,7 @@ describe('ProviderSettingsComponent', () => {
       getGroupsList: jest.fn(() => of({ result: { response: ['group1', 'group2'] } })),
       createProvider: jest.fn(() => of({ result: 'success' })),
       updateProvider: jest.fn(() => of({ result: 'success' })),
+      readProviderAccessSettings: jest.fn(() => of(null)),
     }
     snackBar = {
       open: jest.fn(),
@@ -328,6 +329,59 @@ describe('ProviderSettingsComponent', () => {
       component.providerDetails = { id: '1' }
       component.submit()
       expect(updateSpy).toHaveBeenCalled()
+    })
+
+    describe('lowering the Over All Limit', () => {
+      let updateSpy: jest.SpyInstance
+      const lowerTo = (overAllLimit: number) => {
+        component.providerDetails = { id: '1', data: { overAllLimit: 40000 } }
+        component.controls['overAllLimit'].setValue(overAllLimit)
+        component.submit()
+      }
+
+      beforeEach(() => {
+        updateSpy = jest.spyOn(component, 'updateProviderSettings').mockImplementation()
+        marketPlaceSvc.readProviderAccessSettings.mockReturnValue(of({ result: { licence: { allocatedToGroups: 35050, unaudited: 1240 } } }))
+      })
+
+      it('should not save a limit below the group allocations plus the unaudited licences', () => {
+        lowerTo(36289)
+
+        expect(marketPlaceSvc.readProviderAccessSettings).toHaveBeenCalledWith('1')
+        expect(updateSpy).not.toHaveBeenCalled()
+        expect(snackBar.open).toHaveBeenCalledWith('Reduce group allocations in Access Settings first')
+      })
+
+      it('should save a lowered limit that still holds the allocations and the unaudited licences', () => {
+        lowerTo(36290)
+
+        expect(updateSpy).toHaveBeenCalled()
+        expect(snackBar.open).not.toHaveBeenCalled()
+      })
+
+      it('should only read the licence totals when the limit is lowered', () => {
+        lowerTo(40000)
+        lowerTo(50000)
+
+        expect(marketPlaceSvc.readProviderAccessSettings).not.toHaveBeenCalled()
+        expect(updateSpy).toHaveBeenCalledTimes(2)
+      })
+
+      it('should leave it to the server when the access settings read gives no licence totals', () => {
+        marketPlaceSvc.readProviderAccessSettings.mockReturnValue(of(null))
+        lowerTo(100)
+
+        expect(updateSpy).toHaveBeenCalled()
+      })
+
+      it('should save nothing and say what the api gives when the licence totals can\'t be read', () => {
+        marketPlaceSvc.readProviderAccessSettings.mockReturnValue(
+          throwError({ error: { params: { errMsg: 'Invalid partnerId: 1' } } }))
+        lowerTo(100)
+
+        expect(updateSpy).not.toHaveBeenCalled()
+        expect(snackBar.open).toHaveBeenCalledWith('Invalid partnerId: 1')
+      })
     })
 
     it('should call createProviderSettings when the form is valid and providerDetails has no id', () => {

@@ -1,0 +1,436 @@
+<div class="wrapper-form">
+  <div class="flex items-center justify-between mb-5">
+    <span class="page-title">Access Settings</span>
+    <div class="header-actions flex items-center gap-3">
+      <button mat-flat-button type="button" class="rounded-full px-4 py-2 mat-btn-outline font-bold text-sm"
+        [disabled]="!hasUnsavedChanges" (click)="reset()">
+        Reset
+      </button>
+      <button mat-flat-button type="button" class="rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat"
+        [disabled]="!canOfferSave" (click)="save()">
+        Save
+      </button>
+    </div>
+  </div>
+
+  <div class="access-settings-card">
+    <div class="licence-summary">
+      <div class="flex flex-column gap-1">
+        <span class="label">Licence Type</span>
+        <div class="field-meta">From Provider Settings.</div>
+        <div class="readonly-box">
+          <span class="readonly-text">{{ licenseType }}</span>
+        </div>
+      </div>
+
+      <div class="flex flex-column gap-1">
+        <span class="label">Over All Limit</span>
+        <div class="field-meta">
+          From Provider Settings.
+          <!-- a pointer to where the limit is edited, not a link -->
+          <span class="edit-link">Edit in Provider Settings</span>
+        </div>
+        <div class="readonly-box">
+          <span class="readonly-value">{{ overAllLimit | number }}</span>
+          <span class="readonly-text ml-1">licences</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="preference-card mt-4">
+      <span class="preference-title">Enrolment check preference <span class="required-mark">*</span></span>
+      <div class="field-meta">
+        Validate learner enrolment using provider-level access settings?<ng-container *ngIf="savedPreferenceTitle">
+          Saved: <strong>{{ savedPreferenceTitle }}</strong></ng-container>
+      </div>
+      <mat-radio-group class="radio-cards mt-3" [(ngModel)]="checksEnrolmentHere" aria-label="Enrolment check preference">
+        <mat-radio-button *ngFor="let option of enrolmentCheckOptions" class="radio-card" [value]="option.value">
+          <span class="option-title">{{ option.title }}</span>
+          <span class="option-description">{{ option.description }}</span>
+        </mat-radio-button>
+      </mat-radio-group>
+      <div class="choose-carefully mt-3" *ngIf="isChangingPreference">
+        <span aria-hidden="true">&#9888;</span> You're changing the preference. Save to review what this means before it takes effect.
+      </div>
+    </div>
+
+    <div class="info-note course-check-note mt-4" *ngIf="checksEnrolmentHere === false">
+      <span aria-hidden="true">&#9432;</span>
+      Enrolment for {{ providerName || 'this provider' }} is validated by each course's user groups in the Content Portal.
+      Any user groups set earlier are hidden, not deleted.
+    </div>
+
+    <!-- user groups are only set here when enrolment is checked here -->
+    <ng-container *ngIf="checksEnrolmentHere">
+      <div class="distribution-card mt-4">
+        <span class="distribution-title">Partner Licence Distribution</span>
+        <div class="field-meta">The Over All Limit from Provider Settings, split across the user groups below.</div>
+        <div class="distribution-tiles mt-3" [class.has-over-allocation]="overAllocatedCount > 0">
+          <div class="distribution-tile">
+            <span class="tile-label">Over All Limit</span>
+            <span class="tile-value">{{ overAllLimit | number }}</span>
+          </div>
+          <div class="distribution-tile">
+            <span class="tile-label">Allocated to groups</span>
+            <span class="tile-value">{{ allocatedToGroups | number }}</span>
+          </div>
+          <!-- licences used while the preference was No, always shown (0 when none); its info icon says what they are
+            while there are none, and why there are some otherwise -->
+          <div class="distribution-tile unaudited-tile">
+            <span class="tile-label">
+              Unaudited licences
+              <span class="info-icon" tabindex="0" role="button" aria-label="About unaudited licences"
+                aria-describedby="unaudited-licences-info">
+                i
+                <span class="info-popover" id="unaudited-licences-info" role="tooltip">
+                  {{ unauditedCount > 0 ? unauditedLicencesInfo : unauditedLicencesZeroInfo }}
+                </span>
+              </span>
+            </span>
+            <span class="tile-value">{{ unauditedCount | number }}</span>
+          </div>
+          <div class="distribution-tile">
+            <span class="tile-label">Unallocated</span>
+            <span class="tile-value" [class.has-unallocated]="unallocatedCount > 0">{{ unallocatedCount | number }}</span>
+            <span class="tile-note">For raising allocations or adding groups</span>
+          </div>
+          <!-- how far allocations and unaudited licences go past the Over All Limit, only while they do -->
+          <div class="distribution-tile" *ngIf="overAllocatedCount">
+            <span class="tile-label">Over-allocated by</span>
+            <span class="tile-value over-allocated">{{ overAllocatedCount | number }}</span>
+          </div>
+          <div class="distribution-tile">
+            <span class="tile-label">Consumed (all)</span>
+            <span class="tile-value">{{ consumedCount | number }}</span>
+          </div>
+        </div>
+
+        <div class="allocation-bar mt-3" role="img"
+          [attr.aria-label]="'Licence distribution: ' + (allocatedToGroups | number) + ' of ' + (overAllLimit | number) + ' licences allocated to user groups'">
+          <span *ngFor="let segment of segments" class="allocation-segment"
+            [style.flex-basis.%]="segment.width" [style.background-color]="segment.colour"></span>
+          <span class="allocation-segment unaudited-segment" *ngIf="unauditedCount > 0"
+            [style.flex-basis.%]="unauditedWidth"></span>
+          <span class="allocation-segment unallocated-segment" *ngIf="unallocatedCount > 0"></span>
+        </div>
+
+        <div class="allocation-legend mt-2">
+          <span class="legend-item" *ngFor="let segment of segments">
+            <span class="legend-swatch" [style.background-color]="segment.colour"></span>
+            {{ segment.name }} · {{ segment.licences | number }} ({{ segment.percent }}%)
+          </span>
+          <span class="legend-item" *ngIf="unauditedCount > 0">
+            <span class="legend-swatch unaudited-swatch"></span>
+            Unaudited · {{ unauditedCount | number }} ({{ unauditedPercent }}%)
+          </span>
+          <span class="legend-item" *ngIf="unallocatedCount > 0">
+            <span class="legend-swatch unallocated-swatch"></span>
+            Unallocated · {{ unallocatedCount | number }}
+          </span>
+        </div>
+
+        <div class="licence-error mt-3" *ngIf="overAllocatedCount" role="alert">
+          <!-- the space is inside the strong, Angular drops one between two elements -->
+          <span aria-hidden="true">&#9940;</span><strong> Over-allocated by {{ overAllocatedCount | number }}.</strong>
+          Group allocations
+          <ng-container *ngIf="unauditedCount > 0">plus unaudited licences</ng-container>
+          exceed the Over All Limit. Lower allocations by {{ overAllocatedCount | number }} (not below each group's
+          consumed licences) or raise the Over All Limit in Provider Settings to save.
+        </div>
+        <!-- the groups hold the whole Over All Limit, exactly -->
+        <div class="pool-empty-warning mt-3" *ngIf="overAllLimit && !overAllocatedCount && !unallocatedCount">
+          <span aria-hidden="true">&#9888;</span> No unallocated licences left. Add User Group is disabled and allocations can't be
+          raised until another group is lowered or the Over All Limit is raised.
+        </div>
+
+        <div class="info-note mt-3">
+          <span aria-hidden="true">&#9432;</span>
+          Every user group applies to {{ providerCourses }}, including courses published later.
+        </div>
+        <div class="info-note mt-2">
+          <span aria-hidden="true">&#9432;</span>
+          A learner who is in more than one group uses <strong>one</strong> licence, from the first group in priority order
+          (#1, #2, ... the order the groups were created) that has a licence left. When a learner's groups have none left,
+          the learner can't enrol until you raise a group's allocation. Unallocated licences are not used automatically.
+        </div>
+      </div>
+
+      <form [formGroup]="userGroupsForm" class="user-groups mt-4">
+        <ng-container formArrayName="userGroups">
+          <ng-container *ngFor="let group of userGroups.controls; let groupIndex = index; let lastGroup = last">
+            <ng-container [formGroupName]="groupIndex">
+              <mat-expansion-panel class="user-group-panel" [expanded]="true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title class="group-title">
+                    <span class="group-dot" [style.background-color]="groupColour(groupIndex)"></span>
+                    <span class="group-name">{{ group.get('name')?.value }}</span>
+                    <span class="priority-pill" [title]="'Priority ' + (groupIndex + 1)">#{{ groupIndex + 1 }}</span>
+                    <span class="group-chip count-chip" [attr.aria-busy]="isCounting(group)">
+                      Count :
+                      <mat-spinner *ngIf="isCounting(group); else userCount" class="count-loader" diameter="12"
+                        aria-label="Counting users"></mat-spinner>
+                      <ng-template #userCount>{{ userCountOf(group) | number }}</ng-template>
+                    </span>
+                    <span class="group-chip licences-chip">
+                      <mat-icon>confirmation_number</mat-icon>
+                      Licences : {{ licencesOf(group) | number }}
+                    </span>
+                    <!-- every licence of the group is used -->
+                    <span class="group-chip exhausted-chip" *ngIf="isExhausted(group)">
+                      <span aria-hidden="true">&#9940;</span>
+                      Exhausted &mdash; learners matching only this group can't enrol until you raise its allocation.
+                    </span>
+                    <span class="group-chip in-use-chip" *ngIf="isInUse(group)">
+                      <span aria-hidden="true">&#128274;</span>
+                      In use &mdash; {{ consumedOf(group) | number }} {{ consumedOf(group) === 1 ? 'enrolment' : 'enrolments' }}.
+                      Conditions locked; can't be deleted.
+                    </span>
+                  </mat-panel-title>
+                  <mat-panel-description class="justify-end items-center" (click)="$event.stopPropagation()">
+                    <button mat-icon-button type="button" aria-label="Delete user group" title="Delete"
+                      [disabled]="isInUse(group)" (click)="removeUserGroup(groupIndex)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                    <button mat-icon-button type="button" aria-label="Reset user group" title="Clear values"
+                      [disabled]="areConditionsLocked(group)" (click)="resetUserGroup(groupIndex)">
+                      <mat-icon class="restart-icon" svgIcon="access_restart"></mat-icon>
+                    </button>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <ng-container formArrayName="conditions">
+                  <ng-container
+                    *ngFor="let condition of conditions(groupIndex).controls; let conditionIndex = index; let lastCondition = last">
+                    <div [formGroupName]="conditionIndex" class="condition-block">
+                      <div class="condition-title">Select Condition {{ groupIndex + 1 }}.{{ conditionIndex + 1 }}</div>
+                      <div class="condition-row">
+                        <mat-form-field appearance="outline" class="pill-select"
+                          [class.needs-selection]="!condition.get('entity')?.value">
+                          <mat-select formControlName="entity" placeholder="Select"
+                            (selectionChange)="onEntityChange(groupIndex, conditionIndex)">
+                            <mat-option *ngFor="let entity of availableEntities(groupIndex, conditionIndex)"
+                              [value]="entity.value" [disabled]="isEntityDisabled(groupIndex, entity.value)">
+                              {{ entity.label }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="pill-select">
+                          <mat-select formControlName="conditionType">
+                            <mat-option value="is">is</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+
+                        <div>
+                          <button type="button" class="manage-selection-btn"
+                            [disabled]="!condition.get('entity')?.value || areConditionsLocked(group)"
+                            (click)="manageSelection(groupIndex, conditionIndex)">
+                            <mat-icon svgIcon="access_search_selections"></mat-icon>
+                            <span>Manage Selection</span>
+                          </button>
+                        </div>
+
+                        <div>
+                          <button type="button" class="items-selected" [disabled]="!condition.get('entity')?.value"
+                            (click)="manageSelection(groupIndex, conditionIndex, true)">
+                            {{ selectedCount(condition) }} items selected
+                          </button>
+                          <span class="selection-max" *ngIf="selectionLimitOf(condition) as limit">&middot; max {{ limit | number }}</span>
+                          <div class="selection-error" *ngIf="condition.get('entity')?.value && !selectedCount(condition)">
+                            Select at least one value
+                          </div>
+                          <!-- a condition left without a field beside one that has it, said once Save is pressed (a group
+                            with no field at all says Add at least one condition instead) -->
+                          <div class="selection-error" role="alert"
+                            *ngIf="saveAttempted && !condition.get('entity')?.value && hasCondition(group)">
+                            Select at least one condition
+                          </div>
+                        </div>
+
+                        <div class="condition-actions">
+                          <button mat-icon-button type="button" aria-label="Delete condition" title="Delete"
+                            [disabled]="areConditionsLocked(group)"
+                            (click)="removeCondition(groupIndex, conditionIndex)">
+                            <mat-icon>delete</mat-icon>
+                          </button>
+                          <button mat-icon-button type="button" aria-label="Reset condition" title="Clear values"
+                            [disabled]="areConditionsLocked(group)" (click)="resetCondition(groupIndex, conditionIndex)">
+                            <mat-icon class="restart-icon" svgIcon="access_restart"></mat-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="connector" *ngIf="!lastCondition">
+                      <mat-form-field appearance="outline" class="pill-select connector-select">
+                        <mat-select value="AND">
+                          <mat-option value="AND">AND</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </ng-container>
+                </ng-container>
+
+                <div class="user-condition-note" *ngIf="hasUserCondition(groupIndex); else addConditionLink">
+                  <span aria-hidden="true">&#9432;</span> The User condition can't be combined with other conditions.
+                </div>
+                <ng-template #addConditionLink>
+                  <button type="button" class="add-link" [disabled]="!canAddCondition(groupIndex)"
+                    (click)="addCondition(groupIndex)">
+                    <mat-icon>add</mat-icon>
+                    <span>Add New Condition</span>
+                  </button>
+                </ng-template>
+                <div class="condition-error" *ngIf="saveAttempted && !hasCondition(group)" role="alert">Add at least one condition</div>
+
+                <div class="licence-box">
+                  <span class="licence-tag">Licence allocation</span>
+                  <div class="licence-layout">
+                    <div>
+                      <span class="licence-label">Licences for this group <span class="required-mark">*</span></span>
+                      <div class="licence-input-row">
+                        <input class="licence-input" type="number" step="1" placeholder="1" formControlName="licences"
+                          [attr.min]="minLicencesOf(group)" [attr.max]="maxLicencesOf(group)"
+                          [class.invalid]="licenceErrorMessage(group)" aria-label="Licences for this group"
+                          (keydown)="blockSignAndExponentKeys($event)" />
+                        <span class="licence-suffix">licences</span>
+                      </div>
+                      <div class="licence-hint">
+                        = {{ licencePercent(group) }}% of Over All Limit &middot; Min {{ minLicencesOf(group) | number }}
+                        &middot; Max {{ maxLicencesOf(group) | number }}
+                      </div>
+                    </div>
+
+                    <div class="licence-stat">
+                      <span class="stat-label">Allocated</span>
+                      <span class="stat-value">{{ licencesOf(group) | number }}</span>
+                    </div>
+                    <div class="licence-stat">
+                      <span class="stat-label">Consumed</span>
+                      <span class="stat-value">{{ consumedOf(group) | number }}</span>
+                      <span class="consumed-bar" role="progressbar" aria-label="Licences consumed" aria-valuemin="0"
+                        aria-valuemax="100" [attr.aria-valuenow]="consumedPercent(group)">
+                        <span class="consumed-fill" [style.width.%]="consumedPercent(group)"></span>
+                      </span>
+                    </div>
+                    <div class="licence-stat">
+                      <span class="stat-label">Available</span>
+                      <span class="stat-value available-value" [class.used-up]="isExhausted(group)">
+                        {{ availableOf(group) | number }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="licence-error mt-3" *ngIf="licenceErrorMessage(group) as errorMessage" role="alert">
+                    <span aria-hidden="true">&#9940;</span> {{ errorMessage }}
+                  </div>
+                  <!-- shown under a licence error too, it is about the conditions -->
+                  <div class="no-users-warning mt-3" *ngIf="matchesNoUsers(group)">
+                    <span aria-hidden="true">&#9888;</span> No users match these conditions
+                  </div>
+                  <ng-container *ngIf="!licenceErrorMessage(group)">
+                    <div class="idle-warning mt-3" *ngIf="idleLicencesWarning(group) as idleWarning">
+                      <span aria-hidden="true">&#9888;</span> {{ idleWarning }}
+                    </div>
+                  </ng-container>
+                </div>
+              </mat-expansion-panel>
+
+              <div class="connector group-connector" *ngIf="!lastGroup">
+                <mat-form-field appearance="outline" class="pill-select connector-select">
+                  <mat-select value="OR">
+                    <mat-option value="AND" disabled>AND</mat-option>
+                    <mat-option value="OR">OR</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+
+        <div class="add-group-row">
+          <button type="button" class="add-link" [disabled]="!canAddUserGroup"
+            [title]="userGroups.length < userGroupLimit ? '' : 'Up to ' + userGroupLimit + ' user groups'" (click)="addUserGroup()">
+            <mat-icon>add</mat-icon>
+            <span>Add User Group</span>
+          </button>
+          <span class="group-count" *ngIf="unallocatedCount">
+            {{ userGroups.length < userGroupLimit ? userGroups.length + ' of ' + userGroupLimit + ' user groups' : 'Maximum ' + userGroupLimit + ' user groups.' }}
+          </span>
+          <span class="add-group-note" *ngIf="!unallocatedCount">
+            No unallocated licences left. Increase the Over All Limit or reduce an allocation to add a group.
+          </span>
+        </div>
+      </form>
+    </ng-container>
+  </div>
+</div>
+
+<!-- the delete popup of a user group or a condition, as in the content portal -->
+<ng-template #deleteConfirm let-name let-dialogRef="dialogRef">
+  <div class="delete-confirm">
+    <mat-icon class="delete-confirm-icon">delete</mat-icon>
+    <div class="delete-confirm-title">Are you sure you want to delete {{ name }} ?</div>
+    <div class="delete-confirm-text">
+      Once deleted, it cannot be restored, and any access permissions associated with it will be removed. This action
+      is irreversible.
+    </div>
+    <div class="delete-confirm-actions">
+      <button type="button" class="confirm-no" (click)="dialogRef.close(false)">No</button>
+      <button type="button" class="confirm-yes" (click)="dialogRef.close(true)">Yes</button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- the one-time settings, confirmed on the first save -->
+<ng-template #saveConfirm let-dialogRef="dialogRef">
+  <div class="save-confirm">
+    <div class="save-confirm-header">
+      <span class="save-confirm-title">Confirm one-time settings</span>
+      <button mat-icon-button type="button" aria-label="Close" (click)="dialogRef.close(false)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="save-confirm-body">
+      <div>Enrolment check preference: <strong>{{ enrolmentCheckChoice?.summary }}</strong></div>
+      <div class="save-changes" *ngIf="userGroupsToSave.length">
+        <span class="save-changes-title">User groups</span>
+        <ul>
+          <li *ngFor="let group of userGroupsToSave"><strong>{{ group.name }}</strong> &mdash; {{ group.detail }}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="save-confirm-actions">
+      <button type="button" class="confirm-back" (click)="dialogRef.close(false)">Go back</button>
+      <button type="button" class="confirm-save" (click)="dialogRef.close(true)">Confirm and save</button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- a change of the saved enrolment check preference, confirmed before it is saved -->
+<ng-template #preferenceChangeConfirm let-dialogRef="dialogRef">
+  <div class="save-confirm">
+    <div class="save-confirm-header">
+      <span class="save-confirm-title">Change enrolment check preference?</span>
+      <button mat-icon-button type="button" aria-label="Close" (click)="dialogRef.close(false)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="save-confirm-body">
+      <div *ngIf="!checksEnrolmentHere">
+        Switching to <strong>No</strong>: enrolments will no longer be tracked against the user groups below. The groups
+        are kept and will come back if you switch to Yes again. Licences used while the preference is No will show as
+        <strong>Unaudited licences</strong>.
+      </div>
+      <div *ngIf="checksEnrolmentHere">
+        Switching to <strong>Yes</strong>: the user groups set earlier come back as they were. Licences used while the
+        preference was No will show as <strong>Unaudited licences</strong> in the licence breakup. If they take the total
+        over the Over All Limit, unused licences are removed from the user groups, starting with #1, until it balances.
+      </div>
+    </div>
+    <div class="save-confirm-actions">
+      <button type="button" class="confirm-back" (click)="dialogRef.close(false)">Go back</button>
+      <button type="button" class="confirm-save" (click)="dialogRef.close(true)">Confirm and save</button>
+    </div>
+  </div>
+</ng-template>

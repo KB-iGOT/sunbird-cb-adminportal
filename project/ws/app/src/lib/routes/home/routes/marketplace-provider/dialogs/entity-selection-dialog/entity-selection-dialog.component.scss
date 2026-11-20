@@ -1,0 +1,341 @@
+// Every access settings popup has the creation portal heading: a black title over a grey rule that runs the full
+// width of the popup. The global dialog title is blue and underlines the title text only, so it is overridden here
+// and the rule is moved to the heading, which reaches over the side padding of the dialog surface.
+.dialog-heading {
+  margin: 0 -24px 8px;
+  padding: 0 16px 0 24px;
+  border-bottom: 2px solid #0000001f;
+
+  h2 {
+    border-bottom: 0;
+    margin-bottom: 0 !important;
+    font-family: Montserrat;
+    color: #000000de !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+  }
+}
+
+.dialog-body {
+  min-height: 360px;
+}
+
+// a compact 40px pill, the height of the Search button beside it
+.pill-field {
+  --mat-form-field-container-height: 40px;
+  --mat-form-field-container-vertical-padding: 8px;
+  --mat-form-field-container-text-size: 14px;
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  ::ng-deep .mdc-notched-outline__leading {
+    border-radius: 28px 0 0 28px !important;
+    min-width: 28px;
+  }
+
+  ::ng-deep .mdc-notched-outline__trailing {
+    border-radius: 0 28px 28px 0 !important;
+  }
+}
+
+.search-row {
+  margin-bottom: 12px;
+}
+
+// .mat-btn-flat stays solid blue when disabled
+.search-button:disabled {
+  opacity: 0.5;
+}
+
+.selection-hint {
+  margin: -4px 0 8px 16px;
+  font-family: Lato;
+  font-size: 14px;
+  color: #000000;
+}
+
+.selection-tabs {
+  margin-top: 4px;
+}
+
+.column-body .selection-tabs ::ng-deep .mdc-tab__text-label {
+  font-size: 16px;
+}
+
+.selection-list {
+  padding-top: 12px;
+}
+
+.select-all {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 16px;
+}
+
+.service-filters {
+  margin: 8px 0 4px;
+  font-family: Lato;
+  font-size: 14px;
+}
+
+.service-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 16px;
+}
+
+// The bar of letters, or of batch ranges, over the columns
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.bar-button {
+  min-width: 30px;
+  margin: 2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  line-height: 30px;
+  font-family: Lato;
+  font-size: 12px;
+  color: #00000099;
+  cursor: pointer;
+
+  &.active {
+    font-weight: 700;
+    font-size: 14px;
+    color: #000000;
+  }
+}
+
+.range-bar .bar-button {
+  padding: 0 16px;
+  font-weight: 700;
+}
+
+.bar-divider {
+  width: 1px;
+  height: 14px;
+  background-color: #00000029;
+}
+
+// Columns that scroll sideways, the way the creation portal lists organisations, designations and batches
+.columns {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.column-section {
+  display: flex;
+  flex-shrink: 0;
+  gap: 24px;
+}
+
+.option-column {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  min-width: 180px;
+
+  ::ng-deep .mdc-label {
+    white-space: nowrap;
+    font-family: Lato;
+    font-size: 14px;
+    color: #000000de;
+  }
+}
+
+// The Users table, drawn the way the content portal draws it
+.users-table-wrapper {
+  border: 1px solid #00000029;
+  border-radius: 4px;
+
+  // The table pages with the shared ws-widget-pagination, given the content portal's label and its rounded
+  // 40px page size select. The label is drawn here, its own text names the size differently.
+  ::ng-deep .pagination-size-select {
+    > span {
+      display: none !important;
+    }
+
+    &::before {
+      content: 'Show Entries';
+      font-family: Lato;
+      font-size: 12px;
+      color: #666666;
+    }
+
+    mat-form-field {
+      --mat-form-field-container-height: 40px;
+      --mat-form-field-container-vertical-padding: 8px;
+    }
+
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+
+    .mdc-notched-outline__leading {
+      min-width: 28px;
+      border-radius: 28px 0 0 28px !important;
+    }
+
+    .mdc-notched-outline__trailing {
+      border-radius: 0 28px 28px 0 !important;
+    }
+  }
+}
+
+.table-selection-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  font-family: Lato;
+  font-size: 14px;
+  color: #000000de;
+}
+
+.count-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 4px;
+  border: 1px solid #00000029;
+  border-radius: 9999px;
+  background: #d1dbec;
+  font-size: 10px;
+  color: #00000099;
+}
+
+.users-table {
+  width: 100%;
+
+  ::ng-deep .mat-mdc-header-cell,
+  ::ng-deep .mat-mdc-cell {
+    border-top: 1px solid #00000029;
+    border-right: 1px solid #00000029;
+  }
+
+  ::ng-deep .mat-mdc-header-cell {
+    font-family: Montserrat;
+    font-weight: 600;
+    font-size: 14px;
+    color: #1b2133;
+  }
+
+  ::ng-deep .mat-column-select {
+    width: 64px;
+    text-align: center;
+  }
+
+  ::ng-deep .mat-mdc-header-cell:last-child,
+  ::ng-deep .mat-mdc-cell:last-child {
+    border-right: 0;
+  }
+}
+
+.user-row {
+  cursor: pointer;
+}
+
+// an e-mail id stays on one line, in a column as wide as the content portal's
+.email-cell {
+  width: 213px;
+  white-space: nowrap;
+}
+
+// a long ministry name is cut after two lines, the whole name is its tooltip
+.ministry-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  width: 213px;
+  line-height: 1.4em;
+  max-height: 2.8em;
+}
+
+.empty-state {
+  padding: 16px 0;
+  color: #00000099;
+  font-family: Lato;
+  font-size: 14px;
+}
+
+.retry-link {
+  color: #1b4ca1;
+  text-decoration: underline;
+}
+
+// The count on the left, the buttons on the right. mat-dialog-actions sets its own justify-content, which wins
+// over the utility classes, so it is set here.
+.dialog-footer {
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 24px;
+  border-top: 1px solid #00000014;
+}
+
+.selected-count {
+  font-family: Lato;
+  font-size: 14px;
+  color: #00000099;
+
+  strong {
+    color: #212529;
+  }
+}
+
+.limit-pill {
+  padding: 2px 10px;
+  border-radius: 9999px;
+  background: #e8eefb;
+  color: #1b4ca1;
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 12px;
+
+  &.at-limit {
+    background: #fff4e5;
+    color: #b26b00;
+  }
+}
+
+// the creation portal footer: one button on the right, with no rule above
+.column-footer {
+  border-top: 0;
+
+  // the global dialog actions turn a disabled button grey, the creation portal fades it
+  .footer-button {
+    height: 40px;
+    padding: 0 54px;
+    background-color: #1b4ca1 !important;
+    color: #ffffff !important;
+
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+}
+
+// The shared toast sets its × right against the message and on the text baseline, a little high; lined up for this
+// popup's toast only, global styles untouched (the toast is dismissed with the popup, so these styles outlive it)
+::ng-deep .entity-selection-toast .close {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+}
