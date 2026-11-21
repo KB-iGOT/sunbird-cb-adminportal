@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { BehaviorSubject, Observable } from 'rxjs'
+import * as _ from 'lodash'
 import { environment } from '../../../../../../../../../../src/environments/environment'
-
 const API_END_POINTS = {
   CREATE_CONTENTPARTNER: `/apis/proxies/v8/contentpartner/v2/create`,
   UPDATE_CONTENTPARTNER: `/apis/proxies/v8/contentpartner/v2/update`,
@@ -24,6 +24,10 @@ const API_END_POINTS = {
   GET_CONFIGURATION: (configurationId: string) => `apis/proxies/v8/serviceregistry/config/read/${configurationId}`,
 
   GET_GROUPS_LIST: `/apis/proxies/v8/user/v1/groups`,
+  READ_PROVIDER_ACCESS_SETTINGS: (partnerId: string) => `/apis/proxies/v8/accessSettings/provider/v1/read/${partnerId}`,
+  UPSERT_PROVIDER_ACCESS_SETTINGS: '/apis/proxies/v8/accessSettings/provider/v1/upsert',
+  READ_NOTIFICATION_SETTINGS: (partnerId: string) => `/apis/proxies/v8/accessSettings/provider/v1/notification/read/${partnerId}`,
+  UPSERT_NOTIFICATION_SETTINGS: '/apis/proxies/v8/accessSettings/provider/v1/notification/upsert',
 
   GET_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/read/${partnerId}`,
   CREATE_SSO_CONFIGURATION: (partnerId: string) => `/apis/proxies/v8/sso/create/${partnerId}`,
@@ -37,12 +41,25 @@ const API_END_POINTS = {
   REGISTERED_PROVIDER_READ: (id: string) => `/apis/proxies/v8/contentpartner/register/v1/readbyid?id=${id}`,
 }
 
+const API_ERROR_FALLBACK = 'Something went wrong, please try again later'
+
+export function apiErrorMessage(error: any): string {
+  const message = [
+    _.get(error, 'error.params.errMsg'),
+    _.get(error, 'error.params.errmsg'),
+    _.get(error, 'error.message'),
+  ].find(text => typeof text === 'string' && text.trim())
+  return message ? message.trim() : API_ERROR_FALLBACK
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class MarketplaceService {
   currentMenuItem: BehaviorSubject<any> = new BehaviorSubject<number>(0);
   newProviderAdded: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  // true once the provider settings (licence type and over all limit) are saved, which unlocks Access Settings
+  providerSettingsSaved: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
   constructor(
     private http: HttpClient,
@@ -98,6 +115,33 @@ export class MarketplaceService {
 
   getProviderDetails(id: string) {
     return this.http.get(API_END_POINTS.GET_PROVIDER_DETAILS(id))
+  }
+
+  // The user groups of Access Settings, with what each has consumed, and the provider's licence totals (result.licence)
+  readProviderAccessSettings(partnerId: string): Observable<any> {
+    return this.http.get(API_END_POINTS.READ_PROVIDER_ACCESS_SETTINGS(partnerId))
+  }
+
+  // Writes only the user groups. A group with its userGroupId is updated, one without is created, and a saved group
+  // left out is deleted.
+  upsertProviderAccessSettings(formBody: any): Observable<any> {
+    return this.http.put(API_END_POINTS.UPSERT_PROVIDER_ACCESS_SETTINGS, formBody)
+  }
+
+  // The thresholds (read-only), which of them have sent their alert, and the recipients of Licence Notifications
+  readNotificationSettings(partnerId: string): Observable<any> {
+    return this.http.get(API_END_POINTS.READ_NOTIFICATION_SETTINGS(partnerId))
+  }
+
+  upsertNotificationSettings(formBody: any): Observable<any> {
+    return this.http.put(API_END_POINTS.UPSERT_NOTIFICATION_SETTINGS, formBody)
+  }
+
+  // saved with the rest of the provider's details through the existing provider update
+  updateProviderPreference(providerDetails: any, providerPreference: boolean): Observable<any> {
+    const formBody = _.cloneDeep(providerDetails)
+    formBody.data = { ...formBody.data, providerPreference }
+    return this.updateProvider(formBody)
   }
 
   getGroupsList() {
@@ -226,4 +270,5 @@ export class MarketplaceService {
   readRegisteredProviderDetails(id: string) {
     return this.http.get(`${API_END_POINTS.REGISTERED_PROVIDER_READ(id)}`)
   }
+
 }

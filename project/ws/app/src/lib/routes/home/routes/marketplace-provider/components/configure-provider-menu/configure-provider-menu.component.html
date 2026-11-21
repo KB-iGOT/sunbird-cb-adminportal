@@ -8,6 +8,7 @@
           (click)="setActiveItem(item)"
         >
           <div class="step-item-label">{{ item.label }}</div>
+          <span class="new-badge" *ngIf="item.isNew">NEW</span>
         </li>
       </ng-container>
     </ul>

@@ -50,6 +50,9 @@ import { AddProviderCoursesComponent } from './components/add-provider-courses/a
 import { BulkUploadCoursesComponent } from './components/bulk-upload-courses/bulk-upload-courses.component'
 import { ProvidersApiIntegrationsComponent } from './components/providers-api-integrations/providers-api-integrations.component'
 import { CertificateConfigurationComponent } from './components/certificate-configuration/certificate-configuration.component'
+import { AccessControlModule } from '@sunbird-cb/access-settings'
+import { AccessSettingsComponent } from './components/access-settings/access-settings.component'
+import { LicenceNotificationsComponent } from './components/licence-notifications/licence-notifications.component'
 import { SsoIntegrationComponent } from './components/sso-integration/sso-integration.component'
 import { SsoConfigureSettingsComponent } from './components/sso-configure-settings/sso-configure-settings.component'
 import { LoadingPopupComponent } from './dialogs/loading-popup/loading-popup.component'
@@ -140,7 +143,9 @@ const routes: Routes = [
     SsoIntegrationComponent,
     SsoConfigureSettingsComponent,
     LoadingPopupComponent,
-    MaxLengthNumberDirective
+    MaxLengthNumberDirective,
+    AccessSettingsComponent,
+    LicenceNotificationsComponent,
   ],
   imports: [
     CommonModule,
@@ -172,7 +177,8 @@ const routes: Routes = [
     MatRippleModule,
     PaginationModule,
     MatAutocompleteModule,
-    MatOptionModule
+    MatOptionModule,
+    AccessControlModule,
   ],
   providers: [DatePipe, LoaderService],
   exports: [RouterModule],

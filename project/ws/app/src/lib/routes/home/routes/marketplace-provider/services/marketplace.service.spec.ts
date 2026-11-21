@@ -1,5 +1,5 @@
-import { of } from 'rxjs'
-import { MarketplaceService } from './marketplace.service'
+import { of, throwError } from 'rxjs'
+import { apiErrorMessage, MarketplaceService } from './marketplace.service'
 import { environment } from '../../../../../../../../../../src/environments/environment'
 
 describe('MarketplaceService', () => {
@@ -289,4 +289,91 @@ describe('MarketplaceService', () => {
       removeSpy.mockRestore()
     })
   })
+
+  describe('provider access apis', () => {
+    it('should read the access settings and the notification settings of a provider', () => {
+      service.readProviderAccessSettings('partner-1').subscribe()
+      service.readNotificationSettings('partner-1').subscribe()
+
+      expect(httpClient.get).toHaveBeenCalledWith('/apis/proxies/v8/accessSettings/provider/v1/read/partner-1')
+      expect(httpClient.get).toHaveBeenCalledWith('/apis/proxies/v8/accessSettings/provider/v1/notification/read/partner-1')
+    })
+
+    it('should give back what a read answers', () => {
+      const response = { result: { accessControl: { userGroups: [] } } }
+      httpClient.get.mockReturnValueOnce(of(response))
+      let result: any
+      service.readProviderAccessSettings('partner-1').subscribe(value => result = value)
+      expect(result).toBe(response)
+    })
+
+    it('should pass a failed read on, so the page can show what the api says', () => {
+      const failure = { status: 400, error: { params: { errMsg: 'Invalid partnerId' } } }
+      httpClient.get.mockReturnValueOnce(throwError(failure))
+      let error: any
+      service.readProviderAccessSettings('partner-1').subscribe({ error: e => error = e })
+      expect(error).toBe(failure)
+    })
+
+    it('should put the access settings and the notification settings to their upserts', () => {
+      const accessBody = { partnerId: 'partner-1', accessControl: { userGroups: [] } }
+      const notificationBody = { partnerId: 'partner-1', recipients: [] }
+
+      service.upsertProviderAccessSettings(accessBody).subscribe()
+      service.upsertNotificationSettings(notificationBody).subscribe()
+
+      expect(httpClient.put).toHaveBeenCalledWith('/apis/proxies/v8/accessSettings/provider/v1/upsert', accessBody)
+      expect(httpClient.put).toHaveBeenCalledWith('/apis/proxies/v8/accessSettings/provider/v1/notification/upsert', notificationBody)
+    })
+
+    it('should save the preference with the rest of the provider details, leaving the details given untouched', () => {
+      const providerDetails = { id: 'partner-1', data: { licenseType: 'User', providerPreference: false } }
+
+      service.updateProviderPreference(providerDetails, true).subscribe()
+
+      expect(httpClient.post).toHaveBeenCalledWith('/apis/proxies/v8/contentpartner/v2/update', {
+        id: 'partner-1',
+        data: { licenseType: 'User', providerPreference: true },
+      })
+      expect(providerDetails.data.providerPreference).toBe(false)
+    })
+
+    it('should add the data of the provider when it has none', () => {
+      service.updateProviderPreference({ id: 'partner-1' }, false).subscribe()
+      expect(httpClient.post).toHaveBeenCalledWith('/apis/proxies/v8/contentpartner/v2/update', {
+        id: 'partner-1',
+        data: { providerPreference: false },
+      })
+    })
+  })
+
+  describe('apiErrorMessage', () => {
+    const fallback = 'Something went wrong, please try again later'
+
+    it('should give the errMsg of the service, trimmed', () => {
+      expect(apiErrorMessage({ error: { params: { errMsg: '  Invalid partnerId  ' } } })).toBe('Invalid partnerId')
+    })
+
+    it('should give the errmsg of the gateway', () => {
+      expect(apiErrorMessage({ error: { params: { errmsg: 'Forbidden: API WHITELIST Access is denied' } } }))
+        .toBe('Forbidden: API WHITELIST Access is denied')
+    })
+
+    it('should give the message of the body when the params carry none', () => {
+      expect(apiErrorMessage({ error: { params: { errMsg: ' ' }, message: 'Missing or invalid fields: [accessControl]' } }))
+        .toBe('Missing or invalid fields: [accessControl]')
+    })
+
+    it('should prefer the errMsg of the service to the other messages', () => {
+      expect(apiErrorMessage({ error: { params: { errMsg: 'service', errmsg: 'gateway' }, message: 'body' } })).toBe('service')
+    })
+
+    it('should fall back to a general message when the api gives none', () => {
+      expect(apiErrorMessage({ status: 404, error: 'Cannot GET /notification/read' })).toBe(fallback)
+      expect(apiErrorMessage({ error: { params: { errMsg: null } } })).toBe(fallback)
+      expect(apiErrorMessage(new Error('Http failure'))).toBe(fallback)
+      expect(apiErrorMessage(undefined)).toBe(fallback)
+    })
+  })
+
 })
