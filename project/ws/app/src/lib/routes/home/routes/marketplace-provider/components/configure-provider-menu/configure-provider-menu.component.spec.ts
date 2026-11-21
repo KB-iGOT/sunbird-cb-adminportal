@@ -47,7 +47,9 @@ describe('ConfigureProviderMenuComponent', () => {
   it('should render a step per menu item and emit the clicked item', () => {
     const spy = jest.spyOn(component.activeMenu, 'emit')
     const steps: HTMLElement[] = Array.from(fixture.nativeElement.querySelectorAll('li.step-item'))
-    expect(steps.map(step => step.textContent!.trim())).toEqual(component.MENU_ITEMS.map(item => item.label))
+    // the label alone, the new tabs carry a NEW badge too
+    expect(steps.map(step => step.querySelector('.step-item-label')!.textContent!.trim()))
+      .toEqual(component.MENU_ITEMS.map(item => item.label))
 
     steps[0].click()
     fixture.detectChanges()
@@ -71,5 +73,39 @@ describe('ConfigureProviderMenuComponent', () => {
     marketplaceService.currentMenuItem.next({ slug: 'z' })
     expect(component.subscription.closed).toBe(true)
     expect(component.activeItem).not.toEqual({ slug: 'z' })
+  })
+
+  describe('Access Settings and Licence Notifications', () => {
+    const newTabs = ['access_settings', 'licence_notifications']
+    const tabs = (menu: ConfigureProviderMenuComponent) =>
+      newTabs.map(slug => menu.MENU_ITEMS.find(item => item.slug === slug))
+
+    it('should be the last menu items, flagged as new', () => {
+      const lastItems = component.MENU_ITEMS.slice(-2)
+      expect(lastItems.map(item => item.slug)).toEqual(newTabs)
+      expect(lastItems.every(item => item.isNew)).toBe(true)
+    })
+
+    it('should stay disabled while a new provider is being onboarded', () => {
+      expect(tabs(component).every(item => item?.disabled)).toBe(true)
+    })
+
+    it('should be enabled with the other tabs for an existing provider, Over All Limit set or not', () => {
+      const menu = new ConfigureProviderMenuComponent(marketplaceService, { queryParams: of({ id: 'p1' }) } as any)
+      expect(tabs(menu).every(item => !item?.disabled)).toBe(true)
+    })
+
+    it('should be enabled with the other tabs once a new provider is added', () => {
+      marketplaceService.newProviderAdded.next('p1')
+      expect(tabs(component).every(item => !item?.disabled)).toBe(true)
+    })
+  })
+
+  it('should keep a new onboarding to Provider Details after an existing provider was opened', () => {
+    const existing = new ConfigureProviderMenuComponent(marketplaceService, { queryParams: of({ id: 'p1' }) } as any)
+    expect(existing.MENU_ITEMS.filter(item => !item.disabled).length).toBe(7)
+
+    const onboarding = new ConfigureProviderMenuComponent(marketplaceService, { queryParams: of({}) } as any)
+    expect(onboarding.MENU_ITEMS.filter(item => !item.disabled).map(item => item.slug)).toEqual(['provider_details'])
   })
 })

@@ -1,0 +1,5 @@
+<!-- the provider access settings of @sunbird-cb/access-settings, which shows its own popups and toasts -->
+<div class="wrapper-form" *ngIf="spvProvider">
+  <sb-uic-access-control [config]="accessControlConfig" [contentId]="partnerId" [spvProvider]="spvProvider"
+    [tempAccessControl]="savedSettings" (accessControlData)="onAccessControlData($event)"></sb-uic-access-control>
+</div>

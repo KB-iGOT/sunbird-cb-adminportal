@@ -1,4 +1,12 @@
-export const MARKETPLACE_CONFIGURE_PROVIDERS_MENU = [
+export interface IProviderMenuItem {
+  id: number
+  label: string
+  slug: string
+  disabled: boolean
+  isNew?: boolean
+}
+
+export const MARKETPLACE_CONFIGURE_PROVIDERS_MENU: IProviderMenuItem[] = [
   {
     id: 1,
     label: 'Provider Details',
@@ -29,6 +37,20 @@ export const MARKETPLACE_CONFIGURE_PROVIDERS_MENU = [
     slug: 'provider_settings',
     disabled: true
   },
+  {
+    id: 6,
+    label: 'Access Settings',
+    slug: 'access_settings',
+    disabled: true,
+    isNew: true,
+  },
+  {
+    id: 7,
+    label: 'Licence Notifications',
+    slug: 'licence_notifications',
+    disabled: true,
+    isNew: true,
+  },
 ]
 
 export enum ProviderMenuItems {
@@ -37,4 +59,6 @@ export enum ProviderMenuItems {
   ActiveCourses = 'active_courses',
   ConfigureCertificate = 'configure_certificate',
   ProviderSettings = 'provider_settings',
+  AccessSettings = 'access_settings',
+  LicenceNotifications = 'licence_notifications',
 }

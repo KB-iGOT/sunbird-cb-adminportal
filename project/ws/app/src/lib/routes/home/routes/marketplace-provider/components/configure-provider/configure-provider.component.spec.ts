@@ -17,6 +17,8 @@ describe('ConfigureProviderComponent', () => {
   beforeEach(() => {
     marketPlaceSvc = {
       currentMenuItem: new BehaviorSubject<any>(0),
+      newProviderAdded: new BehaviorSubject<any>(null),
+      providerSettingsSaved: new BehaviorSubject<boolean>(false),
       getProviderDetails: jest.fn().mockReturnValue(of({ result: { id: '1' } })),
     }
     TestBed.configureTestingModule({
@@ -47,5 +49,43 @@ describe('ConfigureProviderComponent', () => {
     component.activeMenuItemEvent({ activeMenuItem: { slug: 'abc' } })
     expect(component.activeMenuItem).toBe('abc')
     expect(component.currentMenuDetails).toEqual({ slug: 'abc' })
+  })
+
+  describe('Provider settings saved', () => {
+    it('should not count as saved while the provider has no saved settings', () => {
+      expect(marketPlaceSvc.providerSettingsSaved.value).toBe(false)
+    })
+
+    it('should count as saved once the provider details carry a saved licence type and over all limit', () => {
+      marketPlaceSvc.getProviderDetails.mockReturnValue(
+        of({ result: { id: '1', data: { licenseType: 'Course', overAllLimit: 40000 } } }),
+      )
+      component.getProviderDetails(true)
+      expect(marketPlaceSvc.providerSettingsSaved.value).toBe(true)
+    })
+
+    it('should not count as saved when only part of the provider settings is saved', () => {
+      marketPlaceSvc.getProviderDetails.mockReturnValue(of({ result: { id: '1', data: { licenseType: 'Course' } } }))
+      component.getProviderDetails(true)
+      expect(marketPlaceSvc.providerSettingsSaved.value).toBe(false)
+    })
+
+    it('should be forgotten when the provider page is left', () => {
+      marketPlaceSvc.providerSettingsSaved.next(true)
+      component.ngOnDestroy()
+      expect(marketPlaceSvc.providerSettingsSaved.value).toBe(false)
+    })
+
+    it('should forget the provider onboarded here when the page is left', () => {
+      marketPlaceSvc.newProviderAdded.next('p1')
+      component.ngOnDestroy()
+      expect(marketPlaceSvc.newProviderAdded.value).toBeNull()
+    })
+
+    it('should open Provider Settings from the Access Settings page', () => {
+      component.openProviderSettings()
+      expect(component.activeMenuItem).toBe('provider_settings')
+      expect(marketPlaceSvc.currentMenuItem.value.slug).toBe('provider_settings')
+    })
   })
 })

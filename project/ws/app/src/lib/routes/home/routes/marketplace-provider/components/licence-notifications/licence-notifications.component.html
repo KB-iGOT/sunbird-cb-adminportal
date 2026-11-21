@@ -1,0 +1,142 @@
+<div class="wrapper-form">
+  <div class="flex items-center justify-between mb-5">
+    <span class="page-title">Licence Notifications</span>
+    <div class="header-actions">
+      <button mat-flat-button type="button" class="rounded-full px-4 py-2 btn-primaryr font-bold text-sm mat-btn-flat"
+        [disabled]="!canSave" (click)="save()">
+        Save
+      </button>
+    </div>
+  </div>
+
+  <div class="notifications-card">
+    <section class="notification-section">
+      <span class="section-title">Consumption alert thresholds &middot; Over All Limit</span>
+      <div class="section-meta">
+        An email goes to the recipients below when consumption crosses a threshold. Each threshold sends once per
+        crossing. 100% sends the "Limit exhausted" email. Up to 5 thresholds, whole numbers 1&ndash;100.
+      </div>
+
+      <div class="threshold-table">
+        <div class="threshold-head">
+          <span>Over All Limit</span>
+          <span>Consumed now</span>
+          <span>Thresholds (% &middot; licences)</span>
+          <span>Alerts</span>
+        </div>
+        <div class="threshold-row">
+          <div class="limit-cell">
+            <span class="cell-value">{{ overAllLimit | number }}</span>
+            <span class="cell-meta">from Provider Settings</span>
+          </div>
+
+          <div class="consumed-cell">
+            <span>
+              <span class="cell-value">{{ consumedPercent | number: '1.1-1' }}%</span>
+              <span class="cell-meta"> ({{ consumedCount | number }})</span>
+            </span>
+            <span class="consumption-bar" role="progressbar" aria-label="Over All Limit consumed" aria-valuemin="0"
+              aria-valuemax="100" [attr.aria-valuenow]="consumedPercent">
+              <span class="consumption-fill" [style.width.%]="consumedPercent > 100 ? 100 : consumedPercent"></span>
+            </span>
+          </div>
+
+          <div class="threshold-cell">
+            <!-- disabled while alerts are off: the thresholds are kept, but can't be changed -->
+            <fieldset class="threshold-chips" [disabled]="!alertsEnabled">
+              <!-- a threshold consumption has reached is crossed (green, with a tick) and has sent its alert, the
+                   others (blue) are not reached yet; hovering one says which -->
+              <span class="threshold-chip" *ngFor="let threshold of thresholds"
+                [class.crossed]="isCrossed(threshold)" [matTooltip]="thresholdTooltip(threshold)">
+                <span *ngIf="isCrossed(threshold)" aria-hidden="true">&#10003;</span>
+                {{ threshold }}% &middot; {{ thresholdLicences(threshold) | number }}
+                <button type="button" class="chip-remove" [attr.aria-label]="'Remove the ' + threshold + '% threshold'"
+                  (click)="$event.stopPropagation(); removeThreshold(threshold)" (keydown)="$event.stopPropagation()">&times;</button>
+              </span>
+              <ng-container *ngIf="!isThresholdListFull; else listFull">
+                <input class="threshold-input" type="number" min="1" max="100" step="1" placeholder="%"
+                  aria-label="Threshold percentage" [formControl]="thresholdControl" (keyup.enter)="addThreshold()" />
+                <button type="button" class="pill-button" [disabled]="!canAddThreshold" (click)="addThreshold()">Add</button>
+              </ng-container>
+              <ng-template #listFull>
+                <span class="max-note">Max {{ maxThresholds }}</span>
+              </ng-template>
+            </fieldset>
+          </div>
+
+          <div class="alerts-cell">
+            <div class="alert-toggle">
+              <input type="checkbox" id="licence-alerts-switch" aria-label="Alerts" [(ngModel)]="alertsEnabled" />
+              <label for="licence-alerts-switch"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-note crossed-note" *ngIf="hasAddedCrossedThreshold">
+        <span aria-hidden="true">&#9432;</span>
+        A threshold that's already below current consumption when you save is marked &#10003; crossed and no email is sent
+        for it.
+      </div>
+    </section>
+
+    <section class="notification-section">
+      <span class="section-title">Recipients for {{ providerName || 'this provider' }}</span>
+      <div class="section-meta">
+        One list per partner. Add recipients one at a time. Every alert above is emailed to everyone on this list.
+        Maximum {{ maxRecipients }} recipients.
+      </div>
+
+      <form class="recipient-form" [formGroup]="recipientForm" (ngSubmit)="addRecipient()">
+        <input class="text-input name-input" formControlName="name" placeholder="Name *" aria-label="Name" required />
+        <input class="text-input email-input" type="email" formControlName="email" placeholder="email@partner.com *"
+          aria-label="Email" required />
+        <button type="submit" class="pill-button" [disabled]="!canAddRecipient">
+          <mat-icon>add</mat-icon>
+          Add email
+        </button>
+        <span class="max-recipients" *ngIf="isRecipientListFull" role="alert">Maximum {{ maxRecipients }} recipients</span>
+        <span class="recipient-count">{{ recipients.length }} / {{ maxRecipients }}</span>
+      </form>
+
+      <table class="recipients-table">
+        <thead>
+          <tr>
+            <th class="name-cell">Name</th>
+            <th>Email</th>
+            <th class="date-cell">Added on</th>
+            <th class="remove-cell" aria-label="Remove"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let recipient of pagedRecipients; let index = index">
+            <td #nameCell class="ellipsis-cell" (mouseenter)="showFullText(nameCell)">{{ recipient.name || '—' }}</td>
+            <td #emailCell class="ellipsis-cell" (mouseenter)="showFullText(emailCell)">{{ recipient.email }}</td>
+            <td class="date-cell">{{ recipient.addedOn | date: 'd MMM y' }}</td>
+            <td class="remove-cell">
+              <button mat-icon-button type="button" title="Delete" [attr.aria-label]="'Remove ' + recipient.email"
+                (click)="removeRecipient(firstOnPage + index)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="!recipients.length">
+            <td class="empty-recipients" colspan="4">No recipients yet. Alerts won't be sent.</td>
+          </tr>
+        </tbody>
+      </table>
+      <mat-paginator *ngIf="recipients.length" class="recipients-paginator" [length]="recipients.length"
+        [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons
+        (page)="onPage($event)"></mat-paginator>
+
+      <div class="no-recipients-warning" *ngIf="!recipients.length">
+        <span aria-hidden="true">&#9888;</span> No recipients &mdash; alerts won't be sent.
+      </div>
+
+      <div class="info-note">
+        <span aria-hidden="true">&#9432;</span>
+        Alerts use standard iGOT email templates: Threshold crossed and Limit exhausted (100%).
+      </div>
+    </section>
+  </div>
+</div>
