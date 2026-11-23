@@ -13,7 +13,8 @@ import { Subscription } from 'rxjs'
 export class ConfigureProviderMenuComponent implements OnInit, OnDestroy {
   @Output() activeMenu = new EventEmitter<any>();
   activeItem: any
-  MENU_ITEMS = MARKETPLACE_CONFIGURE_PROVIDERS_MENU
+  // a copy, so a provider opened earlier doesn't leave its tabs enabled for the next onboarding
+  MENU_ITEMS = MARKETPLACE_CONFIGURE_PROVIDERS_MENU.map(item => ({ ...item }))
   canOnlyView = false
   subscription: Subscription = new Subscription()
   constructor(private marketplaceService: MarketplaceService, private activatedRoute: ActivatedRoute) {
