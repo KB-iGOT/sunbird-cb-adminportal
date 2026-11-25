@@ -297,9 +297,16 @@ describe('SsoConfigureSettingsComponent - behaviour', () => {
     expect(component.showLtiReadonlyFields).toBe(false)
   })
 
-  it('exposes canSaveLti from the form dirty state', () => {
+  it('allows saving LTI only when the form is dirty and valid', () => {
     expect(component.canSaveLti).toBe(false)
     component.ltiForm.markAsDirty()
+    // dirty but required URLs are empty -> invalid
+    expect(component.canSaveLti).toBe(false)
+    component.ltiForm.patchValue({
+      toolPublicJwksUrl: 'https://tool.example.com/jwks',
+      oidcLoginInitiationUrl: 'https://tool.example.com/login',
+      redirectLaunchUrl: 'https://tool.example.com/launch',
+    })
     expect(component.canSaveLti).toBe(true)
   })
 
@@ -393,6 +400,12 @@ describe('SsoConfigureSettingsComponent - behaviour', () => {
       component.onSettingsChange('LTI')
       expect(component.isSaveDisabled).toBe(true)
       component.ltiForm.markAsDirty()
+      expect(component.isSaveDisabled).toBe(true)
+      component.ltiForm.patchValue({
+        toolPublicJwksUrl: 'https://tool.example.com/jwks',
+        oidcLoginInitiationUrl: 'https://tool.example.com/login',
+        redirectLaunchUrl: 'https://tool.example.com/launch',
+      })
       expect(component.isSaveDisabled).toBe(false)
     })
 
@@ -599,6 +612,45 @@ describe('SsoConfigureSettingsComponent - behaviour', () => {
       expect(validate('nope')).toEqual({ invalidUrl: true })
       expect(validate('https://localhost')).toEqual({ invalidUrl: true })
       expect(validate('https://example.c')).toEqual({ invalidUrl: true })
+    })
+  })
+
+  describe('ltiUrlValidator', () => {
+    const validate = (value: any) => component.ltiUrlValidator()({ value } as any)
+
+    it('accepts empty and valid https urls', () => {
+      expect(validate('')).toBeNull()
+      expect(validate('https://tool.example.com/launch')).toBeNull()
+    })
+
+    it('keeps the base url rules', () => {
+      expect(validate('nope')).toEqual({ invalidUrl: true })
+      expect(validate('https://localhost')).toEqual({ invalidUrl: true })
+    })
+
+    it('rejects urls containing spaces', () => {
+      expect(validate('https://tool.example.com/la unch')).toEqual({ invalidUrl: true })
+      expect(validate(' https://tool.example.com/launch')).toEqual({ invalidUrl: true })
+      expect(validate('https://tool.example.com/launch ')).toEqual({ invalidUrl: true })
+      expect(validate('https://tool.exa mple.com')).toEqual({ invalidUrl: true })
+    })
+
+    it('rejects urls containing consecutive dots', () => {
+      expect(validate('https://tool..example.com')).toEqual({ invalidUrl: true })
+      expect(validate('https://tool.example....com')).toEqual({ invalidUrl: true })
+      expect(validate('https://tool.example.com/a/../launch')).toEqual({ invalidUrl: true })
+    })
+
+    it('rejects non-https urls', () => {
+      expect(validate('http://tool.example.com/launch')).toEqual({ httpsRequired: true })
+      expect(validate('ftp://tool.example.com/jwks')).toEqual({ httpsRequired: true })
+    })
+
+    it('flags http urls on every LTI form field', () => {
+      ['toolPublicJwksUrl', 'oidcLoginInitiationUrl', 'redirectLaunchUrl', 'deepLinkingUrl'].forEach(k => {
+        component.ltiForm.get(k)!.setValue('http://example.com/x')
+        expect(component.ltiForm.get(k)!.hasError('httpsRequired')).toBe(true)
+      })
     })
   })
 })

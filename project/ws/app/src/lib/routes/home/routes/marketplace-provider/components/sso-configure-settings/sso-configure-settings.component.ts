@@ -66,10 +66,10 @@ export class SsoConfigureSettingsComponent implements OnInit, OnChanges {
 
   buildLtiForm(): FormGroup {
     return this.formBuilder.group({
-      toolPublicJwksUrl: ['', [Validators.required, this.urlValidator()]],
-      oidcLoginInitiationUrl: ['', [Validators.required, this.urlValidator()]],
-      redirectLaunchUrl: ['', [Validators.required, this.urlValidator()]],
-      deepLinkingUrl: ['', [this.urlValidator()]],
+      toolPublicJwksUrl: ['', [Validators.required, this.ltiUrlValidator()]],
+      oidcLoginInitiationUrl: ['', [Validators.required, this.ltiUrlValidator()]],
+      redirectLaunchUrl: ['', [Validators.required, this.ltiUrlValidator()]],
+      deepLinkingUrl: ['', [this.ltiUrlValidator()]],
     })
   }
 
@@ -139,8 +139,8 @@ export class SsoConfigureSettingsComponent implements OnInit, OnChanges {
   }
 
   get canSaveLti(): boolean {
-    // Validity is checked on click so that errors are shown for an invalid save attempt
-    return this.ltiForm.dirty
+    // Save is allowed only when something changed and every editable control is valid
+    return this.ltiForm.dirty && this.ltiForm.valid
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -215,7 +215,7 @@ export class SsoConfigureSettingsComponent implements OnInit, OnChanges {
 
   get isSaveDisabled(): boolean {
     if (this.settingsType === 'LTI') {
-      return !this.ltiForm.dirty
+      return !this.canSaveLti
     }
     const currentForm = this.ssoSettingsForm.getRawValue()
     return JSON.stringify(currentForm) === JSON.stringify(this.initialFormValue) &&
@@ -470,6 +470,24 @@ export class SsoConfigureSettingsComponent implements OnInit, OnChanges {
       } catch {
         return { invalidUrl: true }
       }
+    }
+  }
+
+  /** LTI 1.3 requires all tool URLs to be served over HTTPS. */
+  ltiUrlValidator(): ValidatorFn {
+    const baseValidator = this.urlValidator()
+    return (control: AbstractControl) => {
+      if (!control.value) return null
+
+      // Reject any whitespace and consecutive dots (e.g. "..", "....") anywhere in the URL
+      if (/\s/.test(control.value) || /\.{2,}/.test(control.value)) {
+        return { invalidUrl: true }
+      }
+
+      const baseError = baseValidator(control)
+      if (baseError) return baseError
+
+      return new URL(control.value).protocol === 'https:' ? null : { httpsRequired: true }
     }
   }
 

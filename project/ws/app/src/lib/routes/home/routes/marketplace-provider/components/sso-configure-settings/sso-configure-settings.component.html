@@ -318,6 +318,9 @@
           <mat-error class="m-1"
             *ngIf="ltiForm.get('toolPublicJwksUrl').hasError('invalidUrl') && (ltiForm.get('toolPublicJwksUrl').dirty || ltiForm.get('toolPublicJwksUrl').touched)">Please
             enter a valid URL</mat-error>
+          <mat-error class="m-1"
+            *ngIf="ltiForm.get('toolPublicJwksUrl').hasError('httpsRequired') && (ltiForm.get('toolPublicJwksUrl').dirty || ltiForm.get('toolPublicJwksUrl').touched)">URL
+            must start with https://</mat-error>
         </mat-form-field>
       </div>
       <div class="flex flex-column gap-1 mat-field-rounded md:col-span-2">
@@ -332,6 +335,9 @@
           <mat-error class="m-1"
             *ngIf="ltiForm.get('oidcLoginInitiationUrl').hasError('invalidUrl') && (ltiForm.get('oidcLoginInitiationUrl').dirty || ltiForm.get('oidcLoginInitiationUrl').touched)">Please
             enter a valid URL</mat-error>
+          <mat-error class="m-1"
+            *ngIf="ltiForm.get('oidcLoginInitiationUrl').hasError('httpsRequired') && (ltiForm.get('oidcLoginInitiationUrl').dirty || ltiForm.get('oidcLoginInitiationUrl').touched)">URL
+            must start with https://</mat-error>
         </mat-form-field>
       </div>
       <div class="flex flex-column gap-1 mat-field-rounded md:col-span-2">
@@ -346,6 +352,9 @@
           <mat-error class="m-1"
             *ngIf="ltiForm.get('redirectLaunchUrl').hasError('invalidUrl') && (ltiForm.get('redirectLaunchUrl').dirty || ltiForm.get('redirectLaunchUrl').touched)">Please
             enter a valid URL</mat-error>
+          <mat-error class="m-1"
+            *ngIf="ltiForm.get('redirectLaunchUrl').hasError('httpsRequired') && (ltiForm.get('redirectLaunchUrl').dirty || ltiForm.get('redirectLaunchUrl').touched)">URL
+            must start with https://</mat-error>
         </mat-form-field>
       </div>
       <div class="flex flex-column gap-1 mat-field-rounded md:col-span-2">
@@ -357,6 +366,9 @@
           <mat-error class="m-1"
             *ngIf="ltiForm.get('deepLinkingUrl').hasError('invalidUrl') && (ltiForm.get('deepLinkingUrl').dirty || ltiForm.get('deepLinkingUrl').touched)">Please
             enter a valid URL</mat-error>
+          <mat-error class="m-1"
+            *ngIf="ltiForm.get('deepLinkingUrl').hasError('httpsRequired') && (ltiForm.get('deepLinkingUrl').dirty || ltiForm.get('deepLinkingUrl').touched)">URL
+            must start with https://</mat-error>
         </mat-form-field>
       </div>
     </div>
