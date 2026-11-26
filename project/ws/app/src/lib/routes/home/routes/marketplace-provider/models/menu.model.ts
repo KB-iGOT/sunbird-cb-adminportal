@@ -4,6 +4,7 @@ export interface IProviderMenuItem {
   slug: string
   disabled: boolean
   isNew?: boolean
+  roles?: string[]
 }
 
 export const MARKETPLACE_CONFIGURE_PROVIDERS_MENU: IProviderMenuItem[] = [
@@ -43,6 +44,7 @@ export const MARKETPLACE_CONFIGURE_PROVIDERS_MENU: IProviderMenuItem[] = [
     slug: 'access_settings',
     disabled: true,
     isNew: true,
+    roles: ['SPV_ADMIN'],
   },
   {
     id: 7,
@@ -50,8 +52,13 @@ export const MARKETPLACE_CONFIGURE_PROVIDERS_MENU: IProviderMenuItem[] = [
     slug: 'licence_notifications',
     disabled: true,
     isNew: true,
+    roles: ['SPV_ADMIN'],
   },
 ]
+
+export function canAccessProviderMenuItem(item: IProviderMenuItem, userRoles: Set<string> | null | undefined): boolean {
+  return !item.roles || item.roles.some(role => !!userRoles && userRoles.has(role.toLowerCase()))
+}
 
 export enum ProviderMenuItems {
   ProviderDetails = 'provider_details',

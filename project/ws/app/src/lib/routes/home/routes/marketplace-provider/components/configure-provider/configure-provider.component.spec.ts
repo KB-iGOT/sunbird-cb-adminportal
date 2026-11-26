@@ -3,6 +3,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { ActivatedRoute } from '@angular/router'
 import { BehaviorSubject, of } from 'rxjs'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 
 import { ConfigureProviderComponent } from './configure-provider.component'
 import { MarketplaceService } from '../../services/marketplace.service'
@@ -28,6 +29,7 @@ describe('ConfigureProviderComponent', () => {
         { provide: MatSnackBar, useValue: { open: jest.fn(), openFromComponent: jest.fn() } },
         { provide: MarketplaceService, useValue: marketPlaceSvc },
         { provide: NavigationExternalService, useValue: { breadcrumnItems: new BehaviorSubject<any>([]) } },
+        { provide: ConfigurationsService, useValue: { userRoles: new Set(['spv_admin']) } },
       ],
       schemas: [NO_ERRORS_SCHEMA],
     })
@@ -86,6 +88,37 @@ describe('ConfigureProviderComponent', () => {
       component.openProviderSettings()
       expect(component.activeMenuItem).toBe('provider_settings')
       expect(marketPlaceSvc.currentMenuItem.value.slug).toBe('provider_settings')
+    })
+  })
+
+  describe('Opening a tab from the link (?tab=)', () => {
+    // the tab the page opens on for a user with these roles (lower case, as ConfigurationsService keeps them)
+    const openTab = (tab: string, userRoles: Set<string> | null) => {
+      const page = new ConfigureProviderComponent(
+        { data: of({}), queryParams: of({ tab }) } as any,
+        {} as any,
+        marketPlaceSvc,
+        { breadcrumnItems: new BehaviorSubject<any>([]) } as any,
+        { userRoles } as any,
+      )
+      page.ngAfterViewInit()
+      return page.activeMenuItem
+    }
+
+    it('should open Access Settings and Licence Notifications for an SPV admin', () => {
+      expect(openTab('access_settings', new Set(['spv_admin']))).toBe('access_settings')
+      expect(openTab('licence_notifications', new Set(['spv_admin']))).toBe('licence_notifications')
+      expect(marketPlaceSvc.currentMenuItem.value.slug).toBe('licence_notifications')
+    })
+
+    it('should keep a user who is not an SPV admin on Provider Details', () => {
+      expect(openTab('access_settings', new Set(['mdo_admin']))).toBe('provider_details')
+      expect(openTab('licence_notifications', null)).toBe('provider_details')
+      expect(marketPlaceSvc.currentMenuItem.value.slug).toBe('provider_details')
+    })
+
+    it('should still open the other tabs for a user who is not an SPV admin', () => {
+      expect(openTab('provider_settings', new Set(['mdo_admin']))).toBe('provider_settings')
     })
   })
 })

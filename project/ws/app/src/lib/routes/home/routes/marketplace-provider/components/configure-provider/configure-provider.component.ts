@@ -5,9 +5,10 @@ import { Subscription } from 'rxjs'
 import { MarketplaceService } from '../../services/marketplace.service'
 import { HttpErrorResponse } from '@angular/common/http'
 import * as _ from 'lodash'
-import { MARKETPLACE_CONFIGURE_PROVIDERS_MENU, ProviderMenuItems } from '../../models/menu.model'
+import { canAccessProviderMenuItem, MARKETPLACE_CONFIGURE_PROVIDERS_MENU, ProviderMenuItems } from '../../models/menu.model'
 import { NavigationExternalService } from '../../../../../../../../../../../src/app/services/navigation-external.service'
 import { SnackbarComponent } from '@sunbird-cb/consumption'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 
 @Component({
     selector: 'ws-app-configure-provider',
@@ -44,6 +45,7 @@ export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewI
     private snackBar: MatSnackBar,
     private marketPlaceSvc: MarketplaceService,
     private externalsvc: NavigationExternalService,
+    private configSvc: ConfigurationsService,
   ) {
   }
 
@@ -64,7 +66,8 @@ export class ConfigureProviderComponent implements OnInit, OnDestroy, AfterViewI
       this.activateRoute.queryParams.subscribe(params => {
         this.routerParams = params
         if (params['tab']) {
-          const menuItem = MARKETPLACE_CONFIGURE_PROVIDERS_MENU.find(item => item.slug === params['tab'])
+          const menuItem = MARKETPLACE_CONFIGURE_PROVIDERS_MENU.find(item => item.slug === params['tab']
+            && canAccessProviderMenuItem(item, this.configSvc.userRoles))
           if (menuItem) {
             this.activeMenuItem = menuItem.slug
             this.marketPlaceSvc.currentMenuItem.next(menuItem)
