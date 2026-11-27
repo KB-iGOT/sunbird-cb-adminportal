@@ -1,8 +1,9 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core'
-import { MARKETPLACE_CONFIGURE_PROVIDERS_MENU } from '../../models/menu.model'
+import { canAccessProviderMenuItem, MARKETPLACE_CONFIGURE_PROVIDERS_MENU } from '../../models/menu.model'
 import { MarketplaceService } from '../../services/marketplace.service'
 import { ActivatedRoute } from '@angular/router'
 import { Subscription } from 'rxjs'
+import { ConfigurationsService } from '@sunbird-cb/utils-v2'
 
 @Component({
     selector: 'ws-app-configure-provider-menu',
@@ -17,7 +18,12 @@ export class ConfigureProviderMenuComponent implements OnInit, OnDestroy {
   MENU_ITEMS = MARKETPLACE_CONFIGURE_PROVIDERS_MENU.map(item => ({ ...item }))
   canOnlyView = false
   subscription: Subscription = new Subscription()
-  constructor(private marketplaceService: MarketplaceService, private activatedRoute: ActivatedRoute) {
+  constructor(
+    private marketplaceService: MarketplaceService,
+    private activatedRoute: ActivatedRoute,
+    private configSvc: ConfigurationsService,
+  ) {
+    this.MENU_ITEMS = this.MENU_ITEMS.filter(item => canAccessProviderMenuItem(item, this.configSvc.userRoles))
     this.activatedRoute.queryParams.subscribe(params => {
       this.canOnlyView = params.status === 'PENDING'
       if (this.canOnlyView) {
